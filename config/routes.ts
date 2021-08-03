@@ -43,10 +43,10 @@ export default [
     ],
   },
   {
-    name: '测试',
+    name: 'test',
     icon: 'table',
     path: '/test',
-    component: './test',
+    component: './Test',
   },
   {
     name: 'project.table-list',
@@ -57,8 +57,8 @@ export default [
   {
     name: 'library.table-list',
     icon: 'smile',
-    path: '/project',
-    component: './Project',
+    path: '/library',
+    component: './Library',
   },
   {
     name: 'list.card-list',
