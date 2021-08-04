@@ -1,10 +1,10 @@
-/* eslint-disable no-console */
 import { Icon } from '@iconify/react';
-import { EditFilled, CopyFilled, DeleteFilled } from '@ant-design/icons';
+import { EditFilled, CopyFilled } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
-import { Button, message, Tag, Tooltip } from 'antd';
+import { Button, Dropdown, Menu, message, Tag, Tooltip } from 'antd';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import { TableDropdown } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { rule, addRule, updateRule, removeRule } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -12,8 +12,76 @@ import type { FormValueType } from './components/UpdateForm';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import DeleteForm from './components/DeleteForm';
-import './index.less';
 import DetailForm from './components/DetailForm';
+import './index.less';
+
+const tableListDataSource: TableListItem[] = [
+  {
+    key: 1,
+    id: '60fe42a2a6e37f184dba2222',
+    name: 'IRT',
+    filePath: 'c:123/123',
+    type: '标准库',
+    description: '这是2个测试',
+    generator: 'nice',
+    statistic: { a: '2' },
+    organism: ['尾', '猫'],
+    createDate: Date.now(),
+    lastModifiedDate: Date.now(),
+  },
+  {
+    key: 2,
+    id: '60fe42a2a6e37f184dba3333',
+    name: 'IRT_SGS',
+    filePath: 'c:123/123',
+    type: 'IRT标准库',
+    description: '这是3个测试',
+    generator: 'shuffle',
+    statistic: { a: '3' },
+    organism: ['头'],
+    createDate: Date.now(),
+    lastModifiedDate: Date.now(),
+  },
+  {
+    key: 3,
+    id: '60fe42a2a6e37f184dba4444',
+    name: 'IRT',
+    filePath: 'c:123/123',
+    type: 'IRT校准库',
+    description: '这是4个测试',
+    generator: 'nice',
+    statistic: { a: '4' },
+    organism: ['马'],
+    createDate: Date.now(),
+    lastModifiedDate: Date.now(),
+  },
+  {
+    key: 4,
+    id: '60fe42a2a6e37f184dba5555',
+    name: 'IRT_SGS',
+    filePath: 'c:123/123',
+    type: '标准库',
+    description: '这是5个测试',
+    generator: 'shuffle',
+    statistic: { a: '5' },
+    organism: ['肝'],
+    createDate: Date.now(),
+    lastModifiedDate: Date.now(),
+  },
+  {
+    key: 5,
+    id: '60fe42a2a6e37f184dba6666',
+    name: 'IRT',
+    filePath: 'c:123/123',
+    type: 'IRT标准库',
+    description: '这是6个测试',
+    generator: 'nice',
+    statistic: { a: '6' },
+    organism: ['胃', '肝'],
+    createDate: Date.now(),
+    lastModifiedDate: Date.now(),
+  },
+];
 
 /**
  * 添加节点
@@ -74,12 +142,19 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
     return false;
   }
 };
+
 /**
  * 查看节点
  * @param id
  */
-const handleDetail = async (id: string) => {
-  if (!id) return true;
+let aa: TableListItem[];
+const handleDetail = async (entity: any) => {
+  const a = tableListDataSource.filter((value: Record<string, unknown>) => {
+    return value.id === entity.id;
+  });
+  aa = a;
+  console.log(aa);
+  return true;
 };
 
 const TableList: React.FC = () => {
@@ -96,85 +171,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
 
-  const tableListDataSource: TableListItem[] = [
-    {
-      key: 1,
-      id: '60fe42a2a6e37f184dba2222',
-      name: 'IRT',
-      filePath: 'c:123/123',
-      type: '标准库',
-      description: '这是2个测试',
-      generator: 'nice',
-      statistic: { a: '2' },
-      region: ['尾'],
-      species: ['猫'],
-      createDate: Date.now(),
-      lastModifiedDate: Date.now(),
-    },
-    {
-      key: 2,
-      id: '60fe42a2a6e37f184dba3333',
-      name: 'IRT_SGS',
-      filePath: 'c:123/123',
-      type: 'IRT标准库',
-      description: '这是3个测试',
-      generator: 'shuffle',
-      statistic: { a: '3' },
-      region: ['头'],
-      species: ['狗'],
-      createDate: Date.now(),
-      lastModifiedDate: Date.now(),
-    },
-    {
-      key: 3,
-      id: '60fe42a2a6e37f184dba4444',
-      name: 'IRT',
-      filePath: 'c:123/123',
-      type: 'IRT校准库',
-      description: '这是4个测试',
-      generator: 'nice',
-      statistic: { a: '4' },
-      region: ['肺'],
-      species: ['马'],
-      createDate: Date.now(),
-      lastModifiedDate: Date.now(),
-    },
-    {
-      key: 4,
-      id: '60fe42a2a6e37f184dba5555',
-      name: 'IRT_SGS',
-      filePath: 'c:123/123',
-      type: '标准库',
-      description: '这是5个测试',
-      generator: 'shuffle',
-      statistic: { a: '5' },
-      region: ['肝'],
-      species: ['牛'],
-      createDate: Date.now(),
-      lastModifiedDate: Date.now(),
-    },
-    {
-      key: 5,
-      id: '60fe42a2a6e37f184dba6666',
-      name: 'IRT',
-      filePath: 'c:123/123',
-      type: 'IRT标准库',
-      description: '这是6个测试',
-      generator: 'nice',
-      statistic: { a: '6' },
-      region: ['胃', '肝'],
-      species: ['羊'],
-      createDate: Date.now(),
-      lastModifiedDate: Date.now(),
-    },
-  ];
-
   const columns: ProColumns<TableListItem>[] = [
-    {
-      title: '标准库ID',
-      dataIndex: 'id',
-      sorter: (a, b) => (a.id > b.id ? -1 : 1),
-    },
     {
       title: '标准库名称',
       dataIndex: 'name',
@@ -184,10 +181,8 @@ const TableList: React.FC = () => {
           <a
             onClick={() => {
               handleDetailModalVisible(true);
-              const a = tableListDataSource.filter((value: Record<string, unknown>) => {
-                return value.id === entity.id;
-              });
-              console.log(a[0].id);
+              handleDetail(entity);
+              console.log(entity.id);
             }}
           >
             {dom}
@@ -224,14 +219,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '标准库地址',
-      dataIndex: 'filePath',
-      sorter: (a, b) => (a.filePath > b.filePath ? -1 : 1),
-      render: (dom, entity) => {
-        return <a>{dom}</a>;
-      },
-    },
-    {
       title: '描述信息',
       dataIndex: 'description',
       sorter: (a, b) => (a.description > b.description ? -1 : 1),
@@ -240,18 +227,9 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '物种',
-      dataIndex: 'region',
-      sorter: (a, b) => (a.region > b.region ? -1 : 1),
-      render: (dom) => {
-        // eslint-disable-next-line array-callback-return
-        return <Tag>{dom}</Tag>;
-      },
-    },
-    {
-      title: '部位',
-      dataIndex: 'species',
-      sorter: (a, b) => (a.species > b.species ? -1 : 1),
+      title: '有机生物',
+      dataIndex: 'organism',
+      sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
       render: (dom) => {
         // eslint-disable-next-line array-callback-return
         return <Tag>{dom}</Tag>;
@@ -279,7 +257,7 @@ const TableList: React.FC = () => {
             }}
             key="edit"
           >
-            <EditFilled />
+            <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
           </a>
         </Tooltip>,
         <Tooltip title={'复制'} key="copy">
@@ -289,24 +267,106 @@ const TableList: React.FC = () => {
               action?.startEditable?.(record.id);
             }}
           >
-            <CopyFilled />
+            <CopyFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
           </a>
         </Tooltip>,
-        <Tooltip title={'删除'} key="delete">
-          <a
-            key="delete"
-            onClick={() => {
-              handleDeleteModalVisible(true);
-              setCurrentRow(record);
-
-              // await handleRemove(selectedRowsState);
-              // setSelectedRows([]);
-              // actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <DeleteFilled />
-          </a>
-        </Tooltip>,
+        <Dropdown
+          key="Shuffle"
+          overlay={
+            <Menu>
+              <Menu.Item key="1">算法1</Menu.Item>
+              <Menu.Item key="2">算法2</Menu.Item>
+              <Menu.Item key="3">算法3</Menu.Item>
+            </Menu>
+          }
+        >
+          <Tooltip title={'生成伪肽段（Shuffle）'} key="Shuffle">
+            <a
+              key="Shuffle"
+              onClick={() => {
+                action?.startEditable?.(record.id);
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+                icon="mdi:alpha-s-circle"
+              />
+            </a>
+          </Tooltip>
+        </Dropdown>,
+        <Dropdown
+          key="Nico"
+          overlay={
+            <Menu>
+              <Menu.Item key="1">算法1</Menu.Item>
+              <Menu.Item key="2">算法2</Menu.Item>
+              <Menu.Item key="3">算法3</Menu.Item>
+            </Menu>
+          }
+        >
+          <Tooltip title={'生成伪肽段（Nico）'} key="Nico">
+            <a
+              key="Nico"
+              onClick={() => {
+                action?.startEditable?.(record.id);
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+                icon="mdi:alpha-n-circle"
+              />
+            </a>
+          </Tooltip>
+        </Dropdown>,
+        <TableDropdown
+          key="TableDropdown"
+          onSelect={(e) => {
+            if (e === '96') {
+              console.log('我是查看结果');
+            }
+            if (e === '97') {
+              console.log('我是导出');
+            }
+          }}
+          menus={[
+            {
+              key: 'menus1',
+              name: (
+                <Tooltip title={'重新统计蛋白质与肽段的数目'} key="statistics">
+                  <a
+                    key="statistics"
+                    onClick={() => {
+                      action?.startEditable?.(record.id);
+                    }}
+                  >
+                    <Icon
+                      style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+                      icon="mdi:state-machine"
+                    />
+                  </a>
+                </Tooltip>
+              ),
+            },
+            {
+              key: 'menus2',
+              name: (
+                <Tooltip title={'删除'} key="delete">
+                  <a
+                    key="delete"
+                    onClick={() => {
+                      action?.startEditable?.(record.id);
+                    }}
+                  >
+                    <Icon
+                      style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+                      icon="mdi:delete"
+                    />
+                  </a>
+                </Tooltip>
+              ),
+            },
+          ]}
+        />,
       ],
     },
   ];
@@ -316,7 +376,7 @@ const TableList: React.FC = () => {
         scroll={{ x: 'max-content' }}
         headerTitle={''}
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
           labelWidth: 120,
         }}
@@ -377,6 +437,7 @@ const TableList: React.FC = () => {
       />
       {/* 列表详情 */}
       <DetailForm
+        dataSource={aa}
         onCancel={{
           onClose: () => handleDetailModalVisible(false),
         }}

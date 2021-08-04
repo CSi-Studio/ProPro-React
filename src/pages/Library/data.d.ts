@@ -7,8 +7,7 @@ export type TableListItem = {
   description: string;
   generator: string;
   statistic: Record<string, any>;
-  region: string[];
-  species: string[];
+  organism: string[];
   createDate: number | string;
   lastModifiedDate?: number | string;
 };
