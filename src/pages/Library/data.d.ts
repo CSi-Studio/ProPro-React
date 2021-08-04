@@ -1,20 +1,21 @@
 export type TableListItem = {
-  key: number;
+  key?: number;
   id: string;
   name: string;
+  filePath: string;
   type: string;
-  decoyGenerator: string;
-  proteinsCount: number;
-  peptidesCount: number;
-  ppRate: string;
-  creator: string;
   description: string;
-  totalSize: number;
-  createDate: number;
+  generator: string;
+  statistic: Record<string, any>;
+  region: string[];
+  species: string[];
+  createDate: number | string;
+  lastModifiedDate?: number | string;
 };
 
 export type TableListPagination = {
-  total: number;
   pageSize: number;
-  current: number;
+  totalNum: number;
+  totalPage: number;
+  currentPageNo: number;
 };

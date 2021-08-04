@@ -13,6 +13,7 @@ import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import DeleteForm from './components/DeleteForm';
 import './index.less';
+import DetailForm from './components/DetailForm';
 
 /**
  * 添加节点
@@ -73,6 +74,13 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
     return false;
   }
 };
+/**
+ * 查看节点
+ * @param id
+ */
+const handleDetail = async (id: string) => {
+  if (!id) return true;
+};
 
 const TableList: React.FC = () => {
   /** 新建窗口的弹窗 */
@@ -81,99 +89,83 @@ const TableList: React.FC = () => {
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** 库详情的抽屉 */
+  const [detailModalVisible, handleDetailModalVisible] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
 
-  const tableListDataSource: TableListItem[] = [];
-  for (let i = 0; i < 5; i += 1) {
-    tableListDataSource.push({
-      key: i,
-      id: '60fe42a2a6e37f184dba9594',
-      name: 'IRT_SGS',
-      type: 'IRT标准库',
-      decoyGenerator: 'shuffle',
-      proteinsCount: 6846,
-      peptidesCount: 34646,
-      ppRate: '6.5443322134',
-      description: '这是一个测试',
-      creator: 'lihua',
-      createDate: Date.now(),
-      totalSize: 5,
-    });
-  }
-
-  const tableListDataSource1: TableListItem[] = [
+  const tableListDataSource: TableListItem[] = [
     {
       key: 1,
-      id: '60fe42a2a6e37f184dba9594',
-      name: 'IRT_SGS',
-      type: 'IRT标准库',
-      decoyGenerator: 'nice',
-      proteinsCount: 6845,
-      peptidesCount: 34646,
-      ppRate: '6.5443322134',
-      description: '这是一个测试',
-      creator: 'lihuae',
+      id: '60fe42a2a6e37f184dba2222',
+      name: 'IRT',
+      filePath: 'c:123/123',
+      type: '标准库',
+      description: '这是2个测试',
+      generator: 'nice',
+      statistic: { a: '2' },
+      region: ['尾'],
+      species: ['猫'],
       createDate: Date.now(),
-      totalSize: 5,
+      lastModifiedDate: Date.now(),
     },
     {
       key: 2,
-      id: '60fe42a2a6e37f184234esfr',
+      id: '60fe42a2a6e37f184dba3333',
       name: 'IRT_SGS',
+      filePath: 'c:123/123',
       type: 'IRT标准库',
-      decoyGenerator: 'shuffle',
-      proteinsCount: 6844,
-      peptidesCount: 34646,
-      ppRate: '2.5443322134',
-      description: '这是一个测试',
-      creator: 'lihuaa',
+      description: '这是3个测试',
+      generator: 'shuffle',
+      statistic: { a: '3' },
+      region: ['头'],
+      species: ['狗'],
       createDate: Date.now(),
-      totalSize: 5,
+      lastModifiedDate: Date.now(),
     },
     {
       key: 3,
-      id: '60fe42a2a6e37f184234dsf',
-      name: 'IRT_SGS',
+      id: '60fe42a2a6e37f184dba4444',
+      name: 'IRT',
+      filePath: 'c:123/123',
       type: 'IRT校准库',
-      decoyGenerator: 'nice',
-      proteinsCount: 6841,
-      peptidesCount: 34646,
-      ppRate: '7.5443322134',
-      description: '这是一个测试',
-      creator: 'lihuaf',
+      description: '这是4个测试',
+      generator: 'nice',
+      statistic: { a: '4' },
+      region: ['肺'],
+      species: ['马'],
       createDate: Date.now(),
-      totalSize: 5,
+      lastModifiedDate: Date.now(),
     },
     {
       key: 4,
-      id: '60fe42a2a6e37f42342sdw',
+      id: '60fe42a2a6e37f184dba5555',
       name: 'IRT_SGS',
-      type: 'IRT校准库',
-      decoyGenerator: 'nice',
-      proteinsCount: 6843,
-      peptidesCount: 34646,
-      ppRate: '4.544332332134',
-      description: '这是2个测试',
-      creator: 'lihua',
+      filePath: 'c:123/123',
+      type: '标准库',
+      description: '这是5个测试',
+      generator: 'shuffle',
+      statistic: { a: '5' },
+      region: ['肝'],
+      species: ['牛'],
       createDate: Date.now(),
-      totalSize: 5,
+      lastModifiedDate: Date.now(),
     },
     {
       key: 5,
-      id: '60fe42a2a6e37f18234sdfsf',
-      name: 'IRT_SGS',
-      type: 'IRT校准库',
-      decoyGenerator: 'shuffle',
-      proteinsCount: 6842,
-      peptidesCount: 34646,
-      ppRate: '5.544332214',
-      description: '这是3个测试',
-      creator: 'lihua',
+      id: '60fe42a2a6e37f184dba6666',
+      name: 'IRT',
+      filePath: 'c:123/123',
+      type: 'IRT标准库',
+      description: '这是6个测试',
+      generator: 'nice',
+      statistic: { a: '6' },
+      region: ['胃', '肝'],
+      species: ['羊'],
       createDate: Date.now(),
-      totalSize: 5,
+      lastModifiedDate: Date.now(),
     },
   ];
 
@@ -188,7 +180,19 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       sorter: (a, b) => (a.name > b.name ? -1 : 1),
       render: (dom, entity) => {
-        return <a>{dom}</a>;
+        return (
+          <a
+            onClick={() => {
+              handleDetailModalVisible(true);
+              const a = tableListDataSource.filter((value: Record<string, unknown>) => {
+                return value.id === entity.id;
+              });
+              console.log(a[0].id);
+            }}
+          >
+            {dom}
+          </a>
+        );
       },
     },
     {
@@ -201,9 +205,9 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: 'Decoy Generator',
-      dataIndex: 'decoyGenerator',
-      sorter: (a, b) => (a.decoyGenerator > b.decoyGenerator ? -1 : 1),
+      title: 'Generator',
+      dataIndex: 'generator',
+      sorter: (a, b) => (a.generator > b.generator ? -1 : 1),
       filters: true,
       onFilter: true,
       valueEnum: {
@@ -220,36 +224,44 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '蛋白质数目',
-      dataIndex: 'proteinsCount',
-      sorter: (a, b) => (a.proteinsCount > b.proteinsCount ? -1 : 1),
+      title: '标准库地址',
+      dataIndex: 'filePath',
+      sorter: (a, b) => (a.filePath > b.filePath ? -1 : 1),
       render: (dom, entity) => {
         return <a>{dom}</a>;
       },
     },
     {
-      title: '肽段数目',
-      dataIndex: 'peptidesCount',
-      sorter: (a, b) => (a.peptidesCount > b.peptidesCount ? -1 : 1),
+      title: '描述信息',
+      dataIndex: 'description',
+      sorter: (a, b) => (a.description > b.description ? -1 : 1),
       render: (dom, entity) => {
         return <a>{dom}</a>;
       },
     },
     {
-      title: '肽段 / 蛋白覆盖度',
-      dataIndex: 'ppRate',
-      sorter: (a, b) => (a.ppRate > b.ppRate ? -1 : 1),
+      title: '物种',
+      dataIndex: 'region',
+      sorter: (a, b) => (a.region > b.region ? -1 : 1),
+      render: (dom) => {
+        // eslint-disable-next-line array-callback-return
+        return <Tag>{dom}</Tag>;
+      },
+    },
+    {
+      title: '部位',
+      dataIndex: 'species',
+      sorter: (a, b) => (a.species > b.species ? -1 : 1),
+      render: (dom) => {
+        // eslint-disable-next-line array-callback-return
+        return <Tag>{dom}</Tag>;
+      },
     },
     {
       title: '创建时间',
       dataIndex: 'createDate',
       sorter: (a, b) => (a.createDate > b.createDate ? -1 : 1),
       valueType: 'dateTime',
-    },
-    {
-      title: '创建人',
-      dataIndex: 'creator',
-      sorter: (a, b) => (a.creator > b.creator ? -1 : 1),
     },
     {
       title: '操作',
@@ -321,7 +333,7 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         // request={rule}
-        dataSource={tableListDataSource1}
+        dataSource={tableListDataSource}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -361,6 +373,23 @@ const TableList: React.FC = () => {
           }
         }}
         createModalVisible={createModalVisible}
+        values={currentRow || {}}
+      />
+      {/* 列表详情 */}
+      <DetailForm
+        onCancel={{
+          onClose: () => handleDetailModalVisible(false),
+        }}
+        onSubmit={async (value) => {
+          const success = await handleDetail(value);
+          if (success) {
+            handleDetailModalVisible(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        detailModalVisible={detailModalVisible}
         values={currentRow || {}}
       />
       {/* 编辑列表 */}
