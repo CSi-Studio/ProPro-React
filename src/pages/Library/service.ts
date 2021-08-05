@@ -1,34 +1,11 @@
 import { request } from 'umi';
 import type { TableListItem } from './data';
 
-export async function rule() {
+export async function libraryList() {
   return request('/api/library/list', {
     method: 'GET',
   });
 }
-
-/** 获取规则列表 GET /api/rule */
-// export async function rule(
-//   params: {
-//     // query
-//     current?: number;
-//     pageSize?: number;
-//   },
-//   options?: Record<string, any>,
-// ) {
-//   return request<{
-//     data: TableListItem[];
-//     /** 列表的内容总数 */
-//     total?: number;
-//     success?: boolean;
-//   }>('/api/rule', {
-//     method: 'GET',
-//     params: {
-//       ...params,
-//     },
-//     ...(options || {}),
-//   });
-// }
 
 /** 新建规则 PUT /api/rule */
 export async function updateRule(options?: Record<string, any>) {
@@ -38,18 +15,31 @@ export async function updateRule(options?: Record<string, any>) {
   });
 }
 
-/** 新建规则 POST /api/rule */
-export async function addRule(options?: Record<string, any>) {
-  return request<TableListItem>('/api/rule', {
+/** 添加列表 /api/library/add */
+export async function addRule(body: { name?: any; type?: any; filePath?: any; description?: any }) {
+  const fileData = new FormData();
+  fileData.append('name', body.name);
+  fileData.append('type', body.type);
+  fileData.append('libFile', body.filePath[0].originFileObj);
+  fileData.append('description', body.description);
+  return request<TableListItem>('/api/library/add', {
     method: 'POST',
-    ...(options || {}),
+    header: {
+      Accept: 'application/json',
+    },
+    data: fileData,
   });
 }
 
-/** 删除规则 DELETE /api/rule */
-export async function removeRule(options?: Record<string, any>) {
-  return request<Record<string, any>>('/api/rule', {
-    method: 'DELETE',
-    ...(options || {}),
+/** 删除规则 DELETE library/remove?libraryIds=610a3c485cd788258fa315b3  */
+export async function removeRule(params: {
+  // query
+  libraryIds: any[];
+}) {
+  return request('/api/library/remove', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
   });
 }

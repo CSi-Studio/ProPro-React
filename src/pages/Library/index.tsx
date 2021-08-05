@@ -1,97 +1,31 @@
-import { Icon } from '@iconify/react';
-import { EditFilled, CopyFilled } from '@ant-design/icons';
-import React, { useState, useRef } from 'react';
-import { Button, Dropdown, Menu, message, Tag, Tooltip } from 'antd';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import { Button, Drawer, Dropdown, Menu, message, Tag, Tooltip } from 'antd';
+import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { TableDropdown } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { rule, addRule, updateRule, removeRule } from './service';
+import { libraryList, addRule, updateRule, removeRule } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import type { FormValueType } from './components/UpdateForm';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import { EditFilled, CopyFilled } from '@ant-design/icons';
+import { TableDropdown } from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import DeleteForm from './components/DeleteForm';
-import DetailForm from './components/DetailForm';
+import React, { useState, useRef } from 'react';
+import ProTable from '@ant-design/pro-table';
+import { Icon } from '@iconify/react';
 import './index.less';
-
-const tableListDataSource: TableListItem[] = [
-  {
-    key: 1,
-    id: '60fe42a2a6e37f184dba2222',
-    name: 'IRT',
-    filePath: 'c:123/123',
-    type: '标准库',
-    description: '这是2个测试',
-    generator: 'nice',
-    statistic: { a: '2' },
-    organism: ['尾', '猫'],
-    createDate: Date.now(),
-    lastModifiedDate: Date.now(),
-  },
-  {
-    key: 2,
-    id: '60fe42a2a6e37f184dba3333',
-    name: 'IRT_SGS',
-    filePath: 'c:123/123',
-    type: 'IRT标准库',
-    description: '这是3个测试',
-    generator: 'shuffle',
-    statistic: { a: '3' },
-    organism: ['头'],
-    createDate: Date.now(),
-    lastModifiedDate: Date.now(),
-  },
-  {
-    key: 3,
-    id: '60fe42a2a6e37f184dba4444',
-    name: 'IRT',
-    filePath: 'c:123/123',
-    type: 'IRT校准库',
-    description: '这是4个测试',
-    generator: 'nice',
-    statistic: { a: '4' },
-    organism: ['马'],
-    createDate: Date.now(),
-    lastModifiedDate: Date.now(),
-  },
-  {
-    key: 4,
-    id: '60fe42a2a6e37f184dba5555',
-    name: 'IRT_SGS',
-    filePath: 'c:123/123',
-    type: '标准库',
-    description: '这是5个测试',
-    generator: 'shuffle',
-    statistic: { a: '5' },
-    organism: ['肝'],
-    createDate: Date.now(),
-    lastModifiedDate: Date.now(),
-  },
-  {
-    key: 5,
-    id: '60fe42a2a6e37f184dba6666',
-    name: 'IRT',
-    filePath: 'c:123/123',
-    type: 'IRT标准库',
-    description: '这是6个测试',
-    generator: 'nice',
-    statistic: { a: '6' },
-    organism: ['胃', '肝'],
-    createDate: Date.now(),
-    lastModifiedDate: Date.now(),
-  },
-];
 
 /**
  * 添加节点
  *
- * @param fields
+ * @param values
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (values: FormValueType) => {
   const hide = message.loading('正在添加');
+  // eslint-disable-next-line no-console
   try {
-    await addRule({ ...fields });
+    await addRule({ ...values });
     hide();
     message.success('添加成功');
     return true;
@@ -126,35 +60,22 @@ const handleUpdate = async (fields: FormValueType) => {
  * 删除节点
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
-  const hide = message.loading('正在删除');
+const handleRemove = async (selectedRows: TableListItem[]) => {
   if (!selectedRows) return true;
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('Deleted successfully and will refresh soon');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Delete failed, please try again');
-    return false;
+  if (selectedRows.length === 0) {
+    message.error('请选择要删除的库');
+  } else {
+    try {
+      await removeRule({
+        libraryIds: selectedRows.map((row) => row.id),
+      });
+      message.success('删除成功，即将刷新');
+      return true;
+    } catch (error) {
+      message.error('删除失败，请重试');
+      return false;
+    }
   }
-};
-
-/**
- * 查看节点
- * @param id
- */
-let aa: TableListItem[];
-const handleDetail = async (entity: any) => {
-  const a = tableListDataSource.filter((value: Record<string, unknown>) => {
-    return value.id === entity.id;
-  });
-  aa = a;
-  console.log(aa);
-  return true;
 };
 
 const TableList: React.FC = () => {
@@ -165,12 +86,11 @@ const TableList: React.FC = () => {
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
-  const [detailModalVisible, handleDetailModalVisible] = useState<boolean>(false);
+  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<TableListItem>();
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
-
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '标准库名称',
@@ -180,9 +100,8 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              handleDetailModalVisible(true);
-              handleDetail(entity);
-              console.log(entity.id);
+              setCurrentRow(entity);
+              setShowDetail(true);
             }}
           >
             {dom}
@@ -214,7 +133,6 @@ const TableList: React.FC = () => {
         },
       },
       render: (dom) => {
-        // eslint-disable-next-line array-callback-return
         return <Tag>{dom}</Tag>;
       },
     },
@@ -222,7 +140,7 @@ const TableList: React.FC = () => {
       title: '描述信息',
       dataIndex: 'description',
       sorter: (a, b) => (a.description > b.description ? -1 : 1),
-      render: (dom, entity) => {
+      render: (dom) => {
         return <a>{dom}</a>;
       },
     },
@@ -231,7 +149,6 @@ const TableList: React.FC = () => {
       dataIndex: 'organism',
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
       render: (dom) => {
-        // eslint-disable-next-line array-callback-return
         return <Tag>{dom}</Tag>;
       },
     },
@@ -271,68 +188,57 @@ const TableList: React.FC = () => {
           </a>
         </Tooltip>,
         <Dropdown
-          key="Shuffle"
+          key="GeneratePseudopeptide"
           overlay={
             <Menu>
-              <Menu.Item key="1">算法1</Menu.Item>
-              <Menu.Item key="2">算法2</Menu.Item>
-              <Menu.Item key="3">算法3</Menu.Item>
+              <Menu.Item key="1">
+                <Tooltip placement="left" title={'生成伪肽段(Shuffle)'} key="Shuffle">
+                  <a
+                    key="Shuffle"
+                    onClick={() => {
+                      action?.startEditable?.(record.id);
+                    }}
+                  >
+                    <Icon
+                      style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                      icon="mdi:alpha-s-circle"
+                    />
+                  </a>
+                </Tooltip>
+              </Menu.Item>
+              <Menu.Item key="2">
+                <Tooltip placement="left" title={'生成伪肽段(Nico)'} key="Nico">
+                  <a
+                    key="Nico"
+                    onClick={() => {
+                      action?.startEditable?.(record.id);
+                    }}
+                  >
+                    <Icon
+                      style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                      icon="mdi:alpha-n-circle"
+                    />
+                  </a>
+                </Tooltip>
+              </Menu.Item>
             </Menu>
           }
         >
-          <Tooltip title={'生成伪肽段（Shuffle）'} key="Shuffle">
-            <a
-              key="Shuffle"
-              onClick={() => {
-                action?.startEditable?.(record.id);
-              }}
-            >
-              <Icon
-                style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-                icon="mdi:alpha-s-circle"
-              />
-            </a>
-          </Tooltip>
-        </Dropdown>,
-        <Dropdown
-          key="Nico"
-          overlay={
-            <Menu>
-              <Menu.Item key="1">算法1</Menu.Item>
-              <Menu.Item key="2">算法2</Menu.Item>
-              <Menu.Item key="3">算法3</Menu.Item>
-            </Menu>
-          }
-        >
-          <Tooltip title={'生成伪肽段（Nico）'} key="Nico">
-            <a
-              key="Nico"
-              onClick={() => {
-                action?.startEditable?.(record.id);
-              }}
-            >
-              <Icon
-                style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-                icon="mdi:alpha-n-circle"
-              />
-            </a>
+          <Tooltip title={'生成伪肽段'} key="GeneratePseudopeptide">
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+              icon="mdi:alpha-p-box"
+            />
           </Tooltip>
         </Dropdown>,
         <TableDropdown
           key="TableDropdown"
-          onSelect={(e) => {
-            if (e === '96') {
-              console.log('我是查看结果');
-            }
-            if (e === '97') {
-              console.log('我是导出');
-            }
-          }}
+          onSelect={() => {}}
           menus={[
             {
               key: 'menus1',
               name: (
-                <Tooltip title={'重新统计蛋白质与肽段的数目'} key="statistics">
+                <Tooltip placement="left" title={'重新统计蛋白质与肽段的数目'} key="statistics">
                   <a
                     key="statistics"
                     onClick={() => {
@@ -350,11 +256,13 @@ const TableList: React.FC = () => {
             {
               key: 'menus2',
               name: (
-                <Tooltip title={'删除'} key="delete">
+                <Tooltip placement="left" title={'删除'} key="delete">
                   <a
                     key="delete"
-                    onClick={() => {
-                      action?.startEditable?.(record.id);
+                    onClick={async () => {
+                      handleDeleteModalVisible(true);
+                      // setSelectedRows([]);
+                      // actionRef.current?.reloadAndRest?.();
                     }}
                   >
                     <Icon
@@ -374,7 +282,7 @@ const TableList: React.FC = () => {
     <PageContainer>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle={''}
+        headerTitle=""
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -392,8 +300,8 @@ const TableList: React.FC = () => {
             创建库
           </Button>,
         ]}
-        // request={rule}
-        dataSource={tableListDataSource}
+        request={libraryList}
+        // dataSource={tableListDataSource}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -416,15 +324,28 @@ const TableList: React.FC = () => {
               项 &nbsp;&nbsp;
             </div>
           }
-        ></FooterToolbar>
+        >
+          <Button
+            type="primary"
+            danger
+            onClick={async () => {
+              handleDeleteModalVisible(true);
+              // await handleRemove(selectedRowsState);
+              // // setSelectedRows([]);
+              // actionRef.current?.reloadAndRest?.();
+            }}
+          >
+            批量删除
+          </Button>
+        </FooterToolbar>
       )}
       {/* 新建列表 */}
       <CreateForm
         onCancel={{
           onCancel: () => handleModalVisible(false),
         }}
-        onSubmit={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+        onSubmit={async (value: FormValueType) => {
+          const success = await handleAdd(value as FormValueType);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -436,31 +357,37 @@ const TableList: React.FC = () => {
         values={currentRow || {}}
       />
       {/* 列表详情 */}
-      <DetailForm
-        dataSource={aa}
-        onCancel={{
-          onClose: () => handleDetailModalVisible(false),
+      <Drawer
+        width={800}
+        visible={showDetail}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
         }}
-        onSubmit={async (value) => {
-          const success = await handleDetail(value);
-          if (success) {
-            handleDetailModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        detailModalVisible={detailModalVisible}
-        values={currentRow || {}}
-      />
+        closable={false}
+      >
+        {currentRow?.name && (
+          <ProDescriptions<TableListItem>
+            column={2}
+            title={currentRow?.name}
+            request={async () => ({
+              data: currentRow || {},
+            })}
+            params={{
+              id: currentRow?.name,
+            }}
+            columns={columns as ProDescriptionsItemProps<TableListItem>[]}
+          />
+        )}
+      </Drawer>
       {/* 编辑列表 */}
       <UpdateForm
         onCancel={{
           onCancel: () => handleUpdateModalVisible(false),
         }}
-        onSubmit={async (value) => {
-          handleUpdateModalVisible(false);
-          const success = await handleUpdate(value);
+        onSubmit={async (values) => {
+          // handleUpdateModalVisible(false);
+          const success = await handleUpdate(values);
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -477,9 +404,9 @@ const TableList: React.FC = () => {
         onCancel={{
           onCancel: () => handleDeleteModalVisible(false),
         }}
-        onSubmit={async (value) => {
-          handleDeleteModalVisible(false);
-          const success = await handleRemove(value);
+        onSubmit={async () => {
+          // handleDeleteModalVisible(false);
+          const success = await handleRemove(selectedRowsState);
           if (success) {
             handleDeleteModalVisible(false);
             setCurrentRow(undefined);

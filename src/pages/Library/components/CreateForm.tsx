@@ -25,15 +25,15 @@ const uploadConfig = {
 export type FormValueType = {
   name?: string;
   type?: string;
-  file?: string;
+  filePath?: string;
   description?: string;
-} & Partial<API.RuleListItem>;
+};
 
 export type CreateFormProps = {
   onSubmit: (values: FormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
   createModalVisible: boolean;
-  values: Partial<API.RuleListItem>;
+  values: Partial<any>;
 };
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
@@ -44,6 +44,29 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       visible={props.createModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
+      submitter={{
+        searchConfig: {
+          resetText: '重置',
+          submitText: '提交',
+        },
+        resetButtonProps: {
+          style: {
+            display: 'none',
+          },
+        },
+        submitButtonProps: {},
+
+        render: (prop) => {
+          return [
+            <Button danger key="rest" onClick={() => prop.form?.resetFields()}>
+              重置
+            </Button>,
+            <Button type="primary" key="submit" onClick={() => prop.form?.submit?.()}>
+              提交
+            </Button>,
+          ];
+        },
+      }}
     >
       <Tabs defaultActiveKey="1">
         <TabPane tab="手动上传" key="1">
@@ -70,12 +93,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               ]}
               options={[
                 {
-                  value: 'DIA_SWATH',
-                  label: 'DIA_SWATH',
+                  value: 'INS',
+                  label: '内标库',
                 },
                 {
-                  value: 'PRM',
-                  label: 'PRM',
+                  value: 'ANA',
+                  label: '标准库',
                 },
               ]}
               width="sm"
@@ -83,7 +106,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               label="库类型"
             />
           </ProForm.Group>
-          <ProFormUploadDragger max={1} label="上传文件" name="upload" {...uploadConfig} />
+          <ProFormUploadDragger
+            max={1}
+            label="上传文件"
+            name="filePath"
+            {...uploadConfig}
+            accept=".txt,.tsv,.csv,.xls,.xlsx"
+          />
           <ProFormTextArea label="详情描述" name="description" />
         </TabPane>
         <TabPane tab="自动导入" key="2">
@@ -111,12 +140,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                 ]}
                 options={[
                   {
-                    value: 'DIA_SWATH',
-                    label: 'DIA_SWATH',
+                    value: 'INS',
+                    label: '内标库',
                   },
                   {
-                    value: 'PRM',
-                    label: 'PRM',
+                    value: 'ANA',
+                    label: '标准库',
                   },
                 ]}
                 width="sm"

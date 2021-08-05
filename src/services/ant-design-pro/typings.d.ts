@@ -35,6 +35,7 @@ declare namespace API {
   };
 
   type RuleListItem = {
+    id?: string;
     key?: number;
     disabled?: boolean;
     href?: string;

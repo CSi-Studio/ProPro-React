@@ -10,7 +10,7 @@ export type FormValueType = {
 } & Partial<API.RuleListItem>;
 
 export type DeleteFormProps = {
-  onSubmit: (values: FormValueType) => Promise<void>;
+  onSubmit: () => Promise<void>;
   onCancel: Record<string, () => void>;
   deleteModalVisible: boolean;
   values: Partial<API.RuleListItem>;
@@ -29,7 +29,18 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
         <div style={{ marginTop: '24px' }}>
           请输入"<strong>我确认删除</strong>"来删除该标准库
         </div>
-        <ProFormText width="sm" name="name" placeholder="我确认删除" />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              pattern: new RegExp(/^[\u4e00-\u9fa5]{5}$/),
+              message: '请输入我确认删除',
+            },
+          ]}
+          width="sm"
+          name="name"
+          placeholder="我确认删除"
+        />
       </Space>
     </ModalForm>
   );

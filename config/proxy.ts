@@ -11,7 +11,8 @@ export default {
     '/api': {
       // target: 'https://preview.pro.ant.design',
       // target: 'http://192.168.1.110:8970/lims/',
-      target: 'http://192.168.1.121:8080/propro/',
+      // target: 'http://192.168.1.121:8080/propro/',
+      target: 'http://localhost:8080/propro/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },
