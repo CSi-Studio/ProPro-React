@@ -71,12 +71,6 @@ export default [
     redirect: '/welcome',
   },
   {
-    name: 'test',
-    icon: 'smile',
-    path: '/listtablelist',
-    component: './ListTableList',
-  },
-  {
     component: './404',
   },
 ];

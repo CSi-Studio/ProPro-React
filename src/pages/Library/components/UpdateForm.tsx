@@ -18,11 +18,13 @@ export type UpdateFormProps = {
   onCancel: Record<string, () => void>;
   updateModalVisible: boolean;
   values: Partial<API.RuleListItem>;
+  form: any;
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <ModalForm
+      form={props.form}
       title="更新标准库"
       width={530}
       visible={props.updateModalVisible}

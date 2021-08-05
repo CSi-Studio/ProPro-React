@@ -1,11 +1,8 @@
-/* eslint-disable no-console */
-import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
-import { Button, Drawer, Dropdown, Menu, message, Tag, Tooltip } from 'antd';
+import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { libraryList, addList, cloneList, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import { EditFilled, CopyFilled } from '@ant-design/icons';
 import { TableDropdown } from '@ant-design/pro-table';
 import type { addFormValueType } from './components/CreateForm';
@@ -19,6 +16,7 @@ import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
+import DetailForm from './components/DetailForm';
 
 /**
  * 添加库
@@ -61,8 +59,6 @@ const handleClone = async (values: cloneFormValueType) => {
 const handleUpdate = async (values: updateFormValueType) => {
   const hide = message.loading('正在更新');
   try {
-    console.log(values);
-
     await updateList({ ...values });
     hide();
     message.success('编辑成功');
@@ -80,8 +76,6 @@ const handleUpdate = async (values: updateFormValueType) => {
 const handleRemove = async (currentRow: TableListItem | undefined) => {
   if (!currentRow) return true;
   try {
-    console.log(currentRow);
-
     await removeList({
       libraryIds: currentRow.id,
     });
@@ -94,6 +88,11 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
 };
 
 const TableList: React.FC = () => {
+  const [form] = Form.useForm();
+  /** 全局弹窗 */
+  // const [popup, setPopup] = useState<boolean>(false);
+  /** 全选 */
+  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -103,7 +102,6 @@ const TableList: React.FC = () => {
   /** 克隆窗口的弹窗 */
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
 
   const actionRef = useRef<ActionType>();
@@ -117,10 +115,9 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              console.log(entity);
-
               setCurrentRow(entity);
               setShowDetail(true);
+              // setPopup(true);
             }}
           >
             {dom}
@@ -176,45 +173,21 @@ const TableList: React.FC = () => {
       dataIndex: 'Protein_Count',
       sorter: (a, b) => (a?.statistic?.Protein_Count > b?.statistic?.Protein_Count ? -1 : 1),
       render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              console.log(entity);
-            }}
-          >
-            {entity?.statistic?.Protein_Count}
-          </a>
-        );
+        return <a onClick={() => {}}>{entity?.statistic?.Protein_Count}</a>;
       },
     },
     {
       title: '肽段数目',
       dataIndex: 'Peptide_Count',
       render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              console.log(entity);
-            }}
-          >
-            {entity?.statistic?.Peptide_Count}
-          </a>
-        );
+        return <a onClick={() => {}}>{entity?.statistic?.Peptide_Count}</a>;
       },
     },
     {
       title: '碎片数目',
       dataIndex: 'Fragment_Count',
       render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              console.log(entity?.statistic?.Fragment_Count);
-            }}
-          >
-            {entity?.statistic?.Fragment_Count}
-          </a>
-        );
+        return <a onClick={() => {}}>{entity?.statistic?.Fragment_Count}</a>;
       },
     },
     {
@@ -234,8 +207,10 @@ const TableList: React.FC = () => {
         <Tooltip title={'编辑'} key="edit">
           <a
             onClick={() => {
+              form?.resetFields();
               handleUpdateModalVisible(true);
               setCurrentRow(record);
+              // setPopup(true);
             }}
             key="edit"
           >
@@ -246,8 +221,10 @@ const TableList: React.FC = () => {
           <a
             key="copy"
             onClick={() => {
+              form?.resetFields();
               handleCloneModalVisible(true);
               setCurrentRow(record);
+              // setPopup(true);
             }}
           >
             <CopyFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
@@ -263,6 +240,7 @@ const TableList: React.FC = () => {
                     key="Shuffle"
                     onClick={() => {
                       setCurrentRow(record);
+                      // setPopup(true);
                     }}
                   >
                     <Icon
@@ -278,6 +256,7 @@ const TableList: React.FC = () => {
                     key="Nico"
                     onClick={() => {
                       setCurrentRow(record);
+                      // setPopup(true);
                     }}
                   >
                     <Icon
@@ -309,6 +288,7 @@ const TableList: React.FC = () => {
                     key="statistics"
                     onClick={() => {
                       setCurrentRow(record);
+                      // setPopup(true);
                     }}
                   >
                     <Icon
@@ -326,8 +306,10 @@ const TableList: React.FC = () => {
                   <a
                     key="delete"
                     onClick={async () => {
+                      form?.resetFields();
                       handleDeleteModalVisible(true);
                       setCurrentRow(record);
+                      // setPopup(true);
                     }}
                   >
                     <Icon
@@ -358,7 +340,9 @@ const TableList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
+              form?.resetFields();
               handleModalVisible(true);
+              // setPopup(true);
             }}
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
@@ -368,17 +352,25 @@ const TableList: React.FC = () => {
         request={libraryList}
         // dataSource={tableListDataSource}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
+        rowSelection={
+          {
+            // onChange: (_, selectedRows) => {
+            // setSelectedRows(selectedRows);
+            // },
+          }
+        }
       />
 
       {/* 新建列表 */}
+      {/* {popup ? ( */}
       <CreateForm
+        form={form}
         onCancel={{
-          onCancel: () => handleModalVisible(false),
+          onCancel: () => {
+            handleModalVisible(false);
+            // setPopup(false);
+            form?.resetFields();
+          },
         }}
         onSubmit={async (value: addFormValueType) => {
           const success = await handleAdd(value as addFormValueType);
@@ -392,41 +384,37 @@ const TableList: React.FC = () => {
         createModalVisible={createModalVisible}
         values={currentRow || {}}
       />
+      {/* ) : null} */}
+
       {/* 列表详情 */}
-      <Drawer
-        width={800}
-        visible={showDetail}
+      {/* {popup ? ( */}
+      <DetailForm
+        showDetail={showDetail}
+        currentRow={currentRow}
+        columns={columns}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
+          form?.resetFields();
+          // setPopup(false);
         }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<TableListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<TableListItem>[]}
-          />
-        )}
-      </Drawer>
+      />
+      {/* ) : null} */}
+
       {/* 编辑列表 */}
       <UpdateForm
+        form={form}
         onCancel={{
           onCancel: () => {
             handleUpdateModalVisible(false);
-
             setCurrentRow(undefined);
+            // setPopup(false);
+            form?.resetFields();
           },
         }}
         onSubmit={async (values) => {
-          values.id = currentRow?.id;
+          // eslint-disable-next-line no-param-reassign
+          values.id = currentRow?.id as string;
           const success = await handleUpdate(values);
           if (success) {
             handleUpdateModalVisible(false);
@@ -439,12 +427,17 @@ const TableList: React.FC = () => {
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
       />
+
       {/* 删除列表 */}
+      {/* {popup ? ( */}
       <DeleteForm
+        form={form}
         onCancel={{
           onCancel: () => {
             handleDeleteModalVisible(false);
             setCurrentRow(undefined);
+            form?.resetFields();
+            // setPopup(false);
           },
         }}
         onSubmit={async () => {
@@ -461,16 +454,22 @@ const TableList: React.FC = () => {
         deleteModalVisible={deleteModalVisible}
         values={currentRow || {}}
       />
+      {/* ) : null} */}
+
       {/* 克隆列表 */}
+      {/* {popup ? ( */}
       <CloneForm
+        form={form}
         onCancel={{
           onCancel: () => {
             handleCloneModalVisible(false);
             setCurrentRow(undefined);
+            form?.resetFields();
+            // setPopup(false);
           },
         }}
         onSubmit={async (params) => {
-          const p: { id?: string; newLibName: string; includeDecoy?: boolean } = {
+          const p: { id: any; newLibName: string; includeDecoy?: boolean } = {
             id: '',
             newLibName: '',
             includeDecoy: false,
@@ -478,7 +477,6 @@ const TableList: React.FC = () => {
           p.id = currentRow?.id;
           p.newLibName = params.newLibName;
           p.includeDecoy = params.includeDecoy;
-          console.log(p);
 
           const success = await handleClone(p);
           if (success) {
@@ -492,6 +490,7 @@ const TableList: React.FC = () => {
         cloneModalVisible={cloneModalVisible}
         values={currentRow || {}}
       />
+      {/* ) : null} */}
     </PageContainer>
   );
 };

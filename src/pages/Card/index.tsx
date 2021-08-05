@@ -1,47 +1,40 @@
-import { useState } from 'react';
-import ProCard, { StatisticCard } from '@ant-design/pro-card';
-import RcResizeObserver from 'rc-resize-observer';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import React from 'react';
+import ReactECharts from 'echarts-for-react';
 
-const { Statistic } = StatisticCard;
+const Page: React.FC = () => {
+  const option = {
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: false,
+        data: [
+          '0-20',
+          '20-40',
+          '40-60',
+          '60-80',
+          '80-100',
+          '100-120',
+          '120-140',
+          '140-160',
+          '160-180',
+          '180-200',
+        ],
+      },
+    ],
+    yAxis: [
+      {
+        type: 'value',
+      },
+    ],
+    series: [
+      {
+        type: 'line',
+        data: [6808, 7354, 7330, 6112, 4463, 2698, 817, 2, 0, 0],
+      },
+    ],
+  };
 
-export default () => {
-  const [responsive, setResponsive] = useState(false);
-
-  return (
-    <PageContainer>
-      <RcResizeObserver
-        key="resize-observer"
-        onResize={(offset) => {
-          setResponsive(offset.width < 596);
-        }}
-      >
-        <ProCard split={responsive ? 'horizontal' : 'vertical'}>
-          <StatisticCard
-            colSpan={responsive ? 24 : 6}
-            title="肽段"
-            statistic={{
-              value: 82.6,
-              suffix: '亿',
-              description: <Statistic title="日同比" value="6.47%" trend="up" />,
-            }}
-            chart={
-              <img
-                src="https://gw.alipayobjects.com/zos/alicdn/PmKfn4qvD/mubiaowancheng-lan.svg"
-                alt="进度条"
-                width="100%"
-              />
-            }
-            footer={
-              <>
-                <Statistic value="70.98%" title="财年业绩完成率" layout="horizontal" />
-                <Statistic value="86.98%" title="去年同期业绩完成率" layout="horizontal" />
-                <Statistic value="88.98%" title="前年同期业绩完成率" layout="horizontal" />
-              </>
-            }
-          />
-        </ProCard>
-      </RcResizeObserver>
-    </PageContainer>
-  );
+  return <ReactECharts option={option} style={{ height: 400 }} />;
 };
+
+export default Page;

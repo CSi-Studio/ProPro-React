@@ -34,11 +34,13 @@ export type CreateFormProps = {
   onCancel: Record<string, () => void>;
   createModalVisible: boolean;
   values: Partial<any>;
+  form: any;
 };
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
   return (
     <ModalForm
+      form={props.form}
       title="创建一个库"
       width={530}
       visible={props.createModalVisible}

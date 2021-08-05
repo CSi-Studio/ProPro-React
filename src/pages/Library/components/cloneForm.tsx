@@ -3,7 +3,7 @@ import { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
 import { Button } from 'antd';
 
 export type cloneFormValueType = {
-  id: string;
+  id: any;
   newLibName: string;
   includeDecoy?: boolean;
 };
@@ -13,11 +13,13 @@ export type CloneFormProps = {
   onCancel: Record<string, () => void>;
   cloneModalVisible: boolean;
   values: Partial<any>;
+  form: any;
 };
 
 const CloneForm: React.FC<CloneFormProps> = (props) => {
   return (
     <ModalForm
+      form={props.form}
       title="克隆一个库"
       width={400}
       visible={props.cloneModalVisible}

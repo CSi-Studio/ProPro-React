@@ -14,11 +14,13 @@ export type DeleteFormProps = {
   onCancel: Record<string, () => void>;
   deleteModalVisible: boolean;
   values: Partial<API.RuleListItem>;
+  form: any;
 };
 
 const DeleteForm: React.FC<DeleteFormProps> = (props) => {
   return (
     <ModalForm
+      form={props.form}
       title="你确定要删除吗？"
       width={530}
       visible={props.deleteModalVisible}

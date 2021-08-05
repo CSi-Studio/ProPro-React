@@ -37,11 +37,7 @@ export async function updateList(body: { name?: any; id: string; type?: any; des
 }
 
 /** 克隆库 GET library/remove  */
-export async function cloneList(params: {
-  id: string;
-  newLibName: string;
-  includeDecoy?: boolean;
-}) {
+export async function cloneList(params: { id: any; newLibName: string; includeDecoy?: boolean }) {
   return request('/api/library/clone', {
     method: 'GET',
     params: {

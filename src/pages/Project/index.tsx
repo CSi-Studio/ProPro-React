@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Icon } from '@iconify/react';
 import { Button, message, Tag, Tooltip } from 'antd';
 import React, { useState, useRef } from 'react';
@@ -13,9 +12,9 @@ import ProForm, {
   ProFormSelect,
 } from '@ant-design/pro-form';
 import { useIntl, FormattedMessage } from 'umi';
-import { rule, addRule, updateRule, removeRule } from './service';
+import { rule, addRule } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import deleteForm from './components/DeleteForm';
+// import deleteForm from './components/DeleteForm';
 
 /**
  * 添加节点
@@ -41,7 +40,7 @@ const TableList: React.FC = () => {
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
-  const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
+  // const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
@@ -76,7 +75,7 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id="label_project_name" defaultMessage="项目名称" />,
       dataIndex: 'name',
       sorter: true,
-      render: (dom, entity) => {
+      render: (dom) => {
         return <a>{dom}</a>;
       },
     },
@@ -164,7 +163,7 @@ const TableList: React.FC = () => {
             }
             if (e === '98') {
               console.log('我是删除');
-              handleDeleteModalVisible(true);
+              // handleDeleteModalVisible(true);
             }
           }}
           menus={[
