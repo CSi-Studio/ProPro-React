@@ -311,7 +311,7 @@ const TableList: React.FC = () => {
       />
 
       {/* 新建列表 */}
-      <CreateForm1
+      <CreateForm
         onCancel={{
           onCancel: () => handleModalVisible(false),
         }}
