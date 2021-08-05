@@ -1,5 +1,4 @@
 export type TableListItem = {
-  key?: number;
   id: string;
   name: string;
   filePath: string;

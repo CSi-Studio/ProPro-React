@@ -22,7 +22,7 @@ const uploadConfig = {
   },
 };
 
-export type FormValueType = {
+export type addFormValueType = {
   name?: string;
   type?: string;
   filePath?: string;
@@ -30,7 +30,7 @@ export type FormValueType = {
 };
 
 export type CreateFormProps = {
-  onSubmit: (values: FormValueType) => Promise<void>;
+  onSubmit: (values: addFormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
   createModalVisible: boolean;
   values: Partial<any>;

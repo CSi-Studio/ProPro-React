@@ -4,18 +4,17 @@ import ProForm, {
   ProFormText,
   ProFormTextArea,
   ModalForm,
-  ProFormUploadDragger,
 } from '@ant-design/pro-form';
 
-export type FormValueType = {
+export type updateFormValueType = {
   name?: string;
-  type?: string;
-  file?: string;
+  type?: boolean;
   description?: string;
+  id: string;
 } & Partial<API.RuleListItem>;
 
 export type UpdateFormProps = {
-  onSubmit: (values: FormValueType) => Promise<void>;
+  onSubmit: (values: updateFormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
   updateModalVisible: boolean;
   values: Partial<API.RuleListItem>;
@@ -32,6 +31,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     >
       <ProForm.Group>
         <ProFormText
+          initialValue={props.values.name}
           width="sm"
           name="name"
           label="库名称"
@@ -41,11 +41,11 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <ProFormSelect
           options={[
             {
-              value: 'irtLibrary',
-              label: 'iRT校准库',
+              value: 'INS',
+              label: '内标库',
             },
             {
-              value: 'Library',
+              value: 'ANA',
               label: '标准库',
             },
           ]}
@@ -54,7 +54,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           label="库类型"
         />
       </ProForm.Group>
-      <ProFormUploadDragger max={1} label="上传文件" name="upload" {...props} />
       <ProFormTextArea label="详情描述" name="description" />
     </ModalForm>
   );

@@ -71,7 +71,7 @@ export default [
     redirect: '/welcome',
   },
   {
-    name: '查询表格',
+    name: 'test',
     icon: 'smile',
     path: '/listtablelist',
     component: './ListTableList',

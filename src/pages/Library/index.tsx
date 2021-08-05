@@ -1,31 +1,33 @@
+/* eslint-disable no-console */
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { Button, Drawer, Dropdown, Menu, message, Tag, Tooltip } from 'antd';
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { libraryList, addRule, updateRule, removeRule } from './service';
+import { libraryList, addList, cloneList, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import type { FormValueType } from './components/UpdateForm';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { EditFilled, CopyFilled } from '@ant-design/icons';
 import { TableDropdown } from '@ant-design/pro-table';
+import type { addFormValueType } from './components/CreateForm';
 import CreateForm from './components/CreateForm';
+import type { updateFormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import DeleteForm from './components/DeleteForm';
+import type { cloneFormValueType } from './components/cloneForm';
+import CloneForm from './components/cloneForm';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
 
 /**
- * 添加节点
- *
+ * 添加库
  * @param values
  */
-const handleAdd = async (values: FormValueType) => {
+const handleAdd = async (values: addFormValueType) => {
   const hide = message.loading('正在添加');
-  // eslint-disable-next-line no-console
   try {
-    await addRule({ ...values });
+    await addList({ ...values });
     hide();
     message.success('添加成功');
     return true;
@@ -36,45 +38,58 @@ const handleAdd = async (values: FormValueType) => {
   }
 };
 /**
- * 更新节点
- * @param fields
+ * 克隆库
+ * @param values
  */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('editing');
+const handleClone = async (values: cloneFormValueType) => {
+  const hide = message.loading('正在添加');
   try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
+    await cloneList(values);
     hide();
-    message.success('Configuration is successful');
+    message.success('添加成功');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('添加失败，请重试！');
     return false;
   }
 };
 /**
- * 删除节点
- * @param selectedRows
+ * 更新库
+ * @param values
  */
-const handleRemove = async (selectedRows: TableListItem[]) => {
-  if (!selectedRows) return true;
-  if (selectedRows.length === 0) {
-    message.error('请选择要删除的库');
-  } else {
-    try {
-      await removeRule({
-        libraryIds: selectedRows.map((row) => row.id),
-      });
-      message.success('删除成功，即将刷新');
-      return true;
-    } catch (error) {
-      message.error('删除失败，请重试');
-      return false;
-    }
+const handleUpdate = async (values: updateFormValueType) => {
+  const hide = message.loading('正在更新');
+  try {
+    console.log(values);
+
+    await updateList({ ...values });
+    hide();
+    message.success('编辑成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('编辑失败，请重试!');
+    return false;
+  }
+};
+/**
+ * 删除库
+ * @param currentRow
+ */
+const handleRemove = async (currentRow: TableListItem | undefined) => {
+  if (!currentRow) return true;
+  try {
+    console.log(currentRow);
+
+    await removeList({
+      libraryIds: currentRow.id,
+    });
+    message.success('删除成功，即将刷新');
+    return true;
+  } catch (error) {
+    message.error('删除失败，请重试');
+    return false;
   }
 };
 
@@ -85,8 +100,10 @@ const TableList: React.FC = () => {
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** 克隆窗口的弹窗 */
+  const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
 
   const actionRef = useRef<ActionType>();
@@ -100,6 +117,8 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
+              console.log(entity);
+
               setCurrentRow(entity);
               setShowDetail(true);
             }}
@@ -119,7 +138,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: 'Generator',
+      title: '伪肽段生成算法',
       dataIndex: 'generator',
       sorter: (a, b) => (a.generator > b.generator ? -1 : 1),
       filters: true,
@@ -145,11 +164,57 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '有机生物',
+      title: '有机物种',
       dataIndex: 'organism',
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
       render: (dom) => {
         return <Tag>{dom}</Tag>;
+      },
+    },
+    {
+      title: '蛋白质数目',
+      dataIndex: 'Protein_Count',
+      sorter: (a, b) => (a?.statistic?.Protein_Count > b?.statistic?.Protein_Count ? -1 : 1),
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              console.log(entity);
+            }}
+          >
+            {entity?.statistic?.Protein_Count}
+          </a>
+        );
+      },
+    },
+    {
+      title: '肽段数目',
+      dataIndex: 'Peptide_Count',
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              console.log(entity);
+            }}
+          >
+            {entity?.statistic?.Peptide_Count}
+          </a>
+        );
+      },
+    },
+    {
+      title: '碎片数目',
+      dataIndex: 'Fragment_Count',
+      render: (dom, entity) => {
+        return (
+          <a
+            onClick={() => {
+              console.log(entity?.statistic?.Fragment_Count);
+            }}
+          >
+            {entity?.statistic?.Fragment_Count}
+          </a>
+        );
       },
     },
     {
@@ -165,7 +230,7 @@ const TableList: React.FC = () => {
       width: 100,
       ellipsis: true,
       fixed: 'right',
-      render: (text, record, index, action) => [
+      render: (text, record) => [
         <Tooltip title={'编辑'} key="edit">
           <a
             onClick={() => {
@@ -177,11 +242,12 @@ const TableList: React.FC = () => {
             <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
           </a>
         </Tooltip>,
-        <Tooltip title={'复制'} key="copy">
+        <Tooltip title={'克隆'} key="copy">
           <a
             key="copy"
             onClick={() => {
-              action?.startEditable?.(record.id);
+              handleCloneModalVisible(true);
+              setCurrentRow(record);
             }}
           >
             <CopyFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
@@ -196,7 +262,7 @@ const TableList: React.FC = () => {
                   <a
                     key="Shuffle"
                     onClick={() => {
-                      action?.startEditable?.(record.id);
+                      setCurrentRow(record);
                     }}
                   >
                     <Icon
@@ -211,7 +277,7 @@ const TableList: React.FC = () => {
                   <a
                     key="Nico"
                     onClick={() => {
-                      action?.startEditable?.(record.id);
+                      setCurrentRow(record);
                     }}
                   >
                     <Icon
@@ -242,7 +308,7 @@ const TableList: React.FC = () => {
                   <a
                     key="statistics"
                     onClick={() => {
-                      action?.startEditable?.(record.id);
+                      setCurrentRow(record);
                     }}
                   >
                     <Icon
@@ -261,8 +327,7 @@ const TableList: React.FC = () => {
                     key="delete"
                     onClick={async () => {
                       handleDeleteModalVisible(true);
-                      // setSelectedRows([]);
-                      // actionRef.current?.reloadAndRest?.();
+                      setCurrentRow(record);
                     }}
                   >
                     <Icon
@@ -315,8 +380,8 @@ const TableList: React.FC = () => {
         onCancel={{
           onCancel: () => handleModalVisible(false),
         }}
-        onSubmit={async (value: FormValueType) => {
-          const success = await handleAdd(value as FormValueType);
+        onSubmit={async (value: addFormValueType) => {
+          const success = await handleAdd(value as addFormValueType);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -354,10 +419,14 @@ const TableList: React.FC = () => {
       {/* 编辑列表 */}
       <UpdateForm
         onCancel={{
-          onCancel: () => handleUpdateModalVisible(false),
+          onCancel: () => {
+            handleUpdateModalVisible(false);
+
+            setCurrentRow(undefined);
+          },
         }}
         onSubmit={async (values) => {
-          // handleUpdateModalVisible(false);
+          values.id = currentRow?.id;
           const success = await handleUpdate(values);
           if (success) {
             handleUpdateModalVisible(false);
@@ -373,11 +442,14 @@ const TableList: React.FC = () => {
       {/* 删除列表 */}
       <DeleteForm
         onCancel={{
-          onCancel: () => handleDeleteModalVisible(false),
+          onCancel: () => {
+            handleDeleteModalVisible(false);
+            setCurrentRow(undefined);
+          },
         }}
         onSubmit={async () => {
           // handleDeleteModalVisible(false);
-          const success = await handleRemove(selectedRowsState);
+          const success = await handleRemove(currentRow);
           if (success) {
             handleDeleteModalVisible(false);
             setCurrentRow(undefined);
@@ -387,6 +459,37 @@ const TableList: React.FC = () => {
           }
         }}
         deleteModalVisible={deleteModalVisible}
+        values={currentRow || {}}
+      />
+      {/* 克隆列表 */}
+      <CloneForm
+        onCancel={{
+          onCancel: () => {
+            handleCloneModalVisible(false);
+            setCurrentRow(undefined);
+          },
+        }}
+        onSubmit={async (params) => {
+          const p: { id?: string; newLibName: string; includeDecoy?: boolean } = {
+            id: '',
+            newLibName: '',
+            includeDecoy: false,
+          };
+          p.id = currentRow?.id;
+          p.newLibName = params.newLibName;
+          p.includeDecoy = params.includeDecoy;
+          console.log(p);
+
+          const success = await handleClone(p);
+          if (success) {
+            handleCloneModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        cloneModalVisible={cloneModalVisible}
         values={currentRow || {}}
       />
     </PageContainer>
