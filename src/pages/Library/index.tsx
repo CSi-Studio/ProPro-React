@@ -309,38 +309,9 @@ const TableList: React.FC = () => {
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              项 &nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            type="primary"
-            danger
-            onClick={async () => {
-              handleDeleteModalVisible(true);
-              // await handleRemove(selectedRowsState);
-              // // setSelectedRows([]);
-              // actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
+
       {/* 新建列表 */}
-      <CreateForm
+      <CreateForm1
         onCancel={{
           onCancel: () => handleModalVisible(false),
         }}

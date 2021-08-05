@@ -33,7 +33,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
           rules={[
             {
               required: true,
-              pattern: new RegExp(/^[\u4e00-\u9fa5]{5}$/),
+              pattern: new RegExp(/^([我]{0,1}[确]{0,1}[认]{0,1}[删]{0,1}[除]{0,1}){5}$/u),
               message: '请输入我确认删除',
             },
           ]}
