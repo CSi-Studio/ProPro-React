@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import { Drawer } from 'antd';
 import type { TableListItem } from '@/pages/Project/data';
@@ -14,25 +15,80 @@ export type UpdateFormProps = {
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
+  // const xAxisData = [];
+  // const data1 = [];
+  // const data2 = [];
+  // // eslint-disable-next-line no-plusplus
+  // for (let i = 0; i < 100; i++) {
+  //   xAxisData.push(`类目${i}`);
+  //   data1.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);
+  //   data2.push((Math.cos(i / 5) * (i / 5 - 10) + i / 6) * 5);
+  // }
+
   const option = {
+    title: {
+      text: 'Peptide_Dist',
+    },
+    legend: {
+      data: ['bar', 'bar2'],
+    },
+    toolbox: {
+      // y: 'bottom',
+      feature: {
+        magicType: {
+          type: ['stack', 'tiled'],
+        },
+        dataView: {},
+        saveAsImage: {
+          pixelRatio: 2,
+        },
+      },
+    },
+    tooltip: {},
     xAxis: [
       {
-        type: 'category',
-        boundaryGap: false,
-        data: props?.currentRow?.statistic?.Peptide_Dist_On_Mz_10?.x,
+        data: props?.currentRow?.statistic?.Peptide_Dist_On_RT_10?.x,
+        splitLine: {
+          show: false,
+        },
       },
-    ],
-    yAxis: [
       {
-        type: 'value',
+        data: props?.currentRow?.statistic?.Peptide_Dist_On_Mz_10?.x,
+        splitLine: {
+          show: false,
+        },
       },
     ],
+    yAxis: {},
     series: [
       {
-        type: 'line',
+        name: 'bar',
+        type: 'bar',
+        xAxisIndex: 1,
+        data: props?.currentRow?.statistic?.Peptide_Dist_On_RT_10?.y,
+        emphasis: {
+          focus: 'series',
+        },
+        animationDelay(idx: number) {
+          return idx * 10;
+        },
+      },
+      {
+        name: 'bar2',
+        type: 'bar',
         data: props?.currentRow?.statistic?.Peptide_Dist_On_Mz_10?.y,
+        emphasis: {
+          focus: 'series',
+        },
+        animationDelay(idx: number) {
+          return idx * 10 + 100;
+        },
       },
     ],
+    animationEasing: 'elasticOut',
+    animationDelayUpdate(idx: number) {
+      return idx * 5;
+    },
   };
   const option1 = {
     xAxis: [

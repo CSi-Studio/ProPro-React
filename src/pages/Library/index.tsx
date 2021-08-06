@@ -1,17 +1,18 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-console */
 import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { libraryList, addList, cloneList, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import { EditFilled, CopyFilled } from '@ant-design/icons';
-import { TableDropdown } from '@ant-design/pro-table';
 import type { addFormValueType } from './components/CreateForm';
 import CreateForm from './components/CreateForm';
 import type { updateFormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import DeleteForm from './components/DeleteForm';
-import type { cloneFormValueType } from './components/cloneForm';
-import CloneForm from './components/cloneForm';
+import type { cloneFormValueType } from './components/CloneForm';
+import CloneForm from './components/CloneForm';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
@@ -88,7 +89,10 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
 };
 
 const TableList: React.FC = () => {
-  const [form] = Form.useForm();
+  const [formCreate] = Form.useForm();
+  const [formUpdate] = Form.useForm();
+  const [formDelete] = Form.useForm();
+  const [formClone] = Form.useForm();
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
@@ -207,7 +211,7 @@ const TableList: React.FC = () => {
         <Tooltip title={'编辑'} key="edit">
           <a
             onClick={() => {
-              form?.resetFields();
+              formUpdate?.resetFields();
               handleUpdateModalVisible(true);
               setCurrentRow(record);
               // setPopup(true);
@@ -217,11 +221,11 @@ const TableList: React.FC = () => {
             <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
           </a>
         </Tooltip>,
-        <Tooltip title={'克隆'} key="copy">
+        <Tooltip title={'克隆'} key="clone">
           <a
-            key="copy"
+            key="clone"
             onClick={() => {
-              form?.resetFields();
+              formClone?.resetFields();
               handleCloneModalVisible(true);
               setCurrentRow(record);
               // setPopup(true);
@@ -231,11 +235,11 @@ const TableList: React.FC = () => {
           </a>
         </Tooltip>,
         <Dropdown
-          key="GeneratePseudopeptide"
+          key="generateDecoys"
           overlay={
             <Menu>
               <Menu.Item key="1">
-                <Tooltip placement="left" title={'生成伪肽段(Shuffle)'} key="Shuffle">
+                <Tooltip placement="left" title={'Shuffle方法'} key="Shuffle">
                   <a
                     key="Shuffle"
                     onClick={() => {
@@ -251,7 +255,7 @@ const TableList: React.FC = () => {
                 </Tooltip>
               </Menu.Item>
               <Menu.Item key="2">
-                <Tooltip placement="left" title={'生成伪肽段(Nico)'} key="Nico">
+                <Tooltip placement="left" title={'Nico方法'} key="Nico">
                   <a
                     key="Nico"
                     onClick={() => {
@@ -269,59 +273,103 @@ const TableList: React.FC = () => {
             </Menu>
           }
         >
-          <Tooltip title={'生成伪肽段'} key="GeneratePseudopeptide">
+          <Tooltip title={'生成伪肽段'} key="generateDecoys">
             <Icon
               style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
               icon="mdi:alpha-p-box"
             />
           </Tooltip>
         </Dropdown>,
-        <TableDropdown
-          key="TableDropdown"
-          onSelect={() => {}}
-          menus={[
-            {
-              key: 'menus1',
-              name: (
-                <Tooltip placement="left" title={'重新统计蛋白质与肽段的数目'} key="statistics">
-                  <a
-                    key="statistics"
-                    onClick={() => {
-                      setCurrentRow(record);
-                      // setPopup(true);
-                    }}
-                  >
-                    <Icon
-                      style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-                      icon="mdi:state-machine"
-                    />
-                  </a>
-                </Tooltip>
-              ),
-            },
-            {
-              key: 'menus2',
-              name: (
-                <Tooltip placement="left" title={'删除'} key="delete">
-                  <a
-                    key="delete"
-                    onClick={async () => {
-                      form?.resetFields();
-                      handleDeleteModalVisible(true);
-                      setCurrentRow(record);
-                      // setPopup(true);
-                    }}
-                  >
-                    <Icon
-                      style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-                      icon="mdi:delete"
-                    />
-                  </a>
-                </Tooltip>
-              ),
-            },
-          ]}
-        />,
+        <Tooltip placement="left" title={'生成基本信息'} key="statistics">
+          <a
+            key="statistics"
+            onClick={() => {
+              setCurrentRow(record);
+              // setPopup(true);
+            }}
+          >
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+              icon="mdi:file-chart"
+            />
+          </a>
+        </Tooltip>,
+        <Tooltip placement="left" title={'生成肽段重复率'} key="repeatCount">
+          <a
+            key="repeatCount"
+            onClick={() => {
+              setCurrentRow(record);
+              // setPopup(true);
+            }}
+          >
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+              icon="mdi:file-percent"
+            />
+          </a>
+        </Tooltip>,
+        <Tooltip placement="left" title={'删除'} key="delete">
+          <a
+            key="delete"
+            onClick={async () => {
+              formDelete?.resetFields();
+              handleDeleteModalVisible(true);
+              setCurrentRow(record);
+              // setPopup(true);
+            }}
+          >
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+              icon="mdi:delete"
+            />
+          </a>
+        </Tooltip>,
+        // <TableDropdown
+        //   key="TableDropdown"
+        //   onSelect={() => {}}
+        //   menus={[
+        //     {
+        //       key: 'menus1',
+        //       name: (
+        //         <Tooltip placement="left" title={'重新统计蛋白质与肽段的数目'} key="statistics">
+        //           <a
+        //             key="statistics"
+        //             onClick={() => {
+        //               setCurrentRow(record);
+        //               // setPopup(true);
+        //             }}
+        //           >
+        //             <Icon
+        //               style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+        //               icon="mdi:state-machine"
+        //             />
+        //           </a>
+        //         </Tooltip>
+        //       ),
+        //     },
+        //     {
+        //       key: 'menus2',
+        //       name: (
+        //         <Tooltip placement="left" title={'删除'} key="delete">
+        //           <a
+        //             key="delete"
+        //             onClick={async () => {
+        //               form?.resetFields();
+        //               handleDeleteModalVisible(true);
+        //               setCurrentRow(record);
+        //               // setPopup(true);
+        //             }}
+        //           >
+        //             <Icon
+        //               style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+        //               icon="mdi:delete"
+        //             />
+        //           </a>
+        //         </Tooltip>
+        //       ),
+        //     },
+        //   ]}
+        // />,
       ],
     },
   ];
@@ -340,7 +388,7 @@ const TableList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
-              form?.resetFields();
+              formCreate?.resetFields();
               handleModalVisible(true);
               // setPopup(true);
             }}
@@ -364,12 +412,12 @@ const TableList: React.FC = () => {
       {/* 新建列表 */}
       {/* {popup ? ( */}
       <CreateForm
-        form={form}
+        form={formCreate}
         onCancel={{
           onCancel: () => {
             handleModalVisible(false);
             // setPopup(false);
-            form?.resetFields();
+            formCreate?.resetFields();
           },
         }}
         onSubmit={async (value: addFormValueType) => {
@@ -395,7 +443,6 @@ const TableList: React.FC = () => {
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
-          form?.resetFields();
           // setPopup(false);
         }}
       />
@@ -403,19 +450,21 @@ const TableList: React.FC = () => {
 
       {/* 编辑列表 */}
       <UpdateForm
-        form={form}
+        form={formUpdate}
         onCancel={{
           onCancel: () => {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
             // setPopup(false);
-            form?.resetFields();
+            formUpdate?.resetFields();
           },
         }}
-        onSubmit={async (values) => {
+        onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
-          values.id = currentRow?.id as string;
-          const success = await handleUpdate(values);
+          value.id = currentRow?.id as string;
+          value.type = currentRow?.type;
+          value.description = currentRow?.description;
+          const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -431,24 +480,29 @@ const TableList: React.FC = () => {
       {/* 删除列表 */}
       {/* {popup ? ( */}
       <DeleteForm
-        form={form}
+        currentRow={currentRow}
+        form={formDelete}
         onCancel={{
           onCancel: () => {
             handleDeleteModalVisible(false);
             setCurrentRow(undefined);
-            form?.resetFields();
+            formDelete?.resetFields();
             // setPopup(false);
           },
         }}
-        onSubmit={async () => {
+        onSubmit={async (value) => {
           // handleDeleteModalVisible(false);
-          const success = await handleRemove(currentRow);
-          if (success) {
-            handleDeleteModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
+          if (value.name === currentRow?.name) {
+            const success = await handleRemove(currentRow);
+            if (success) {
+              handleDeleteModalVisible(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
             }
+          } else {
+            message.error('看来你还是不想删除');
           }
         }}
         deleteModalVisible={deleteModalVisible}
@@ -459,16 +513,18 @@ const TableList: React.FC = () => {
       {/* 克隆列表 */}
       {/* {popup ? ( */}
       <CloneForm
-        form={form}
+        form={formClone}
         onCancel={{
           onCancel: () => {
             handleCloneModalVisible(false);
             setCurrentRow(undefined);
-            form?.resetFields();
+            formClone?.resetFields();
             // setPopup(false);
           },
         }}
         onSubmit={async (params) => {
+          console.log('1231213');
+
           const p: { id: any; newLibName: string; includeDecoy?: boolean } = {
             id: '',
             newLibName: '',

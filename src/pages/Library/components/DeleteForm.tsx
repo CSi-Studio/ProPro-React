@@ -1,20 +1,20 @@
+/* eslint-disable no-console */
 import React from 'react';
 import { ProFormText, ModalForm } from '@ant-design/pro-form';
 import { Space } from 'antd';
+import { Tag } from 'antd';
 
 export type FormValueType = {
   name?: string;
-  type?: string;
-  file?: string;
-  description?: string;
-} & Partial<API.RuleListItem>;
+};
 
 export type DeleteFormProps = {
-  onSubmit: () => Promise<void>;
+  onSubmit: (value: FormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
   deleteModalVisible: boolean;
-  values: Partial<API.RuleListItem>;
+  values: FormValueType;
   form: any;
+  currentRow: any;
 };
 
 const DeleteForm: React.FC<DeleteFormProps> = (props) => {
@@ -29,19 +29,30 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
     >
       <Space direction="vertical" style={{ textAlign: 'center', width: '100%' }}>
         <div style={{ marginTop: '24px' }}>
-          请输入"<strong>我确认删除</strong>"来删除该标准库
+          请输入标准库名称
+          <Tag
+            style={{
+              margin: ' 0 2px',
+              padding: '0 2px',
+              fontSize: '14px',
+              display: 'inline',
+            }}
+            color="red"
+          >
+            {props?.currentRow?.name}
+          </Tag>
+          以确认删除。
         </div>
         <ProFormText
           rules={[
             {
               required: true,
-              pattern: new RegExp(/^([我]{0,1}[确]{0,1}[认]{0,1}[删]{0,1}[除]{0,1}){5}$/u),
-              message: '请输入我确认删除',
+              message: '请输入要删除的标准库名称',
             },
           ]}
           width="sm"
           name="name"
-          placeholder="我确认删除"
+          placeholder="请输入要删除的标准库名称"
         />
       </Space>
     </ModalForm>

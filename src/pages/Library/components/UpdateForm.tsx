@@ -8,16 +8,16 @@ import ProForm, {
 
 export type updateFormValueType = {
   name?: string;
-  type?: boolean;
+  type?: string;
   description?: string;
   id: string;
-} & Partial<API.RuleListItem>;
+};
 
 export type UpdateFormProps = {
   onSubmit: (values: updateFormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
   updateModalVisible: boolean;
-  values: Partial<API.RuleListItem>;
+  values: any;
   form: any;
 };
 
@@ -33,6 +33,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     >
       <ProForm.Group>
         <ProFormText
+          disabled
           initialValue={props.values.name}
           width="sm"
           name="name"
@@ -41,14 +42,15 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           placeholder="请输入项目名称"
         />
         <ProFormSelect
+          initialValue={props.values.type}
           options={[
             {
               value: 'INS',
-              label: '内标库',
+              label: 'INS',
             },
             {
               value: 'ANA',
-              label: '标准库',
+              label: 'ANA',
             },
           ]}
           width="sm"
@@ -56,7 +58,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           label="库类型"
         />
       </ProForm.Group>
-      <ProFormTextArea label="详情描述" name="description" />
+
+      <ProFormTextArea
+        initialValue={props.values.description}
+        label="详情描述"
+        name="description"
+      />
     </ModalForm>
   );
 };
