@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import ProForm, {
   ProFormSelect,
@@ -22,6 +23,7 @@ export type UpdateFormProps = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+  console.log('asdasd');
   return (
     <ModalForm
       form={props.form}
