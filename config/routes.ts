@@ -25,6 +25,12 @@ export default [
     component: './Welcome',
   },
   {
+    path: '/dict',
+    name: 'dict',
+    icon: 'smile',
+    component: './Dict',
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
