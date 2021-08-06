@@ -55,3 +55,33 @@ export async function removeList(params: { libraryIds: any }) {
     },
   });
 }
+
+/** 生成伪肽段 GET library/generateDecoys  */
+export async function generateDecoys(params: { libraryId: any; generator: string }) {
+  return request('/api/library/generateDecoys', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
+/** 生成基本信息 GET library/statistic  */
+export async function statistic(libraryId: string) {
+  return request('/api/library/statistic', {
+    method: 'GET',
+    params: {
+      libraryId,
+    },
+  });
+}
+
+/** 统计肽段重复率 GET library/statistic  */
+export async function repeatCount(libraryId: string) {
+  return request('/api/library/repeatCount', {
+    method: 'GET',
+    params: {
+      libraryId,
+    },
+  });
+}

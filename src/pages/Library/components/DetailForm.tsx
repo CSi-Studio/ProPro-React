@@ -25,77 +25,12 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   //   data2.push((Math.cos(i / 5) * (i / 5 - 10) + i / 6) * 5);
   // }
 
-  const option = {
-    title: {
-      text: 'Peptide_Dist',
-    },
-    legend: {
-      data: ['bar', 'bar2'],
-    },
-    toolbox: {
-      // y: 'bottom',
-      feature: {
-        magicType: {
-          type: ['stack', 'tiled'],
-        },
-        dataView: {},
-        saveAsImage: {
-          pixelRatio: 2,
-        },
-      },
-    },
-    tooltip: {},
-    xAxis: [
-      {
-        data: props?.currentRow?.statistic?.Peptide_Dist_On_RT_10?.x,
-        splitLine: {
-          show: false,
-        },
-      },
-      {
-        data: props?.currentRow?.statistic?.Peptide_Dist_On_Mz_10?.x,
-        splitLine: {
-          show: false,
-        },
-      },
-    ],
-    yAxis: {},
-    series: [
-      {
-        name: 'bar',
-        type: 'bar',
-        xAxisIndex: 1,
-        data: props?.currentRow?.statistic?.Peptide_Dist_On_RT_10?.y,
-        emphasis: {
-          focus: 'series',
-        },
-        animationDelay(idx: number) {
-          return idx * 10;
-        },
-      },
-      {
-        name: 'bar2',
-        type: 'bar',
-        data: props?.currentRow?.statistic?.Peptide_Dist_On_Mz_10?.y,
-        emphasis: {
-          focus: 'series',
-        },
-        animationDelay(idx: number) {
-          return idx * 10 + 100;
-        },
-      },
-    ],
-    animationEasing: 'elasticOut',
-    animationDelayUpdate(idx: number) {
-      return idx * 5;
-    },
-  };
   const option1 = {
     xAxis: [
       {
-        type: 'category',
+        type: 'value',
         boundaryGap: false,
-        data: props?.currentRow?.statistic?.Peptide_Dist_On_RT_10?.x,
+        data: props?.currentRow?.statistic?.Peptide_Dist_On_RT_5?.x,
       },
     ],
     yAxis: [
@@ -105,8 +40,8 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     ],
     series: [
       {
-        type: 'line',
-        data: props?.currentRow?.statistic?.Peptide_Dist_On_RT_10?.y,
+        type: 'bar',
+        data: props?.currentRow?.statistic?.Peptide_Dist_On_RT_5?.y,
       },
     ],
   };
@@ -125,13 +60,6 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           columns={props.columns as ProDescriptionsItemProps<TableListItem>[]}
         />
       )}
-      <div>
-        <strong>Peptide_Dist_On_Mz_10:</strong>
-      </div>
-      <ReactECharts option={option} style={{ height: 400 }} />
-      <div>
-        <strong>Peptide_Dist_On_RT_10:</strong>
-      </div>
       <ReactECharts option={option1} style={{ height: 400 }} />
     </Drawer>
   );

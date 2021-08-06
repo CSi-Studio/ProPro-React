@@ -3,7 +3,16 @@
 import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { libraryList, addList, cloneList, removeList, updateList } from './service';
+import {
+  libraryList,
+  addList,
+  cloneList,
+  removeList,
+  updateList,
+  generateDecoys,
+  repeatCount,
+  statistic,
+} from './service';
 import type { TableListItem, TableListPagination } from './data';
 import { EditFilled, CopyFilled } from '@ant-design/icons';
 import type { addFormValueType } from './components/CreateForm';
@@ -71,6 +80,58 @@ const handleUpdate = async (values: updateFormValueType) => {
   }
 };
 /**
+ * 生成伪肽段
+ * @param values
+ */
+const handleGenerate = async (values: { libraryId: any; generator: string }) => {
+  const hide = message.loading('正在生成伪肽段');
+  try {
+    await generateDecoys({ ...values });
+    hide();
+    message.success('生成伪肽段成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('生成伪肽段失败，请重试!');
+    return false;
+  }
+};
+/**
+ * 生成基本统计信息
+ * @param values
+ */
+const handleStatistic = async (libraryId: string) => {
+  const hide = message.loading('正在生成基本统计信息');
+  try {
+    await statistic(libraryId);
+    hide();
+    message.success('生成基本统计信息成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('生成基本统计信息失败，请重试!');
+    return false;
+  }
+};
+/**
+ * 统计肽段重复率
+ * @param values
+ */
+const handleRepeatCount = async (libraryId: string) => {
+  const hide = message.loading('正在统计肽段重复率');
+  try {
+    await repeatCount(libraryId);
+    hide();
+    message.success('统计肽段重复率成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('统计肽段重复率失败，请重试!');
+    return false;
+  }
+};
+
+/**
  * 删除库
  * @param currentRow
  */
@@ -80,7 +141,7 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
     await removeList({
       libraryIds: currentRow.id,
     });
-    message.success('删除成功，即将刷新');
+    message.success('删除成功，希望你不要后悔 🥳');
     return true;
   } catch (error) {
     message.error('删除失败，请重试');
@@ -114,7 +175,6 @@ const TableList: React.FC = () => {
     {
       title: '标准库名称',
       dataIndex: 'name',
-      sorter: (a, b) => (a.name > b.name ? -1 : 1),
       render: (dom, entity) => {
         return (
           <a
@@ -141,31 +201,34 @@ const TableList: React.FC = () => {
     {
       title: '伪肽段生成算法',
       dataIndex: 'generator',
-      sorter: (a, b) => (a.generator > b.generator ? -1 : 1),
-      filters: true,
-      onFilter: true,
-      valueEnum: {
-        shuffle: {
-          text: 'shuffle',
-        },
-        nice: {
-          text: 'nice',
-        },
-      },
+      // filters: true,
+      // onFilter: true,
+      // valueEnum: {
+      //   shuffle: {
+      //     text: 'shuffle',
+      //   },
+      //   nice: {
+      //     text: 'nice',
+      //   },
+      // },
       render: (dom) => {
         return <Tag>{dom}</Tag>;
       },
     },
     {
       title: '描述信息',
+      ellipsis: true,
       dataIndex: 'description',
-      sorter: (a, b) => (a.description > b.description ? -1 : 1),
-      render: (dom) => {
-        return <a>{dom}</a>;
+      render: (dom, entity) => {
+        if (entity.description == "undefined" || entity.description == null) {
+          return <span>什么都不写，这是人干的事吗 😇</span>;
+        }
+        return <span>{entity.description}</span>;
       },
     },
     {
       title: '有机物种',
+      // copyable: true,
       dataIndex: 'organism',
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
       render: (dom) => {
@@ -175,7 +238,6 @@ const TableList: React.FC = () => {
     {
       title: '蛋白质数目',
       dataIndex: 'Protein_Count',
-      sorter: (a, b) => (a?.statistic?.Protein_Count > b?.statistic?.Protein_Count ? -1 : 1),
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Protein_Count}</a>;
       },
@@ -243,7 +305,8 @@ const TableList: React.FC = () => {
                   <a
                     key="Shuffle"
                     onClick={() => {
-                      setCurrentRow(record);
+                      const values = { libraryId: record.id, generator: 'shuffle' };
+                      handleGenerate(values);
                       // setPopup(true);
                     }}
                   >
@@ -259,7 +322,8 @@ const TableList: React.FC = () => {
                   <a
                     key="Nico"
                     onClick={() => {
-                      setCurrentRow(record);
+                      const values = { libraryId: record.id, generator: 'nico' };
+                      handleGenerate(values);
                       // setPopup(true);
                     }}
                   >
@@ -280,11 +344,11 @@ const TableList: React.FC = () => {
             />
           </Tooltip>
         </Dropdown>,
-        <Tooltip placement="left" title={'生成基本信息'} key="statistics">
+        <Tooltip placement="left" title={'生成基本统计信息'} key="statistics">
           <a
             key="statistics"
             onClick={() => {
-              setCurrentRow(record);
+              handleStatistic(record.id);
               // setPopup(true);
             }}
           >
@@ -294,11 +358,11 @@ const TableList: React.FC = () => {
             />
           </a>
         </Tooltip>,
-        <Tooltip placement="left" title={'生成肽段重复率'} key="repeatCount">
+        <Tooltip placement="left" title={'统计肽段重复率'} key="repeatCount">
           <a
             key="repeatCount"
             onClick={() => {
-              setCurrentRow(record);
+              handleRepeatCount(record.id);
               // setPopup(true);
             }}
           >
@@ -324,52 +388,6 @@ const TableList: React.FC = () => {
             />
           </a>
         </Tooltip>,
-        // <TableDropdown
-        //   key="TableDropdown"
-        //   onSelect={() => {}}
-        //   menus={[
-        //     {
-        //       key: 'menus1',
-        //       name: (
-        //         <Tooltip placement="left" title={'重新统计蛋白质与肽段的数目'} key="statistics">
-        //           <a
-        //             key="statistics"
-        //             onClick={() => {
-        //               setCurrentRow(record);
-        //               // setPopup(true);
-        //             }}
-        //           >
-        //             <Icon
-        //               style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-        //               icon="mdi:state-machine"
-        //             />
-        //           </a>
-        //         </Tooltip>
-        //       ),
-        //     },
-        //     {
-        //       key: 'menus2',
-        //       name: (
-        //         <Tooltip placement="left" title={'删除'} key="delete">
-        //           <a
-        //             key="delete"
-        //             onClick={async () => {
-        //               form?.resetFields();
-        //               handleDeleteModalVisible(true);
-        //               setCurrentRow(record);
-        //               // setPopup(true);
-        //             }}
-        //           >
-        //             <Icon
-        //               style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-        //               icon="mdi:delete"
-        //             />
-        //           </a>
-        //         </Tooltip>
-        //       ),
-        //     },
-        //   ]}
-        // />,
       ],
     },
   ];
@@ -462,8 +480,6 @@ const TableList: React.FC = () => {
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as string;
-          value.type = currentRow?.type;
-          value.description = currentRow?.description;
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
@@ -502,7 +518,7 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('看来你还是不想删除');
+            message.error('你没有删除的决心，给👴🏻 爬');
           }
         }}
         deleteModalVisible={deleteModalVisible}
@@ -523,8 +539,6 @@ const TableList: React.FC = () => {
           },
         }}
         onSubmit={async (params) => {
-          console.log('1231213');
-
           const p: { id: any; newLibName: string; includeDecoy?: boolean } = {
             id: '',
             newLibName: '',
@@ -546,7 +560,6 @@ const TableList: React.FC = () => {
         cloneModalVisible={cloneModalVisible}
         values={currentRow || {}}
       />
-      {/* ) : null} */}
     </PageContainer>
   );
 };
