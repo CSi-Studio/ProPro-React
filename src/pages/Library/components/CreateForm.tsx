@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import ProForm, {
   ProFormText,
@@ -6,22 +7,12 @@ import ProForm, {
   ProFormTextArea,
   ProFormUploadDragger,
 } from '@ant-design/pro-form';
-import { Button, Input, Space, Tabs } from 'antd';
+import { Button, Form, Input, message, Space, Tabs, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import Dragger from 'antd/lib/upload/Dragger';
+import { Icon } from '@iconify/react';
 
 const { TabPane } = Tabs;
-// 上传组件参数
-const uploadConfig = {
-  progress: {
-    strokeColor: {
-      '0%': '#108ee9',
-      '100%': '#87d068',
-    },
-    strokeWidth: 3,
-    format: (percent: number) => `${parseFloat(percent.toFixed(2))}%`,
-  },
-};
-
 export type addFormValueType = {
   name?: string;
   type?: string;
@@ -46,29 +37,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       visible={props.createModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
-      submitter={{
-        searchConfig: {
-          resetText: '重置',
-          submitText: '提交',
-        },
-        resetButtonProps: {
-          style: {
-            display: 'none',
-          },
-        },
-        submitButtonProps: {},
-
-        render: (prop) => {
-          return [
-            <Button danger key="rest" onClick={() => prop.form?.resetFields()}>
-              重置
-            </Button>,
-            <Button type="primary" key="submit" onClick={() => prop.form?.submit?.()}>
-              提交
-            </Button>,
-          ];
-        },
-      }}
     >
       <Tabs defaultActiveKey="1">
         <TabPane tab="手动上传" key="1">
@@ -109,12 +77,50 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             />
           </ProForm.Group>
           <ProFormUploadDragger
+            rules={[
+              {
+                required: true,
+                message: '不传文件，你手写库内容吗？ 😅',
+              },
+            ]}
+            icon={
+              <Icon
+                style={{
+                  textAlign: 'center',
+                  fontSize: '50px',
+                  color: '#0D93F7',
+                  marginBottom: '-25px',
+                }}
+                icon="mdi:cloud-upload"
+              />
+            }
+            title="点击或者拖动文件到此区域"
+            description={
+              <p className="ant-upload-hint">
+                支持的文件格式有：<Tag color="green">txt</Tag>
+                <Tag color="green">tsv</Tag>
+                <Tag color="green">tsv</Tag>
+                <Tag color="green">csv</Tag>
+                <Tag color="green">xls</Tag>
+                <Tag color="green">xlsx</Tag>
+                <Tag color="green">TraML</Tag>
+              </p>
+            }
             max={1}
+            accept=".txt,.tsv,.csv,.xls,.xlsx,.TraML"
             label="上传文件"
             name="filePath"
-            {...uploadConfig}
-            accept=".txt,.tsv,.csv,.xls,.xlsx"
+            fieldProps={{
+              beforeUpload: (info) => {
+                return new Promise((resolve, reject) => {
+                  message.success(`您将要上传的是 ${info.name}， 🤏 您配吗`);
+                  // eslint-disable-next-line prefer-promise-reject-errors
+                  return reject(false);
+                });
+              },
+            }}
           />
+          
           <ProFormTextArea label="详情描述" name="description" />
         </TabPane>
         <TabPane tab="自动导入" key="2">

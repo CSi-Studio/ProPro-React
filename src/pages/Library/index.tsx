@@ -33,6 +33,7 @@ import DetailForm from './components/DetailForm';
  * @param values
  */
 const handleAdd = async (values: addFormValueType) => {
+  console.log(values);
   const hide = message.loading('正在添加');
   try {
     await addList({ ...values });
@@ -50,15 +51,15 @@ const handleAdd = async (values: addFormValueType) => {
  * @param values
  */
 const handleClone = async (values: cloneFormValueType) => {
-  const hide = message.loading('正在添加');
+  const hide = message.loading('正在克隆');
   try {
     await cloneList(values);
     hide();
-    message.success('添加成功');
+    message.success('克隆成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败，请重试！');
+    message.error('克隆失败，请重试！');
     return false;
   }
 };
@@ -211,7 +212,10 @@ const TableList: React.FC = () => {
       //     text: 'nice',
       //   },
       // },
-      render: (dom) => {
+      render: (dom, entity) => {
+        if (entity.generator == 'undefined' || entity.generator == null || entity.generator == '') {
+          return <span>啥也不是 --刘能</span>;
+        }
         return <Tag>{dom}</Tag>;
       },
     },
@@ -220,7 +224,11 @@ const TableList: React.FC = () => {
       ellipsis: true,
       dataIndex: 'description',
       render: (dom, entity) => {
-        if (entity.description == "undefined" || entity.description == null) {
+        if (
+          entity.description == 'undefined' ||
+          entity.description == null ||
+          entity.description == ''
+        ) {
           return <span>什么都不写，这是人干的事吗 😇</span>;
         }
         return <span>{entity.description}</span>;
@@ -228,11 +236,14 @@ const TableList: React.FC = () => {
     },
     {
       title: '有机物种',
-      // copyable: true,
+      // copyable: true,1
       dataIndex: 'organism',
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
-      render: (dom) => {
-        return <Tag>{dom}</Tag>;
+      render: (dom, entity) => {
+        if (entity.organism.length > 0) {
+          return <Tag>{dom}</Tag>;
+        }
+        return <span>啥也不是 --刘能</span>;
       },
     },
     {
