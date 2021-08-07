@@ -176,32 +176,50 @@ const TableList: React.FC = () => {
     {
       title: '标准库名称',
       dataIndex: 'name',
+      width: '150px',
       render: (dom, entity) => {
         return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-              // setPopup(true);
-            }}
-          >
-            {dom}
-          </a>
+          <Tooltip title={dom} color="#108ee9" placement="topLeft">
+            <div
+              style={{
+                width: '150px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <a
+                onClick={() => {
+                  setCurrentRow(entity);
+                  setShowDetail(true);
+                  // setPopup(true);
+                }}
+              >
+                {dom}
+              </a>
+            </div>
+          </Tooltip>
         );
       },
     },
     {
       title: '库类型',
       dataIndex: 'type',
+      width: '100px',
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
-        // eslint-disable-next-line array-callback-return
-        return <Tag>{dom}</Tag>;
+        return (
+          <Tooltip title="dom">
+            <Tag>{dom}</Tag>
+          </Tooltip>
+        );
       },
     },
     {
       title: '伪肽段生成算法',
       dataIndex: 'generator',
+      width: '120px',
+
       // filters: true,
       // onFilter: true,
       // valueEnum: {
@@ -220,22 +238,8 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '描述信息',
-      ellipsis: true,
-      dataIndex: 'description',
-      render: (dom, entity) => {
-        if (
-          entity.description == 'undefined' ||
-          entity.description == null ||
-          entity.description == ''
-        ) {
-          return <span>什么都不写，这是人干的事吗 😇</span>;
-        }
-        return <span>{entity.description}</span>;
-      },
-    },
-    {
       title: '有机物种',
+      width: '200px',
       // copyable: true,1
       dataIndex: 'organism',
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
@@ -248,6 +252,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '蛋白质数目',
+      width: '120px',
       dataIndex: 'Protein_Count',
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Protein_Count}</a>;
@@ -255,6 +260,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '肽段数目',
+      width: '120px',
       dataIndex: 'Peptide_Count',
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Peptide_Count}</a>;
@@ -262,6 +268,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '碎片数目',
+      width: '120px',
       dataIndex: 'Fragment_Count',
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Fragment_Count}</a>;
@@ -269,16 +276,42 @@ const TableList: React.FC = () => {
     },
     {
       title: '创建时间',
+      width: '200px',
       dataIndex: 'createDate',
       sorter: (a, b) => (a.createDate > b.createDate ? -1 : 1),
       valueType: 'dateTime',
     },
     {
+      title: '描述信息',
+      ellipsis: true,
+      dataIndex: 'description',
+      render: (dom, entity) => {
+        if (
+          entity.description == 'undefined' ||
+          entity.description == null ||
+          entity.description == ''
+        ) {
+          return <span>什么都不写，这是人干的事吗 😇</span>;
+        }
+        return (
+          <Tooltip title={entity.description} color="#108ee9" placement="topLeft">
+            <p
+              style={{
+                width: '30%',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <span>{entity.description}</span>
+            </p>
+          </Tooltip>
+        );
+      },
+    },
+    {
       title: '操作',
       valueType: 'option',
-      copyable: true,
-      width: 100,
-      ellipsis: true,
       fixed: 'right',
       render: (text, record) => [
         <Tooltip title={'编辑'} key="edit">
