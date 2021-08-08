@@ -2,9 +2,22 @@ import { request } from 'umi';
 import type { TableListItem } from './data';
 
 /** 获取库列表 GET /library/list */
-export async function libraryList() {
+export async function libraryList(
+  params: {
+    // query
+    /** 当前的页码 */
+    current?: number;
+    /** 页面的容量 */
+    pageSize?: number;
+  },
+  options?: { [key: string]: any },
+) {
   return request('/api/library/list', {
     method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
   });
 }
 
@@ -36,7 +49,7 @@ export async function updateList(body: { name?: any; id: string; type?: any; des
   });
 }
 
-/** 克隆库 GET library/remove  */
+/** 克隆库 GET library/clone  */
 export async function cloneList(params: { id: any; newLibName: string; includeDecoy?: boolean }) {
   return request('/api/library/clone', {
     method: 'GET',
@@ -76,7 +89,7 @@ export async function statistic(libraryId: string) {
   });
 }
 
-/** 统计肽段重复率 GET library/statistic  */
+/** 统计肽段重复率 GET library/repeatCount  */
 export async function repeatCount(libraryId: string) {
   return request('/api/library/repeatCount', {
     method: 'GET',

@@ -205,7 +205,9 @@ const TableList: React.FC = () => {
     {
       title: '库类型',
       dataIndex: 'type',
+      ellipsis: true,
       width: '100px',
+      hideInSearch: true,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
         return (
@@ -239,7 +241,8 @@ const TableList: React.FC = () => {
     },
     {
       title: '有机物种',
-      width: '200px',
+      ellipsis: true,
+      width: '160px',
       // copyable: true,1
       dataIndex: 'organism',
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
@@ -252,52 +255,77 @@ const TableList: React.FC = () => {
     },
     {
       title: '蛋白质数目',
+      ellipsis: true,
       width: '120px',
       dataIndex: 'Protein_Count',
+      hideInSearch: true,
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Protein_Count}</a>;
       },
     },
     {
       title: '肽段数目',
+      ellipsis: true,
       width: '120px',
       dataIndex: 'Peptide_Count',
+      hideInSearch: true,
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Peptide_Count}</a>;
       },
     },
     {
       title: '碎片数目',
+      ellipsis: true,
       width: '120px',
       dataIndex: 'Fragment_Count',
+      hideInSearch: true,
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Fragment_Count}</a>;
       },
     },
     {
       title: '创建时间',
-      width: '200px',
+      width: '150px',
+      ellipsis: true,
       dataIndex: 'createDate',
+      hideInSearch: true,
       sorter: (a, b) => (a.createDate > b.createDate ? -1 : 1),
       valueType: 'dateTime',
     },
     {
       title: '描述信息',
-      ellipsis: true,
       dataIndex: 'description',
+      hideInSearch: true,
+      width: '300px',
+      valueType: 'textarea',
       render: (dom, entity) => {
         if (
           entity.description == 'undefined' ||
           entity.description == null ||
           entity.description == ''
         ) {
-          return <span>什么都不写，这是人干的事吗 😇</span>;
+          return (
+            <Tooltip title="什么都不写，这是人干的事吗 😇" color="#108ee9" placement="topLeft">
+              <p
+                style={{
+                  margin: 0,
+                  width: '300px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                <span>什么都不写，这是人干的事吗 😇</span>
+              </p>
+            </Tooltip>
+          );
         }
         return (
           <Tooltip title={entity.description} color="#108ee9" placement="topLeft">
             <p
               style={{
-                width: '30%',
+                margin: 0,
+                width: '200px',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -313,6 +341,7 @@ const TableList: React.FC = () => {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
+      hideInSearch: true,
       render: (text, record) => [
         <Tooltip title={'编辑'} key="edit">
           <a
@@ -445,6 +474,15 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        // search={{
+        //   // show: true,
+        //   // collapseRender: true,
+        //   labelWidth: 40,
+        //   // optionRender: false,
+        //   // collapsed: false,
+        //   // filterType: 'query',
+        //   // layout: 'horizontal',
+        // }}
         toolBarRender={() => [
           <Button
             type="primary"
