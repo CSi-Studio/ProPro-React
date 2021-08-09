@@ -141,7 +141,6 @@ const TableList: React.FC = () => {
       ),
       dataIndex: 'callNo',
       sorter: true,
-      hideInForm: true,
       renderText: (val: string) =>
         `${val}${intl.formatMessage({
           id: 'pages.searchTable.tenThousand',

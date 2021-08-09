@@ -3,7 +3,16 @@
 import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { libraryList, addList, cloneList, removeList, updateList } from './service';
+import {
+  libraryList,
+  addList,
+  cloneList,
+  removeList,
+  updateList,
+  generateDecoys,
+  repeatCount,
+  statistic,
+} from './service';
 import type { TableListItem, TableListPagination } from './data';
 import { EditFilled, CopyFilled } from '@ant-design/icons';
 import type { addFormValueType } from './components/CreateForm';
@@ -24,6 +33,7 @@ import DetailForm from './components/DetailForm';
  * @param values
  */
 const handleAdd = async (values: addFormValueType) => {
+  console.log(values);
   const hide = message.loading('正在添加');
   try {
     await addList({ ...values });
@@ -41,15 +51,15 @@ const handleAdd = async (values: addFormValueType) => {
  * @param values
  */
 const handleClone = async (values: cloneFormValueType) => {
-  const hide = message.loading('正在添加');
+  const hide = message.loading('正在克隆');
   try {
     await cloneList(values);
     hide();
-    message.success('添加成功');
+    message.success('克隆成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败，请重试！');
+    message.error('克隆失败，请重试！');
     return false;
   }
 };
@@ -71,6 +81,58 @@ const handleUpdate = async (values: updateFormValueType) => {
   }
 };
 /**
+ * 生成伪肽段
+ * @param values
+ */
+const handleGenerate = async (values: { libraryId: any; generator: string }) => {
+  const hide = message.loading('正在生成伪肽段');
+  try {
+    await generateDecoys({ ...values });
+    hide();
+    message.success('生成伪肽段成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('生成伪肽段失败，请重试!');
+    return false;
+  }
+};
+/**
+ * 生成基本统计信息
+ * @param values
+ */
+const handleStatistic = async (libraryId: string) => {
+  const hide = message.loading('正在生成基本统计信息');
+  try {
+    await statistic(libraryId);
+    hide();
+    message.success('生成基本统计信息成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('生成基本统计信息失败，请重试!');
+    return false;
+  }
+};
+/**
+ * 统计肽段重复率
+ * @param values
+ */
+const handleRepeatCount = async (libraryId: string) => {
+  const hide = message.loading('正在统计肽段重复率');
+  try {
+    await repeatCount(libraryId);
+    hide();
+    message.success('统计肽段重复率成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('统计肽段重复率失败，请重试!');
+    return false;
+  }
+};
+
+/**
  * 删除库
  * @param currentRow
  */
@@ -80,7 +142,7 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
     await removeList({
       libraryIds: currentRow.id,
     });
-    message.success('删除成功，即将刷新');
+    message.success('删除成功，希望你不要后悔 🥳');
     return true;
   } catch (error) {
     message.error('删除失败，请重试');
@@ -114,99 +176,172 @@ const TableList: React.FC = () => {
     {
       title: '标准库名称',
       dataIndex: 'name',
-      sorter: (a, b) => (a.name > b.name ? -1 : 1),
+      width: '150px',
       render: (dom, entity) => {
         return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-              // setPopup(true);
-            }}
-          >
-            {dom}
-          </a>
+          <Tooltip title={dom} color="#108ee9" placement="topLeft">
+            <div
+              style={{
+                width: '150px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <a
+                onClick={() => {
+                  setCurrentRow(entity);
+                  setShowDetail(true);
+                  // setPopup(true);
+                }}
+              >
+                {dom}
+              </a>
+            </div>
+          </Tooltip>
         );
       },
     },
     {
       title: '库类型',
       dataIndex: 'type',
+      ellipsis: true,
+      width: '100px',
+      hideInSearch: true,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
-        // eslint-disable-next-line array-callback-return
-        return <Tag>{dom}</Tag>;
+        return (
+          <Tooltip title="dom">
+            <Tag>{dom}</Tag>
+          </Tooltip>
+        );
       },
     },
     {
       title: '伪肽段生成算法',
       dataIndex: 'generator',
-      sorter: (a, b) => (a.generator > b.generator ? -1 : 1),
-      filters: true,
-      onFilter: true,
-      valueEnum: {
-        shuffle: {
-          text: 'shuffle',
-        },
-        nice: {
-          text: 'nice',
-        },
-      },
-      render: (dom) => {
+      width: '120px',
+
+      // filters: true,
+      // onFilter: true,
+      // valueEnum: {
+      //   shuffle: {
+      //     text: 'shuffle',
+      //   },
+      //   nice: {
+      //     text: 'nice',
+      //   },
+      // },
+      render: (dom, entity) => {
+        if (entity.generator == 'undefined' || entity.generator == null || entity.generator == '') {
+          return <span>啥也不是 --刘能</span>;
+        }
         return <Tag>{dom}</Tag>;
-      },
-    },
-    {
-      title: '描述信息',
-      dataIndex: 'description',
-      sorter: (a, b) => (a.description > b.description ? -1 : 1),
-      render: (dom) => {
-        return <a>{dom}</a>;
       },
     },
     {
       title: '有机物种',
+      ellipsis: true,
+      width: '160px',
+      // copyable: true,1
       dataIndex: 'organism',
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
-      render: (dom) => {
-        return <Tag>{dom}</Tag>;
+      render: (dom, entity) => {
+        if (entity.organism.length > 0) {
+          return <Tag>{dom}</Tag>;
+        }
+        return <span>啥也不是 --刘能</span>;
       },
     },
     {
       title: '蛋白质数目',
+      ellipsis: true,
+      width: '120px',
       dataIndex: 'Protein_Count',
-      sorter: (a, b) => (a?.statistic?.Protein_Count > b?.statistic?.Protein_Count ? -1 : 1),
+      hideInSearch: true,
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Protein_Count}</a>;
       },
     },
     {
       title: '肽段数目',
+      ellipsis: true,
+      width: '120px',
       dataIndex: 'Peptide_Count',
+      hideInSearch: true,
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Peptide_Count}</a>;
       },
     },
     {
       title: '碎片数目',
+      ellipsis: true,
+      width: '120px',
       dataIndex: 'Fragment_Count',
+      hideInSearch: true,
       render: (dom, entity) => {
         return <a onClick={() => {}}>{entity?.statistic?.Fragment_Count}</a>;
       },
     },
     {
       title: '创建时间',
+      width: '150px',
+      ellipsis: true,
       dataIndex: 'createDate',
+      hideInSearch: true,
       sorter: (a, b) => (a.createDate > b.createDate ? -1 : 1),
       valueType: 'dateTime',
     },
     {
+      title: '描述信息',
+      dataIndex: 'description',
+      hideInSearch: true,
+      width: '300px',
+      valueType: 'textarea',
+      render: (dom, entity) => {
+        if (
+          entity.description == 'undefined' ||
+          entity.description == null ||
+          entity.description == ''
+        ) {
+          return (
+            <Tooltip title="什么都不写，这是人干的事吗 😇" color="#108ee9" placement="topLeft">
+              <p
+                style={{
+                  margin: 0,
+                  width: '300px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                <span>什么都不写，这是人干的事吗 😇</span>
+              </p>
+            </Tooltip>
+          );
+        }
+        return (
+          <Tooltip title={entity.description} color="#108ee9" placement="topLeft">
+            <p
+              style={{
+                margin: 0,
+                width: '200px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <span>{entity.description}</span>
+            </p>
+          </Tooltip>
+        );
+      },
+    },
+    {
       title: '操作',
       valueType: 'option',
-      copyable: true,
-      width: 100,
-      ellipsis: true,
       fixed: 'right',
+      hideInSearch: true,
       render: (text, record) => [
         <Tooltip title={'编辑'} key="edit">
           <a
@@ -243,7 +378,8 @@ const TableList: React.FC = () => {
                   <a
                     key="Shuffle"
                     onClick={() => {
-                      setCurrentRow(record);
+                      const values = { libraryId: record.id, generator: 'shuffle' };
+                      handleGenerate(values);
                       // setPopup(true);
                     }}
                   >
@@ -259,7 +395,8 @@ const TableList: React.FC = () => {
                   <a
                     key="Nico"
                     onClick={() => {
-                      setCurrentRow(record);
+                      const values = { libraryId: record.id, generator: 'nico' };
+                      handleGenerate(values);
                       // setPopup(true);
                     }}
                   >
@@ -280,11 +417,11 @@ const TableList: React.FC = () => {
             />
           </Tooltip>
         </Dropdown>,
-        <Tooltip placement="left" title={'生成基本信息'} key="statistics">
+        <Tooltip placement="left" title={'生成基本统计信息'} key="statistics">
           <a
             key="statistics"
             onClick={() => {
-              setCurrentRow(record);
+              handleStatistic(record.id);
               // setPopup(true);
             }}
           >
@@ -294,11 +431,11 @@ const TableList: React.FC = () => {
             />
           </a>
         </Tooltip>,
-        <Tooltip placement="left" title={'生成肽段重复率'} key="repeatCount">
+        <Tooltip placement="left" title={'统计肽段重复率'} key="repeatCount">
           <a
             key="repeatCount"
             onClick={() => {
-              setCurrentRow(record);
+              handleRepeatCount(record.id);
               // setPopup(true);
             }}
           >
@@ -324,52 +461,6 @@ const TableList: React.FC = () => {
             />
           </a>
         </Tooltip>,
-        // <TableDropdown
-        //   key="TableDropdown"
-        //   onSelect={() => {}}
-        //   menus={[
-        //     {
-        //       key: 'menus1',
-        //       name: (
-        //         <Tooltip placement="left" title={'重新统计蛋白质与肽段的数目'} key="statistics">
-        //           <a
-        //             key="statistics"
-        //             onClick={() => {
-        //               setCurrentRow(record);
-        //               // setPopup(true);
-        //             }}
-        //           >
-        //             <Icon
-        //               style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-        //               icon="mdi:state-machine"
-        //             />
-        //           </a>
-        //         </Tooltip>
-        //       ),
-        //     },
-        //     {
-        //       key: 'menus2',
-        //       name: (
-        //         <Tooltip placement="left" title={'删除'} key="delete">
-        //           <a
-        //             key="delete"
-        //             onClick={async () => {
-        //               form?.resetFields();
-        //               handleDeleteModalVisible(true);
-        //               setCurrentRow(record);
-        //               // setPopup(true);
-        //             }}
-        //           >
-        //             <Icon
-        //               style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-        //               icon="mdi:delete"
-        //             />
-        //           </a>
-        //         </Tooltip>
-        //       ),
-        //     },
-        //   ]}
-        // />,
       ],
     },
   ];
@@ -383,6 +474,15 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        // search={{
+        //   // show: true,
+        //   // collapseRender: true,
+        //   labelWidth: 40,
+        //   // optionRender: false,
+        //   // collapsed: false,
+        //   // filterType: 'query',
+        //   // layout: 'horizontal',
+        // }}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -462,8 +562,6 @@ const TableList: React.FC = () => {
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as string;
-          value.type = currentRow?.type;
-          value.description = currentRow?.description;
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
@@ -502,7 +600,7 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('看来你还是不想删除');
+            message.error('你没有删除的决心，给👴🏻 爬');
           }
         }}
         deleteModalVisible={deleteModalVisible}
@@ -523,8 +621,6 @@ const TableList: React.FC = () => {
           },
         }}
         onSubmit={async (params) => {
-          console.log('1231213');
-
           const p: { id: any; newLibName: string; includeDecoy?: boolean } = {
             id: '',
             newLibName: '',
@@ -546,7 +642,6 @@ const TableList: React.FC = () => {
         cloneModalVisible={cloneModalVisible}
         values={currentRow || {}}
       />
-      {/* ) : null} */}
     </PageContainer>
   );
 };
