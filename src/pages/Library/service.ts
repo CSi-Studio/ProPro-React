@@ -2,22 +2,18 @@ import { request } from 'umi';
 import type { TableListItem } from './data';
 
 /** 获取库列表 GET /library/list */
-export async function libraryList(
-  params: {
-    // query
-    /** 当前的页码 */
-    current?: number;
-    /** 页面的容量 */
-    pageSize?: number;
-  },
-  options?: { [key: string]: any },
-) {
+export async function libraryList(params: {
+  // query
+  /** 当前的页码 */
+  current?: number;
+  /** 页面的容量 */
+  pageSize?: number;
+}) {
   return request('/api/library/list', {
     method: 'GET',
     params: {
       ...params,
     },
-    ...(options || {}),
   });
 }
 
@@ -95,6 +91,19 @@ export async function repeatCount(libraryId: string) {
     method: 'GET',
     params: {
       libraryId,
+    },
+  });
+}
+
+/** 获取肽段列表 GET /peptide/list */
+export async function peptideList(params: {
+  /** 选择的标准库ID */
+  libraryId?: string;
+}) {
+  return request('/api/peptide/list', {
+    method: 'GET',
+    params: {
+      ...params,
     },
   });
 }

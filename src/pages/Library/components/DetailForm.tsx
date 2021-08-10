@@ -5,7 +5,6 @@ import type { TableListItem } from '@/pages/Project/data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ReactECharts from 'echarts-for-react';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { type } from '../../Project/components/DeleteForm';
 
 export type UpdateFormProps = {
   showDetail: any;
@@ -21,12 +20,6 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const data1 = props?.currentRow?.statistic?.Peptide_Dist_On_Mz_5?.y;
   const data2 = props?.currentRow?.statistic?.Peptide_Dist_On_RT_5?.y;
 
-  // // eslint-disable-next-line no-plusplus
-  // for (let i = 0; i < 100; i++) {
-  //   xAxisData.push(`类目${i}`);
-  //   data1.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);
-  //   data2.push((Math.cos(i / 5) * (i / 5 - 10) + i / 6) * 5);
-  // }
 
   const option = {
     legend: {},

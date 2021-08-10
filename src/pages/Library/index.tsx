@@ -12,9 +12,10 @@ import {
   generateDecoys,
   repeatCount,
   statistic,
+  peptideList,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import { EditFilled, CopyFilled } from '@ant-design/icons';
+import { EditFilled, CopyFilled, FileTextOutlined } from '@ant-design/icons';
 import type { addFormValueType } from './components/CreateForm';
 import CreateForm from './components/CreateForm';
 import type { updateFormValueType } from './components/UpdateForm';
@@ -27,6 +28,7 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
 import DetailForm from './components/DetailForm';
+import { Link } from 'umi';
 
 /**
  * 添加库
@@ -150,6 +152,24 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
   }
 };
 
+/**
+ * 根据库id跳转到肽段列表
+ * @param libraryId
+ */
+const goPeptide = async (params: Record<string, any>) => {
+  const hide = message.loading('正在跳转');
+  try {
+    await peptideList(params);
+    hide();
+    message.success('跳转成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('跳转失败请重试！');
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -176,10 +196,11 @@ const TableList: React.FC = () => {
     {
       title: '标准库名称',
       dataIndex: 'name',
+      copyable: true,
       width: '150px',
       render: (dom, entity) => {
         return (
-          <Tooltip title={dom} color="#108ee9" placement="topLeft">
+          <Tooltip title={dom} color="#eeeeee" placement="topLeft">
             <div
               style={{
                 width: '150px',
@@ -195,6 +216,7 @@ const TableList: React.FC = () => {
                   // setPopup(true);
                 }}
               >
+                <FileTextOutlined />
                 {dom}
               </a>
             </div>
@@ -205,9 +227,8 @@ const TableList: React.FC = () => {
     {
       title: '库类型',
       dataIndex: 'type',
-      ellipsis: true,
       width: '100px',
-      hideInSearch: true,
+      // hideInSearch: true,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
         return (
@@ -241,7 +262,6 @@ const TableList: React.FC = () => {
     },
     {
       title: '有机物种',
-      ellipsis: true,
       width: '160px',
       // copyable: true,1
       dataIndex: 'organism',
@@ -255,7 +275,6 @@ const TableList: React.FC = () => {
     },
     {
       title: '蛋白质数目',
-      ellipsis: true,
       width: '120px',
       dataIndex: 'Protein_Count',
       hideInSearch: true,
@@ -265,17 +284,24 @@ const TableList: React.FC = () => {
     },
     {
       title: '肽段数目',
-      ellipsis: true,
       width: '120px',
       dataIndex: 'Peptide_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <a onClick={() => {}}>{entity?.statistic?.Peptide_Count}</a>;
+        return (
+          <Link
+            to={{
+              // pathname: `/library/peptide?libraryId:${entity.id}`,
+              pathname: `/library/peptide?sort=name`,
+            }}
+          >
+            <p>{entity?.statistic?.Peptide_Count}</p>
+          </Link>
+        );
       },
     },
     {
       title: '碎片数目',
-      ellipsis: true,
       width: '120px',
       dataIndex: 'Fragment_Count',
       hideInSearch: true,
@@ -286,7 +312,6 @@ const TableList: React.FC = () => {
     {
       title: '创建时间',
       width: '150px',
-      ellipsis: true,
       dataIndex: 'createDate',
       hideInSearch: true,
       sorter: (a, b) => (a.createDate > b.createDate ? -1 : 1),
@@ -300,9 +325,9 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       render: (dom, entity) => {
         if (
-          entity.description == 'undefined' ||
+          entity.description === 'undefined' ||
           entity.description == null ||
-          entity.description == ''
+          entity.description === ''
         ) {
           return (
             <Tooltip title="什么都不写，这是人干的事吗 😇" color="#108ee9" placement="topLeft">

@@ -34,6 +34,7 @@ export default {
   'menu.project.table-list': 'projectList',
   'menu.library': 'Library',
   'menu.library.table-list': 'libraryList',
+  'menu.library.peptide-list': 'peptideList',
   'menu.profile': 'Profile',
   'menu.profile.basic': 'Basic Profile',
   'menu.profile.advanced': 'Advanced Profile',

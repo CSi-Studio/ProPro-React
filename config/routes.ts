@@ -50,15 +50,30 @@ export default [
   },
   {
     name: 'project.table-list',
-    icon: 'smile',
+    icon: 'profile',
     path: '/project',
     component: './Project',
   },
   {
-    name: 'library.table-list',
-    icon: 'smile',
-    path: '/library',
-    component: './Library',
+    name: 'library',
+    icon: 'hdd',
+    routes: [
+      {
+        path: '/library/list',
+        name: 'table-list',
+        icon: 'hdd',
+        component: './Library',
+      },
+      {
+        path: '/library/peptide:name',
+        name: 'peptide-list',
+        icon: 'smile',
+        component: './Library/Peptide',
+      },
+      {
+        component: './404',
+      },
+    ],
   },
   {
     name: 'list.card-list',

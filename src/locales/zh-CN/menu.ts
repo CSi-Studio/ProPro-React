@@ -34,6 +34,7 @@ export default {
   'menu.project.table-list': '项目列表',
   'menu.library': '标准库',
   'menu.library.table-list': '标准库列表',
+  'menu.library.peptide-list': '肽段列表',
   'menu.profile': '详情页',
   'menu.profile.basic': '基础详情页',
   'menu.profile.advanced': '高级详情页',
