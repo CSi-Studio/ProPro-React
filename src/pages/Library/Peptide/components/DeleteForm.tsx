@@ -11,7 +11,7 @@ export type DeleteFormProps = {
   onSubmit: (value: FormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
   deleteModalVisible: boolean;
-  values: FormValueType;
+  values: any;
   form: any;
   currentRow: any;
 };
@@ -28,7 +28,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
     >
       <Space direction="vertical" style={{ textAlign: 'center', width: '100%' }}>
         <div style={{ marginTop: '24px' }}>
-          请输入标准库名称
+          请输入
           <Tag
             style={{
               margin: ' 0 2px',
@@ -38,7 +38,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             }}
             color="red"
           >
-            {props?.currentRow?.name}
+            {props?.currentRow?.peptideRef}
           </Tag>
           以确认删除。
         </div>
@@ -46,12 +46,12 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '请输入要删除的标准库名称',
+              message: '请输入要删除的peptideRef',
             },
           ]}
           width="sm"
           name="name"
-          placeholder="请输入要删除的标准库名称"
+          placeholder="请输入要删除的peptideRef"
         />
       </Space>
     </ModalForm>

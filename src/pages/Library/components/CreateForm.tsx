@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import ProForm, {
   ProFormText,
@@ -7,9 +6,8 @@ import ProForm, {
   ProFormTextArea,
   ProFormUploadDragger,
 } from '@ant-design/pro-form';
-import { Button, Form, Input, message, Space, Tabs, Tag } from 'antd';
+import { Button, Input, message, Space, Tabs, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import Dragger from 'antd/lib/upload/Dragger';
 import { Icon } from '@iconify/react';
 
 const { TabPane } = Tabs;
@@ -120,7 +118,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               },
             }}
           />
-          
+
           <ProFormTextArea label="详情描述" name="description" />
         </TabPane>
         <TabPane tab="自动导入" key="2">

@@ -1,15 +1,11 @@
 import React from 'react';
-import ProForm, {
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-  ModalForm,
-} from '@ant-design/pro-form';
+import ProForm, { ProFormSelect, ProFormText, ModalForm } from '@ant-design/pro-form';
 
 export type updateFormValueType = {
-  name?: string;
-  type?: string;
-  description?: string;
+  isUnique?: boolean;
+  mz?: number;
+  protein?: string;
+  rt?: number;
   id: string;
 };
 
@@ -25,45 +21,39 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title="更新标准库"
+      title="编辑肽段库"
       width={530}
       visible={props.updateModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
     >
       <ProForm.Group>
+        <ProFormText initialValue={props.values.mz} width="sm" name="mz" label="荷质比（m/z）" />
+        <ProFormText initialValue={props.values.rt} width="sm" name="rt" label="RT" />
         <ProFormText
           disabled
-          initialValue={props.values.name}
+          initialValue={props.values.proteinIdentifier}
           width="sm"
-          name="name"
-          label="库名称"
-          tooltip="项目名称必须唯一"
-          placeholder="请输入项目名称"
+          name="protein"
+          label="蛋白质标识符"
         />
         <ProFormSelect
-          initialValue={props.values.type}
+          // initialValue={props.values.isUnique}
           options={[
             {
-              value: 'INS',
-              label: 'INS',
+              value: 'true',
+              label: '是',
             },
             {
-              value: 'ANA',
-              label: 'ANA',
+              value: 'false',
+              label: '否',
             },
           ]}
           width="sm"
-          name="type"
-          label="库类型"
+          name="isUnique"
+          label="是否唯一"
         />
       </ProForm.Group>
-
-      <ProFormTextArea
-        initialValue={props.values.description}
-        label="详情描述"
-        name="description"
-      />
     </ModalForm>
   );
 };

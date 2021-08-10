@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
 import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -12,10 +10,9 @@ import {
   generateDecoys,
   repeatCount,
   statistic,
-  peptideList,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import { EditFilled, CopyFilled, FileTextOutlined } from '@ant-design/icons';
+import { EditFilled, CopyFilled, FileTextFilled } from '@ant-design/icons';
 import type { addFormValueType } from './components/CreateForm';
 import CreateForm from './components/CreateForm';
 import type { updateFormValueType } from './components/UpdateForm';
@@ -35,7 +32,6 @@ import { Link } from 'umi';
  * @param values
  */
 const handleAdd = async (values: addFormValueType) => {
-  console.log(values);
   const hide = message.loading('正在添加');
   try {
     await addList({ ...values });
@@ -152,24 +148,6 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
   }
 };
 
-/**
- * 根据库id跳转到肽段列表
- * @param libraryId
- */
-const goPeptide = async (params: Record<string, any>) => {
-  const hide = message.loading('正在跳转');
-  try {
-    await peptideList(params);
-    hide();
-    message.success('跳转成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('跳转失败请重试！');
-    return false;
-  }
-};
-
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -188,10 +166,10 @@ const TableList: React.FC = () => {
   /** 克隆窗口的弹窗 */
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
-  const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
-  const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '标准库名称',
@@ -216,7 +194,6 @@ const TableList: React.FC = () => {
                   // setPopup(true);
                 }}
               >
-                <FileTextOutlined />
                 {dom}
               </a>
             </div>
@@ -254,7 +231,11 @@ const TableList: React.FC = () => {
       //   },
       // },
       render: (dom, entity) => {
-        if (entity.generator == 'undefined' || entity.generator == null || entity.generator == '') {
+        if (
+          entity.generator === 'undefined' ||
+          entity.generator == null ||
+          entity.generator === ''
+        ) {
           return <span>啥也不是 --刘能</span>;
         }
         return <Tag>{dom}</Tag>;
@@ -291,11 +272,12 @@ const TableList: React.FC = () => {
         return (
           <Link
             to={{
-              // pathname: `/library/peptide?libraryId:${entity.id}`,
-              pathname: `/library/peptide?sort=name`,
+              pathname: `/library/peptide`,
+              state: { libraryName: entity.name },
+              search: `?libraryId=${entity.id}`,
             }}
           >
-            <p>{entity?.statistic?.Peptide_Count}</p>
+            {entity?.statistic?.Peptide_Count}
           </Link>
         );
       },
@@ -368,6 +350,19 @@ const TableList: React.FC = () => {
       fixed: 'right',
       hideInSearch: true,
       render: (text, record) => [
+        <Tooltip title={'详情'} key="detail">
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+            key="edit"
+          >
+            <FileTextFilled
+              style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
+            />
+          </a>
+        </Tooltip>,
         <Tooltip title={'编辑'} key="edit">
           <a
             onClick={() => {
@@ -523,7 +518,6 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={libraryList}
-        // dataSource={tableListDataSource}
         columns={columns}
         rowSelection={
           {

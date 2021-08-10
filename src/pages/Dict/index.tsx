@@ -131,7 +131,6 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              console.log(entity);
               setCurrentRow(entity);
               setShowDetail(true);
               // setPopup(true);

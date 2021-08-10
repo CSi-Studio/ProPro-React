@@ -11,17 +11,15 @@ import ProForm, {
   ProFormTextArea,
   ProFormSelect,
 } from '@ant-design/pro-form';
-import { useIntl, FormattedMessage } from 'umi';
-import { rule, addRule } from './service';
+import { FormattedMessage } from 'umi';
+import { projectList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-// import deleteForm from './components/DeleteForm';
 
 /**
  * 添加节点
  *
  * @param fields
  */
-
 const handleAdd = async (fields: TableListItem) => {
   const hide = message.loading('正在添加');
 
@@ -44,31 +42,6 @@ const TableList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
-  const intl = useIntl();
-  const tableListDataSource: TableListItem[] = [];
-  for (let i = 0; i < 5; i += 1) {
-    tableListDataSource.push({
-      id: i,
-      name: 'AppName',
-      type: 'qweqweqwe',
-      repoProjectName: 'asdasadasdadfdsfsdfsdfsdfsdsdfsdfsdf',
-      creator: 'lihua',
-      irtLibraryName: 'asdffsasdasdasdsdasdasdasdasd',
-      libraryName: 'asdffsasdasdasdasdsadasdadasd',
-      createDate: Date(),
-      irtLibraryId: `${i}`,
-      libraryId: `${i}`,
-      description: 'asdasd',
-      totalSize: 5,
-      lastModifiedDate: Date(),
-      labels: ['cool', 'teacher'],
-    });
-  }
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -154,18 +127,7 @@ const TableList: React.FC = () => {
         </Tooltip>,
         <TableDropdown
           key="95"
-          onSelect={(e) => {
-            if (e === '96') {
-              console.log('我是查看结果');
-            }
-            if (e === '97') {
-              console.log('我是导出');
-            }
-            if (e === '98') {
-              console.log('我是删除');
-              // handleDeleteModalVisible(true);
-            }
-          }}
+          onSelect={(e) => {}}
           menus={[
             {
               key: '96',
@@ -221,13 +183,10 @@ const TableList: React.FC = () => {
             }}
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
-            {intl.formatMessage({
-              id: 'create_project',
-              defaultMessage: '创建项目',
-            })}
+            创建项目
           </Button>,
         ]}
-        request={rule}
+        request={projectList}
         // dataSource={tableListDataSource}
         columns={columns}
         rowSelection={{
@@ -247,7 +206,7 @@ const TableList: React.FC = () => {
                 }}
               >
                 {selectedRowsState.length}
-              </a>{' '}
+              </a>
               项 &nbsp;&nbsp;
             </div>
           }
@@ -255,10 +214,7 @@ const TableList: React.FC = () => {
       )}
       {/* 新建列表 */}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'label_create_project',
-          defaultMessage: '创建一个项目',
-        })}
+        title="创建一个项目"
         width={530}
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
@@ -284,18 +240,9 @@ const TableList: React.FC = () => {
             ]}
             width="sm"
             name="name"
-            label={intl.formatMessage({
-              id: 'label_project_name',
-              defaultMessage: '项目名称',
-            })}
-            tooltip={intl.formatMessage({
-              id: 'label_project_name_must_be_unique',
-              defaultMessage: '项目名称必须唯一',
-            })}
-            placeholder={intl.formatMessage({
-              id: 'label_enter_projectName',
-              defaultMessage: '请输入项目名称',
-            })}
+            label="项目名称"
+            tooltip="项目名称必须唯一"
+            placeholder="请输入项目名称"
           />
           <ProFormSelect
             rules={[
@@ -318,10 +265,7 @@ const TableList: React.FC = () => {
             ]}
             width="sm"
             name="type"
-            label={intl.formatMessage({
-              id: 'label_exp_type',
-              defaultMessage: '实验类型',
-            })}
+            label="实验类型"
           />
         </ProForm.Group>
         <ProForm.Group>
@@ -334,10 +278,7 @@ const TableList: React.FC = () => {
             ]}
             width="sm"
             name="irtLibraryName"
-            label={intl.formatMessage({
-              id: 'label_default_irt_library',
-              defaultMessage: '默认IRT校准库',
-            })}
+            label="默认IRT校准库"
           />
           <ProFormSelect
             options={[
@@ -348,19 +289,10 @@ const TableList: React.FC = () => {
             ]}
             width="sm"
             name="LibraryName"
-            label={intl.formatMessage({
-              id: 'label_default_library',
-              defaultMessage: '默认校准库',
-            })}
+            label="默认校准库"
           />
         </ProForm.Group>
-        <ProFormTextArea
-          label={intl.formatMessage({
-            id: 'label_detail_description',
-            defaultMessage: '详情描述',
-          })}
-          name="description"
-        />
+        <ProFormTextArea label="详情描述" name="description" />
       </ModalForm>
     </PageContainer>
   );

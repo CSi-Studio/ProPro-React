@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import { Drawer } from 'antd';
 import type { TableListItem } from '@/pages/Project/data';
@@ -19,7 +18,6 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const xAxisData2 = props?.currentRow?.statistic?.Peptide_Dist_On_RT_5?.x;
   const data1 = props?.currentRow?.statistic?.Peptide_Dist_On_Mz_5?.y;
   const data2 = props?.currentRow?.statistic?.Peptide_Dist_On_RT_5?.y;
-
 
   const option = {
     legend: {},

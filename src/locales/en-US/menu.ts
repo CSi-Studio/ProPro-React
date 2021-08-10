@@ -35,6 +35,7 @@ export default {
   'menu.library': 'Library',
   'menu.library.table-list': 'libraryList',
   'menu.library.peptide-list': 'peptideList',
+  'menu.library.protein-list': 'proteinList',
   'menu.profile': 'Profile',
   'menu.profile.basic': 'Basic Profile',
   'menu.profile.advanced': 'Advanced Profile',

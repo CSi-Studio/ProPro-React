@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import { Drawer } from 'antd';
 import type { DictListItem } from '@/pages/Dict/data';

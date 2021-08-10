@@ -20,28 +20,26 @@ export async function peptideList(params: {
 }
 
 /** 更新肽段 POST /api/peptide/update */
-export async function updateList(body: {
-  name?: any;
-  type?: any;
-  filePath?: any;
-  description?: any;
+export async function updateList(params: {
+  isUnique?: boolean;
+  mz?: number;
+  protein?: string;
+  rt?: number;
+  id: string;
 }) {
-  const fileData = new FormData();
-  fileData.append('name', body.name);
-  fileData.append('type', body.type);
-  fileData.append('libFile', body.filePath[0].originFileObj);
-  fileData.append('description', body.description);
-  return request<TableListItem>('/api/peptide/update', {
+  // eslint-disable-next-line no-console
+  console.log(params);
+
+  return request('/api/peptide/update', {
     method: 'POST',
-    header: {
-      Accept: 'application/json',
+    params: {
+      ...params,
     },
-    data: fileData,
   });
 }
 
 /** 删除肽段库 GET /api/peptide/remove  */
-export async function removeList(params: { libraryIds: any }) {
+export async function removeList(params: { peptideId: any }) {
   return request('/api/peptide/remove', {
     method: 'GET',
     params: {

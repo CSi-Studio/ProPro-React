@@ -1,4 +1,5 @@
 export default [
+  { path: '/', component: './Library' },
   {
     path: '/user',
     layout: false,
@@ -18,42 +19,12 @@ export default [
       },
     ],
   },
-  {
-    path: '/welcome',
-    name: 'welcome',
-    icon: 'smile',
-    component: './Welcome',
-  },
-  {
-    path: '/dict',
-    name: 'dict',
-    icon: 'smile',
-    component: './Dict',
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    icon: 'crown',
-    access: 'canAdmin',
-    component: './Admin',
-    routes: [
-      {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        icon: 'smile',
-        component: './Welcome',
-      },
-      {
-        component: './404',
-      },
-    ],
-  },
-  {
-    name: 'test',
-    icon: 'table',
-    path: '/test',
-    component: './Test',
-  },
+  // {
+  //   path: '/dict',
+  //   name: 'dict',
+  //   icon: 'smile',
+  //   component: './Dict',
+  // },
   {
     name: 'project.table-list',
     icon: 'profile',
@@ -71,10 +42,16 @@ export default [
         component: './Library',
       },
       {
-        path: '/library/peptide:name',
+        path: '/library/peptide',
         name: 'peptide-list',
         icon: 'smile',
         component: './Library/Peptide',
+      },
+      {
+        path: '/library/protein',
+        name: 'protein-list',
+        icon: 'smile',
+        component: './Library/Protein',
       },
       {
         component: './404',
@@ -86,10 +63,6 @@ export default [
     icon: 'table',
     path: '/libraryCard',
     component: './Card',
-  },
-  {
-    path: '/',
-    redirect: '/welcome',
   },
   {
     component: './404',

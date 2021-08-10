@@ -1,33 +1,79 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
-import { Tooltip } from 'antd';
+import { Form, message, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { peptideList } from './service';
+import { peptideList, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import { EditFilled, FileTextOutlined } from '@ant-design/icons';
+import { EditFilled, FileTextFilled } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
+import DeleteForm from './components/DeleteForm';
+import type { updateFormValueType } from './components/UpdateForm';
+import UpdateForm from './components/UpdateForm';
+import DetailForm from './components/DetailForm';
+
+/**
+ * 更新库
+ * @param values
+ */
+const handleUpdate = async (values: updateFormValueType) => {
+  const hide = message.loading('正在更新');
+  try {
+    await updateList({ ...values });
+    hide();
+    message.success('编辑成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('编辑失败，请重试!');
+    return false;
+  }
+};
+/**
+ * 删除库
+ * @param currentRow
+ */
+const handleRemove = async (currentRow: TableListItem | undefined) => {
+  if (!currentRow) return true;
+  try {
+    await removeList({
+      peptideId: currentRow.id,
+    });
+    message.success('删除成功，希望你不要后悔 🥳');
+    return true;
+  } catch (error) {
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
 
 const TableList: React.FC = (props) => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
-  console.log(props?.location.query);
+  /** 删除窗口的弹窗 */
+  const [formDelete] = Form.useForm();
+  const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
+  /** 更新窗口的弹窗 */
+  const [formUpdate] = Form.useForm();
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** 库详情的抽屉 */
+  const [showDetail, setShowDetail] = useState<boolean>(false);
+
+  const { libraryId } = props?.location?.query;
 
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '标准库名称',
-      dataIndex: 'name',
-      copyable: true,
-      width: '150px',
+      title: 'PeptideRef',
+      dataIndex: 'peptideRef',
+      width: '100px',
+      // hideInSearch: true,
       render: (dom, entity) => {
         return (
-          <Tooltip title={dom} color="#eeeeee" placement="topLeft">
+          <Tooltip title={dom} placement="topLeft">
             <div
               style={{
                 width: '150px',
@@ -39,23 +85,16 @@ const TableList: React.FC = (props) => {
               <a
                 onClick={() => {
                   setCurrentRow(entity);
+                  setShowDetail(true);
                   // setPopup(true);
                 }}
               >
-                <FileTextOutlined />
                 {dom}
               </a>
             </div>
           </Tooltip>
         );
       },
-    },
-    {
-      title: 'PeptideRef',
-      dataIndex: 'peptideRef',
-      width: '100px',
-      // hideInSearch: true,
-      sorter: (a, b) => (a.peptideRef > b.peptideRef ? -1 : 1),
     },
     {
       title: 'm / z',
@@ -82,47 +121,6 @@ const TableList: React.FC = (props) => {
       title: '离子片段',
       width: '120px',
       dataIndex: 'fragments',
-      // render: (dom, entity) => [
-      //   <div
-      //     style={{
-      //       display: 'flex',
-      //       flexDirection: 'column',
-      //       justifyContent: 'center',
-      //       alignItems: 'center',
-      //     }}
-      //   >
-      //     {entity.decoyFragments.map((item) => (
-      //       <p
-      //         key={item.cutInfo}
-      //         style={{
-      //           textAlign: 'center',
-      //           backgroundColor: '#eee',
-      //           display: 'flex',
-      //           justifyContent: 'center',
-      //           alignItems: 'center',
-      //           margin: 0,
-      //           borderBottom: '1px solid #000',
-      //         }}
-      //       >
-      //         <p style={{ margin: '0 2px', width: '50px' }}>{item.cutInfo}</p>
-      //         <p style={{ margin: '0 2px', width: '180px' }}>{item.mz}</p>
-      //         <p style={{ margin: '0 2px', width: '60px' }}>{item.intensity}</p>
-      //         <p style={{ margin: '0 2px', width: '20px' }}>{item.charge}</p>
-      //         <p
-      //           style={{
-      //             margin: '0 2px',
-      //             width: '120px',
-      //             whiteSpace: 'nowrap',
-      //             overflow: 'hidden',
-      //             textOverflow: 'ellipsis',
-      //           }}
-      //         >
-      //           <Tooltip title={item.annotations}>{item.annotations}</Tooltip>
-      //         </p>
-      //       </p>
-      //     ))}
-      //   </div>,
-      // ],
       children: [
         {
           title: 'CutInfo',
@@ -130,6 +128,7 @@ const TableList: React.FC = (props) => {
           width: '50px',
           render: (dom, entity) => [
             <div
+              key="1"
               style={{
                 color: '#666666',
                 display: 'flex',
@@ -138,8 +137,8 @@ const TableList: React.FC = (props) => {
               }}
             >
               {entity.decoyFragments.map((item) => (
-                <p
-                  key={item.cutInfo}
+                <div
+                  key={item.intensity}
                   style={{
                     margin: 0,
                   }}
@@ -156,7 +155,7 @@ const TableList: React.FC = (props) => {
                   >
                     {item.cutInfo}
                   </p>
-                </p>
+                </div>
               ))}
             </div>,
           ],
@@ -167,6 +166,7 @@ const TableList: React.FC = (props) => {
           width: '160px',
           render: (dom, entity) => [
             <div
+              key="1"
               style={{
                 color: '#666666',
                 display: 'flex',
@@ -175,8 +175,8 @@ const TableList: React.FC = (props) => {
               }}
             >
               {entity.decoyFragments.map((item) => (
-                <p
-                  key={item.cutInfo}
+                <div
+                  key={item.intensity}
                   style={{
                     margin: 0,
                   }}
@@ -192,7 +192,7 @@ const TableList: React.FC = (props) => {
                   >
                     {item.mz}
                   </p>
-                </p>
+                </div>
               ))}
             </div>,
           ],
@@ -203,6 +203,7 @@ const TableList: React.FC = (props) => {
           width: '60px',
           render: (dom, entity) => [
             <div
+              key="1"
               style={{
                 color: '#666666',
                 display: 'flex',
@@ -211,8 +212,8 @@ const TableList: React.FC = (props) => {
               }}
             >
               {entity.decoyFragments.map((item) => (
-                <p
-                  key={item.cutInfo}
+                <div
+                  key={item.intensity}
                   style={{
                     margin: 0,
                   }}
@@ -228,7 +229,7 @@ const TableList: React.FC = (props) => {
                   >
                     {item.intensity}
                   </p>
-                </p>
+                </div>
               ))}
             </div>,
           ],
@@ -239,6 +240,7 @@ const TableList: React.FC = (props) => {
           width: '60px',
           render: (dom, entity) => [
             <div
+              key="1"
               style={{
                 color: '#666666',
                 display: 'flex',
@@ -248,8 +250,8 @@ const TableList: React.FC = (props) => {
               }}
             >
               {entity.decoyFragments.map((item) => (
-                <p
-                  key={item.cutInfo}
+                <div
+                  key={item.intensity}
                   style={{
                     margin: 0,
                   }}
@@ -265,7 +267,7 @@ const TableList: React.FC = (props) => {
                   >
                     {item.charge}
                   </p>
-                </p>
+                </div>
               ))}
             </div>,
           ],
@@ -276,6 +278,7 @@ const TableList: React.FC = (props) => {
           width: '80px',
           render: (dom, entity) => [
             <div
+              key="1"
               style={{
                 color: '#666666',
                 display: 'flex',
@@ -284,8 +287,8 @@ const TableList: React.FC = (props) => {
               }}
             >
               {entity.decoyFragments.map((item) => (
-                <p
-                  key={item.cutInfo}
+                <div
+                  key={item.intensity}
                   style={{
                     margin: 0,
                   }}
@@ -301,7 +304,7 @@ const TableList: React.FC = (props) => {
                   >
                     <Tooltip title={item.annotations}>{item.annotations}</Tooltip>
                   </p>
-                </p>
+                </div>
               ))}
             </div>,
           ],
@@ -315,24 +318,37 @@ const TableList: React.FC = (props) => {
       hideInSearch: true,
       width: '120px',
       render: (text, record) => [
-        <Tooltip title={'详情'} key="edit">
+        <Tooltip title={'编辑'} key="edit">
           <a
             onClick={() => {
+              formUpdate?.resetFields();
+              handleUpdateModalVisible(true);
               setCurrentRow(record);
-              // setPopup(true);
             }}
-            key="edit"
+            key="detail"
           >
             <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
           </a>
         </Tooltip>,
-        <Tooltip title={'预测肽段碎片'} key="edit">
+        <Tooltip title={'详情'} key="detail">
           <a
             onClick={() => {
               setCurrentRow(record);
-              // setPopup(true);
+              setShowDetail(true);
             }}
-            key="edit"
+            key="detail"
+          >
+            <FileTextFilled
+              style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
+            />
+          </a>
+        </Tooltip>,
+        <Tooltip title={'预测肽段碎片'} key="predict">
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+            }}
+            key="predict"
           >
             <Icon
               style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
@@ -340,13 +356,14 @@ const TableList: React.FC = (props) => {
             />
           </a>
         </Tooltip>,
-        <Tooltip title={'删除'} key="edit">
+        <Tooltip title={'删除'} key="delete">
           <a
             onClick={() => {
+              formDelete?.resetFields();
+              handleDeleteModalVisible(true);
               setCurrentRow(record);
-              // setPopup(true);
             }}
-            key="edit"
+            key="delete"
           >
             <Icon
               style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
@@ -361,13 +378,20 @@ const TableList: React.FC = (props) => {
     <PageContainer>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle=""
+        headerTitle={
+          props?.location?.state?.libraryName == undefined
+            ? ''
+            : props?.location?.state?.libraryName
+        }
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
-        request={peptideList}
+        request={async (params) => {
+          const msg = await peptideList({ libraryId, ...params });
+          return Promise.resolve(msg);
+        }}
         // dataSource={tableListDataSource}
         columns={columns}
         rowSelection={
@@ -377,6 +401,72 @@ const TableList: React.FC = (props) => {
             // },
           }
         }
+      />
+
+      {/* 列表详情 */}
+      <DetailForm
+        showDetail={showDetail}
+        currentRow={currentRow}
+        columns={columns}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+      />
+
+      {/* 编辑列表 */}
+      <UpdateForm
+        form={formUpdate}
+        onCancel={{
+          onCancel: () => {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            formUpdate?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          // eslint-disable-next-line no-param-reassign
+          value.id = currentRow?.id as string;
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={currentRow || {}}
+      />
+
+      {/* 删除列表 */}
+      <DeleteForm
+        currentRow={currentRow}
+        form={formDelete}
+        onCancel={{
+          onCancel: () => {
+            handleDeleteModalVisible(false);
+            setCurrentRow(undefined);
+            formDelete?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          if (value.name === currentRow?.peptideRef) {
+            const success = await handleRemove(currentRow);
+            if (success) {
+              handleDeleteModalVisible(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          } else {
+            message.error('你没有删除的决心，给👴🏻 爬');
+          }
+        }}
+        deleteModalVisible={deleteModalVisible}
+        values={currentRow || {}}
       />
     </PageContainer>
   );

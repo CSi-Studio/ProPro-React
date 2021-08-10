@@ -2,7 +2,7 @@ export type TableListItem = {
   id: string;
   libraryId: string;
   peptideRef: string;
-  mz: string;
+  mz: number;
   proteinIdentifier: string;
   isUnique: boolean;
   rt: number;
