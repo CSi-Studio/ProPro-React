@@ -53,10 +53,18 @@ export async function removeList(params: { projectId: any }) {
     },
   });
 }
-
-/** 生成伪肽段 GET project/generateDecoys  */
-export async function generateDecoys(params: { libraryId: any; generator: string }) {
-  return request('/api/project/generateDecoys', {
+/** 删除项目 GET project/remove  */
+export async function removeAna(params: { projectId: any }) {
+  return request('/api/project/remove', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+/** 删除项目 GET project/remove  */
+export async function removeIrt(params: { projectId: any }) {
+  return request('/api/project/remove', {
     method: 'GET',
     params: {
       ...params,
@@ -64,33 +72,13 @@ export async function generateDecoys(params: { libraryId: any; generator: string
   });
 }
 
-/** 生成基本信息 GET project/statistic  */
-export async function statistic(libraryId: string) {
-  return request('/api/project/statistic', {
-    method: 'GET',
-    params: {
-      libraryId,
-    },
-  });
-}
-
-/** 统计肽段重复率 GET project/repeatCount  */
-export async function repeatCount(libraryId: string) {
-  return request('/api/project/repeatCount', {
-    method: 'GET',
-    params: {
-      libraryId,
-    },
-  });
-}
-
-/** 获取肽段列表 GET /peptide/list */
-export async function peptideList(params: {
-  /** 选择的标准库ID */
-  libraryId?: string;
+/** 重新扫描项目的实验 GET /project/scan */
+export async function peptideScan(params: {
+  /** 选择的项目ID */
+  projectId?: string;
 }) {
-  return request('/api/peptide/list', {
-    method: 'GET',
+  return request('/api/project/scan', {
+    method: 'POST',
     params: {
       ...params,
     },

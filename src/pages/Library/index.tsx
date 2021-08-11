@@ -12,7 +12,6 @@ import {
   statistic,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import { EditFilled, CopyFilled, FileTextFilled } from '@ant-design/icons';
 import type { addFormValueType } from './components/CreateForm';
 import CreateForm from './components/CreateForm';
 import type { updateFormValueType } from './components/UpdateForm';

@@ -46,12 +46,12 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '请输入要删除的标准库名称',
+              message: '请输入要删除的项目名称',
             },
           ]}
           width="sm"
           name="name"
-          placeholder="请输入要删除的标准库名称"
+          placeholder="请输入要删除的项目名称"
         />
       </Space>
     </ModalForm>

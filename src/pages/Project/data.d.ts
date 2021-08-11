@@ -1,5 +1,5 @@
 export type TableListItem = {
-  id: number;
+  id: string;
   name: string;
   alias: string;
   type: string;

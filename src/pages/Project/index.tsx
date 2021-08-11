@@ -5,8 +5,15 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableDropdown } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { FormattedMessage } from 'umi';
-import { addList, projectList, removeList, updateList } from './service';
+import {
+  addList,
+  peptideScan,
+  projectList,
+  removeAna,
+  removeIrt,
+  removeList,
+  updateList,
+} from './service';
 import type { TableListItem, TableListPagination } from './data';
 import type { addFormValueType } from './components/CreateForm';
 import CreateForm from './components/CreateForm';
@@ -51,6 +58,22 @@ const handleUpdate = async (values: updateFormValueType) => {
     return false;
   }
 };
+/**
+ * 扫描库
+ * @param values
+ */
+const handleScan = async (values: { projectId: string }) => {
+  const hide = message.loading('正在扫描');
+  try {
+    await peptideScan({ ...values });
+    hide();
+    message.success('扫描更新成功');
+    return true;
+  } catch (error) {
+    hide();
+    return false;
+  }
+};
 
 /**
  * 删除库
@@ -58,13 +81,51 @@ const handleUpdate = async (values: updateFormValueType) => {
  */
 const handleRemove = async (currentRow: TableListItem | undefined) => {
   if (!currentRow) return true;
+  const hide = message.loading('正在扫描');
   try {
     await removeList({
       projectId: currentRow.id,
     });
+    hide();
+
     message.success('删除成功，希望你不要后悔 🥳');
     return true;
   } catch (error) {
+    hide();
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
+/**
+ * 删除分析结果
+ * @param projectId
+ */
+const handleRmAna = async (values: { projectId: string }) => {
+  const hide = message.loading('正在扫描');
+  try {
+    await removeAna({ ...values });
+    hide();
+    message.success('删除分析结果成功，希望你不要后悔 🥳');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
+/**
+ * 删除IRT
+ * @param currentRow
+ */
+const handleRmIrt = async (values: { projectId: string }) => {
+  const hide = message.loading('正在扫描');
+  try {
+    await removeIrt({ ...values });
+    hide();
+    message.success('删除IRT成功，希望你不要后悔 🥳');
+    return true;
+  } catch (error) {
+    hide();
     message.error('删除失败，请重试');
     return false;
   }
@@ -156,9 +217,8 @@ const TableList: React.FC = () => {
       ellipsis: true,
       fixed: 'right',
       render: (text, record, index, action) => [
-        <Tooltip title={'编辑'} key="92">
+        <Tooltip title={'编辑'}>
           <a
-            key="2"
             onClick={() => {
               formUpdate?.resetFields();
               handleUpdateModalVisible(true);
@@ -168,34 +228,57 @@ const TableList: React.FC = () => {
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
           </a>
         </Tooltip>,
-        <Tooltip title={'详情'} key="detail">
+        <Tooltip title={'详情'}>
           <a
             onClick={() => {
               setCurrentRow(record);
               setShowDetail(true);
             }}
-            key="edit"
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
           </a>
         </Tooltip>,
-        <Tooltip title={'扫描并更新'} key="91">
-          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer" key="1">
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />{' '}
+        <Tooltip title={'扫描并更新'}>
+          <a
+            onClick={() => {
+              handleScan({ projectId: record.id });
+            }}
+          >
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />
           </a>
         </Tooltip>,
-        <Tooltip title={'批量IRT计算'} key="93">
-          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer" key="3">
+        <Tooltip title={'删除分析结果'}>
+          <a
+            onClick={() => {
+              handleRmAna({ projectId: record.id });
+            }}
+          >
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:delete-sweep" />
+          </a>
+        </Tooltip>,
+        <Tooltip title={'删除IRT'}>
+          <a
+            onClick={() => {
+              handleRmIrt({ projectId: record.id });
+            }}
+          >
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '20px' }}
+              icon="mdi:delete-sweep-outline"
+            />
+          </a>
+        </Tooltip>,
+        <Tooltip title={'批量IRT计算'}>
+          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:calculator" />
           </a>
         </Tooltip>,
-        <Tooltip title={'批量执行完整流程'} key="94">
-          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer" key="4">
+        <Tooltip title={'批量执行完整流程'}>
+          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:connection" />
           </a>
         </Tooltip>,
         <TableDropdown
-          key="95"
           onSelect={(key) => {
             // eslint-disable-next-line no-console
             console.log(key);

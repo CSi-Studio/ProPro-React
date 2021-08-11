@@ -3,7 +3,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import { EditFilled, FileTextFilled } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';

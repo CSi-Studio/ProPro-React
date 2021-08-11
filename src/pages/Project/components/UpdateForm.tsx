@@ -38,6 +38,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     >
       <ProForm.Group>
         <ProFormText
+          rules={[
+            {
+              required: true,
+              message: '项目名称不能为空',
+            },
+          ]}
           disabled
           initialValue={props.values.name}
           width="sm"
@@ -53,6 +59,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
+          rules={[
+            {
+              required: true,
+              message: '标准库不能为空',
+            },
+          ]}
           initialValue={props.values.anaLibName}
           width="sm"
           name="anaLibId"
@@ -71,6 +83,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           }}
         />
         <ProFormSelect
+          rules={[
+            {
+              required: true,
+              message: '内标库不能为空',
+            },
+          ]}
           initialValue={props.values.insLibName}
           width="sm"
           name="insLibId"

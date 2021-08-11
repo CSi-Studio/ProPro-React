@@ -71,7 +71,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '项目名称不能为空',
+              message: '标准库不能为空',
             },
           ]}
           width="sm"
@@ -91,6 +91,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           }}
         />
         <ProFormSelect
+          rules={[
+            {
+              required: true,
+              message: '内标库不能为空',
+            },
+          ]}
           width="sm"
           name="insLibId"
           label="内标库"
