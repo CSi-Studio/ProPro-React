@@ -1,19 +1,16 @@
-import { message, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { proteinList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
-import { Icon } from '@iconify/react';
 
 const TableList: React.FC = (props) => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
-
-  const { libraryId } = props?.location?.query;
 
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const actionRef = useRef<ActionType>();

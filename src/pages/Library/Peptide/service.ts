@@ -28,8 +28,6 @@ export async function updateList(params: {
   id: string;
 }) {
   // eslint-disable-next-line no-console
-  console.log(params);
-
   return request('/api/peptide/update', {
     method: 'POST',
     params: {

@@ -209,7 +209,7 @@ const TableList: React.FC = () => {
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
         return (
-          <Tooltip title="dom">
+          <Tooltip title={dom}>
             <Tag>{dom}</Tag>
           </Tooltip>
         );
@@ -219,17 +219,6 @@ const TableList: React.FC = () => {
       title: '伪肽段生成算法',
       dataIndex: 'generator',
       width: '120px',
-
-      // filters: true,
-      // onFilter: true,
-      // valueEnum: {
-      //   shuffle: {
-      //     text: 'shuffle',
-      //   },
-      //   nice: {
-      //     text: 'nice',
-      //   },
-      // },
       render: (dom, entity) => {
         if (
           entity.generator === 'undefined' ||
@@ -350,19 +339,6 @@ const TableList: React.FC = () => {
       fixed: 'right',
       hideInSearch: true,
       render: (text, record) => [
-        <Tooltip title={'详情'} key="detail">
-          <a
-            onClick={() => {
-              setCurrentRow(record);
-              setShowDetail(true);
-            }}
-            key="edit"
-          >
-            <FileTextFilled
-              style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
-            />
-          </a>
-        </Tooltip>,
         <Tooltip title={'编辑'} key="edit">
           <a
             onClick={() => {
@@ -373,7 +349,18 @@ const TableList: React.FC = () => {
             }}
             key="edit"
           >
-            <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+          </a>
+        </Tooltip>,
+        <Tooltip title={'详情'} key="detail">
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+            key="edit"
+          >
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
           </a>
         </Tooltip>,
         <Tooltip title={'克隆'} key="clone">
@@ -383,10 +370,9 @@ const TableList: React.FC = () => {
               formClone?.resetFields();
               handleCloneModalVisible(true);
               setCurrentRow(record);
-              // setPopup(true);
             }}
           >
-            <CopyFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:content-copy" />
           </a>
         </Tooltip>,
         <Dropdown
@@ -400,7 +386,6 @@ const TableList: React.FC = () => {
                     onClick={() => {
                       const values = { libraryId: record.id, generator: 'shuffle' };
                       handleGenerate(values);
-                      // setPopup(true);
                     }}
                   >
                     <Icon
@@ -432,7 +417,7 @@ const TableList: React.FC = () => {
         >
           <Tooltip title={'生成伪肽段'} key="generateDecoys">
             <Icon
-              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
               icon="mdi:alpha-p-box"
             />
           </Tooltip>
@@ -446,7 +431,7 @@ const TableList: React.FC = () => {
             }}
           >
             <Icon
-              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
               icon="mdi:file-chart"
             />
           </a>
@@ -460,7 +445,7 @@ const TableList: React.FC = () => {
             }}
           >
             <Icon
-              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
               icon="mdi:file-percent"
             />
           </a>
@@ -476,7 +461,7 @@ const TableList: React.FC = () => {
             }}
           >
             <Icon
-              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
+              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
               icon="mdi:delete"
             />
           </a>

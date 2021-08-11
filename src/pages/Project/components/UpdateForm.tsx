@@ -1,79 +1,59 @@
 import React from 'react';
 import ProForm, {
-  ProFormText,
-  ModalForm,
   ProFormSelect,
+  ProFormText,
   ProFormTextArea,
+  ModalForm,
 } from '@ant-design/pro-form';
 import { beforeAdd } from '../service';
 
-export type addFormValueType = {
+export type updateFormValueType = {
   name?: string;
-  alias?: string;
   type?: string;
+  description?: string;
+  id: string;
   owner?: string;
+  alias?: string;
   anaLibId?: string;
   insLibId?: string;
-  description?: string;
 };
 
-export type CreateFormProps = {
-  onSubmit: (values: addFormValueType) => Promise<void>;
+export type UpdateFormProps = {
+  onSubmit: (values: updateFormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
-  createModalVisible: boolean;
-  values: Partial<any>;
+  updateModalVisible: boolean;
+  values: any;
   form: any;
 };
 
-const CreateForm: React.FC<CreateFormProps> = (props) => {
+const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title="创建一个项目"
+      title="更新标准库"
       width={530}
-      visible={props.createModalVisible}
+      visible={props.updateModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
     >
       <ProForm.Group>
-        <ProFormSelect
-          rules={[
-            {
-              required: true,
-              message: '项目名称不能为空',
-            },
-          ]}
+        <ProFormText
+          disabled
+          initialValue={props.values.name}
           width="sm"
           name="name"
-          label="项目名称"
+          label="库名称"
           tooltip="项目名称必须唯一"
-          request={async () => {
-            const params = await beforeAdd();
-            const res: any[] = [];
-            params.data.unloads.map((item: string) => {
-              const temp: Record<any, any> = {};
-              temp.label = item;
-              temp.value = item;
-              res.push(temp);
-              return null;
-            });
-            return res;
-          }}
         />
-        <ProFormText width="sm" name="alias" label="项目别名" placeholder="请输入项目别名" />
+        <ProFormText initialValue={props.values.alias} width="sm" name="alias" label="项目别名" />
       </ProForm.Group>
       <ProForm.Group>
-        <ProFormText width="sm" name="type" label="实验类型" placeholder="请输入实验类型" />
-        <ProFormText width="sm" name="owner" label="负责人" placeholder="请输入负责人" />
+        <ProFormText initialValue={props.values.owner} width="sm" name="owner" label="负责人" />
+        <ProFormSelect initialValue="DIA" width="sm" name="type" label="实验类型" />
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
-          rules={[
-            {
-              required: true,
-              message: '项目名称不能为空',
-            },
-          ]}
+          initialValue={props.values.anaLibName}
           width="sm"
           name="anaLibId"
           label="标准库"
@@ -91,6 +71,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           }}
         />
         <ProFormSelect
+          initialValue={props.values.insLibName}
           width="sm"
           name="insLibId"
           label="内标库"
@@ -108,9 +89,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           }}
         />
       </ProForm.Group>
-      <ProFormTextArea name="description" label="项目描述" />
+      <ProFormTextArea
+        initialValue={props.values.description}
+        label="详情描述"
+        name="description"
+      />
     </ModalForm>
   );
 };
 
-export default CreateForm;
+export default UpdateForm;

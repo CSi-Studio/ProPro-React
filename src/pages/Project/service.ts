@@ -1,6 +1,14 @@
 import { request } from 'umi';
+import type { addFormValueType } from './components/CreateForm';
+import { updateFormValueType } from './components/UpdateForm';
 import type { TableListItem } from './data';
 
+/** 添加项目前处理 GET /api/project/beforeAdd */
+export async function beforeAdd() {
+  return request('/api/project/beforeAdd', {
+    method: 'GET',
+  });
+}
 /** 获取项目列表 GET /api/project/list */
 export async function projectList(params: {
   // query
@@ -18,35 +26,26 @@ export async function projectList(params: {
 }
 
 /** 添加项目 POST /api/project/add */
-export async function addList(body: { name?: any; type?: any; filePath?: any; description?: any }) {
-  const fileData = new FormData();
-  fileData.append('name', body.name);
-  fileData.append('type', body.type);
-  fileData.append('libFile', body.filePath[0].originFileObj);
-  fileData.append('description', body.description);
+export async function addList(params: addFormValueType) {
   return request<TableListItem>('/api/project/add', {
     method: 'POST',
-    header: {
-      Accept: 'application/json',
+    params: {
+      ...params,
     },
-    data: fileData,
   });
 }
 /** 更新项目 POST /api/project/update */
-export async function updateList(body: { name?: any; id: string; type?: any; description?: any }) {
-  const fileData = new FormData();
-  fileData.append('name', body.name);
-  fileData.append('type', body.type);
-  fileData.append('description', body.description);
-  fileData.append('id', body.id);
+export async function updateList(params: updateFormValueType) {
   return request<TableListItem>('/api/project/update', {
     method: 'POST',
-    data: fileData,
+    params: {
+      ...params,
+    },
   });
 }
 
 /** 删除项目 GET project/remove  */
-export async function removeList(params: { libraryIds: any }) {
+export async function removeList(params: { projectId: any }) {
   return request('/api/project/remove', {
     method: 'GET',
     params: {

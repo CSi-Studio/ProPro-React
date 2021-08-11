@@ -1,30 +1,29 @@
 import { Icon } from '@iconify/react';
-import { Button, message, Tag, Tooltip } from 'antd';
+import { Button, Form, message, Tag, Tooltip } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableDropdown } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import ProForm, {
-  ModalForm,
-  ProFormText,
-  ProFormTextArea,
-  ProFormSelect,
-} from '@ant-design/pro-form';
 import { FormattedMessage } from 'umi';
-import { projectList } from './service';
+import { addList, projectList, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
+import type { addFormValueType } from './components/CreateForm';
+import CreateForm from './components/CreateForm';
+import DetailForm from './components/DetailForm';
+import type { updateFormValueType } from './components/UpdateForm';
+import UpdateForm from './components/UpdateForm';
+import DeleteForm from './components/DeleteForm';
+import './index.less';
 
 /**
- * 添加节点
- *
- * @param fields
+ * 添加库
+ * @param values
  */
-const handleAdd = async (fields: TableListItem) => {
+const handleAdd = async (values: addFormValueType) => {
   const hide = message.loading('正在添加');
-
   try {
-    await addRule({ ...fields });
+    await addList({ ...values });
     hide();
     message.success('添加成功');
     return true;
@@ -34,85 +33,155 @@ const handleAdd = async (fields: TableListItem) => {
     return false;
   }
 };
+
+/**
+ * 更新库
+ * @param values
+ */
+const handleUpdate = async (values: updateFormValueType) => {
+  const hide = message.loading('正在更新');
+  try {
+    await updateList({ ...values });
+    hide();
+    message.success('编辑成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('编辑失败，请重试!');
+    return false;
+  }
+};
+
+/**
+ * 删除库
+ * @param currentRow
+ */
+const handleRemove = async (currentRow: TableListItem | undefined) => {
+  if (!currentRow) return true;
+  try {
+    await removeList({
+      projectId: currentRow.id,
+    });
+    message.success('删除成功，希望你不要后悔 🥳');
+    return true;
+  } catch (error) {
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
+  const [formCreate] = Form.useForm();
+  const [formUpdate] = Form.useForm();
+  const [formDelete] = Form.useForm();
+  /** 全局弹窗 */
+  // const [popup, setPopup] = useState<boolean>(false);
+  /** 全选 */
+  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
-  // const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
+  const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
+  /** 更新窗口的弹窗 */
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** 库详情的抽屉 */
+  const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
+  const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: <FormattedMessage id="label_project_name" defaultMessage="项目名称" />,
+      title: '项目名称',
       dataIndex: 'name',
-      sorter: true,
+      render: (dom, record) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
+        );
+      },
+    },
+    {
+      title: '项目别名',
+      dataIndex: 'alias',
       render: (dom) => {
         return <a>{dom}</a>;
       },
     },
     {
-      title: <FormattedMessage id="label_exp_type" defaultMessage="实验类型" />,
+      title: '实验类型',
       dataIndex: 'type',
-      sorter: true,
     },
     {
-      title: <FormattedMessage id="label_project_repository" defaultMessage="项目仓库" />,
-      dataIndex: 'repoProjectName',
-      sorter: true,
-      renderText: (val: string) => `${val}`,
+      title: '负责人',
+      dataIndex: 'owner',
     },
     {
-      title: <FormattedMessage id="label_owner" defaultMessage="负责人" />,
-      dataIndex: 'creator',
-      sorter: true,
+      title: '标准库',
+      dataIndex: 'anaLibName',
     },
     {
-      title: <FormattedMessage id="label_default_irt_library" defaultMessage="默认IRT标准库" />,
-      sorter: true,
-      dataIndex: 'irtLibraryName',
+      title: '内标库',
+      dataIndex: 'insLibName',
     },
     {
-      title: <FormattedMessage id="label_default_library" defaultMessage="默认标准库" />,
-      dataIndex: 'libraryName',
-      sorter: true,
-    },
-    {
-      title: <FormattedMessage id="label_create_date" defaultMessage="创建时间" />,
-      dataIndex: 'createDate',
-      sorter: true,
-      valueType: 'dateTime',
-    },
-    {
-      title: <FormattedMessage id="label_labels" defaultMessage="标签" />,
-      dataIndex: 'labels',
+      title: '标签',
+      dataIndex: 'tags',
       render: (dom) => {
         // eslint-disable-next-line array-callback-return
         return <Tag>{dom}</Tag>;
       },
     },
     {
-      title: <FormattedMessage id="label_operation" defaultMessage="操作" />,
+      title: '项目描述',
+      dataIndex: 'description',
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createDate',
+      valueType: 'dateTime',
+    },
+    {
+      title: '操作',
       valueType: 'option',
       copyable: true,
       width: 100,
       ellipsis: true,
       fixed: 'right',
       render: (text, record, index, action) => [
-        <Tooltip title={'扫描并更新'} key="91">
-          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer" key="1">
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />{' '}
-          </a>
-        </Tooltip>,
         <Tooltip title={'编辑'} key="92">
           <a
             key="2"
             onClick={() => {
-              action?.startEditable?.(record.id);
+              formUpdate?.resetFields();
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
             }}
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+          </a>
+        </Tooltip>,
+        <Tooltip title={'详情'} key="detail">
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+            key="edit"
+          >
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+          </a>
+        </Tooltip>,
+        <Tooltip title={'扫描并更新'} key="91">
+          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer" key="1">
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />{' '}
           </a>
         </Tooltip>,
         <Tooltip title={'批量IRT计算'} key="93">
@@ -127,10 +196,25 @@ const TableList: React.FC = () => {
         </Tooltip>,
         <TableDropdown
           key="95"
-          onSelect={(e) => {}}
+          onSelect={(key) => {
+            // eslint-disable-next-line no-console
+            console.log(key);
+            if (key === 'check') {
+              message.success('我是查看结果总览');
+            }
+            if (key === 'export') {
+              message.success('我是导出');
+            }
+            if (key === 'delete') {
+              message.success('我是删除');
+              formDelete?.resetFields();
+              handleDeleteModalVisible(true);
+              setCurrentRow(record);
+            }
+          }}
           menus={[
             {
-              key: '96',
+              key: 'check',
               name: '查看结果总览',
               icon: (
                 <Icon
@@ -140,7 +224,7 @@ const TableList: React.FC = () => {
               ),
             },
             {
-              key: '97',
+              key: 'export',
               name: '导出',
               icon: (
                 <Icon
@@ -150,7 +234,7 @@ const TableList: React.FC = () => {
               ),
             },
             {
-              key: '98',
+              key: 'delete',
               name: '删除',
               icon: (
                 <Icon
@@ -213,13 +297,18 @@ const TableList: React.FC = () => {
         ></FooterToolbar>
       )}
       {/* 新建列表 */}
-      <ModalForm
-        title="创建一个项目"
-        width={530}
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+      <CreateForm
+        form={formCreate}
+        onCancel={{
+          onCancel: () => {
+            handleModalVisible(false);
+            formCreate?.resetFields();
+          },
+        }}
+        onSubmit={async (value: addFormValueType) => {
+          // eslint-disable-next-line no-console
+          console.log(value);
+          const success = await handleAdd(value as addFormValueType);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -227,73 +316,75 @@ const TableList: React.FC = () => {
             }
           }
         }}
-      >
-        <ProForm.Group>
-          <ProFormText
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage id="project_ruleName" defaultMessage="项目名字不能为空" />
-                ),
-              },
-            ]}
-            width="sm"
-            name="name"
-            label="项目名称"
-            tooltip="项目名称必须唯一"
-            placeholder="请输入项目名称"
-          />
-          <ProFormSelect
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage id="experiment_ruleName" defaultMessage="实验类型不能为空" />
-                ),
-              },
-            ]}
-            options={[
-              {
-                value: 'DIA_SWATH',
-                label: 'DIA_SWATH',
-              },
-              {
-                value: 'PRM',
-                label: 'PRM',
-              },
-            ]}
-            width="sm"
-            name="type"
-            label="实验类型"
-          />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormSelect
-            options={[
-              {
-                value: 'test',
-                label: 'test',
-              },
-            ]}
-            width="sm"
-            name="irtLibraryName"
-            label="默认IRT校准库"
-          />
-          <ProFormSelect
-            options={[
-              {
-                value: 'test',
-                label: 'test',
-              },
-            ]}
-            width="sm"
-            name="LibraryName"
-            label="默认校准库"
-          />
-        </ProForm.Group>
-        <ProFormTextArea label="详情描述" name="description" />
-      </ModalForm>
+        createModalVisible={createModalVisible}
+        values={currentRow || {}}
+      />
+
+      {/* 列表详情 */}
+      <DetailForm
+        showDetail={showDetail}
+        currentRow={currentRow}
+        columns={columns}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+      />
+
+      {/* 编辑列表 */}
+      <UpdateForm
+        form={formUpdate}
+        onCancel={{
+          onCancel: () => {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            formUpdate?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          // eslint-disable-next-line no-param-reassign
+          value.id = currentRow?.id as unknown as string;
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={currentRow || {}}
+      />
+
+      {/* 删除列表 */}
+      <DeleteForm
+        currentRow={currentRow}
+        form={formDelete}
+        onCancel={{
+          onCancel: () => {
+            handleDeleteModalVisible(false);
+            setCurrentRow(undefined);
+            formDelete?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          if (value.name === currentRow?.name) {
+            const success = await handleRemove(currentRow);
+            if (success) {
+              handleDeleteModalVisible(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          } else {
+            message.error('你没有删除的决心，给👴🏻 爬');
+          }
+        }}
+        deleteModalVisible={deleteModalVisible}
+        values={currentRow || {}}
+      />
     </PageContainer>
   );
 };

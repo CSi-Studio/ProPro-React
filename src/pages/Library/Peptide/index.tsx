@@ -327,7 +327,7 @@ const TableList: React.FC = (props) => {
             }}
             key="detail"
           >
-            <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
           </a>
         </Tooltip>,
         <Tooltip title={'详情'} key="detail">
@@ -338,9 +338,7 @@ const TableList: React.FC = (props) => {
             }}
             key="detail"
           >
-            <FileTextFilled
-              style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
-            />
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
           </a>
         </Tooltip>,
         <Tooltip title={'预测肽段碎片'} key="predict">

@@ -1,18 +1,15 @@
 export type TableListItem = {
   id: number;
   name: string;
+  alias: string;
   type: string;
-  repoProjectName: string;
-  creator: string;
-  libraryId: string;
-  libraryName: string;
-  labels: any[];
+  owner: string;
+  insLibId: string;
+  anaLibId: string;
+  tags: string[];
   description: string;
-  totalSize: number;
   createDate: string;
   lastModifiedDate: string;
-  irtLibraryName: string;
-  irtLibraryId: string;
 };
 
 export type TableListPagination = {
