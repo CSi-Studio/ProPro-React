@@ -20,12 +20,12 @@ export default [
     ],
   },
   // 字典界面
-  // {
-  //   path: '/dict',
-  //   name: 'dict',
-  //   icon: 'smile',
-  //   component: './Dict',
-  // },
+  {
+    path: '/dict',
+    name: 'dict',
+    icon: 'smile',
+    component: './Dict',
+  },
   // 项目界面
   {
     name: 'project.table-list',
