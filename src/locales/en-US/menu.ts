@@ -32,6 +32,8 @@ export default {
   'menu.list.search-list.applications': 'Search List(applications)',
   'menu.project': 'Project',
   'menu.project.table-list': 'projectList',
+  'menu.method': 'Method',
+  'menu.method.table-list': 'Method',
   'menu.library': 'Library',
   'menu.library.table-list': 'libraryList',
   'menu.library.peptide-list': 'peptideList',

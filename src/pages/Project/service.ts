@@ -1,6 +1,6 @@
 import { request } from 'umi';
 import type { addFormValueType } from './components/CreateForm';
-import { updateFormValueType } from './components/UpdateForm';
+import type { updateFormValueType } from './components/UpdateForm';
 import type { TableListItem } from './data';
 
 /** 添加项目前处理 GET /api/project/beforeAdd */

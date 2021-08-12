@@ -22,6 +22,8 @@ import type { updateFormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import DeleteForm from './components/DeleteForm';
 import './index.less';
+import DeleteAna from './components/DeleteAna';
+import DeleteIrt from './components/DeleteIrt';
 
 /**
  * 添加库
@@ -100,10 +102,11 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
  * 删除分析结果
  * @param projectId
  */
-const handleRmAna = async (values: { projectId: string }) => {
+const handleRmAna = async (currentRow: TableListItem | undefined) => {
+  if (!currentRow) return true;
   const hide = message.loading('正在扫描');
   try {
-    await removeAna({ ...values });
+    await removeAna({ projectId: currentRow.id });
     hide();
     message.success('删除分析结果成功，希望你不要后悔 🥳');
     return true;
@@ -117,10 +120,11 @@ const handleRmAna = async (values: { projectId: string }) => {
  * 删除IRT
  * @param currentRow
  */
-const handleRmIrt = async (values: { projectId: string }) => {
+const handleRmIrt = async (currentRow: TableListItem | undefined) => {
+  if (!currentRow) return true;
   const hide = message.loading('正在扫描');
   try {
-    await removeIrt({ ...values });
+    await removeIrt({ projectId: currentRow.id });
     hide();
     message.success('删除IRT成功，希望你不要后悔 🥳');
     return true;
@@ -143,6 +147,10 @@ const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
+  /** 删除分析结果的弹窗 */
+  const [delete1ModalVisible, handleDelete1ModalVisible] = useState<boolean>(false);
+  /** 删除IRT的弹窗 */
+  const [delete2ModalVisible, handleDelete2ModalVisible] = useState<boolean>(false);
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
@@ -216,7 +224,7 @@ const TableList: React.FC = () => {
       width: 100,
       ellipsis: true,
       fixed: 'right',
-      render: (text, record, index, action) => [
+      render: (text, record) => [
         <Tooltip title={'编辑'}>
           <a
             onClick={() => {
@@ -247,24 +255,27 @@ const TableList: React.FC = () => {
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />
           </a>
         </Tooltip>,
-        <Tooltip title={'删除分析结果'}>
+        <Tooltip title={'查看结果总览'}>
           <a
             onClick={() => {
-              handleRmAna({ projectId: record.id });
-            }}
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:delete-sweep" />
-          </a>
-        </Tooltip>,
-        <Tooltip title={'删除IRT'}>
-          <a
-            onClick={() => {
-              handleRmIrt({ projectId: record.id });
+              message.success('我是查看结果总览');
             }}
           >
             <Icon
-              style={{ verticalAlign: 'middle', fontSize: '20px' }}
-              icon="mdi:delete-sweep-outline"
+              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+              icon="mdi:file-eye"
+            />
+          </a>
+        </Tooltip>,
+        <Tooltip title={'导出'}>
+          <a
+            onClick={() => {
+              message.success('我是导出');
+            }}
+          >
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+              icon="mdi:file-export"
             />
           </a>
         </Tooltip>,
@@ -280,15 +291,19 @@ const TableList: React.FC = () => {
         </Tooltip>,
         <TableDropdown
           onSelect={(key) => {
-            // eslint-disable-next-line no-console
-            console.log(key);
-            if (key === 'check') {
-              message.success('我是查看结果总览');
+            if (key === 'delete1') {
+              message.success('我是删除分析结果');
+              formDelete?.resetFields();
+              handleDelete1ModalVisible(true);
+              setCurrentRow(record);
             }
-            if (key === 'export') {
-              message.success('我是导出');
+            if (key === 'delete2') {
+              message.success('我是删除IRT');
+              formDelete?.resetFields();
+              handleDelete2ModalVisible(true);
+              setCurrentRow(record);
             }
-            if (key === 'delete') {
+            if (key === 'delete3') {
               message.success('我是删除');
               formDelete?.resetFields();
               handleDeleteModalVisible(true);
@@ -297,27 +312,27 @@ const TableList: React.FC = () => {
           }}
           menus={[
             {
-              key: 'check',
-              name: '查看结果总览',
+              key: 'delete1',
+              name: '删除分析结果',
               icon: (
                 <Icon
                   style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                  icon="mdi:file-eye"
+                  icon="mdi:delete-sweep"
                 />
               ),
             },
             {
-              key: 'export',
-              name: '导出',
+              key: 'delete2',
+              name: '删除IRT',
               icon: (
                 <Icon
                   style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                  icon="mdi:file-export"
+                  icon="mdi:delete-sweep-outline"
                 />
               ),
             },
             {
-              key: 'delete',
+              key: 'delete3',
               name: '删除',
               icon: (
                 <Icon
@@ -389,8 +404,6 @@ const TableList: React.FC = () => {
           },
         }}
         onSubmit={async (value: addFormValueType) => {
-          // eslint-disable-next-line no-console
-          console.log(value);
           const success = await handleAdd(value as addFormValueType);
           if (success) {
             handleModalVisible(false);
@@ -466,6 +479,62 @@ const TableList: React.FC = () => {
           }
         }}
         deleteModalVisible={deleteModalVisible}
+        values={currentRow || {}}
+      />
+      {/* 删除分析结果 */}
+      <DeleteAna
+        currentRow={currentRow}
+        form={formDelete}
+        onCancel={{
+          onCancel: () => {
+            handleDelete1ModalVisible(false);
+            setCurrentRow(undefined);
+            formDelete?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          if (value.name === currentRow?.name) {
+            const success = await handleRmAna(currentRow);
+            if (success) {
+              handleDelete2ModalVisible(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          } else {
+            message.error('你没有删除的决心，给👴🏻 爬');
+          }
+        }}
+        delete1ModalVisible={delete1ModalVisible}
+        values={currentRow || {}}
+      />
+      {/* 删除IRT */}
+      <DeleteIrt
+        currentRow={currentRow}
+        form={formDelete}
+        onCancel={{
+          onCancel: () => {
+            handleDelete2ModalVisible(false);
+            setCurrentRow(undefined);
+            formDelete?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          if (value.name === currentRow?.name) {
+            const success = await handleRmIrt(currentRow);
+            if (success) {
+              handleDelete2ModalVisible(false);
+              setCurrentRow(undefined);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          } else {
+            message.error('你没有删除的决心，给👴🏻 爬');
+          }
+        }}
+        delete2ModalVisible={delete2ModalVisible}
         values={currentRow || {}}
       />
     </PageContainer>

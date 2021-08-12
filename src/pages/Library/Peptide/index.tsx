@@ -376,7 +376,7 @@ const TableList: React.FC = (props) => {
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
-          props?.location?.state?.libraryName == undefined
+          props?.location?.state?.libraryName === undefined
             ? ''
             : props?.location?.state?.libraryName
         }

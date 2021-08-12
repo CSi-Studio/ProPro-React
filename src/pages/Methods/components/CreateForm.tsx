@@ -165,7 +165,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                 <Input
                   style={{ height: '50px' }}
                   addonBefore="/Users/lihua/Downloads/"
-                  defaultValue="myPath"
+                  defaultValue="mypath"
                 />
                 <Button
                   style={{ backgroundColor: '#0D93F7', color: 'white', marginBottom: '18px' }}

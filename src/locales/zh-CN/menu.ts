@@ -32,6 +32,8 @@ export default {
   'menu.list.search-list.applications': '搜索列表（应用）',
   'menu.project': '项目管理',
   'menu.project.table-list': '项目列表',
+  'menu.method': '方法库',
+  'menu.method.table-list': '方法列表',
   'menu.library': '标准库',
   'menu.library.table-list': '标准库列表',
   'menu.library.peptide-list': '肽段列表',

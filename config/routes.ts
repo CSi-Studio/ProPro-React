@@ -1,5 +1,5 @@
 export default [
-  { path: '/', component: './Library' },
+  // 登陆界面
   {
     path: '/user',
     layout: false,
@@ -19,20 +19,25 @@ export default [
       },
     ],
   },
+  // 字典界面
   // {
   //   path: '/dict',
   //   name: 'dict',
   //   icon: 'smile',
   //   component: './Dict',
   // },
+  // 项目界面
   {
     name: 'project.table-list',
     icon: 'profile',
     path: '/project',
     component: './Project',
   },
+  // 标准库界面
   {
     name: 'library',
+    path: '/library',
+    component: './Library',
     icon: 'hdd',
     routes: [
       {
@@ -58,12 +63,17 @@ export default [
       },
     ],
   },
+
+  // 方法库界面
   {
-    name: 'list.card-list',
-    icon: 'table',
-    path: '/libraryCard',
-    component: './Card',
+    name: 'method',
+    icon: 'profile',
+    path: '/method',
+    component: './Methods',
   },
+  // 主界面
+  { path: '/', component: './Library' },
+  // 404
   {
     component: './404',
   },
