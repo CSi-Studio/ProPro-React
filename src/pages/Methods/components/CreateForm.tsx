@@ -5,17 +5,24 @@ import ProForm, {
   ProFormSelect,
   ProFormTextArea,
   ProFormUploadDragger,
+  ProFormDigit,
 } from '@ant-design/pro-form';
-import { Button, Input, message, Space, Tabs, Tag } from 'antd';
+import { Button, Input, message, Space, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 
-const { TabPane } = Tabs;
 export type addFormValueType = {
+  adaptiveMzWindow?: boolean;
+  fdr?: number;
+  minMzWindow?: number;
+  minShapeScore?: number;
+  minShapeWeightScore?: number;
+  mzWindow?: number;
   name?: string;
-  type?: string;
-  filePath?: string;
-  description?: string;
+  rtWindow?: number;
+  'si.intercept'?: number;
+  'si.slope'?: number;
+  description?: number;
 };
 
 export type CreateFormProps = {
@@ -36,149 +43,99 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
     >
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="手动上传" key="1">
-          <ProForm.Group>
-            <ProFormText
-              rules={[
-                {
-                  required: true,
-                  message: '库名字不能为空',
-                },
-              ]}
-              width="sm"
-              name="name"
-              label="库名称"
-              tooltip="项目名称必须唯一"
-              placeholder="请输入项目名称"
-            />
-            <ProFormSelect
-              rules={[
-                {
-                  required: true,
-                  message: '库类型不能为空',
-                },
-              ]}
-              options={[
-                {
-                  value: 'INS',
-                  label: '内标库',
-                },
-                {
-                  value: 'ANA',
-                  label: '标准库',
-                },
-              ]}
-              width="sm"
-              name="type"
-              label="库类型"
-            />
-          </ProForm.Group>
-          <ProFormUploadDragger
-            rules={[
-              {
-                required: true,
-                message: '不传文件，你手写库内容吗？ 😅',
-              },
-            ]}
-            icon={
-              <Icon
-                style={{
-                  textAlign: 'center',
-                  fontSize: '50px',
-                  color: '#0D93F7',
-                  marginBottom: '-25px',
-                }}
-                icon="mdi:cloud-upload"
-              />
-            }
-            title="点击或者拖动文件到此区域"
-            description={
-              <p className="ant-upload-hint">
-                支持的文件格式有：<Tag color="green">txt</Tag>
-                <Tag color="green">tsv</Tag>
-                <Tag color="green">tsv</Tag>
-                <Tag color="green">csv</Tag>
-                <Tag color="green">xls</Tag>
-                <Tag color="green">xlsx</Tag>
-                <Tag color="green">TraML</Tag>
-              </p>
-            }
-            max={1}
-            accept=".txt,.tsv,.csv,.xls,.xlsx,.TraML"
-            label="上传文件"
-            name="filePath"
-            fieldProps={{
-              beforeUpload: (info) => {
-                return new Promise((resolve, reject) => {
-                  message.success(`您将要上传的是 ${info.name}， 🤏 您配吗`);
-                  // eslint-disable-next-line prefer-promise-reject-errors
-                  return reject(false);
-                });
-              },
-            }}
-          />
+      <ProForm.Group>
+        {/* 公共 */}
+        <ProFormDigit
+          width="sm"
+          name="mzWindow"
+          label="mzWindow"
+          initialValue="0.03"
+          tooltip="MZ窗口，为0.03时表示的是±0.015"
+          placeholder="mzWindow"
+        />
+        <ProFormDigit
+          width="sm"
+          name="rtWindow"
+          label="rtWindow"
+          initialValue="600"
+          tooltip="RT窗口，为0.03时表示的是±300"
+          placeholder="rtWindow"
+        />
+        <ProFormSelect
+          initialValue="false"
+          options={[
+            {
+              value: 'true',
+              label: '是',
+            },
+            {
+              value: 'false',
+              label: '否',
+            },
+          ]}
+          width="sm"
+          tooltip="是否使用自适应mz窗口,自适应mz算"
+          name="adaptiveMzWindow"
+          label="adaptiveMzWindow"
+        />
+      </ProForm.Group>
+      <ProForm.Group>
+        {/* IRT */}
+        <ProFormDigit
+          width="sm"
+          name="si.slope"
+          label="si.slope"
+          placeholder="si.slope"
+          tooltip="在做RT校准时使用的斜率截距,如果为空则表示使用irt计算实时获取"
+        />
+        <ProFormDigit
+          width="sm"
+          name="minMzWindow"
+          label="minMzWindow"
+          placeholder="minMzWindow"
+          tooltip="最小mz偏差, Da, 若按照mzWindow计算得到的mz偏差小于最小mz偏差, mz偏差重置为最小mz偏差"
+        />
+      </ProForm.Group>
+      <ProForm.Group>
+        {/* 打分参数 */}
+        <ProFormDigit
+          width="sm"
+          name="minShapeScore"
+          label="minShapeScore"
+          placeholder="minShapeScore"
+          tooltip="shape的筛选阈值,一般建议在0.6左右"
+        />
+        <ProFormDigit
+          width="sm"
+          name="minShapeWeightScore"
+          label="minShapeWeightScore"
+          placeholder="minShapeWeightScore"
+          tooltip="shape的筛选阈值,一般建议在0.8左右"
+        />
+      </ProForm.Group>
+      <ProForm.Group>
+        {/* 分类参数 */}
+        <ProFormText name="classifier" label="classifier" placeholder="classifier"></ProFormText>
+        <ProFormDigit
+          initialValue="0.01"
+          width="sm"
+          name="fdr"
+          label="fdr"
+          tooltip="筛选的FDR值,默认值为0.01"
+          placeholder="fdr"
+        />
+      </ProForm.Group>
 
-          <ProFormTextArea label="详情描述" name="description" />
-        </TabPane>
-        <TabPane tab="自动导入" key="2">
-          <Space direction="vertical">
-            <ProForm.Group>
-              <ProFormText
-                rules={[
-                  {
-                    required: true,
-                    message: '库名字不能为空',
-                  },
-                ]}
-                width="sm"
-                name="name"
-                label="库名称"
-                tooltip="项目名称必须唯一"
-                placeholder="请输入项目名称"
-              />
-              <ProFormSelect
-                rules={[
-                  {
-                    required: true,
-                    message: '库类型不能为空',
-                  },
-                ]}
-                options={[
-                  {
-                    value: 'INS',
-                    label: '内标库',
-                  },
-                  {
-                    value: 'ANA',
-                    label: '标准库',
-                  },
-                ]}
-                width="sm"
-                name="type"
-                label="库类型"
-              />
-            </ProForm.Group>
-            <div>文件地址</div>
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Space>
-                <Input
-                  style={{ height: '50px' }}
-                  addonBefore="/Users/lihua/Downloads/"
-                  defaultValue="mypath"
-                />
-                <Button
-                  style={{ backgroundColor: '#0D93F7', color: 'white', marginBottom: '18px' }}
-                  icon={<UploadOutlined />}
-                >
-                  上传
-                </Button>
-              </Space>
-            </div>
-            <ProFormTextArea label="详情描述" name="description" />
-          </Space>
-        </TabPane>
-      </Tabs>
+      <ProFormText width="sm" name="name" label="name" placeholder="name" />
+
+      <ProFormDigit
+        width="sm"
+        name="si.intercept"
+        label="si.intercept"
+        placeholder="si.intercept"
+      />
+
+      <ProFormTextArea label="详情描述" name="description" />
     </ModalForm>
   );
 };

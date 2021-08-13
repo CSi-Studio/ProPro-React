@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import type { TableListItem ,DictListItem} from './data';
+import type {  DictListItem,AddItem,AddItemDetail,deleteListItem, IdItem } from './data';
 
 /** 获取库列表 GET /library/list */
 export async function dictList() {
@@ -8,21 +8,34 @@ export async function dictList() {
   });
 }
 
-// /** 添加库 POST /api/library/add */
-// export async function addList(body: { name?: any; type?: any; filePath?: any; description?: any }) {
-//   const fileData = new FormData();
-//   fileData.append('name', body.name);
-//   fileData.append('type', body.type);
-//   fileData.append('libFile', body.filePath[0].originFileObj);
-//   fileData.append('description', body.description);
-//   return request<TableListItem>('/api/dict/addDictBase', {
-//     method: 'POST',
-//     header: {
-//       Accept: 'application/json',
-//     },
-//     data: fileData,
-//   });
-// }
+/** 添加库 POST /api/library/add */
+export async function addList(body: { name:string }) {
+  const fileData = new FormData();
+  fileData.append('name', body.name);
+  return request<AddItem>('/api/dict/add', {
+    method: 'POST',
+    header: {
+      Accept: 'application/json',
+    },
+    data: fileData,
+  });
+}
+
+export async function addListItem(body: { id:string;key:string;value:string }) {
+  const fileData = new FormData();
+  fileData.append('id', body.id);
+  fileData.append('key', body.key);
+  fileData.append('value', body.value);
+
+
+  return request<AddItemDetail>('/api/dict/addItem', {
+    method: 'POST',
+    header: {
+      Accept: 'application/json',
+    },
+    data: fileData,
+  });
+}
 
 /** 更新库 POST /api/library/update */
 export async function updateList(body: {  id: string; key?: any; value?: any }) {
@@ -31,6 +44,28 @@ export async function updateList(body: {  id: string; key?: any; value?: any }) 
   fileData.append('key', body.key);
   fileData.append('value', body.value);
   return request<DictListItem>('/api/dict/update', {
+    method: 'POST',
+    data: fileData,
+  });
+}
+
+/** 刪除DictItem /api/library/update */
+export async function deleteItem(body: {  id: string; key?: any}) {
+  const fileData = new FormData();
+  fileData.append('id', body.id);
+  fileData.append('key', body.key);
+  return request<deleteListItem>('/api/dict/removeItem', {
+    method: 'POST',
+    data: fileData,
+  });
+}
+
+/** 刪除DictItem /api/library/update */
+export async function deleteDict(body: {  id: string;}) {
+  const fileData = new FormData();
+  fileData.append('id', body.id);
+
+  return request<IdItem>('/api/dict/remove', {
     method: 'POST',
     data: fileData,
   });

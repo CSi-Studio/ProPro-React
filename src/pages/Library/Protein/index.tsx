@@ -5,6 +5,7 @@ import { proteinList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
+import './index.less';
 
 const TableList: React.FC = (props) => {
   /** 全局弹窗 */

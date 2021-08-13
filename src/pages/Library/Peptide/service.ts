@@ -34,6 +34,21 @@ export async function updateList(params: {
     },
   });
 }
+/** 预测肽段碎片 POST /api/peptide/predict */
+export async function predictPeptide(params: {
+  spModel: string;
+  isotope: boolean;
+  limit: number;
+  id: string;
+}) {
+  // eslint-disable-next-line no-console
+  return request('/api/peptide/predict', {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
 
 /** 删除肽段库 GET /api/peptide/remove  */
 export async function removeList(params: { peptideId: any }) {

@@ -1,16 +1,17 @@
 import React from 'react';
-import { Drawer, Tooltip } from 'antd';
-import type { TableListItem } from '../data';
-import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
-import ProDescriptions from '@ant-design/pro-descriptions';
+import { ProFormText, ModalForm } from '@ant-design/pro-form';
+import { Drawer, Space, Tooltip } from 'antd';
+import { Tag } from 'antd';
+import ProDescriptions, { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 
-export type UpdateFormProps = {
-  showDetail: any;
+export type ContrastListFormProps = {
+  contrastModalVisible: any;
   currentRow: any;
   columns: any;
   onClose: () => void;
 };
-const DetailForm: React.FC<UpdateFormProps> = (props) => {
+
+const ContrastList: React.FC<ContrastListFormProps> = (props) => {
   const columns = [
     {
       title: 'ID',
@@ -55,7 +56,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
 
     {
       title: '离子片段',
-      render: (dom: any, entity: { fragments: any[]; }) => [
+      render: (dom: any, entity: { fragments: any[] }) => [
         <div
           style={{
             width: '600px',
@@ -226,7 +227,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
     {
       title: '伪肽段片段',
-      render: (dom: any, entity: { decoyFragments: any[]; }) => [
+      render: (dom: any, entity: { decoyFragments: any[] }) => [
         <div
           style={{
             width: '600px',
@@ -397,11 +398,20 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
   ];
   columns.push(props.columns.pop());
+  // eslint-disable-next-line no-console
+  console.log(columns);
+  // eslint-disable-next-line no-console
+  console.log(props.currentRow);
 
   return (
-    <Drawer width={800} visible={props.showDetail} onClose={props.onClose} closable={false}>
-      {props.currentRow?.peptideRef && (
-        <ProDescriptions<TableListItem>
+    <Drawer
+      width={800}
+      visible={props.contrastModalVisible}
+      onClose={props.onClose}
+      closable={false}
+    >
+      {/* {props.currentRow?.peptideRef && (
+        <ProDescriptions
           column={1}
           title={props.currentRow?.peptideRef}
           request={async () => ({
@@ -410,11 +420,11 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           params={{
             id: props.currentRow?.peptideRef,
           }}
-          columns={columns as ProDescriptionsItemProps<TableListItem>[]}
+          columns={columns as ProDescriptionsItemProps[]}
         />
-      )}
+      )} */}
     </Drawer>
   );
 };
 
-export default DetailForm;
+export default ContrastList;

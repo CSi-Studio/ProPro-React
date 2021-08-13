@@ -1,7 +1,7 @@
 import { Form, message, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { peptideList, removeList, updateList } from './service';
+import { peptideList, predictPeptide, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
@@ -10,6 +10,10 @@ import DeleteForm from './components/DeleteForm';
 import type { updateFormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import DetailForm from './components/DetailForm';
+import type { predictFormValueType } from './components/PredictForm';
+import PredictForm from './components/PredictForm';
+import './index.less';
+import ContrastList from './components/ContrastList';
 
 /**
  * 更新库
@@ -28,6 +32,7 @@ const handleUpdate = async (values: updateFormValueType) => {
     return false;
   }
 };
+
 /**
  * 删除库
  * @param currentRow
@@ -57,10 +62,33 @@ const TableList: React.FC = (props) => {
   /** 更新窗口的弹窗 */
   const [formUpdate] = Form.useForm();
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** 预测肽段碎片的弹窗 */
+  const [formPredict] = Form.useForm();
+  const [predictModalVisible, handlePredictModalVisible] = useState<boolean>(false);
+  /** 对比肽段碎片的弹窗 */
+  const [contrastModalVisible, handleContrastModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const { libraryId } = props?.location?.query;
+  /**
+   * 预测肽段碎片
+   * @param values
+   */
+  const handlePredict = async (values: predictFormValueType) => {
+    const hide = message.loading('正在预测肽段碎片');
+    try {
+      await predictPeptide({ ...values });
+      hide();
+      message.success('预测肽段碎片完成');
+      handleContrastModalVisible(true);
+      return true;
+    } catch (error) {
+      hide();
+      message.error('预测失败，请重试!');
+      return false;
+    }
+  };
 
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const actionRef = useRef<ActionType>();
@@ -115,6 +143,29 @@ const TableList: React.FC = (props) => {
       title: '伪肽段',
       width: '120px',
       dataIndex: 'decoySequence',
+      render: (dom, entity) => {
+        return (
+          <Tooltip title={dom} placement="topLeft">
+            <div
+              style={{
+                width: '150px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <a
+                onClick={() => {
+                  setCurrentRow(entity);
+                  handleContrastModalVisible(true);
+                }}
+              >
+                {dom}
+              </a>
+            </div>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '离子片段',
@@ -343,6 +394,8 @@ const TableList: React.FC = (props) => {
         <Tooltip title={'预测肽段碎片'} key="predict">
           <a
             onClick={() => {
+              formPredict?.resetFields();
+              handlePredictModalVisible(true);
               setCurrentRow(record);
             }}
             key="predict"
@@ -435,6 +488,42 @@ const TableList: React.FC = (props) => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
+      />
+
+      {/* 预测肽段碎片弹窗 */}
+      <PredictForm
+        form={formPredict}
+        onCancel={{
+          onCancel: () => {
+            handlePredictModalVisible(false);
+            setCurrentRow(undefined);
+            formPredict?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          // eslint-disable-next-line no-param-reassign
+          value.id = currentRow?.id as string;
+          const success = await handlePredict(value);
+          if (success) {
+            handlePredictModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        predictModalVisible={predictModalVisible}
+        values={currentRow || {}}
+      />
+      {/* 预测肽段碎片弹窗 */}
+      <ContrastList
+        contrastModalVisible={contrastModalVisible}
+        currentRow={currentRow}
+        columns={columns}
+        onClose={() => {
+          setCurrentRow(undefined);
+          handleContrastModalVisible(false);
+        }}
       />
 
       {/* 删除列表 */}

@@ -37,7 +37,6 @@ export default [
   {
     name: 'library',
     path: '/library',
-    component: './Library',
     icon: 'hdd',
     routes: [
       {
@@ -70,6 +69,13 @@ export default [
     icon: 'profile',
     path: '/method',
     component: './Methods',
+  },
+  // 实验列表界面
+  {
+    name: 'experiment',
+    icon: 'profile',
+    path: '/experiment',
+    component: './Experiment',
   },
   // 主界面
   { path: '/', component: './Library' },

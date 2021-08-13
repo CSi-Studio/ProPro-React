@@ -1,6 +1,16 @@
 import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import {
+  libraryList,
+  addList,
+  cloneList,
+  removeList,
+  updateList,
+  generateDecoys,
+  repeatCount,
+  statistic,
+} from './service';
 import type { TableListItem, TableListPagination } from './data';
 import type { addFormValueType } from './components/CreateForm';
 import CreateForm from './components/CreateForm';
@@ -161,12 +171,47 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: 'adaptiveMzWindow',
-      dataIndex: 'adaptiveMzWindow',
+      title: '标准库名称',
+      dataIndex: 'name',
+      copyable: true,
+      width: '150px',
+      render: (dom, entity) => {
+        return (
+          <Tooltip title={dom} color="#eeeeee" placement="topLeft">
+            <div
+              style={{
+                width: '150px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <a
+                onClick={() => {
+                  setCurrentRow(entity);
+                  setShowDetail(true);
+                }}
+              >
+                {dom}
+              </a>
+            </div>
+          </Tooltip>
+        );
+      },
     },
     {
-      title: 'fdr',
-      dataIndex: 'fdr',
+      title: '库类型',
+      dataIndex: 'type',
+      width: '100px',
+      // hideInSearch: true,
+      sorter: (a, b) => (a.type > b.type ? -1 : 1),
+      render: (dom) => {
+        return (
+          <Tooltip title={dom}>
+            <Tag>{dom}</Tag>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '伪肽段生成算法',
@@ -450,7 +495,7 @@ const TableList: React.FC = () => {
             创建库
           </Button>,
         ]}
-        // request={libraryList}
+        request={libraryList}
         columns={columns}
         rowSelection={
           {

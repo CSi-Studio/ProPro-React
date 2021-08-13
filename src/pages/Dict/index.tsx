@@ -1,9 +1,9 @@
 import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { dictList ,updateList} from './service';
-import type { TableListItem, TableListPagination } from './data';
-import { EditFilled, CopyFilled } from '@ant-design/icons';
+import { dictList ,updateList,addList,addListItem,deleteItem,deleteDict} from './service';
+import type { DictList, TableListItem, TableListPagination,IdItem ,updateListItem,deleteListItem } from './data';
+import { EditFilled, CopyFilled, StepBackwardOutlined, PlusCircleTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import { TableDropdown } from '@ant-design/pro-table';
 // import type { addFormValueType } from './components/CreateForm';
 // import CreateForm from './components/CreateForm';
@@ -16,27 +16,41 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DictForm from './components/DictForm';
 
-import UpdateDictItem from './components/updateDictItem';
+import UpdateForm from './components/updateDictItem';
+import AddForm from './components/CreateForm';
+import AddFormItem from './components/CreateItem';
+import DeleteFormItem from './components/DeleteForm';
+import DeleteDictForm from './components/DeleteDict';
 // import './index.less';
 // import DetailForm from './components/DetailForm';
 
-// /**
-//  * 添加库
-//  * @param values
-//  */
-// const handleAdd = async (values: addFormValueType) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addList({ ...values });
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败请重试！');
-//     return false;
-//   }
-// };
+
+const handleAdd = async (values) => {
+  const hide = message.loading('正在添加');
+  try {
+    await addList(values );
+    hide();
+    message.success('添加成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('添加失败请重试！');
+    return false;
+  }
+};
+const handleAddItem = async (values) => {
+  const hide = message.loading('正在添加');
+  try {
+    await addListItem(values );
+    hide();
+    message.success('添加成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('添加失败请重试！');
+    return false;
+  }
+};
 // /**
 //  * 克隆库
 //  * @param values
@@ -58,10 +72,10 @@ import UpdateDictItem from './components/updateDictItem';
 //  * 更新库
 //  * @param values
 //  */
-const handleUpdate = async (values: updateFormValue) => {
+const handleUpdate = async (values) => {
   const hide = message.loading('正在更新');
   try {
-    await updateList({ ...values });
+    await updateList( values);
     hide();
     message.success('编辑成功');
     return true;
@@ -75,51 +89,69 @@ const handleUpdate = async (values: updateFormValue) => {
 //  * 删除库
 //  * @param currentRow
 //  */
-// const handleRemove = async (currentRow: TableListItem | undefined) => {
-//   if (!currentRow) return true;
-//   try {
-//     await removeList({
-//       libraryIds: currentRow.id,
-//     });
-//     message.success('删除成功，即将刷新');
-//     return true;
-//   } catch (error) {
-//     message.error('删除失败，请重试');
-//     return false;
-//   }
-// };
-
-const handleAdd = async () => {
-  const hide = message.loading('正在添加');
+const handleRemoveItem = async (values) => {
   try {
-    await dictList();
-    hide();
-    message.success('添加成功');
+    await deleteItem(values);
+    message.success('删除成功，即将刷新');
     return true;
   } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
+    message.error('删除失败，请重试');
     return false;
   }
 };
 
+const handleRemove = async (values) => {
+  try {
+    await deleteDict(values);
+    message.success('删除成功，即将刷新');
+    return true;
+  } catch (error) {
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
+
+// const handleAdd = async () => {
+//   const hide = message.loading('正在添加');
+//   try {
+//     await dictList();
+//     hide();
+//     message.success('添加成功');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('添加失败请重试！');
+//     return false;
+//   }
+// };
+
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
+  const [formUpdate] = Form.useForm();
+  const [formCreate] = Form.useForm();
+  const [formCreateItem] = Form.useForm();
+  const [deleteForm] = Form.useForm();
+  const [deleteDictForm] = Form.useForm();
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
+  const [deleteDictModalVisible, handleDeleteDictModalVisible] = useState<boolean>(false);
   /** 更新窗口的弹窗 */
+  const [addModalVisible, handleAddModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 克隆窗口的弹窗 */
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [currentRow, setCurrentRow] = useState<TableListItem>();
-
+  const [currentUpdate, setCurrentUpdate] = useState<updateListItem>();
+  const [currentDeleteItem, setCurrentDeleteItem] = useState<deleteListItem>();
+  const [currentDelete, setCurrentDelete] = useState<IdItem>();
+  const [currenId, setId] = useState<IdItem>();
   const actionRef = useRef<ActionType>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const columns: ProColumns<TableListItem>[] = [
@@ -162,105 +194,50 @@ const TableList: React.FC = () => {
             <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
           </a>
         </Tooltip>,
-        
-        <Dropdown
-          key="GeneratePseudopeptide"
-          overlay={
-            <Menu>
-              <Menu.Item key="1">
-                <Tooltip placement="left" title={'生成伪肽段(Shuffle)'} key="Shuffle">
-                  <a
-                    key="Shuffle"
-                    onClick={() => {
-                      setCurrentRow(record);
-                      // setPopup(true);
-                    }}
-                  >
-                    <Icon
-                      style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                      icon="mdi:alpha-s-circle"
-                    />
-                  </a>
-                </Tooltip>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Tooltip placement="left" title={'生成伪肽段(Nico)'} key="Nico">
-                  <a
-                    key="Nico"
-                    onClick={() => {
-                      setCurrentRow(record);
-                      // setPopup(true);
-                    }}
-                  >
-                    <Icon
-                      style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                      icon="mdi:alpha-n-circle"
-                    />
-                  </a>
-                </Tooltip>
-              </Menu.Item>
-            </Menu>
-          }
-        >
-          <Tooltip title={'生成伪肽段'} key="GeneratePseudopeptide">
-            <Icon
-              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-              icon="mdi:alpha-p-box"
-            />
-          </Tooltip>
-        </Dropdown>,
-        <TableDropdown
-          key="TableDropdown"
-          onSelect={() => {}}
-          menus={[
-            {
-              key: 'menus1',
-              name: (
-                <Tooltip placement="left" title={'重新统计蛋白质与肽段的数目'} key="statistics">
-                  <a
-                    key="statistics"
-                    onClick={() => {
-                      setCurrentRow(record);
-                      // setPopup(true);
-                    }}
-                  >
-                    <Icon
-                      style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-                      icon="mdi:state-machine"
-                    />
-                  </a>
-                </Tooltip>
-              ),
-            },
-            {
-              key: 'menus2',
-              name: (
-                <Tooltip placement="left" title={'删除'} key="delete">
-                  <a
-                    key="delete"
-                    onClick={async () => {
-                      form?.resetFields();
-                      handleDeleteModalVisible(true);
-                      setCurrentRow(record);
-                      // setPopup(true);
-                    }}
-                  >
-                    <Icon
-                      style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-                      icon="mdi:delete"
-                    />
-                  </a>
-                </Tooltip>
-              ),
-            },
-          ]}
-        />,
-      ],
+        <Tooltip title={'新增'} key="add">
+          <a
+            onClick={() => {
+              console.log('currentrecord',record)
+              formCreateItem?.resetFields();
+              handleAddModalVisible(true);
+              let objItem={
+                id:record.id,
+              }
+              setId(objItem)
+
+              // setPopup(true);
+            }}
+            key="add"
+          >
+
+            <PlusCircleTwoTone style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
+          </a>
+        </Tooltip>,
+        <Tooltip title={'刪除'} key="delete">
+         <a
+           onClick={() => {
+             console.log('currentrecord',record)
+             deleteDictForm?.resetFields();
+             handleDeleteDictModalVisible(true);
+             let objId={
+               id:record.id,
+             }
+             setCurrentDelete(objId)
+
+             // setPopup(true);
+           }}
+           key="delete"
+         >
+
+           <DeleteTwoTone style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
+         </a>
+       </Tooltip>,
+      ]
     },
   ];
 
 
-  
+
 
 
 
@@ -270,7 +247,7 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem, TableListPagination>
+      <ProTable<TableListItem,TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
@@ -285,13 +262,23 @@ const TableList: React.FC = () => {
               dataIndex: 'operation',
               key: 'operation',
               valueType: 'option',
-              render: (text, record) => [
+              render: (text, record1) => [
                 <Tooltip title={'编辑'} key="edit">
           <a
             onClick={() => {
-              form?.resetFields();
+              console.log('record',record)
+
+              formUpdate?.resetFields();
               handleUpdateModalVisible(true);
-              setCurrentRow(record.item);
+              let obj={
+                id:record.id,
+                key:record1.key,
+                value:record1.value
+              }
+              console.log("obj",obj)
+
+               setCurrentUpdate(obj);
+
               // setPopup(true);
             }}
             key="edit"
@@ -299,6 +286,29 @@ const TableList: React.FC = () => {
             <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
           </a>
         </Tooltip>,
+        <Tooltip title={'刪除'} key="deleteItem">
+        <a
+          onClick={() => {
+
+            deleteDictForm?.resetFields();
+            handleDeleteModalVisible(true);
+            let odj={
+              id:record.id,
+              key:record1.key,
+            }
+            console.log("odj",odj)
+
+            setCurrentDeleteItem(odj);
+
+            // setPopup(true);
+          }}
+          key="deleteItem"
+        >
+
+          <DeleteTwoTone style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
+
+        </a>
+      </Tooltip>,
               ]
             },
           ]}
@@ -324,7 +334,7 @@ const TableList: React.FC = () => {
             }}
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
-            创建库
+            新建字典表
           </Button>,
         ]}
         request={dictList}
@@ -339,30 +349,7 @@ const TableList: React.FC = () => {
         }
       />
 
-      {/* 新建列表 */}
-      {/* {popup ? ( */}
-      {/* <CreateForm
-        form={form}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            // setPopup(false);
-            form?.resetFields();
-          },
-        }}
-        onSubmit={async (value: addFormValueType) => {
-          const success = await handleAdd(value as addFormValueType);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        createModalVisible={createModalVisible}
-        values={currentRow || {}}
-      /> */}
-      {/* ) : null} */}
+
 
       {/* 列表详情 */}
       {/* {popup ? ( */}
@@ -377,68 +364,141 @@ const TableList: React.FC = () => {
         }}
       />
       {/* ) : null} */}
-   
+
       {/* 编辑列表 */}
-      <UpdateDictItem
+      <UpdateForm
+      form={formUpdate}
       onSubmit={async (value) => {
-        // eslint-disable-next-line no-param-reassign
-        // value.id = currentRow?.id as string;
-        // value.key = currentRow?.key;
-        // value.description = currentRow?.description;
-        // const success = await handleUpdate(value);
-        // if (success) {
-        //   handleUpdateModalVisible(false);
-        //   setCurrentRow(undefined);
-        //   if (actionRef.current) {
-        //     actionRef.current.reload();
-        //   }
-        // }
-        console.log("value",value)
+        console.log(value);
+        const success = await handleUpdate(value);
+        if (success) {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }
       }}
       onCancel={{
         onCancel: () => {
-          handleDeleteModalVisible(false);
-          setCurrentRow(undefined);
-          form?.resetFields();
+          handleUpdateModalVisible(false);
+          setCurrentUpdate(undefined);
+          formUpdate?.resetFields();
           // setPopup(false);
         },
       }}
       updateModalVisible= {updateModalVisible}
-      values= {currentRow || {}}
-      form={form}
+      values= {currentUpdate || {}}
       />
 
-      {/* 删除列表 */}
+     <AddForm
+      form={formCreate}
+      onCancel={{
+        onCancel: () => {
+          handleModalVisible(false);
+          // setPopup(false);
+          formCreate?.resetFields();
+        },
+      }}
+      onSubmit={async (value) => {
+        const success = await handleAdd(value);
+        if (success) {
+          handleModalVisible(false);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }
+      }}
+      createModalVisible={createModalVisible}
+      values= {currentRow || {}}
+      />
+
+
+    <AddFormItem
+      form={formCreateItem}
+      onCancel={{
+        onCancel: () => {
+          handleAddModalVisible(false);
+          // setPopup(false);
+          form?.resetFields();
+        },
+      }}
+      onSubmit={async (value) => {
+        const success = await handleAddItem(value);
+        if (success) {
+          handleAddModalVisible(false);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }
+      }}
+      addModalVisible={addModalVisible}
+      values= {currenId|| {}}
+    />
+
+
+
+      {/* 删除DictItem */}
       {/* {popup ? ( */}
-      {/* <DeleteForm
-        form={form}
+      <DeleteFormItem
+        form={deleteForm}
         onCancel={{
           onCancel: () => {
             handleDeleteModalVisible(false);
-            setCurrentRow(undefined);
-            form?.resetFields();
+            setCurrentDeleteItem(undefined);
+            deleteForm?.resetFields();
             // setPopup(false);
           },
         }}
         onSubmit={async () => {
           // handleDeleteModalVisible(false);
-          const success = await handleRemove(currentRow);
+          const success = await handleRemoveItem(currentDeleteItem);
           if (success) {
             handleDeleteModalVisible(false);
-            setCurrentRow(undefined);
+            setCurrentDeleteItem(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
         deleteModalVisible={deleteModalVisible}
-        values={currentRow || {}}
-      /> */}
+        values={currentDeleteItem || {}}
+      />
+
+        {/* 删除Dict */}
+      {/* {popup ? ( */}
+        <DeleteDictForm
+        form={deleteDictForm}
+        onCancel={{
+          onCancel: () => {
+            handleDeleteDictModalVisible(false);
+            setCurrentDelete(undefined);
+            deleteDictForm?.resetFields();
+            // setPopup(false);
+          },
+        }}
+        onSubmit={async () => {
+          // handleDeleteModalVisible(false);
+          const success = await handleRemove(currentDelete);
+          console.log("currentdelete",currentDelete)
+          if (success) {
+            handleDeleteDictModalVisible(false);
+            setCurrentDelete(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        deleteDictModalVisible={deleteDictModalVisible}
+        values={currentDelete || {}}
+      />
+
+
       {/* ) : null} */}
 
       {/* 克隆列表 */}
       {/* {popup ? ( */}
-      
+
       {/* <CloneForm
         form={form}
         onCancel={{
