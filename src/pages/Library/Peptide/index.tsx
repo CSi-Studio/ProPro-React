@@ -66,9 +66,11 @@ const TableList: React.FC = (props) => {
   const [formPredict] = Form.useForm();
   const [predictModalVisible, handlePredictModalVisible] = useState<boolean>(false);
   /** 对比肽段碎片的弹窗 */
+  const [formContrast] = Form.useForm();
   const [contrastModalVisible, handleContrastModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [predictList, setPredictList] = useState<any>();
 
   const { libraryId } = props?.location?.query;
   /**
@@ -78,7 +80,8 @@ const TableList: React.FC = (props) => {
   const handlePredict = async (values: predictFormValueType) => {
     const hide = message.loading('正在预测肽段碎片');
     try {
-      await predictPeptide({ ...values });
+      const predictData = await predictPeptide({ ...values });
+      setPredictList(predictData);
       hide();
       message.success('预测肽段碎片完成');
       handleContrastModalVisible(true);
@@ -496,17 +499,15 @@ const TableList: React.FC = (props) => {
         onCancel={{
           onCancel: () => {
             handlePredictModalVisible(false);
-            setCurrentRow(undefined);
             formPredict?.resetFields();
           },
         }}
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
-          value.id = currentRow?.id as string;
+          value.peptideId = currentRow?.id as string;
           const success = await handlePredict(value);
           if (success) {
             handlePredictModalVisible(false);
-            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
@@ -515,15 +516,31 @@ const TableList: React.FC = (props) => {
         predictModalVisible={predictModalVisible}
         values={currentRow || {}}
       />
-      {/* 预测肽段碎片弹窗 */}
+      {/* 预测对比弹窗 */}
       <ContrastList
-        contrastModalVisible={contrastModalVisible}
-        currentRow={currentRow}
-        columns={columns}
-        onClose={() => {
-          setCurrentRow(undefined);
-          handleContrastModalVisible(false);
+        form={formContrast}
+        onCancel={{
+          onCancel: () => {
+            handleContrastModalVisible(false);
+            setCurrentRow(undefined);
+            formContrast?.resetFields();
+          },
         }}
+        onSubmit={async (value) => {
+          // eslint-disable-next-line no-param-reassign
+          value.id = currentRow?.id as string;
+          const success = await handleUpdate(value);
+          if (success) {
+            handleContrastModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        contrastModalVisible={contrastModalVisible}
+        values={currentRow || {}}
+        predictList={predictList}
       />
 
       {/* 删除列表 */}

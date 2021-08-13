@@ -1,429 +1,121 @@
-import React from 'react';
-import { ProFormText, ModalForm } from '@ant-design/pro-form';
-import { Drawer, Space, Tooltip } from 'antd';
+import React, { useState } from 'react';
+import { ModalForm } from '@ant-design/pro-form';
+import { Table, Tooltip, Transfer } from 'antd';
 import { Tag } from 'antd';
-import ProDescriptions, { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import type { ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 
 export type ContrastListFormProps = {
-  contrastModalVisible: any;
-  currentRow: any;
-  columns: any;
-  onClose: () => void;
+  contrastModalVisible: boolean;
+  onSubmit: (values: any) => Promise<void>;
+  onCancel: Record<string, () => void>;
+  values: any;
+  form: any;
+  predictList: any;
 };
-
+export type TableListItem = {
+  key: number;
+  mz: string;
+  cutInfo: string;
+  intensity: string;
+};
 const ContrastList: React.FC<ContrastListFormProps> = (props) => {
-  const columns = [
+  /** 全选 */
+  const [selectedRowsState, setSelectedRows] = useState<{ mz: string; cutInfo: string }[]>();
+  const columns: ProColumns[] = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-    },
-    {
-      title: '标准库ID',
-      dataIndex: 'libraryId',
-    },
-    {
-      title: '蛋白质名称',
-      dataIndex: 'proteinIdentifier',
-    },
-    {
-      title: 'PeptideRef',
-      dataIndex: 'peptideRef',
-    },
-    {
-      title: '荷质比（m/z）',
+      title: '真肽段碎片荷质比',
       dataIndex: 'mz',
+      sorter: (a, b) => (a.mz > b.mz ? -1 : 1),
+      render: (dom, entity) => {
+        // return entity.predict ? null : <Tooltip title={dom}>{dom}</Tooltip>;
+        return <Tooltip title={dom}>{dom}</Tooltip>;
+      },
     },
     {
-      title: 'RT',
-      dataIndex: 'rt',
+      title: 'cutInfo',
+      dataIndex: 'cutInfo',
+      sorter: (a, b) => (a.cutInfo > b.cutInfo ? -1 : 1),
+      render: (dom, entity) => {
+        return (
+          <Tooltip title={dom}>
+            <Tag>{dom}</Tag>
+          </Tooltip>
+        );
+      },
     },
     {
-      title: '带电量',
-      dataIndex: 'charge',
-    },
-    {
-      title: '肽段完整名称',
-      dataIndex: 'fullName',
-    },
-    {
-      title: '肽段序列',
-      dataIndex: 'sequence',
-    },
-    {
-      title: '伪肽段',
-      dataIndex: 'decoySequence',
-    },
-
-    {
-      title: '离子片段',
-      render: (dom: any, entity: { fragments: any[] }) => [
-        <div
-          style={{
-            width: '600px',
-            color: '#666666',
-            display: 'flex',
-            justifyContent: 'space-around',
-          }}
-        >
-          <div
-            key="1"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            CutInfo
-            {entity.fragments.map((item: any) => (
-              <div
-                key={item.cutInfo}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    textAlign: 'center',
-                    margin: '0 2px',
-                    width: '50px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.cutInfo}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            key="2"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            碎片荷质比（m/z）
-            {entity.fragments.map((item: any) => (
-              <div
-                key={item.mz}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    margin: '0 2px',
-                    width: '160px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.mz}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            key="3"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            强度
-            {entity.fragments.map((item: any) => (
-              <div
-                key={item.intensity}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    margin: '0 2px',
-                    width: '60px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.intensity}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            key="4"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            带电量
-            {entity.fragments.map((item: any) => (
-              <div
-                key={item.charge}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    margin: '0 2px',
-                    width: '15px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.charge}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            key="5"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            Annotations
-            {entity.fragments.map((item: any) => (
-              <div
-                key={item.annotations}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    margin: '0 2px',
-                    width: '80px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  <Tooltip title={item.annotations}>{item.annotations}</Tooltip>
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>,
-      ],
-    },
-    {
-      title: '伪肽段片段',
-      render: (dom: any, entity: { decoyFragments: any[] }) => [
-        <div
-          style={{
-            width: '600px',
-            color: '#666666',
-            display: 'flex',
-            justifyContent: 'space-around',
-          }}
-        >
-          <div
-            key="1"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            CutInfo
-            {entity.decoyFragments.map((item: any) => (
-              <div
-                key={item.cutInfo}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    textAlign: 'center',
-                    margin: '0 2px',
-                    width: '50px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.cutInfo}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            key="2"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            碎片荷质比（m/z）
-            {entity.decoyFragments.map((item: any) => (
-              <div
-                key={item.mz}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    margin: '0 2px',
-                    width: '160px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.mz}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            key="3"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            强度
-            {entity.decoyFragments.map((item: any) => (
-              <div
-                key={item.intensity}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    margin: '0 2px',
-                    width: '60px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.intensity}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            key="4"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            带电量
-            {entity.decoyFragments.map((item: any) => (
-              <div
-                key={item.charge}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    margin: '0 2px',
-                    width: '15px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.charge}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            key="6"
-            style={{
-              color: '#666666',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            Annotations
-            {entity.decoyFragments.map((item: any) => (
-              <div
-                key={item.annotations}
-                style={{
-                  margin: 0,
-                }}
-              >
-                <p
-                  style={{
-                    margin: '0 2px',
-                    width: '80px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  <Tooltip title={item.annotations}>{item.annotations}</Tooltip>
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>,
-      ],
+      title: '预测肽段碎片荷质比',
+      dataIndex: 'predictMz',
+      sorter: (a, b) => (a.mz > b.mz ? -1 : 1),
+      render: (dom, entity) => {
+        // return entity.predict ? <Tooltip title={dom}>{dom}</Tooltip> : null;
+        return <Tooltip title={dom}>{dom}</Tooltip>;
+      },
     },
   ];
-  columns.push(props.columns.pop());
-  // eslint-disable-next-line no-console
-  console.log(columns);
-  // eslint-disable-next-line no-console
-  console.log(props.currentRow);
 
+  props?.values?.fragments?.forEach((item?: any) => {
+    props?.predictList?.data?.forEach((_item?: any, index?: number) => {
+      if (item.cutInfo === _item.cutInfo) {
+        // eslint-disable-next-line no-param-reassign
+        item.predictMz = _item.mz;
+        props?.predictList?.data.splice(index, 1);
+      }
+      // eslint-disable-next-line no-console
+    });
+  });
+  const data = props?.values?.fragments
+    ?.concat(props?.predictList?.data)
+    ?.sort((a: any, b: any) => {
+      return a.intensity - b.intensity;
+    });
+  if (data) {
+    data?.forEach((item?: { key: any }, index?: any) => {
+      if (item) {
+        // eslint-disable-next-line no-param-reassign
+        item.key = index;
+      }
+    });
+  }
   return (
-    <Drawer
-      width={800}
+    <ModalForm
+      form={props.form}
+      title="🧩 肽段碎片比较"
+      width={530}
+      modalProps={props.onCancel}
+      onFinish={props.onSubmit}
       visible={props.contrastModalVisible}
-      onClose={props.onClose}
-      closable={false}
     >
-      {/* {props.currentRow?.peptideRef && (
-        <ProDescriptions
-          column={1}
-          title={props.currentRow?.peptideRef}
-          request={async () => ({
-            data: props.currentRow || {},
-          })}
-          params={{
-            id: props.currentRow?.peptideRef,
+      {props.values?.peptideRef && (
+        <ProTable
+          columns={columns}
+          request={(params, sorter, filter) => {
+            // 表单搜索项会从 params 传入，传递给后端接口。
+            // eslint-disable-next-line no-console
+            console.log(params, sorter, filter);
+            return Promise.resolve({
+              data,
+              success: true,
+            });
           }}
-          columns={columns as ProDescriptionsItemProps[]}
+          pagination={false}
+          toolBarRender={false}
+          search={false}
+          rowKey="key"
+          rowSelection={{
+            onChange: (_, selectedRows) => {
+              // eslint-disable-next-line no-console
+              console.log('_----', _);
+              // eslint-disable-next-line no-console
+              console.log('selectedRows---', selectedRows);
+
+              setSelectedRows(selectedRows);
+            },
+          }}
         />
-      )} */}
-    </Drawer>
+      )}
+    </ModalForm>
   );
 };
 

@@ -155,7 +155,7 @@ const TableList: React.FC = () => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -478,15 +478,6 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        // search={{
-        //   // show: true,
-        //   // collapseRender: true,
-        //   labelWidth: 40,
-        //   // optionRender: false,
-        //   // collapsed: false,
-        //   // filterType: 'query',
-        //   // layout: 'horizontal',
-        // }}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -505,9 +496,9 @@ const TableList: React.FC = () => {
         columns={columns}
         rowSelection={
           {
-            // onChange: (_, selectedRows) => {
-            // setSelectedRows(selectedRows);
-            // },
+            onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows);
+            },
           }
         }
       />

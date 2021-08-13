@@ -39,7 +39,7 @@ export async function predictPeptide(params: {
   spModel: string;
   isotope: boolean;
   limit: number;
-  id: string;
+  peptideId: string;
 }) {
   // eslint-disable-next-line no-console
   return request('/api/peptide/predict', {

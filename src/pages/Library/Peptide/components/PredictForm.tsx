@@ -5,7 +5,7 @@ export type predictFormValueType = {
   spModel: string;
   isotope: boolean;
   limit: number;
-  id: string;
+  peptideId: string;
 };
 
 export type PredictFormProps = {

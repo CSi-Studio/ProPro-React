@@ -473,15 +473,6 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        // search={{
-        //   // show: true,
-        //   // collapseRender: true,
-        //   labelWidth: 40,
-        //   // optionRender: false,
-        //   // collapsed: false,
-        //   // filterType: 'query',
-        //   // layout: 'horizontal',
-        // }}
         toolBarRender={() => [
           <Button
             type="primary"
