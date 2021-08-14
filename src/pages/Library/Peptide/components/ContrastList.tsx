@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ModalForm } from '@ant-design/pro-form';
-import { Table, Tooltip, Transfer } from 'antd';
+import { ModalForm, ProFormText } from '@ant-design/pro-form';
+import { Button, Form, Input, Table, Tooltip, Transfer } from 'antd';
 import { Tag } from 'antd';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -29,7 +29,33 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       sorter: (a, b) => (a.mz > b.mz ? -1 : 1),
       render: (dom, entity) => {
         // return entity.predict ? null : <Tooltip title={dom}>{dom}</Tooltip>;
-        return <Tooltip title={dom}>{dom}</Tooltip>;
+        // if (entity.predictMz && entity.predictMz !== entity.mz) {
+        //   return (
+        //     <Tag color="orange">
+        //       <Tooltip title={dom}>{dom}</Tooltip>
+        //     </Tag>
+        //   );
+        // }
+        // return (
+        //   <Tag color="green">
+        //     <Tooltip title={dom}>{dom}</Tooltip>
+        //   </Tag>
+        // );
+        if (!entity.predict) {
+          if (entity.predictMz && entity.predictMz !== entity.mz) {
+            return (
+              <Tag color="orange">
+                <Tooltip title={dom}>{dom}</Tooltip>
+              </Tag>
+            );
+          }
+          return (
+            <Tag color="green">
+              <Tooltip title={dom}>{dom}</Tooltip>
+            </Tag>
+          );
+        }
+        return null;
       },
     },
     {
@@ -37,20 +63,44 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       dataIndex: 'cutInfo',
       sorter: (a, b) => (a.cutInfo > b.cutInfo ? -1 : 1),
       render: (dom, entity) => {
-        return (
-          <Tooltip title={dom}>
-            <Tag>{dom}</Tag>
-          </Tooltip>
-        );
+        return <Tooltip title={dom}>{dom}</Tooltip>;
       },
     },
     {
       title: '预测肽段碎片荷质比',
       dataIndex: 'predictMz',
-      sorter: (a, b) => (a.mz > b.mz ? -1 : 1),
+      sorter: (a, b) => (a.predictMz > b.predictMz ? -1 : 1),
       render: (dom, entity) => {
-        // return entity.predict ? <Tooltip title={dom}>{dom}</Tooltip> : null;
-        return <Tooltip title={dom}>{dom}</Tooltip>;
+        // if (entity.predictMz && entity.predictMz !== entity.mz) {
+        //   return (
+        //     <Tag color="orange">
+        //       <Tooltip title={dom}>{dom}</Tooltip>
+        //     </Tag>
+        //   );
+        // }
+        // if (!entity.predictMz) {
+        //   return null;
+        // }
+        // return (
+        //   <Tag color="green">
+        //     <Tooltip title={dom}>{dom}</Tooltip>
+        //   </Tag>
+        // );
+        if (entity.predictMz) {
+          if (entity.predictMz !== entity.mz) {
+            return (
+              <Tag color="orange">
+                <Tooltip title={dom}>{dom}</Tooltip>
+              </Tag>
+            );
+          }
+          return (
+            <Tag color="green">
+              <Tooltip title={dom}>{dom}</Tooltip>
+            </Tag>
+          );
+        }
+        return null;
       },
     },
   ];
@@ -65,6 +115,11 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       // eslint-disable-next-line no-console
     });
   });
+  props?.predictList?.data?.forEach((_item?: any, index?: number) => {
+    // eslint-disable-next-line no-param-reassign
+    _item.predictMz = _item.mz;
+  });
+
   const data = props?.values?.fragments
     ?.concat(props?.predictList?.data)
     ?.sort((a: any, b: any) => {
@@ -78,6 +133,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       }
     });
   }
+
   return (
     <ModalForm
       form={props.form}
@@ -86,6 +142,31 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
       visible={props.contrastModalVisible}
+      submitter={{
+        // 配置按钮文本
+        searchConfig: {
+          submitText: '提交',
+        },
+        // 配置按钮的属性
+
+        submitButtonProps: {},
+
+        // 完全自定义整个区域
+        render: (_props) => {
+          return [
+            <Button
+              type="primary"
+              key="submit"
+              onClick={() => {
+                _props.form?.setFieldsValue({ selectedRows: selectedRowsState });
+                _props.form?.submit?.();
+              }}
+            >
+              提交
+            </Button>,
+          ];
+        },
+      }}
     >
       {props.values?.peptideRef && (
         <ProTable
@@ -103,18 +184,17 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
           toolBarRender={false}
           search={false}
           rowKey="key"
+          tableAlertRender={false}
           rowSelection={{
             onChange: (_, selectedRows) => {
-              // eslint-disable-next-line no-console
-              console.log('_----', _);
-              // eslint-disable-next-line no-console
-              console.log('selectedRows---', selectedRows);
-
               setSelectedRows(selectedRows);
             },
           }}
         />
       )}
+      <Form.Item style={{ display: 'none' }} name="selectedRows" key="selectedRows">
+        <Input />
+      </Form.Item>
     </ModalForm>
   );
 };

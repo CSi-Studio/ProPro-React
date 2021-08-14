@@ -529,6 +529,8 @@ const TableList: React.FC = (props) => {
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as string;
+          // eslint-disable-next-line no-console
+          console.log(value);
           const success = await handleUpdate(value);
           if (success) {
             handleContrastModalVisible(false);
