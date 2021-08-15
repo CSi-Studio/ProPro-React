@@ -52,23 +52,24 @@ export default [
         component: './Library/Peptide',
       },
       {
-        path: '/library/protein',
-        name: 'protein-list',
-        icon: 'smile',
-        component: './Library/Protein',
-      },
-      {
         component: './404',
       },
     ],
   },
 
+  // 蛋白库界面
+  {
+    name: 'protein.table-list',
+    icon: 'profile',
+    path: '/protein',
+    component: './Protein',
+  },
   // 方法库界面
   {
     name: 'method',
     icon: 'profile',
     path: '/method',
-    component: './Methods',
+    component: './Method',
   },
   // 实验列表界面
   {

@@ -1,14 +1,11 @@
 export type TableListItem = {
   id: string;
   name: string;
-  filePath: string;
+  alias: string;
   type: string;
-  description: string;
-  generator: string;
-  statistic: Record<string, any>;
-  organism: string[];
-  createDate: number | string;
-  lastModifiedDate?: number | string;
+  airdSize: number;
+  airdIndexSize: number;
+  vendorFileSize: number;
 };
 
 export type TableListPagination = {

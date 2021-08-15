@@ -34,6 +34,8 @@ export default {
   'menu.project.table-list': '项目列表',
   'menu.method': '方法库',
   'menu.method.table-list': '方法列表',
+  'menu.protein': '蛋白库',
+  'menu.protein.table-list': '蛋白库列表',
   'menu.experiment': '实验列表',
   'menu.experiment.table-list': '实验列表',
   'menu.dict': '字典',

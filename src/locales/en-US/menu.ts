@@ -38,6 +38,8 @@ export default {
   'menu.experiment.table-list': 'Experiment',
   'menu.dict': 'Dictionary',
   'menu.dict.table-list': 'Dictionary',
+  'menu.protein': 'Protein',
+  'menu.protein.table-list': 'ProteinList',
   'menu.library': 'Library',
   'menu.library.table-list': 'libraryList',
   'menu.library.peptide-list': 'peptideList',

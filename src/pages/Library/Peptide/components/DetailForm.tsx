@@ -3,13 +3,9 @@ import { Drawer, Tooltip } from 'antd';
 import type { TableListItem } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import type { UpdateFormProps } from './UpdateForm';
 
-export type UpdateFormProps = {
-  showDetail: any;
-  currentRow: any;
-  columns: any;
-  onClose: () => void;
-};
+1
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const columns = [
     {
