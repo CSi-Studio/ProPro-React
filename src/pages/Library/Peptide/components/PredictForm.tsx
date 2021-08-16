@@ -28,7 +28,7 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
     >
       <ProForm.Group>
         <ProFormSelect
-          initialValue="HCD"
+          initialValue="CID"
           rules={[
             {
               required: true,
@@ -50,7 +50,7 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
           label="碰撞方式"
         />
         <ProFormSelect
-          initialValue="true"
+          initialValue="false"
           rules={[
             {
               required: true,

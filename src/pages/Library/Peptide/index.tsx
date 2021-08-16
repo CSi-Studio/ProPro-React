@@ -1,7 +1,7 @@
 import { Form, message, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { peptideList, predictPeptide, removeList, updateList } from './service';
+import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
@@ -70,6 +70,7 @@ const TableList: React.FC = (props) => {
   const [contrastModalVisible, handleContrastModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  /** 预测弹窗 */
   const [predictList, setPredictList] = useState<any>();
 
   const { libraryId } = props?.location?.query;
@@ -116,7 +117,6 @@ const TableList: React.FC = (props) => {
                 onClick={() => {
                   setCurrentRow(entity);
                   setShowDetail(true);
-                  // setPopup(true);
                 }}
               >
                 {dom}
@@ -134,8 +134,12 @@ const TableList: React.FC = (props) => {
     {
       title: 'RT',
       width: '160px',
-      // copyable: true,1
       dataIndex: 'rt',
+    },
+    {
+      title: '带电量',
+      width: '160px',
+      dataIndex: 'charge',
     },
     {
       title: '肽段序列',
@@ -189,7 +193,7 @@ const TableList: React.FC = (props) => {
                 justifyContent: 'center',
               }}
             >
-              {entity.decoyFragments.map((item) => (
+              {entity.fragments.map((item) => (
                 <div
                   key={item.intensity}
                   style={{
@@ -227,7 +231,7 @@ const TableList: React.FC = (props) => {
                 justifyContent: 'center',
               }}
             >
-              {entity.decoyFragments.map((item) => (
+              {entity.fragments.map((item) => (
                 <div
                   key={item.intensity}
                   style={{
@@ -264,7 +268,7 @@ const TableList: React.FC = (props) => {
                 justifyContent: 'center',
               }}
             >
-              {entity.decoyFragments.map((item) => (
+              {entity.fragments.map((item) => (
                 <div
                   key={item.intensity}
                   style={{
@@ -302,7 +306,7 @@ const TableList: React.FC = (props) => {
                 alignItems: 'center',
               }}
             >
-              {entity.decoyFragments.map((item) => (
+              {entity.fragments.map((item) => (
                 <div
                   key={item.intensity}
                   style={{
@@ -339,7 +343,7 @@ const TableList: React.FC = (props) => {
                 justifyContent: 'center',
               }}
             >
-              {entity.decoyFragments.map((item) => (
+              {entity.fragments.map((item) => (
                 <div
                   key={item.intensity}
                   style={{
@@ -445,7 +449,6 @@ const TableList: React.FC = (props) => {
           const msg = await peptideList({ libraryId, ...params });
           return Promise.resolve(msg);
         }}
-        // dataSource={tableListDataSource}
         columns={columns}
         rowSelection={
           {
@@ -528,10 +531,15 @@ const TableList: React.FC = (props) => {
         }}
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
-          value.id = currentRow?.id as string;
+          value.fragments.map((item: any) => {
+            // eslint-disable-next-line no-param-reassign
+            delete item.key;
+            // eslint-disable-next-line no-param-reassign
+            delete item.trueMz;
+            return null;
+          });
           // eslint-disable-next-line no-console
-          console.log(value);
-          const success = await handleUpdate(value);
+          const success = await updateFragment({ peptideId: currentRow?.id }, value.fragments);
           if (success) {
             handleContrastModalVisible(false);
             setCurrentRow(undefined);

@@ -25,69 +25,38 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
   const columns: ProColumns[] = [
     {
       title: '真肽段碎片荷质比',
-      dataIndex: 'mz',
-      sorter: (a, b) => (a.mz > b.mz ? -1 : 1),
+      dataIndex: 'trueMz',
       render: (dom, entity) => {
-        // return entity.predict ? null : <Tooltip title={dom}>{dom}</Tooltip>;
-        // if (entity.predictMz && entity.predictMz !== entity.mz) {
-        //   return (
-        //     <Tag color="orange">
-        //       <Tooltip title={dom}>{dom}</Tooltip>
-        //     </Tag>
-        //   );
-        // }
-        // return (
-        //   <Tag color="green">
-        //     <Tooltip title={dom}>{dom}</Tooltip>
-        //   </Tag>
-        // );
         if (!entity.predict) {
-          if (entity.predictMz && entity.predictMz !== entity.mz) {
-            return (
-              <Tag color="orange">
-                <Tooltip title={dom}>{dom}</Tooltip>
-              </Tag>
-            );
-          }
           return (
             <Tag color="green">
               <Tooltip title={dom}>{dom}</Tooltip>
             </Tag>
           );
         }
-        return null;
+        if (entity.trueMz && entity.trueMz !== entity.mz) {
+          return (
+            <Tag color="orange">
+              <Tooltip title={dom}>{dom}</Tooltip>
+            </Tag>
+          );
+        }
       },
     },
     {
       title: 'cutInfo',
       dataIndex: 'cutInfo',
-      sorter: (a, b) => (a.cutInfo > b.cutInfo ? -1 : 1),
+      sorter: (a, b) => (a.predict > b.predict ? -1 : 1),
       render: (dom, entity) => {
         return <Tooltip title={dom}>{dom}</Tooltip>;
       },
     },
     {
       title: '预测肽段碎片荷质比',
-      dataIndex: 'predictMz',
-      sorter: (a, b) => (a.predictMz > b.predictMz ? -1 : 1),
+      dataIndex: 'mz',
       render: (dom, entity) => {
-        // if (entity.predictMz && entity.predictMz !== entity.mz) {
-        //   return (
-        //     <Tag color="orange">
-        //       <Tooltip title={dom}>{dom}</Tooltip>
-        //     </Tag>
-        //   );
-        // }
-        // if (!entity.predictMz) {
-        //   return null;
-        // }
-        // return (
-        //   <Tag color="green">
-        //     <Tooltip title={dom}>{dom}</Tooltip>
-        //   </Tag>
-        // );
-        if (entity.predictMz) {
-          if (entity.predictMz !== entity.mz) {
+        if (entity.predict) {
+          if (entity.trueMz && entity.trueMz !== entity.mz) {
             return (
               <Tag color="orange">
                 <Tooltip title={dom}>{dom}</Tooltip>
@@ -104,20 +73,25 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       },
     },
   ];
-
-  props?.values?.fragments?.forEach((item?: any) => {
-    props?.predictList?.data?.forEach((_item?: any, index?: number) => {
+  // eslint-disable-next-line no-console
+  console.log('真肽段-----', props?.values?.fragments);
+  // eslint-disable-next-line no-console
+  console.log('预测结果-----', props?.predictList?.data);
+  props?.values?.fragments?.forEach((item: any, index: number) => {
+    props?.predictList?.data?.forEach((_item: any) => {
+      // eslint-disable-next-line no-param-reassign
+      item.trueMz = item.mz;
       if (item.cutInfo === _item.cutInfo) {
+        // eslint-disable-next-line no-console
+        console.log(item.cutInfo);
+        // eslint-disable-next-line no-console
+        console.log(_item.cutInfo);
         // eslint-disable-next-line no-param-reassign
-        item.predictMz = _item.mz;
-        props?.predictList?.data.splice(index, 1);
+        _item.trueMz = item.mz;
+        props?.values?.fragments.splice(index, 1);
       }
       // eslint-disable-next-line no-console
     });
-  });
-  props?.predictList?.data?.forEach((_item?: any, index?: number) => {
-    // eslint-disable-next-line no-param-reassign
-    _item.predictMz = _item.mz;
   });
 
   const data = props?.values?.fragments
@@ -133,6 +107,15 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       }
     });
   }
+
+  // eslint-disable-next-line no-console
+  console.log('最终结果-----', data);
+
+  const rowSelection = {
+    getCheckboxProps: (record: any) => ({
+      disabled: record.predict === null || record.trueMz,
+    }),
+  };
 
   return (
     <ModalForm
@@ -158,7 +141,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
               type="primary"
               key="submit"
               onClick={() => {
-                _props.form?.setFieldsValue({ selectedRows: selectedRowsState });
+                _props.form?.setFieldsValue({ fragments: selectedRowsState });
                 _props.form?.submit?.();
               }}
             >
@@ -186,13 +169,14 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
           rowKey="key"
           tableAlertRender={false}
           rowSelection={{
+            ...rowSelection,
             onChange: (_, selectedRows) => {
               setSelectedRows(selectedRows);
             },
           }}
         />
       )}
-      <Form.Item style={{ display: 'none' }} name="selectedRows" key="selectedRows">
+      <Form.Item style={{ display: 'none' }} name="fragments" key="fragments">
         <Input />
       </Form.Item>
     </ModalForm>
