@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import { TableAddItem } from './data';
+import type { TableAddItem } from './data';
 
 /** 获取肽段列表 GET /peptide/list */
 export async function proteinList(params: {
