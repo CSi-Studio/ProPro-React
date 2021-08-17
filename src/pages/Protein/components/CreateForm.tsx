@@ -48,6 +48,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     >
       <ProForm.Group>
         <ProFormText
+          initialValue=""
           rules={[
             {
               required: false,
@@ -153,12 +154,11 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           label="createLibrary"
           fieldProps={{
             onChange: (val) => {
-              if (val == 'true') {
+              if (val === 'true') {
                 setCreate(false);
               } else {
                 setCreate(true);
               }
-              console.log('status', createVisible);
             },
           }}
 
@@ -171,7 +171,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <ProFormText
           rules={[
             {
-              required: true,
+              required: false,
             },
           ]}
           width="sm"
@@ -184,7 +184,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <ProFormSelect
           rules={[
             {
-              required: true,
+              required: false,
               message: '请选择spModel',
             },
           ]}
@@ -198,7 +198,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               label: 'CID',
             },
           ]}
-          fieldProps={{ onChange: (val) => console.log('status', status) }}
+          // fieldProps={{ onChange: (val) => console.log('status', status) }}
           width="sm"
           name="spModel"
           label="spModel"
@@ -207,7 +207,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <ProFormSelect
           rules={[
             {
-              required: true,
+              required: false,
               message: '请选择isoTope',
             },
           ]}

@@ -1,4 +1,4 @@
-import { Form, message, Tooltip } from 'antd';
+import { Button, Form, message, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { addList, proteinList } from './service';
@@ -7,6 +7,7 @@ import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import './index.less';
 import CreateForm from './components/createForm';
+import { Icon } from '@iconify/react';
 
 /**
  * 添加库
@@ -96,7 +97,7 @@ const TableList: React.FC = (props) => {
     {
       title: '序列号',
       dataIndex: 'sequence',
-      render: (dom, entity) => {
+      render: (dom) => {
         return (
           <Tooltip title={dom} placement="topLeft">
             <div
@@ -107,13 +108,7 @@ const TableList: React.FC = (props) => {
                 textOverflow: 'ellipsis',
               }}
             >
-              <a
-                onClick={() => {
-                  setCurrentRow(entity);
-                }}
-              >
-                {dom}
-              </a>
+              {dom}
             </div>
           </Tooltip>
         );
@@ -158,6 +153,20 @@ const TableList: React.FC = (props) => {
         request={proteinList}
         // dataSource={tableListDataSource}
         columns={columns}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              formCreate?.resetFields();
+              handleModalVisible(true);
+              // setPopup(true);
+            }}
+          >
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
+            导入蛋白库
+          </Button>,
+        ]}
         rowSelection={
           {
             // onChange: (_, selectedRows) => {
