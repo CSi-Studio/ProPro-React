@@ -1,4 +1,5 @@
 import { request } from 'umi';
+import {url} from '@/utils/request'
 
 /** 获取肽段列表 GET /peptide/list */
 export async function peptideList(params: {
@@ -10,7 +11,7 @@ export async function peptideList(params: {
   /** 选择的标准库ID */
   libraryId?: string;
 }) {
-  return request('/api/peptide/list', {
+  return request(`${url}/peptide/list`, {
     method: 'GET',
     params: {
       ...params,
@@ -27,7 +28,7 @@ export async function updateList(params: {
   id: string;
 }) {
   // eslint-disable-next-line no-console
-  return request('/api/peptide/update', {
+  return request(`${url}/peptide/update`, {
     method: 'POST',
     params: {
       ...params,
@@ -42,7 +43,7 @@ export async function predictPeptide(params: {
   peptideId: string;
 }) {
   // eslint-disable-next-line no-console
-  return request('/api/peptide/predict', {
+  return request(`${url}/peptide/predict`, {
     method: 'GET',
     params: {
       ...params,
@@ -52,7 +53,7 @@ export async function predictPeptide(params: {
 /** 预测肽段碎片 POST /api/peptide/predict */
 export async function updateFragment(params: { peptideId?: string }, fragments: any) {
   // eslint-disable-next-line no-console
-  return request('/api/peptide/updateFragment', {
+  return request(`${url}/peptide/updateFragment`, {
     method: 'POST',
     params: {
       ...params,
@@ -70,7 +71,7 @@ export async function updateFragment(params: { peptideId?: string }, fragments: 
 
 /** 删除肽段库 GET /api/peptide/remove  */
 export async function removeList(params: { peptideId: any }) {
-  return request('/api/peptide/remove', {
+  return request(`${url}/peptide/remove`, {
     method: 'GET',
     params: {
       ...params,

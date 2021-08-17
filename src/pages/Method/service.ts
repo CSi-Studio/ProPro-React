@@ -1,5 +1,6 @@
 import { request } from 'umi';
 import type { TableListItem } from './data';
+import {url} from '@/utils/request'
 
 /** 获取方法列表 GET /method/list */
 export async function methodList(params: {
@@ -9,7 +10,7 @@ export async function methodList(params: {
   /** 页面的容量 */
   pageSize?: number;
 }) {
-  return request('/api/method/list', {
+  return request(`${url}/method/list`, {
     method: 'GET',
     params: {
       ...params,
@@ -25,7 +26,7 @@ export async function methodDetail(params: {
   /** 页面的容量 */
   pageSize?: number;
 }) {
-  return request('/api/method/list', {
+  return request(`${url}/method/detail`, {
     method: 'GET',
     params: {
       ...params,
@@ -35,7 +36,7 @@ export async function methodDetail(params: {
 
 /** 添加方法 POST /api/method/add */
 export async function addMethod(params: any) {
-  return request('/api/method/add', {
+  return request(`${url}/method/add`, {
     method: 'POST',
     params: {
       ...params,
@@ -44,7 +45,7 @@ export async function addMethod(params: any) {
 }
 /** 更新方法 POST /api/method/update */
 export async function updateMethod(params: any) {
-  return request('/api/method/update', {
+  return request(`${url}/method/update`, {
     method: 'POST',
     params: {
       ...params,

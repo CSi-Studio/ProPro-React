@@ -1,5 +1,6 @@
 import { request } from 'umi';
 import type { TableAddItem } from './data';
+import {url} from '@/utils/request'
 
 /** 获取肽段列表 GET /peptide/list */
 export async function proteinList(params: {
@@ -10,7 +11,7 @@ export async function proteinList(params: {
   pageSize?: number;
   /** 选择的标准库ID */
 }) {
-  return request('/api/protein/list', {
+  return request(`${url}/protein/list`, {
     method: 'GET',
     params: {
       ...params,
@@ -40,7 +41,7 @@ export async function addList(body: {
   fileData.append('isotope', body.isotope);
   fileData.append('minPepLen', body.minPepLen);
   fileData.append('maxPepLen', body.maxPepLen);
-  return request<TableAddItem>('/api/protein/add', {
+  return request<TableAddItem>(`${url}/protein/add`, {
     method: 'POST',
     header: {
       Accept: 'application/json',

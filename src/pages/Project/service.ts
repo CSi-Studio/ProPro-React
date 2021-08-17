@@ -2,10 +2,11 @@ import { request } from 'umi';
 import type { addFormValueType } from './components/CreateForm';
 import type { updateFormValueType } from './components/UpdateForm';
 import type { TableListItem } from './data';
+import {url} from '@/utils/request'
 
 /** 添加项目前处理 GET /api/project/beforeAdd */
 export async function beforeAdd() {
-  return request('/api/project/beforeAdd', {
+  return request(`${url}/project/beforeAdd`, {
     method: 'GET',
   });
 }
@@ -17,7 +18,7 @@ export async function projectList(params: {
   /** 页面的容量 */
   pageSize?: number;
 }) {
-  return request('/api/project/list', {
+  return request(`${url}/project/list`, {
     method: 'GET',
     params: {
       ...params,
@@ -27,7 +28,7 @@ export async function projectList(params: {
 
 /** 添加项目 POST /api/project/add */
 export async function addList(params: addFormValueType) {
-  return request<TableListItem>('/api/project/add', {
+  return request<TableListItem>(`${url}/project/add`, {
     method: 'POST',
     params: {
       ...params,
@@ -36,7 +37,7 @@ export async function addList(params: addFormValueType) {
 }
 /** 更新项目 POST /api/project/update */
 export async function updateList(params: updateFormValueType) {
-  return request<TableListItem>('/api/project/update', {
+  return request<TableListItem>(`${url}/project/update`, {
     method: 'POST',
     params: {
       ...params,
@@ -46,7 +47,7 @@ export async function updateList(params: updateFormValueType) {
 
 /** 删除项目 GET project/remove  */
 export async function removeList(params: { projectId: any }) {
-  return request('/api/project/remove', {
+  return request(`${url}/project/remove`, {
     method: 'GET',
     params: {
       ...params,
@@ -55,7 +56,7 @@ export async function removeList(params: { projectId: any }) {
 }
 /** 删除项目 GET project/remove  */
 export async function removeAna(params: { projectId: any }) {
-  return request('/api/project/remove', {
+  return request(`${url}/project/removeAna`, {
     method: 'GET',
     params: {
       ...params,
@@ -64,7 +65,7 @@ export async function removeAna(params: { projectId: any }) {
 }
 /** 删除项目 GET project/remove  */
 export async function removeIrt(params: { projectId: any }) {
-  return request('/api/project/remove', {
+  return request(`${url}/project/removeIrt`, {
     method: 'GET',
     params: {
       ...params,
@@ -77,7 +78,7 @@ export async function peptideScan(params: {
   /** 选择的项目ID */
   projectId?: string;
 }) {
-  return request('/api/project/scan', {
+  return request(`${url}/project/scan`, {
     method: 'POST',
     params: {
       ...params,

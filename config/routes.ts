@@ -1,26 +1,6 @@
 export default [
   // 主界面
   { path: '/', component: './Library' },
-  // // 登陆界面
-  // {
-  //   path: '/user',
-  //   layout: false,
-  //   routes: [
-  //     {
-  //       path: '/user',
-  //       routes: [
-  //         {
-  //           name: 'login',
-  //           path: '/user/login',
-  //           component: './user/Login',
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       component: './404',
-  //     },
-  //   ],
-  // },
   // 字典界面
   {
     path: '/dict',

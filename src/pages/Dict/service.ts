@@ -1,5 +1,6 @@
 import { request } from 'umi';
 import type {  DictListItem,AddItem,AddItemDetail,deleteListItem, IdItem } from './data';
+import {url} from '@/utils/request'
 
 /** 获取库列表 GET /library/list */
 export async function dictList() {
@@ -12,7 +13,7 @@ export async function dictList() {
 export async function addList(body: { name:string }) {
   const fileData = new FormData();
   fileData.append('name', body.name);
-  return request<AddItem>('/api/dict/add', {
+  return request<AddItem>(`${url}/dict/add`, {
     method: 'POST',
     header: {
       Accept: 'application/json',
@@ -28,7 +29,7 @@ export async function addListItem(body: { id:string;key:string;value:string }) {
   fileData.append('value', body.value);
 
 
-  return request<AddItemDetail>('/api/dict/addItem', {
+  return request<AddItemDetail>(`${url}/dict/addItem`, {
     method: 'POST',
     header: {
       Accept: 'application/json',
@@ -43,7 +44,7 @@ export async function updateList(body: {  id: string; key?: any; value?: any }) 
   fileData.append('id', body.id);
   fileData.append('key', body.key);
   fileData.append('value', body.value);
-  return request<DictListItem>('/api/dict/update', {
+  return request<DictListItem>(`${url}/dict/update`, {
     method: 'POST',
     data: fileData,
   });
@@ -54,7 +55,7 @@ export async function deleteItem(body: {  id: string; key?: any}) {
   const fileData = new FormData();
   fileData.append('id', body.id);
   fileData.append('key', body.key);
-  return request<deleteListItem>('/api/dict/removeItem', {
+  return request<deleteListItem>(`${url}/dict/removeItem`, {
     method: 'POST',
     data: fileData,
   });
@@ -65,7 +66,7 @@ export async function deleteDict(body: {  id: string;}) {
   const fileData = new FormData();
   fileData.append('id', body.id);
 
-  return request<IdItem>('/api/dict/remove', {
+  return request<IdItem>(`${url}/dict/remove`, {
     method: 'POST',
     data: fileData,
   });
