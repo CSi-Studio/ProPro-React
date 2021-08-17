@@ -263,7 +263,7 @@ const TableList: React.FC = () => {
         return (
           <Link
             to={{
-              pathname: `/library/peptide`,
+              pathname: `/peptide/list`,
               state: { libraryName: entity.name },
               search: `?libraryId=${entity.id}`,
             }}

@@ -1,66 +1,62 @@
 export default [
   // 主界面
-  { path: '/', component: './Library' },
-  // 字典界面
+  { path: '/', component: './Project' },
+  // 项目
   {
-    path: '/dict',
-    name: 'dict-list',
-    icon: 'smile',
-    component: './Dict',
-  },
-  // 项目界面
-  {
-    name: 'project-list',
+    key: 'project',
+    name: 'project',
     icon: 'profile',
-    path: '/project',
+    path: '/project/list',
     component: './Project',
-  },
-  // 标准库界面
-  {
-    name: 'library',
-    path: '/library',
-    icon: 'hdd',
-    routes: [
-      {
-        path: '/library/list',
-        name: 'library-list',
-        icon: 'hdd',
-        component: './Library',
-      },
-      {
-        path: '/library/peptide',
-        name: 'peptide-list',
-        icon: 'smile',
-        component: './Library/Peptide',
-      },
-      {
-        component: './404',
-      },
-    ],
-  },
-
-  // 蛋白库界面
-  {
-    name: 'protein-list',
-    icon: 'profile',
-    path: '/protein',
-    component: './Protein',
-  },
-  // 方法库界面
-  {
-    name: 'method-list',
-    icon: 'profile',
-    path: '/method',
-    component: './Method',
   },
   // 实验列表界面
   {
-    name: 'experiment-list',
+    key: 'experiment',
+    name: 'experiment',
     icon: 'profile',
-    path: '/experiment',
+    path: '/experiment/list',
     component: './Experiment',
+    hidden: true
   },
-
+  // 蛋白库界面
+  {
+    key: 'protein',
+    name: 'protein',
+    icon: 'profile',
+    path: '/protein/list',
+    component: './Protein',
+  },
+  // 标准库
+  {
+    key: 'library',
+    name: 'library',
+    path: '/library/list',
+    icon: 'hdd',
+    component: './Library',
+  },
+  //肽段
+  {
+    path: '/peptide/list',
+    name: 'peptide',
+    icon: 'smile',
+    component: './Peptide',
+  },
+  // 方法库界面
+  {
+    key: 'method',
+    name: 'method',
+    icon: 'profile',
+    path: '/method/list',
+    component: './Method',
+  },
+  // 字典界面
+  {
+    key: 'dict',
+    name: 'dict',
+    path: '/dict',
+    icon: 'smile',
+    component: './Dict',
+  },
   // 404
   {
     component: './404',
