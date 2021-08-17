@@ -158,36 +158,43 @@ const TableList: React.FC = (props) => {
       title: 'm / z',
       dataIndex: 'mz',
       width: '120px',
+      hideInSearch: true,
     },
     {
       title: 'RT',
       width: '160px',
       dataIndex: 'rt',
+      hideInSearch: true,
     },
     {
       title: '带电量',
       width: '160px',
       dataIndex: 'charge',
+      hideInSearch: true,
     },
     {
       title: '肽段序列',
       width: '120px',
       dataIndex: 'fullName',
+      hideInSearch: true,
     },
     {
       title: '伪肽段',
       width: '120px',
       dataIndex: 'decoySequence',
+      hideInSearch: true,
     },
     {
       title: '离子片段',
       width: '120px',
       dataIndex: 'fragments',
+      hideInSearch: true,
       children: [
         {
           title: 'CutInfo',
           dataIndex: 'cutInfo',
           width: '50px',
+          hideInSearch: true,
           render: (dom, entity) => [
             <div
               key="1"
@@ -226,6 +233,7 @@ const TableList: React.FC = (props) => {
           title: '碎片荷质比',
           dataIndex: 'mz',
           width: '160px',
+          hideInSearch: true,
           render: (dom, entity) => [
             <div
               key="1"
@@ -263,6 +271,7 @@ const TableList: React.FC = (props) => {
           title: '强度',
           dataIndex: 'intensity',
           width: '60px',
+          hideInSearch: true,
           render: (dom, entity) => [
             <div
               key="1"
@@ -296,6 +305,7 @@ const TableList: React.FC = (props) => {
           title: '带电量',
           dataIndex: 'charge',
           width: '60px',
+          hideInSearch: true,
           render: (dom, entity) => [
             <div
               key="1"
@@ -334,6 +344,7 @@ const TableList: React.FC = (props) => {
           title: 'Annotations',
           dataIndex: 'Annotations',
           width: '80px',
+          hideInSearch: true,
           render: (dom, entity) => [
             <div
               key="1"

@@ -187,22 +187,27 @@ const TableList: React.FC = () => {
     {
       title: '实验类型',
       dataIndex: 'type',
+      hideInSearch: true,
     },
     {
       title: '负责人',
       dataIndex: 'owner',
+      hideInSearch: true,
     },
     {
       title: '标准库',
       dataIndex: 'anaLibName',
+      hideInSearch: true,
     },
     {
       title: '内标库',
       dataIndex: 'insLibName',
+      hideInSearch: true,
     },
     {
       title: '标签',
       dataIndex: 'tags',
+      hideInSearch: true,
       render: (dom) => {
         // eslint-disable-next-line array-callback-return
         return <Tag>{dom}</Tag>;
@@ -211,11 +216,13 @@ const TableList: React.FC = () => {
     {
       title: '项目描述',
       dataIndex: 'description',
+      hideInSearch: true,
     },
     {
       title: '创建时间',
       dataIndex: 'createDate',
       valueType: 'dateTime',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -224,6 +231,7 @@ const TableList: React.FC = () => {
       width: 100,
       ellipsis: true,
       fixed: 'right',
+      hideInSearch: true,
       render: (text, record) => [
         <Tooltip title={'编辑'}>
           <a

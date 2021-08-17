@@ -155,7 +155,7 @@ const TableList: React.FC = () => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -204,6 +204,7 @@ const TableList: React.FC = () => {
       title: '库类型',
       dataIndex: 'type',
       width: '100px',
+      hideInSearch: true,
       // hideInSearch: true,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
@@ -218,6 +219,7 @@ const TableList: React.FC = () => {
       title: '伪肽段生成算法',
       dataIndex: 'generator',
       width: '120px',
+      hideInSearch: true,
       render: (dom, entity) => {
         if (
           entity.generator === 'undefined' ||
@@ -232,6 +234,7 @@ const TableList: React.FC = () => {
     {
       title: '有机物种',
       width: '160px',
+      hideInSearch: true,
       // copyable: true,1
       dataIndex: 'organism',
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
@@ -495,11 +498,11 @@ const TableList: React.FC = () => {
         ]}
         request={libraryList}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
+        // rowSelection={{
+        //   onChange: (_, selectedRows) => {
+        //     // setSelectedRows(selectedRows);
+        //   },
+        // }}
       />
 
       {/* 新建列表 */}

@@ -6,7 +6,7 @@ import type { TableAddItem, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import './index.less';
-import CreateForm from './components/createForm';
+import CreateForm from './components/CreateForm';
 import { Icon } from '@iconify/react';
 
 /**
@@ -32,7 +32,7 @@ const TableList: React.FC = (props) => {
   // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
 
   const [formCreate] = Form.useForm();
-  const [currentRow, setCurrentRow] = useState<TableListItem>();
+  // const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [createRow, setCreateRow] = useState<TableAddItem>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
@@ -41,7 +41,7 @@ const TableList: React.FC = (props) => {
       title: '标识符',
       dataIndex: 'identifier',
       width: '100px',
-      render: (dom, entity) => {
+      render: (dom) => {
         return (
           <Tooltip title={dom} placement="topLeft">
             <div
@@ -69,6 +69,7 @@ const TableList: React.FC = (props) => {
     {
       title: '蛋白质名称',
       dataIndex: 'names',
+      hideInSearch: true,
       render: (dom) => {
         return (
           <Tooltip title={dom} placement="topLeft">
@@ -89,14 +90,17 @@ const TableList: React.FC = (props) => {
     {
       title: '有机生物',
       dataIndex: 'organism',
+      hideInSearch: true,
     },
     {
       title: '基因🧬',
       dataIndex: 'gene',
+      hideInSearch: true,
     },
     {
       title: '序列号',
       dataIndex: 'sequence',
+      hideInSearch: true,
       render: (dom) => {
         return (
           <Tooltip title={dom} placement="topLeft">
@@ -117,6 +121,7 @@ const TableList: React.FC = (props) => {
     {
       title: 'UniProt链接🔗',
       dataIndex: 'uniPortLink',
+      hideInSearch: true,
       render: (dom, entity) => {
         return (
           <a href={entity.uniPortLink ? entity.uniPortLink : 'http://www.csibio.net/'}>UniProt</a>
@@ -126,6 +131,7 @@ const TableList: React.FC = (props) => {
     {
       title: 'alphaFoldLink链接🔗',
       dataIndex: 'alphaFoldLink',
+      hideInSearch: true,
       render: (dom, entity) => {
         return (
           <a href={entity.alphaFoldLink ? entity.alphaFoldLink : 'http://www.csibio.net/'}>

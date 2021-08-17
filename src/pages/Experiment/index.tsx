@@ -1,7 +1,7 @@
-import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
+import { Tag, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { libraryList, addList, experimentList } from './service';
+import {experimentList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 
 import React, { useState, useRef } from 'react';
@@ -9,7 +9,7 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
 import DetailForm from './components/DetailForm';
-import { Link } from 'umi';
+// import { Link } from 'umi';
 
 // /**
 //  * 添加库
@@ -30,15 +30,15 @@ import { Link } from 'umi';
 // };
 
 const TableList: React.FC = () => {
-  const [formCreate] = Form.useForm();
-  const [formUpdate] = Form.useForm();
+  // const [formCreate] = Form.useForm();
+  // const [formUpdate] = Form.useForm();
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
 
   /** 更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  // const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -78,6 +78,7 @@ const TableList: React.FC = () => {
     {
       title: '实验类型',
       dataIndex: 'type',
+      hideInSearch: true,
       render: (dom) => {
         return <Tag>{dom}</Tag>;
       },
@@ -86,6 +87,7 @@ const TableList: React.FC = () => {
       title: 'Aird Size',
       dataIndex: 'airdSize',
       valueType: 'digit',
+      hideInSearch: true,
       render: (dom, entity) => {
         const size = entity.airdSize / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;
@@ -94,6 +96,7 @@ const TableList: React.FC = () => {
     {
       title: 'Aird Index Size',
       dataIndex: 'airdIndexSize',
+      hideInSearch: true,
       render: (dom, entity) => {
         const size = entity.airdSize / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;
@@ -102,6 +105,7 @@ const TableList: React.FC = () => {
     {
       title: '厂商文件大小',
       dataIndex: 'vendorFileSize',
+      hideInSearch: true,
       render: (dom, entity) => {
         const size = entity.airdSize / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;

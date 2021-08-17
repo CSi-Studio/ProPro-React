@@ -1,4 +1,4 @@
-import { Button, message, Tag, Tooltip, Form } from 'antd';
+import { Button, message, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { TableListItem, TableListPagination } from './data';
@@ -11,7 +11,6 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
 import DetailForm from './components/DetailForm';
-import { Link } from 'umi';
 import { updateMethod, addMethod, methodList } from './service';
 import { CheckCircleTwoTone, CloseCircleOutlined } from '@ant-design/icons';
 
@@ -53,8 +52,8 @@ const handleUpdate = async (values: updateFormValueType) => {
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
-  const [formDelete] = Form.useForm();
-  const [formClone] = Form.useForm();
+  // const [formDelete] = Form.useForm();
+  // const [formClone] = Form.useForm();
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
@@ -78,14 +77,17 @@ const TableList: React.FC = () => {
     {
       title: 'mzWindow',
       dataIndex: 'mzWindow',
+      hideInSearch: true,
     },
     {
       title: 'rtWindow',
       dataIndex: 'rtWindow',
+      hideInSearch: true,
     },
     {
       title: 'adaptiveMzWindow',
       dataIndex: 'adaptiveMzWindow',
+      hideInSearch: true,
       render: (dom, entity) => {
         if (entity.adaptiveMzWindow) {
           return (
@@ -106,22 +108,27 @@ const TableList: React.FC = () => {
     {
       title: 'minMzWindow',
       dataIndex: 'minMzWindow',
+      hideInSearch: true,
     },
     {
       title: 'minShapeScore',
       dataIndex: 'minShapeScore',
+      hideInSearch: true,
     },
     {
       title: 'minShapeWeightScore',
       dataIndex: 'minShapeWeightScore',
+      hideInSearch: true,
     },
     {
       title: 'classifier',
       dataIndex: 'classifier',
+      hideInSearch: true,
     },
     {
       title: 'fdr',
       dataIndex: 'fdr',
+      hideInSearch: true,
     },
     {
       title: '描述信息',
