@@ -247,78 +247,82 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem,TableListPagination>
+      <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
         rowKey="id"
+        size="small"
         expandable={{
-          expandedRowRender: record =>  <ProTable
-          columns={[
-            { title: '键', dataIndex: 'key', key: 'key' },
-            { title: '值', dataIndex: 'value', key: 'value' },
-            {
-              title: '操作',
-              dataIndex: 'operation',
-              key: 'operation',
-              valueType: 'option',
-              render: (text, record1) => [
-                <Tooltip title={'编辑'} key="edit">
-          <a
-            onClick={() => {
-              console.log('record',record)
+          expandedRowRender: (record) => (
+            <ProTable
+              columns={[
+                { title: '键', dataIndex: 'key', key: 'key' },
+                { title: '值', dataIndex: 'value', key: 'value' },
+                {
+                  title: '操作',
+                  dataIndex: 'operation',
+                  key: 'operation',
+                  valueType: 'option',
+                  render: (text, record1) => [
+                    <Tooltip title={'编辑'} key="edit">
+                      <a
+                        onClick={() => {
+                          console.log('record', record);
 
-              formUpdate?.resetFields();
-              handleUpdateModalVisible(true);
-              let obj={
-                id:record.id,
-                key:record1.key,
-                value:record1.value
-              }
-              console.log("obj",obj)
+                          formUpdate?.resetFields();
+                          handleUpdateModalVisible(true);
+                          let obj = {
+                            id: record.id,
+                            key: record1.key,
+                            value: record1.value,
+                          };
+                          console.log('obj', obj);
 
-               setCurrentUpdate(obj);
+                          setCurrentUpdate(obj);
 
-              // setPopup(true);
-            }}
-            key="edit"
-          >
-            <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
-          </a>
-        </Tooltip>,
-        <Tooltip title={'刪除'} key="deleteItem">
-        <a
-          onClick={() => {
+                          // setPopup(true);
+                        }}
+                        key="edit"
+                      >
+                        <EditFilled
+                          style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
+                        />
+                      </a>
+                    </Tooltip>,
+                    <Tooltip title={'刪除'} key="deleteItem">
+                      <a
+                        onClick={() => {
+                          deleteDictForm?.resetFields();
+                          handleDeleteModalVisible(true);
+                          let odj = {
+                            id: record.id,
+                            key: record1.key,
+                          };
+                          console.log('odj', odj);
 
-            deleteDictForm?.resetFields();
-            handleDeleteModalVisible(true);
-            let odj={
-              id:record.id,
-              key:record1.key,
-            }
-            console.log("odj",odj)
+                          setCurrentDeleteItem(odj);
 
-            setCurrentDeleteItem(odj);
-
-            // setPopup(true);
-          }}
-          key="deleteItem"
-        >
-
-          <DeleteTwoTone style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
-
-        </a>
-      </Tooltip>,
-              ]
-            },
-          ]}
-          headerTitle={false}
-          search={false}
-          options={false}
-          dataSource={record.item}
-          pagination={false}
-        />,
-          rowExpandable: record => record.name !== 'Not Expandable',
+                          // setPopup(true);
+                        }}
+                        key="deleteItem"
+                      >
+                        <DeleteTwoTone
+                          style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
+                        />
+                      </a>
+                    </Tooltip>,
+                  ],
+                },
+              ]}
+              headerTitle={false}
+              search={false}
+              options={false}
+              dataSource={record.item}
+              pagination={false}
+            />
+          ),
+          rowExpandable: (record) => record.name !== 'Not Expandable',
         }}
         search={{
           labelWidth: 120,
@@ -349,11 +353,9 @@ const TableList: React.FC = () => {
         }
       />
 
-
-
       {/* 列表详情 */}
       {/* {popup ? ( */}
-        <DictForm
+      <DictForm
         showDetail={showDetail}
         currentRow={currentRow}
         columns={columns}
@@ -367,76 +369,73 @@ const TableList: React.FC = () => {
 
       {/* 编辑列表 */}
       <UpdateForm
-      form={formUpdate}
-      onSubmit={async (value) => {
-        console.log(value);
-        const success = await handleUpdate(value);
-        if (success) {
-          handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
-          if (actionRef.current) {
-            actionRef.current.reload();
+        form={formUpdate}
+        onSubmit={async (value) => {
+          console.log(value);
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }
-        }
-      }}
-      onCancel={{
-        onCancel: () => {
-          handleUpdateModalVisible(false);
-          setCurrentUpdate(undefined);
-          formUpdate?.resetFields();
-          // setPopup(false);
-        },
-      }}
-      updateModalVisible= {updateModalVisible}
-      values= {currentUpdate || {}}
+        }}
+        onCancel={{
+          onCancel: () => {
+            handleUpdateModalVisible(false);
+            setCurrentUpdate(undefined);
+            formUpdate?.resetFields();
+            // setPopup(false);
+          },
+        }}
+        updateModalVisible={updateModalVisible}
+        values={currentUpdate || {}}
       />
 
-     <AddForm
-      form={formCreate}
-      onCancel={{
-        onCancel: () => {
-          handleModalVisible(false);
-          // setPopup(false);
-          formCreate?.resetFields();
-        },
-      }}
-      onSubmit={async (value) => {
-        const success = await handleAdd(value);
-        if (success) {
-          handleModalVisible(false);
-          if (actionRef.current) {
-            actionRef.current.reload();
+      <AddForm
+        form={formCreate}
+        onCancel={{
+          onCancel: () => {
+            handleModalVisible(false);
+            // setPopup(false);
+            formCreate?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          const success = await handleAdd(value);
+          if (success) {
+            handleModalVisible(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }
-        }
-      }}
-      createModalVisible={createModalVisible}
-      values= {currentRow || {}}
+        }}
+        createModalVisible={createModalVisible}
+        values={currentRow || {}}
       />
 
-
-    <AddFormItem
-      form={formCreateItem}
-      onCancel={{
-        onCancel: () => {
-          handleAddModalVisible(false);
-          // setPopup(false);
-          form?.resetFields();
-        },
-      }}
-      onSubmit={async (value) => {
-        const success = await handleAddItem(value);
-        if (success) {
-          handleAddModalVisible(false);
-          if (actionRef.current) {
-            actionRef.current.reload();
+      <AddFormItem
+        form={formCreateItem}
+        onCancel={{
+          onCancel: () => {
+            handleAddModalVisible(false);
+            // setPopup(false);
+            form?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          const success = await handleAddItem(value);
+          if (success) {
+            handleAddModalVisible(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }
-        }
-      }}
-      addModalVisible={addModalVisible}
-      values= {currenId|| {}}
-    />
-
-
+        }}
+        addModalVisible={addModalVisible}
+        values={currenId || {}}
+      />
 
       {/* 删除DictItem */}
       {/* {popup ? ( */}
@@ -465,9 +464,9 @@ const TableList: React.FC = () => {
         values={currentDeleteItem || {}}
       />
 
-        {/* 删除Dict */}
+      {/* 删除Dict */}
       {/* {popup ? ( */}
-        <DeleteDictForm
+      <DeleteDictForm
         form={deleteDictForm}
         onCancel={{
           onCancel: () => {
@@ -480,7 +479,7 @@ const TableList: React.FC = () => {
         onSubmit={async () => {
           // handleDeleteModalVisible(false);
           const success = await handleRemove(currentDelete);
-          console.log("currentdelete",currentDelete)
+          console.log('currentdelete', currentDelete);
           if (success) {
             handleDeleteDictModalVisible(false);
             setCurrentDelete(undefined);
@@ -492,7 +491,6 @@ const TableList: React.FC = () => {
         deleteDictModalVisible={deleteDictModalVisible}
         values={currentDelete || {}}
       />
-
 
       {/* ) : null} */}
 

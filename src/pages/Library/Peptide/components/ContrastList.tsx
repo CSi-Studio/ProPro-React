@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ModalForm, ProFormText } from '@ant-design/pro-form';
-import { Button, Form, Input, Table, Tooltip, Transfer } from 'antd';
+import { ModalForm } from '@ant-design/pro-form';
+import { Button, Form, Input, Tooltip } from 'antd';
 import { Tag } from 'antd';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -24,16 +24,9 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
   const [selectedRowsState, setSelectedRows] = useState<{ mz: string; cutInfo: string }[]>();
   const columns: ProColumns[] = [
     {
-      title: '真肽段碎片荷质比',
+      title: '库中肽段碎片荷质比',
       dataIndex: 'trueMz',
       render: (dom, entity) => {
-        if (!entity.predict) {
-          return (
-            <Tag color="green">
-              <Tooltip title={dom}>{dom}</Tooltip>
-            </Tag>
-          );
-        }
         if (entity.trueMz && entity.trueMz !== entity.mz) {
           return (
             <Tag color="orange">
@@ -41,13 +34,21 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
             </Tag>
           );
         }
+        if (entity.trueMz && entity.trueMz === entity.mz) {
+          return (
+            <Tag color="green">
+              <Tooltip title={dom}>{dom}</Tooltip>
+            </Tag>
+          );
+        }
+        return false;
       },
     },
     {
       title: 'cutInfo',
       dataIndex: 'cutInfo',
       sorter: (a, b) => (a.predict > b.predict ? -1 : 1),
-      render: (dom, entity) => {
+      render: (dom) => {
         return <Tooltip title={dom}>{dom}</Tooltip>;
       },
     },
@@ -69,47 +70,10 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
             </Tag>
           );
         }
-        return null;
+        return false;
       },
     },
   ];
-  // eslint-disable-next-line no-console
-  console.log('真肽段-----', props?.values?.fragments);
-  // eslint-disable-next-line no-console
-  console.log('预测结果-----', props?.predictList?.data);
-  props?.values?.fragments?.forEach((item: any, index: number) => {
-    props?.predictList?.data?.forEach((_item: any) => {
-      // eslint-disable-next-line no-param-reassign
-      item.trueMz = item.mz;
-      if (item.cutInfo === _item.cutInfo) {
-        // eslint-disable-next-line no-console
-        console.log(item.cutInfo);
-        // eslint-disable-next-line no-console
-        console.log(_item.cutInfo);
-        // eslint-disable-next-line no-param-reassign
-        _item.trueMz = item.mz;
-        props?.values?.fragments.splice(index, 1);
-      }
-      // eslint-disable-next-line no-console
-    });
-  });
-
-  const data = props?.values?.fragments
-    ?.concat(props?.predictList?.data)
-    ?.sort((a: any, b: any) => {
-      return a.intensity - b.intensity;
-    });
-  if (data) {
-    data?.forEach((item?: { key: any }, index?: any) => {
-      if (item) {
-        // eslint-disable-next-line no-param-reassign
-        item.key = index;
-      }
-    });
-  }
-
-  // eslint-disable-next-line no-console
-  console.log('最终结果-----', data);
 
   const rowSelection = {
     getCheckboxProps: (record: any) => ({
@@ -130,10 +94,6 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
         searchConfig: {
           submitText: '提交',
         },
-        // 配置按钮的属性
-
-        submitButtonProps: {},
-
         // 完全自定义整个区域
         render: (_props) => {
           return [
@@ -154,17 +114,49 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       {props.values?.peptideRef && (
         <ProTable
           columns={columns}
-          request={(params, sorter, filter) => {
-            // 表单搜索项会从 params 传入，传递给后端接口。
-            // eslint-disable-next-line no-console
-            console.log(params, sorter, filter);
+          size="small"
+          headerTitle={props.values?.peptideRef}
+          request={() => {
+            // ----------------------------------------
+            let trueData: any[] = [];
+            let predictData: any[] = [];
+            let data: any[] = [];
+            trueData = props?.values?.fragments;
+            predictData = props?.predictList?.data;
+
+            trueData?.forEach((item: any) => {
+              // eslint-disable-next-line no-param-reassign
+              item.trueMz = item.mz;
+            });
+            predictData?.forEach((_item: any) => {
+              trueData?.forEach((item: any, index: number) => {
+                if (_item.cutInfo === item.cutInfo) {
+                  // eslint-disable-next-line no-param-reassign
+                  _item.trueMz = item.mz;
+                  trueData.splice(index, 1);
+                }
+              });
+            });
+
+            data = predictData?.concat(trueData)?.sort((a: any, b: any) => {
+              return a.intensity - b.intensity;
+            });
+            if (data) {
+              data?.forEach((item?: { key: any }, index?: any) => {
+                if (item) {
+                  // eslint-disable-next-line no-param-reassign
+                  item.key = index;
+                }
+              });
+            }
+            // ----------------------------------------
             return Promise.resolve({
               data,
               success: true,
             });
           }}
           pagination={false}
-          toolBarRender={false}
+          // toolBarRender={false}
           search={false}
           rowKey="key"
           tableAlertRender={false}

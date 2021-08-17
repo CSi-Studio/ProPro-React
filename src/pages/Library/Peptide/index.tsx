@@ -73,6 +73,9 @@ const TableList: React.FC = (props) => {
   /** 预测弹窗 */
   const [predictList, setPredictList] = useState<any>();
 
+  const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const actionRef = useRef<ActionType>();
+
   const { libraryId } = props?.location?.query;
   /**
    * 预测肽段碎片
@@ -93,9 +96,32 @@ const TableList: React.FC = (props) => {
       return false;
     }
   };
+  /**
+   * 预测对比
+   * @param values
+   */
+  const handleContrast = async (value: { fragments: any[] }) => {
+    const hide = message.loading('正在加载');
+    value.fragments.map((item: any) => {
+      // eslint-disable-next-line no-param-reassign
+      item.predict = null;
+      // eslint-disable-next-line no-param-reassign
+      delete item.key;
+      return true;
+    });
 
-  const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const actionRef = useRef<ActionType>();
+    try {
+      await updateFragment({ peptideId: currentRow?.id }, value.fragments);
+      hide();
+      message.success('添加成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('添加失败，请重试!');
+      return false;
+    }
+  };
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'PeptideRef',
@@ -117,6 +143,8 @@ const TableList: React.FC = (props) => {
                 onClick={() => {
                   setCurrentRow(entity);
                   setShowDetail(true);
+                  // eslint-disable-next-line no-console
+                  console.log(currentRow);
                 }}
               >
                 {dom}
@@ -150,29 +178,6 @@ const TableList: React.FC = (props) => {
       title: '伪肽段',
       width: '120px',
       dataIndex: 'decoySequence',
-      render: (dom, entity) => {
-        return (
-          <Tooltip title={dom} placement="topLeft">
-            <div
-              style={{
-                width: '150px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              <a
-                onClick={() => {
-                  setCurrentRow(entity);
-                  handleContrastModalVisible(true);
-                }}
-              >
-                {dom}
-              </a>
-            </div>
-          </Tooltip>
-        );
-      },
     },
     {
       title: '离子片段',
@@ -278,10 +283,6 @@ const TableList: React.FC = (props) => {
                   <p
                     style={{
                       margin: '0 2px',
-                      width: '60px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
                     }}
                   >
                     {item.intensity}
@@ -442,6 +443,7 @@ const TableList: React.FC = (props) => {
         }
         actionRef={actionRef}
         rowKey="id"
+        size="small"
         search={{
           labelWidth: 120,
         }}
@@ -501,6 +503,7 @@ const TableList: React.FC = (props) => {
         form={formPredict}
         onCancel={{
           onCancel: () => {
+            setCurrentRow(undefined);
             handlePredictModalVisible(false);
             formPredict?.resetFields();
           },
@@ -530,16 +533,7 @@ const TableList: React.FC = (props) => {
           },
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
-          value.fragments.map((item: any) => {
-            // eslint-disable-next-line no-param-reassign
-            delete item.key;
-            // eslint-disable-next-line no-param-reassign
-            delete item.trueMz;
-            return null;
-          });
-          // eslint-disable-next-line no-console
-          const success = await updateFragment({ peptideId: currentRow?.id }, value.fragments);
+          const success = await handleContrast(value);
           if (success) {
             handleContrastModalVisible(false);
             setCurrentRow(undefined);
@@ -549,7 +543,7 @@ const TableList: React.FC = (props) => {
           }
         }}
         contrastModalVisible={contrastModalVisible}
-        values={currentRow || {}}
+        values={currentRow}
         predictList={predictList}
       />
 

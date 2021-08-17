@@ -248,7 +248,7 @@ const TableList: React.FC = () => {
       dataIndex: 'Protein_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <a onClick={() => {}}>{entity?.statistic?.Protein_Count}</a>;
+        return <span onClick={() => {}}>{entity?.statistic?.Protein_Count}</span>;
       },
     },
     {
@@ -276,7 +276,7 @@ const TableList: React.FC = () => {
       dataIndex: 'Fragment_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <a onClick={() => {}}>{entity?.statistic?.Fragment_Count}</a>;
+        return <span onClick={() => {}}>{entity?.statistic?.Fragment_Count}</span>;
       },
     },
     {
@@ -475,6 +475,7 @@ const TableList: React.FC = () => {
         headerTitle=""
         actionRef={actionRef}
         rowKey="id"
+        size="small"
         search={{
           labelWidth: 120,
         }}
@@ -494,13 +495,11 @@ const TableList: React.FC = () => {
         ]}
         request={libraryList}
         columns={columns}
-        rowSelection={
-          {
-            onChange: (_, selectedRows) => {
+        rowSelection={{
+          onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
-            },
-          }
-        }
+          },
+        }}
       />
 
       {/* 新建列表 */}

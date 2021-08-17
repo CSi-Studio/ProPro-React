@@ -130,8 +130,9 @@ const TableList: React.FC = (props) => {
     <PageContainer>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
+        size="small"
         headerTitle={
-          props?.location?.state?.libraryName == undefined
+          props?.location?.state?.libraryName === undefined
             ? ''
             : props?.location?.state?.libraryName
         }

@@ -134,6 +134,7 @@ const TableList: React.FC = () => {
         headerTitle=""
         actionRef={actionRef}
         rowKey="id"
+        size="small"
         search={{
           labelWidth: 120,
         }}
