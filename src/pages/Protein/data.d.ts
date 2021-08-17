@@ -16,3 +16,14 @@ export type TableListPagination = {
   totalPage: number;
   currentPageNo: number;
 };
+export type TableAddItem = {
+  createTage?: string;
+  reviewed: boolean;
+  createLibrary: boolean;
+  libraryName?: string;
+  spModel?: string;
+  isotope?: boolean;
+  minPepLen?: number;
+  maxPepLen?: number;
+  filePath: string;
+};
