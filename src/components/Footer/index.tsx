@@ -1,7 +1,7 @@
 // import { DefaultFooter } from '@ant-design/pro-layout';
 
 export default () => {
-  const defaultMessage = 'ProPro Server Developed by CSi Studio';
+  const defaultMessage = 'ProPro Analyze Platform Developed by CSi Studio';
 
   // return <DefaultFooter copyright={`2021 ${defaultMessage}`} />;
   return (

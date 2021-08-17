@@ -9,8 +9,7 @@ export default defineConfig({
   },
   proxy: {
     '/api/': {
-      // target: 'https://preview.pro.ant.design',
-      target: 'http://192.168.1.110:9000/lims',
+      target: 'http://localhost:8080/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

@@ -22,13 +22,13 @@ export default [
   // 字典界面
   {
     path: '/dict',
-    name: 'dict',
+    name: 'dict-list',
     icon: 'smile',
     component: './Dict',
   },
   // 项目界面
   {
-    name: 'project.table-list',
+    name: 'project-list',
     icon: 'profile',
     path: '/project',
     component: './Project',
@@ -41,7 +41,7 @@ export default [
     routes: [
       {
         path: '/library/list',
-        name: 'table-list',
+        name: 'library-list',
         icon: 'hdd',
         component: './Library',
       },
@@ -59,21 +59,21 @@ export default [
 
   // 蛋白库界面
   {
-    name: 'protein.table-list',
+    name: 'protein-list',
     icon: 'profile',
     path: '/protein',
     component: './Protein',
   },
   // 方法库界面
   {
-    name: 'method',
+    name: 'method-list',
     icon: 'profile',
     path: '/method',
     component: './Method',
   },
   // 实验列表界面
   {
-    name: 'experiment',
+    name: 'experiment-list',
     icon: 'profile',
     path: '/experiment',
     component: './Experiment',

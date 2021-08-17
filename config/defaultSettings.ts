@@ -13,9 +13,8 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'CSi Propro',
+  title: 'CSi ProPro',
   pwa: false,
-  logo: 'https://i.loli.net/2021/07/30/DouWILdjJBK6GEk.png',
   iconfontUrl: '',
 };
 
