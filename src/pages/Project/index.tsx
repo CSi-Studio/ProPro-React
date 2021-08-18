@@ -189,7 +189,7 @@ const TableList: React.FC = () => {
       render: (dom, entity) => {
         return (
           <Link to={{ pathname: '/experiment/list', search: `?projectId=${entity.id}` }}>
-            {dom}
+            <Tag color="blue">{dom}</Tag>
           </Link>
         );
       },
@@ -300,10 +300,10 @@ const TableList: React.FC = () => {
           </a>
         </Tooltip>,
         <Tooltip title={'实验列表'}>
-          <Link to={{ pathname: '/experiment/list' }}>
+          <Link to={{ pathname: '/experiment/list', search: `?projectId=${record.id}` }}>
             <Icon
               style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-              icon="mdi:beaker-minus"
+              icon="mdi:beaker-check"
             />
           </Link>
         </Tooltip>,

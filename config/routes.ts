@@ -18,6 +18,15 @@ export default [
     component: './Experiment',
     hideInMenu: true,
   },
+  //BlockIndex界面
+  {
+    key: 'blockIndex',
+    name: 'blockIndex',
+    path: '/blockIndex',
+    icon: 'smile',
+    component: './BlockIndex',
+    hideInMenu: true,
+  },
   // 蛋白库界面
   {
     key: 'protein',
@@ -57,15 +66,7 @@ export default [
     icon: 'smile',
     component: './Dict',
   },
-  //BlockIndex界面
-  {
-    key: 'blockIndex',
-    name: 'blockIndex',
-    path: `/blockIndex`,
-    icon: 'smile',
-    component: './BlockIndex',
-    hideInMenu: true,
-  },
+
   // 404
   {
     component: './404',
