@@ -1,12 +1,9 @@
 import { request } from 'umi';
-import type {  DictListItem,AddItem,AddItemDetail,deleteListItem, IdItem } from './data';
-import {url} from '@/utils/request'
-
+import type { DictListItem, AddItem, AddItemDetail, deleteListItem, IdItem } from './data';
+import { url } from '@/utils/request';
 
 /** 获取BlockIndex详情 GET /blockindex/detail */
-export async function blockIndexDetail(params: {
-  id?: string;
-}) {
+export async function blockIndexDetail(params: { id?: string }) {
   return request(`${url}/blockindex/detail`, {
     method: 'GET',
     params: {
@@ -19,7 +16,7 @@ export async function blockIndexDetail(params: {
 export async function blockIndexList(params: {
   // query
   /** 当前的页码 */
-  current?: number;
+  pageNo?: number;
   /** 页面的容量 */
   pageSize?: number;
   expId?: string;
@@ -33,7 +30,7 @@ export async function blockIndexList(params: {
 }
 
 /** 添加库 POST /api/library/add */
-export async function addList(body: { name:string }) {
+export async function addList(body: { name: string }) {
   const fileData = new FormData();
   fileData.append('name', body.name);
   return request<AddItem>(`${url}/dict/add`, {
@@ -45,12 +42,11 @@ export async function addList(body: { name:string }) {
   });
 }
 
-export async function addListItem(body: { id:string;key:string;value:string }) {
+export async function addListItem(body: { id: string; key: string; value: string }) {
   const fileData = new FormData();
   fileData.append('id', body.id);
   fileData.append('key', body.key);
   fileData.append('value', body.value);
-
 
   return request<AddItemDetail>(`${url}/dict/addItem`, {
     method: 'POST',
@@ -62,7 +58,7 @@ export async function addListItem(body: { id:string;key:string;value:string }) {
 }
 
 /** 更新库 POST /api/library/update */
-export async function updateList(body: {  id: string; key?: any; value?: any }) {
+export async function updateList(body: { id: string; key?: any; value?: any }) {
   const fileData = new FormData();
   fileData.append('id', body.id);
   fileData.append('key', body.key);
@@ -74,7 +70,7 @@ export async function updateList(body: {  id: string; key?: any; value?: any }) 
 }
 
 /** 刪除DictItem /api/library/update */
-export async function deleteItem(body: {  id: string; key?: any}) {
+export async function deleteItem(body: { id: string; key?: any }) {
   const fileData = new FormData();
   fileData.append('id', body.id);
   fileData.append('key', body.key);
@@ -85,7 +81,7 @@ export async function deleteItem(body: {  id: string; key?: any}) {
 }
 
 /** 刪除DictItem /api/library/update */
-export async function deleteDict(body: {  id: string;}) {
+export async function deleteDict(body: { id: string }) {
   const fileData = new FormData();
   fileData.append('id', body.id);
 
@@ -96,5 +92,3 @@ export async function deleteDict(body: {  id: string;}) {
 }
 
 // blockIndex展示
-
-

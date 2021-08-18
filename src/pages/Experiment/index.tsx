@@ -131,7 +131,7 @@ const TableList: React.FC = (props) => {
       render: (dom, entity) => {
         if (entity?.windowRanges) {
           return (
-            <Link to={{ pathname: '/blockindex/list', search: `?expId=${entity.id}` }}>
+            <Link to={{ pathname: '/blockIndex', search: `?expId=${entity.id}` }}>
               <Tag color="blue">{entity?.windowRanges.length}</Tag>
             </Link>
           );
@@ -179,16 +179,15 @@ const TableList: React.FC = (props) => {
           </a>
         </Tooltip>,
         <Tooltip title={'blockIndex'} key="blockIndex">
-        <Link
-          to={{
-            pathname: '/blockIndex',
-            search: `?expId=${record.id}`,
-          }}
-        >
-          <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
-        </Link>
-      </Tooltip>,
-
+          <Link
+            to={{
+              pathname: '/blockIndex',
+              search: `?expId=${record.id}`,
+            }}
+          >
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+          </Link>
+        </Tooltip>,
       ],
     },
   ];
@@ -205,8 +204,6 @@ const TableList: React.FC = (props) => {
         }}
         // request={experimentList}
         request={async (params) => {
-          console.log(params);
-
           const msg = await experimentList({ projectId, ...params });
           return Promise.resolve(msg);
         }}
@@ -230,32 +227,6 @@ const TableList: React.FC = (props) => {
           setShowDetail(false);
         }}
       />
-
-      {/* 编辑列表 */}
-      {/* <UpdateForm
-        form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
-        }}
-        onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
-          value.id = currentRow?.id as string;
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      /> */}
     </PageContainer>
   );
 };
