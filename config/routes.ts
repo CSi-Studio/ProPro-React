@@ -63,7 +63,8 @@ export default [
     name: 'blockIndex',
     path: `/blockIndex`,
     icon: 'smile',
-    component: './BlockIndex'
+    component: './BlockIndex',
+    hideInMenu: true,
   },
   // 404
   {

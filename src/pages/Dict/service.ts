@@ -4,7 +4,7 @@ import {url} from '@/utils/request'
 
 /** 获取库列表 GET /library/list */
 export async function dictList() {
-  return request('/api/dict/list', {
+  return request(`${url}/dict/list`, {
     method: 'GET',
   });
 }

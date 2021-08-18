@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, Tooltip } from 'antd';
+import { Button, Drawer, Tooltip } from 'antd';
 import type { TableListDetail } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
@@ -12,7 +12,6 @@ export type UpdateFormProps = {
   onClose: () => void;
 };
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
-
   const columns = [
     {
       title: 'ID',
@@ -38,14 +37,32 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       title: 'range',
       dataIndex: 'range',
       render: (dom: any, entity: any) => {
-        if(entity.range) {
-          return <span>start:{entity?.range?.start}<br/>
-          end:{entity?.range?.end}<br/>
-          mz:{entity?.range?.mz}<br/>
-          </span>
-          ;
+        if (entity.range) {
+          return (
+            <span>
+              start:{entity?.range?.start}
+              <br />
+              end:{entity?.range?.end}
+              <br />
+              mz:{entity?.range?.mz}
+              <br />
+            </span>
+          );
         }
         return false;
+      },
+    },
+    {
+      title: 'rts',
+      dataIndex: 'range',
+      render: (dom: any, entity: any) => {
+        return (
+          <ul>
+            {entity?.rts.map((item: any, index: any) => {
+              return <li key={index}>  <Button>{item}</Button></li>;
+            })}
+          </ul>
+        );
       },
     },
     // {
@@ -60,7 +77,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     //         justifyContent: 'space-around',
     //       }}
     //     >
-  
+
     //       <div
     //         key="1"
     //         style={{
@@ -149,7 +166,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     //             </p>
     //           </div>
     //       </div>
-       
+
     //     </div>,
     //   ],
     // },
@@ -158,19 +175,19 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
 
   return (
     <Drawer width={800} visible={props.showDetail} onClose={props.onClose} closable={false}>
-        <ProDescriptions<TableListDetail>
-          column={1}
-          title={props.currentRow}
-          request={async () => {
-            console.log('currentrow的id',props.currentRow)
-            const msg = await blockIndexDetail( {id:props.currentRow});
-            return Promise.resolve(msg);
-          }}
-          params={{
-            id: props.currentRow
-          }}
-          columns={columns as ProDescriptionsItemProps<TableListDetail>[]}
-        />
+      <ProDescriptions<TableListDetail>
+        column={1}
+        title={props.currentRow}
+        request={async () => {
+          console.log('currentrow的id', props.currentRow);
+          const msg = await blockIndexDetail({ id: props.currentRow });
+          return Promise.resolve(msg);
+        }}
+        params={{
+          id: props.currentRow,
+        }}
+        columns={columns as ProDescriptionsItemProps<TableListDetail>[]}
+      />
     </Drawer>
   );
 };
