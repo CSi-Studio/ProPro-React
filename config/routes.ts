@@ -16,7 +16,7 @@ export default [
     icon: 'profile',
     path: '/experiment/list',
     component: './Experiment',
-    hidden: true
+    hideInMenu: true,
   },
   // 蛋白库界面
   {
