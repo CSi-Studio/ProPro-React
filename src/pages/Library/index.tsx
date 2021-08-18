@@ -226,7 +226,7 @@ const TableList: React.FC = () => {
           entity.generator == null ||
           entity.generator === ''
         ) {
-          return <span>啥也不是 --刘能</span>;
+          return false;
         }
         return <Tag>{dom}</Tag>;
       },
@@ -242,7 +242,7 @@ const TableList: React.FC = () => {
         if (entity.organism.length > 0) {
           return <Tag>{dom}</Tag>;
         }
-        return <span>啥也不是 --刘能</span>;
+        return false;
       },
     },
     {
@@ -302,21 +302,7 @@ const TableList: React.FC = () => {
           entity.description == null ||
           entity.description === ''
         ) {
-          return (
-            <Tooltip title="什么都不写，这是人干的事吗 😇" color="#108ee9" placement="topLeft">
-              <p
-                style={{
-                  margin: 0,
-                  width: '300px',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                <span>什么都不写，这是人干的事吗 😇</span>
-              </p>
-            </Tooltip>
-          );
+          return false;
         }
         return (
           <Tooltip title={entity.description} color="#108ee9" placement="topLeft">

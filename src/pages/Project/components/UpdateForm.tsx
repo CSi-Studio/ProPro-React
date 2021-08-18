@@ -25,7 +25,7 @@ export type UpdateFormProps = {
   values: any;
   form: any;
 };
-
+const beforeAddData = await beforeAdd();
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <ModalForm
@@ -54,7 +54,22 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <ProFormText initialValue={props.values.alias} width="sm" name="alias" label="项目别名" />
       </ProForm.Group>
       <ProForm.Group>
-        <ProFormText initialValue={props.values.owner} width="sm" name="owner" label="负责人" />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: '标准库不能为空',
+            },
+            {
+              pattern: /^.{1,20}$/,
+              message: '负责人过长',
+            },
+          ]}
+          initialValue={props.values.owner}
+          width="sm"
+          name="owner"
+          label="负责人"
+        />
         <ProFormSelect initialValue="DIA" width="sm" name="type" label="实验类型" />
       </ProForm.Group>
       <ProForm.Group>
@@ -65,14 +80,13 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
               message: '标准库不能为空',
             },
           ]}
-          initialValue={props.values.anaLibName}
+          initialValue={props.values.anaLibId}
           width="sm"
           name="anaLibId"
           label="标准库"
           request={async () => {
-            const params = await beforeAdd();
             const res: any[] = [];
-            params.data.anaLibs.map((item: { name: any; id: any }) => {
+            beforeAddData?.data.anaLibs.map((item: { name: any; id: any }) => {
               const temp: Record<any, any> = {};
               temp.label = item.name;
               temp.value = item.id;
@@ -89,14 +103,13 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
               message: '内标库不能为空',
             },
           ]}
-          initialValue={props.values.insLibName}
+          initialValue={props.values.insLibId}
           width="sm"
           name="insLibId"
           label="内标库"
           request={async () => {
-            const params = await beforeAdd();
             const res: any[] = [];
-            params.data.insLibs.map((item: { name: any; id: any }) => {
+            beforeAddData?.data.insLibs.map((item: { name: any; id: any }) => {
               const temp: Record<any, any> = {};
               temp.label = item.name;
               temp.value = item.id;

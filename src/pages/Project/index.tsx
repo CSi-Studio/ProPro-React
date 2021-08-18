@@ -180,9 +180,6 @@ const TableList: React.FC = () => {
     {
       title: '项目别名',
       dataIndex: 'alias',
-      render: (dom) => {
-        return <a>{dom}</a>;
-      },
     },
     {
       title: '实验类型',
@@ -192,7 +189,6 @@ const TableList: React.FC = () => {
     {
       title: '负责人',
       dataIndex: 'owner',
-      hideInSearch: true,
     },
     {
       title: '标准库',
@@ -208,9 +204,11 @@ const TableList: React.FC = () => {
       title: '标签',
       dataIndex: 'tags',
       hideInSearch: true,
-      render: (dom) => {
-        // eslint-disable-next-line array-callback-return
-        return <Tag>{dom}</Tag>;
+      render: (dom, entity) => {
+        if (entity.tags) {
+          return <Tag>{dom}</Tag>;
+        }
+        return false;
       },
     },
     {
