@@ -57,6 +57,14 @@ export default [
     icon: 'smile',
     component: './Dict',
   },
+  //BlockIndex界面
+  {
+    key: 'blockIndex',
+    name: 'blockIndex',
+    path: `/blockIndex`,
+    icon: 'smile',
+    component: './BlockIndex'
+  },
   // 404
   {
     component: './404',

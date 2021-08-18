@@ -2,14 +2,17 @@ import { Tag, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import {experimentList } from './service';
+import {connect} from 'dva';
 import type { TableListItem, TableListPagination } from './data';
-
+import router from 'umi/router';
+import { routerRedux } from 'dva/router';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
 import DetailForm from './components/DetailForm';
-// import { Link } from 'umi';
+import { values } from 'lodash';
+import { Link } from 'umi';
 
 // /**
 //  * 添加库
@@ -28,6 +31,7 @@ import DetailForm from './components/DetailForm';
 //     return false;
 //   }
 // };
+
 
 const TableList: React.FC = () => {
   // const [formCreate] = Form.useForm();
@@ -128,6 +132,17 @@ const TableList: React.FC = () => {
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
           </a>
         </Tooltip>,
+        <Tooltip title={'blockIndex'} key="blockIndex">
+        <Link
+          to={{
+            pathname: '/blockIndex',
+            search: `?expId=${record.id}`,
+          }}
+        >
+          <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+        </Link>
+      </Tooltip>,
+          
       ],
     },
   ];
@@ -194,3 +209,7 @@ const TableList: React.FC = () => {
 };
 
 export default TableList;
+function handleClick() {
+  throw new Error('Function not implemented.');
+}
+
