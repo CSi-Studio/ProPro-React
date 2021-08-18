@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ProForm, {
   ProFormText,
   ModalForm,
@@ -25,6 +25,7 @@ export type CreateFormProps = {
   form: any;
 };
 
+const beforeAddData = await beforeAdd();
 const CreateForm: React.FC<CreateFormProps> = (props) => {
   return (
     <ModalForm
@@ -48,9 +49,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           label="项目名称"
           tooltip="项目名称必须唯一"
           request={async () => {
-            const params = await beforeAdd();
             const res: any[] = [];
-            params.data.unloads.map((item: string) => {
+            beforeAddData?.data.unloads.map((item: string) => {
               const temp: Record<any, any> = {};
               temp.label = item;
               temp.value = item;
@@ -63,8 +63,39 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <ProFormText width="sm" name="alias" label="项目别名" placeholder="请输入项目别名" />
       </ProForm.Group>
       <ProForm.Group>
-        <ProFormText width="sm" name="type" label="实验类型" placeholder="请输入实验类型" />
-        <ProFormText width="sm" name="owner" label="负责人" placeholder="请输入负责人" />
+        <ProFormSelect
+          initialValue="DIA"
+          options={[
+            {
+              value: 'DIA',
+              label: 'DIA',
+            },
+            {
+              value: '猜猜我是谁',
+              label: '猜猜我是谁',
+            },
+          ]}
+          width="sm"
+          name="type"
+          label="实验类型"
+          placeholder="请输入实验类型"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: '负责人不能为空',
+            },
+            {
+              pattern: /^.{1,20}$/,
+              message: '负责人名字过长',
+            },
+          ]}
+          width="sm"
+          name="owner"
+          label="负责人" 
+          placeholder="请输入负责人"
+        />
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
@@ -78,9 +109,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           name="anaLibId"
           label="标准库"
           request={async () => {
-            const params = await beforeAdd();
             const res: any[] = [];
-            params.data.anaLibs.map((item: { name: any; id: any }) => {
+            beforeAddData?.data.anaLibs.map((item: { name: any; id: any }) => {
               const temp: Record<any, any> = {};
               temp.label = item.name;
               temp.value = item.id;
@@ -101,9 +131,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           name="insLibId"
           label="内标库"
           request={async () => {
-            const params = await beforeAdd();
             const res: any[] = [];
-            params.data.insLibs.map((item: { name: any; id: any }) => {
+            beforeAddData?.data.insLibs.map((item: { name: any; id: any }) => {
               const temp: Record<any, any> = {};
               temp.label = item.name;
               temp.value = item.id;

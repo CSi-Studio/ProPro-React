@@ -1,17 +1,14 @@
 import { Tag, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import {experimentList } from './service';
-import {connect} from 'dva';
+import { experimentList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import router from 'umi/router';
-import { routerRedux } from 'dva/router';
+
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
 import DetailForm from './components/DetailForm';
-import { values } from 'lodash';
 import { Link } from 'umi';
 
 // /**
@@ -32,7 +29,6 @@ import { Link } from 'umi';
 //   }
 // };
 
-
 const TableList: React.FC = () => {
   // const [formCreate] = Form.useForm();
   // const [formUpdate] = Form.useForm();
@@ -51,8 +47,8 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '标准库名称',
-      dataIndex: 'name',
+      title: '项目名称',
+      dataIndex: 'projectName',
       copyable: true,
       width: '150px',
       render: (dom, entity) => {
@@ -78,6 +74,14 @@ const TableList: React.FC = () => {
           </Tooltip>
         );
       },
+    },
+    {
+      title: '实验名称',
+      dataIndex: 'name',
+    },
+    {
+      title: '实验别名',
+      dataIndex: 'alias',
     },
     {
       title: '实验类型',
@@ -107,13 +111,53 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '厂商文件大小',
+      title: '原始文件大小',
       dataIndex: 'vendorFileSize',
       hideInSearch: true,
       render: (dom, entity) => {
         const size = entity.airdSize / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;
       },
+    },
+    {
+      title: '实验描述',
+      dataIndex: 'description',
+    },
+    {
+      title: '仪器设备信息',
+      dataIndex: 'instruments',
+    },
+    {
+      title: '处理的软件信息',
+      dataIndex: 'softwares',
+    },
+    {
+      title: '处理前的文件信息',
+      dataIndex: 'parentFiles',
+    },
+    {
+      title: 'Swath窗口列表',
+      dataIndex: 'windowRanges',
+    },
+    {
+      title: 'IRT校验结果',
+      dataIndex: 'irt',
+    },
+    {
+      title: '编码顺序',
+      dataIndex: 'features',
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createDate',
+      hideInSearch: true,
+      valueType: 'dateTime',
+    },
+    {
+      title: '最后修改时间',
+      dataIndex: 'lastModifiedDate',
+      hideInSearch: true,
+      valueType: 'dateTime',
     },
     {
       title: '操作',
@@ -142,7 +186,7 @@ const TableList: React.FC = () => {
           <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
         </Link>
       </Tooltip>,
-          
+
       ],
     },
   ];
@@ -209,7 +253,3 @@ const TableList: React.FC = () => {
 };
 
 export default TableList;
-function handleClick() {
-  throw new Error('Function not implemented.');
-}
-

@@ -371,7 +371,6 @@ const TableList: React.FC = () => {
       <UpdateForm
         form={formUpdate}
         onSubmit={async (value) => {
-          console.log(value);
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);
@@ -386,7 +385,6 @@ const TableList: React.FC = () => {
             handleUpdateModalVisible(false);
             setCurrentUpdate(undefined);
             formUpdate?.resetFields();
-            // setPopup(false);
           },
         }}
         updateModalVisible={updateModalVisible}
@@ -398,7 +396,6 @@ const TableList: React.FC = () => {
         onCancel={{
           onCancel: () => {
             handleModalVisible(false);
-            // setPopup(false);
             formCreate?.resetFields();
           },
         }}

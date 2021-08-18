@@ -24,6 +24,7 @@ import DeleteForm from './components/DeleteForm';
 import './index.less';
 import DeleteAna from './components/DeleteAna';
 import DeleteIrt from './components/DeleteIrt';
+import { Link } from 'umi';
 
 /**
  * 添加库
@@ -185,14 +186,21 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '实验类型',
+      title: '实验',
+      dataIndex: 'expCount',
+      hideInSearch: true,
+      render: (dom) => {
+        return <Link to={{ pathname: '/experiment/list' }}>{dom}</Link>;
+      },
+    },
+    {
+      title: '类型',
       dataIndex: 'type',
       hideInSearch: true,
     },
     {
       title: '负责人',
       dataIndex: 'owner',
-      hideInSearch: true,
     },
     {
       title: '标准库',
@@ -208,9 +216,11 @@ const TableList: React.FC = () => {
       title: '标签',
       dataIndex: 'tags',
       hideInSearch: true,
-      render: (dom) => {
-        // eslint-disable-next-line array-callback-return
-        return <Tag>{dom}</Tag>;
+      render: (dom, entity) => {
+        if (entity.tags) {
+          return <Tag>{dom}</Tag>;
+        }
+        return false;
       },
     },
     {
