@@ -178,6 +178,17 @@ const TableList: React.FC = (props) => {
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
           </a>
         </Tooltip>,
+        <Tooltip title={'blockIndex'} key="blockIndex">
+        <Link
+          to={{
+            pathname: '/blockIndex',
+            search: `?expId=${record.id}`,
+          }}
+        >
+          <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+        </Link>
+      </Tooltip>,
+
       ],
     },
   ];
