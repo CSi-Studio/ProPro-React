@@ -52,7 +52,7 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
 
   'menu.project': '项目',
-  'menu.method': '方法包',
+  'menu.method': '方法',
   'menu.protein': '蛋白',
   'menu.experiment': '实验',
   'menu.dict': '字典',
