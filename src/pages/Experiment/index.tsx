@@ -3,33 +3,14 @@ import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
 import DetailForm from './components/DetailForm';
-// import { Link } from 'umi';
+import { Link } from 'umi';
 
-// /**
-//  * 添加库
-//  * @param values
-//  */
-// const handleAdd = async (values: addFormValueType) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addList({ ...values });
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败请重试！');
-//     return false;
-//   }
-// };
-
-const TableList: React.FC = () => {
+const TableList: React.FC = (props) => {
   // const [formCreate] = Form.useForm();
   // const [formUpdate] = Form.useForm();
   /** 全局弹窗 */
@@ -45,6 +26,8 @@ const TableList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const projectId = props?.location?.query.projectId;
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '项目名称',
@@ -78,10 +61,33 @@ const TableList: React.FC = () => {
     {
       title: '实验名称',
       dataIndex: 'name',
+      width: '200px',
+      render: (dom, entity) => {
+        return (
+          <Tooltip title={dom} placement="topLeft">
+            <div
+              style={{
+                width: '200px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {dom}
+            </div>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '实验别名',
       dataIndex: 'alias',
+      render: (dom, entity) => {
+        if (entity?.alias) {
+          return <span>{dom}</span>;
+        }
+        return false;
+      },
     },
     {
       title: '实验类型',
@@ -97,7 +103,7 @@ const TableList: React.FC = () => {
       valueType: 'digit',
       hideInSearch: true,
       render: (dom, entity) => {
-        const size = entity.airdSize / 1024 / 1024;
+        const size = (entity.airdSize + entity.airdIndexSize) / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;
       },
     },
@@ -106,7 +112,7 @@ const TableList: React.FC = () => {
       dataIndex: 'airdIndexSize',
       hideInSearch: true,
       render: (dom, entity) => {
-        const size = entity.airdSize / 1024 / 1024;
+        const size = entity.airdIndexSize / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;
       },
     },
@@ -120,44 +126,40 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '实验描述',
-      dataIndex: 'description',
-    },
-    {
-      title: '仪器设备信息',
-      dataIndex: 'instruments',
-    },
-    {
-      title: '处理的软件信息',
-      dataIndex: 'softwares',
-    },
-    {
-      title: '处理前的文件信息',
-      dataIndex: 'parentFiles',
-    },
-    {
       title: 'Swath窗口列表',
       dataIndex: 'windowRanges',
+      render: (dom, entity) => {
+        if (entity?.windowRanges) {
+          return (
+            <Link to={{ pathname: '/blockindex/list', search: `?expId=${entity.id}` }}>
+              <Tag color="blue">{entity?.windowRanges.length}</Tag>
+            </Link>
+          );
+        }
+        return false;
+      },
     },
     {
       title: 'IRT校验结果',
       dataIndex: 'irt',
-    },
-    {
-      title: '编码顺序',
-      dataIndex: 'features',
+      render: (dom, entity) => {
+        if (entity?.irt) {
+          return <Tag color="green">{dom}</Tag>;
+        }
+        return false;
+      },
     },
     {
       title: '创建时间',
       dataIndex: 'createDate',
       hideInSearch: true,
       valueType: 'dateTime',
-    },
-    {
-      title: '最后修改时间',
-      dataIndex: 'lastModifiedDate',
-      hideInSearch: true,
-      valueType: 'dateTime',
+      render: (dom, entity) => {
+        if (entity?.createDate) {
+          return <span>{dom}</span>;
+        }
+        return false;
+      },
     },
     {
       title: '操作',
@@ -190,7 +192,13 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={experimentList}
+        // request={experimentList}
+        request={async (params) => {
+          console.log(params);
+
+          const msg = await experimentList({ projectId, ...params });
+          return Promise.resolve(msg);
+        }}
         columns={columns}
         rowSelection={
           {
