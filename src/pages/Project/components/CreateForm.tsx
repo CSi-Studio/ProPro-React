@@ -69,11 +69,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             {
               value: 'DIA',
               label: 'DIA',
-            },
-            {
-              value: '猜猜我是谁',
-              label: '猜猜我是谁',
-            },
+            }
           ]}
           width="sm"
           name="type"

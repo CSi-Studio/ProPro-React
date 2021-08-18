@@ -1,33 +1,28 @@
 import { Button, message, Tooltip, Form } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import type { TableListItem, TableListPagination } from './data';
-import type { addFormValueType } from './components/CreateForm';
+import type { DomainCell, Domain, DomainUpdate } from './data';
+import type { Pagination } from '@/components/Commons/page';
 import CreateForm from './components/CreateForm';
-import type { updateFormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
-import './index.less';
-import DetailForm from './components/DetailForm';
-import { updateMethod, addMethod, methodList } from './service';
-import { CheckCircleTwoTone, CloseCircleOutlined } from '@ant-design/icons';
+import { update, add, list } from './service';
 
 /**
  * 添加库
  * @param values
  */
-const handleAdd = async (values: addFormValueType) => {
+const handleAdd = async (values: Domain) => {
   const hide = message.loading('正在添加');
   try {
-    await addMethod({ ...values });
+    await add({ ...values });
     hide();
     message.success('添加成功');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
     return false;
   }
 };
@@ -35,16 +30,15 @@ const handleAdd = async (values: addFormValueType) => {
  * 更新库
  * @param values
  */
-const handleUpdate = async (values: updateFormValueType) => {
+const handleUpdate = async (values: DomainUpdate) => {
   const hide = message.loading('正在更新');
   try {
-    await updateMethod({ ...values });
+    await update({ ...values });
     hide();
     message.success('编辑成功');
     return true;
   } catch (error) {
     hide();
-    message.error('编辑失败，请重试!');
     return false;
   }
 };
@@ -64,77 +58,17 @@ const TableList: React.FC = () => {
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
-  /** 库详情的抽屉 */
-  const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const columns: ProColumns<TableListItem>[] = [
+  const [currentRow, setCurrentRow] = useState<DomainCell>();
+  const columns: ProColumns<DomainCell>[] = [
     {
-      title: 'name',
+      title: '方法包名称',
       dataIndex: 'name',
-    },
-    {
-      title: 'mzWindow',
-      dataIndex: 'mzWindow',
-      hideInSearch: true,
-    },
-    {
-      title: 'rtWindow',
-      dataIndex: 'rtWindow',
-      hideInSearch: true,
-    },
-    {
-      title: 'adaptiveMzWindow',
-      dataIndex: 'adaptiveMzWindow',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        if (entity.adaptiveMzWindow) {
-          return (
-            <CheckCircleTwoTone
-              style={{ verticalAlign: 'middle', fontSize: '20px' }}
-              twoToneColor="#52c41a"
-            />
-          );
-        }
-        return (
-          <CloseCircleOutlined
-            style={{ verticalAlign: 'middle', fontSize: '20px', color: 'tomato' }}
-            twoToneColor="tomato"
-          />
-        );
-      },
-    },
-    {
-      title: 'minMzWindow',
-      dataIndex: 'minMzWindow',
-      hideInSearch: true,
-    },
-    {
-      title: 'minShapeScore',
-      dataIndex: 'minShapeScore',
-      hideInSearch: true,
-    },
-    {
-      title: 'minShapeWeightScore',
-      dataIndex: 'minShapeWeightScore',
-      hideInSearch: true,
-    },
-    {
-      title: 'classifier',
-      dataIndex: 'classifier',
-      hideInSearch: true,
-    },
-    {
-      title: 'fdr',
-      dataIndex: 'fdr',
-      hideInSearch: true,
     },
     {
       title: '描述信息',
       dataIndex: 'description',
       hideInSearch: true,
-      width: '300px',
       valueType: 'textarea',
       render: (dom, entity) => {
         if (
@@ -143,7 +77,7 @@ const TableList: React.FC = () => {
           entity.description === ''
         ) {
           return (
-            <Tooltip title="什么都不写，这是人干的事吗 😇" color="#108ee9" placement="topLeft">
+            <Tooltip title="" color="#108ee9" placement="topLeft">
               <p
                 style={{
                   margin: 0,
@@ -153,7 +87,7 @@ const TableList: React.FC = () => {
                   textOverflow: 'ellipsis',
                 }}
               >
-                <span>什么都不写，这是人干的事吗 😇</span>
+                <span></span>
               </p>
             </Tooltip>
           );
@@ -193,24 +127,13 @@ const TableList: React.FC = () => {
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
           </a>
-        </Tooltip>,
-        <Tooltip title={'详情'} key="detail">
-          <a
-            onClick={() => {
-              setCurrentRow(record);
-              setShowDetail(true);
-            }}
-            key="edit"
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
-          </a>
-        </Tooltip>,
+        </Tooltip>
       ],
     },
   ];
   return (
     <PageContainer>
-      <ProTable<TableListItem, TableListPagination>
+      <ProTable<DomainCell, Pagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
@@ -232,7 +155,7 @@ const TableList: React.FC = () => {
             创建库
           </Button>,
         ]}
-        request={methodList}
+        request={list}
         columns={columns}
         rowSelection={
           {
@@ -252,8 +175,8 @@ const TableList: React.FC = () => {
             formCreate?.resetFields();
           },
         }}
-        onSubmit={async (value: addFormValueType) => {
-          const success = await handleAdd(value as addFormValueType);
+        onSubmit={async (value: Domain) => {
+          const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -264,18 +187,6 @@ const TableList: React.FC = () => {
         createModalVisible={createModalVisible}
         values={currentRow || {}}
       />
-
-      {/* 列表详情 */}
-      <DetailForm
-        showDetail={showDetail}
-        currentRow={currentRow}
-        columns={columns}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-      />
-
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
