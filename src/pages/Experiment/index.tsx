@@ -1,35 +1,16 @@
 import { Tag, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import {experimentList } from './service';
+import { experimentList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import './index.less';
 import DetailForm from './components/DetailForm';
-// import { Link } from 'umi';
+import { Link } from 'umi';
 
-// /**
-//  * 添加库
-//  * @param values
-//  */
-// const handleAdd = async (values: addFormValueType) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addList({ ...values });
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败请重试！');
-//     return false;
-//   }
-// };
-
-const TableList: React.FC = () => {
+const TableList: React.FC = (props) => {
   // const [formCreate] = Form.useForm();
   // const [formUpdate] = Form.useForm();
   /** 全局弹窗 */
@@ -45,10 +26,12 @@ const TableList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const projectId = props?.location?.query.projectId;
+
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '标准库名称',
-      dataIndex: 'name',
+      title: '项目名称',
+      dataIndex: 'projectName',
       copyable: true,
       width: '150px',
       render: (dom, entity) => {
@@ -76,6 +59,37 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '实验名称',
+      dataIndex: 'name',
+      width: '200px',
+      render: (dom, entity) => {
+        return (
+          <Tooltip title={dom} placement="topLeft">
+            <div
+              style={{
+                width: '200px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {dom}
+            </div>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '实验别名',
+      dataIndex: 'alias',
+      render: (dom, entity) => {
+        if (entity?.alias) {
+          return <span>{dom}</span>;
+        }
+        return false;
+      },
+    },
+    {
       title: '实验类型',
       dataIndex: 'type',
       hideInSearch: true,
@@ -89,7 +103,7 @@ const TableList: React.FC = () => {
       valueType: 'digit',
       hideInSearch: true,
       render: (dom, entity) => {
-        const size = entity.airdSize / 1024 / 1024;
+        const size = (entity.airdSize + entity.airdIndexSize) / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;
       },
     },
@@ -98,17 +112,53 @@ const TableList: React.FC = () => {
       dataIndex: 'airdIndexSize',
       hideInSearch: true,
       render: (dom, entity) => {
-        const size = entity.airdSize / 1024 / 1024;
+        const size = entity.airdIndexSize / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;
       },
     },
     {
-      title: '厂商文件大小',
+      title: '原始文件大小',
       dataIndex: 'vendorFileSize',
       hideInSearch: true,
       render: (dom, entity) => {
         const size = entity.airdSize / 1024 / 1024;
         return <Tag color="green">{size.toFixed(0)}MB</Tag>;
+      },
+    },
+    {
+      title: 'Swath窗口列表',
+      dataIndex: 'windowRanges',
+      render: (dom, entity) => {
+        if (entity?.windowRanges) {
+          return (
+            <Link to={{ pathname: '/blockIndex', search: `?expId=${entity.id}` }}>
+              <Tag color="blue">{entity?.windowRanges.length}</Tag>
+            </Link>
+          );
+        }
+        return false;
+      },
+    },
+    {
+      title: 'IRT校验结果',
+      dataIndex: 'irt',
+      render: (dom, entity) => {
+        if (entity?.irt) {
+          return <Tag color="green">{dom}</Tag>;
+        }
+        return false;
+      },
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createDate',
+      hideInSearch: true,
+      valueType: 'dateTime',
+      render: (dom, entity) => {
+        if (entity?.createDate) {
+          return <span>{dom}</span>;
+        }
+        return false;
       },
     },
     {
@@ -128,6 +178,16 @@ const TableList: React.FC = () => {
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
           </a>
         </Tooltip>,
+        <Tooltip title={'blockIndex'} key="blockIndex">
+          <Link
+            to={{
+              pathname: '/blockIndex',
+              search: `?expId=${record.id}`,
+            }}
+          >
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+          </Link>
+        </Tooltip>,
       ],
     },
   ];
@@ -142,7 +202,11 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={experimentList}
+        // request={experimentList}
+        request={async (params) => {
+          const msg = await experimentList({ projectId, ...params });
+          return Promise.resolve(msg);
+        }}
         columns={columns}
         rowSelection={
           {
@@ -163,32 +227,6 @@ const TableList: React.FC = () => {
           setShowDetail(false);
         }}
       />
-
-      {/* 编辑列表 */}
-      {/* <UpdateForm
-        form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
-        }}
-        onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
-          value.id = currentRow?.id as string;
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      /> */}
     </PageContainer>
   );
 };

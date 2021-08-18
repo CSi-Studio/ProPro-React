@@ -16,7 +16,7 @@ export default [
     icon: 'profile',
     path: '/experiment/list',
     component: './Experiment',
-    hidden: true
+    hideInMenu: true,
   },
   // 蛋白库界面
   {
@@ -56,6 +56,15 @@ export default [
     path: '/dict',
     icon: 'smile',
     component: './Dict',
+  },
+  //BlockIndex界面
+  {
+    key: 'blockIndex',
+    name: 'blockIndex',
+    path: `/blockIndex`,
+    icon: 'smile',
+    component: './BlockIndex',
+    hideInMenu: true,
   },
   // 404
   {

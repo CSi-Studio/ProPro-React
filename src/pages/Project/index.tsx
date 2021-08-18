@@ -24,6 +24,7 @@ import DeleteForm from './components/DeleteForm';
 import './index.less';
 import DeleteAna from './components/DeleteAna';
 import DeleteIrt from './components/DeleteIrt';
+import { Link } from 'umi';
 
 /**
  * 添加库
@@ -180,9 +181,18 @@ const TableList: React.FC = () => {
     {
       title: '项目别名',
       dataIndex: 'alias',
-      render: (dom) => {
-        return <a>{dom}</a>;
-      }
+    },
+    {
+      title: '实验个数',
+      dataIndex: 'expCount',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <Link to={{ pathname: '/experiment/list', search: `?projectId=${entity.id}` }}>
+            {dom}
+          </Link>
+        );
+      },
     },
     {
       title: '类型',
@@ -276,6 +286,7 @@ const TableList: React.FC = () => {
             />
           </a>
         </Tooltip>,
+
         <Tooltip title={'导出'}>
           <a
             onClick={() => {
@@ -287,6 +298,14 @@ const TableList: React.FC = () => {
               icon="mdi:file-export"
             />
           </a>
+        </Tooltip>,
+        <Tooltip title={'实验列表'}>
+          <Link to={{ pathname: '/experiment/list' }}>
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+              icon="mdi:beaker-minus"
+            />
+          </Link>
         </Tooltip>,
         <Tooltip title={'批量IRT计算'}>
           <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
