@@ -182,10 +182,10 @@ const TableList: React.FC = () => {
       dataIndex: 'alias',
       render: (dom) => {
         return <a>{dom}</a>;
-      },
+      }
     },
     {
-      title: '实验类型',
+      title: '类型',
       dataIndex: 'type',
       hideInSearch: true,
     },
