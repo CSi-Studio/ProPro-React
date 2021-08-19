@@ -37,7 +37,8 @@ const TableList: React.FC = (props) => {
       render: (dom, entity) => {
         return (
           <Tooltip title={dom} color="#eeeeee" placement="topLeft">
-            <div
+            <Link
+              to={{ pathname: '/project/list' }}
               style={{
                 width: '150px',
                 whiteSpace: 'nowrap',
@@ -45,15 +46,8 @@ const TableList: React.FC = (props) => {
                 textOverflow: 'ellipsis',
               }}
             >
-              <a
-                onClick={() => {
-                  setCurrentRow(entity);
-                  setShowDetail(true);
-                }}
-              >
-                {dom}
-              </a>
-            </div>
+              {dom}
+            </Link>
           </Tooltip>
         );
       },
@@ -65,8 +59,13 @@ const TableList: React.FC = (props) => {
       render: (dom, entity) => {
         return (
           <Tooltip title={dom} placement="topLeft">
-            <div
+            <a
+              onClick={() => {
+                setCurrentRow(entity);
+                setShowDetail(true);
+              }}
               style={{
+                display: 'block',
                 width: '200px',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
@@ -74,7 +73,7 @@ const TableList: React.FC = (props) => {
               }}
             >
               {dom}
-            </div>
+            </a>
           </Tooltip>
         );
       },
@@ -131,7 +130,13 @@ const TableList: React.FC = (props) => {
       render: (dom, entity) => {
         if (entity?.windowRanges) {
           return (
-            <Link to={{ pathname: '/blockIndex', search: `?expId=${entity.id}` }}>
+            <Link
+              to={{
+                pathname: '/blockIndex',
+                search: `?expId=${entity.id}`,
+                state: { projectId },
+              }}
+            >
               <Tag color="blue">{entity?.windowRanges.length}</Tag>
             </Link>
           );
@@ -183,9 +188,13 @@ const TableList: React.FC = (props) => {
             to={{
               pathname: '/blockIndex',
               search: `?expId=${record.id}`,
+              state: { projectId },
             }}
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '20px' }}
+              icon="mdi:format-line-spacing"
+            />
           </Link>
         </Tooltip>,
       ],
