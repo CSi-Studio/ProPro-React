@@ -167,18 +167,18 @@ const TableList: React.FC = (props) => {
       dataIndex: 'rt',
       hideInSearch: true,
     },
-    {
-      title: '带电量',
-      width: '160px',
-      dataIndex: 'charge',
-      hideInSearch: true,
-    },
-    {
-      title: '肽段序列',
-      width: '120px',
-      dataIndex: 'fullName',
-      hideInSearch: true,
-    },
+    // {
+    //   title: '带电量',
+    //   width: '160px',
+    //   dataIndex: 'charge',
+    //   hideInSearch: true,
+    // },
+    // {
+    //   title: '肽段序列',
+    //   width: '120px',
+    //   dataIndex: 'fullName',
+    //   hideInSearch: true,
+    // },
     {
       title: '伪肽段',
       width: '120px',
