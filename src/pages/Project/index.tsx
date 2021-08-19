@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Form, message, Tag, Tooltip } from 'antd';
+import { Button, Form, message, Tag, Tooltip, Space } from 'antd';
 import React, { useState, useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableDropdown } from '@ant-design/pro-table';
@@ -161,6 +161,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      key:'name',
       title: '项目名称',
       dataIndex: 'name',
       render: (dom, record) => {
@@ -177,10 +178,12 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'alias',
       title: '项目别名',
       dataIndex: 'alias',
     },
     {
+      key:'expCount',
       title: '实验个数',
       dataIndex: 'expCount',
       hideInSearch: true,
@@ -196,21 +199,24 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'type',
       title: '类型',
       dataIndex: 'type',
       hideInSearch: true,
     },
     {
+      key:'owner',
       title: '负责人',
       dataIndex: 'owner',
     },
     {
+      key:'anaLibName',
       title: '标准库',
       dataIndex: 'anaLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if (dom === null) {
-          return <Tag color="red">未设置</Tag>;
+        if(dom === '-'){
+          return  <Tag color="red">未设置</Tag>
         } else {
           return (
             <Tooltip title={dom}>
@@ -223,12 +229,13 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'insLibName',
       title: '内标库',
       dataIndex: 'insLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if (dom === undefined) {
-          return <Tag color="red">未设置</Tag>;
+        if(dom === '-'){
+          return  <Tag color="red">未设置</Tag>
         } else {
           return (
             <Tooltip title={dom}>
@@ -241,6 +248,7 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'tags',
       title: '标签',
       dataIndex: 'tags',
       hideInSearch: true,
@@ -252,17 +260,20 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'description',
       title: '项目描述',
       dataIndex: 'description',
       hideInSearch: true,
     },
     {
+      key:'createDate',
       title: '创建时间',
       dataIndex: 'createDate',
       valueType: 'dateTime',
       hideInSearch: true,
     },
     {
+      key:'option',
       title: '操作',
       valueType: 'option',
       copyable: true,
@@ -270,7 +281,8 @@ const TableList: React.FC = () => {
       ellipsis: true,
       fixed: 'right',
       hideInSearch: true,
-      render: (text, record) => [
+      render: (text, record) => 
+        <Space>
         <Tooltip title={'编辑'}>
           <a
             onClick={() => {
@@ -281,7 +293,7 @@ const TableList: React.FC = () => {
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'详情'}>
           <a
             onClick={() => {
@@ -291,7 +303,7 @@ const TableList: React.FC = () => {
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'扫描并更新'}>
           <a
             onClick={() => {
@@ -300,7 +312,7 @@ const TableList: React.FC = () => {
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'查看结果总览'}>
           <a
             onClick={() => {
@@ -312,8 +324,7 @@ const TableList: React.FC = () => {
               icon="mdi:file-eye"
             />
           </a>
-        </Tooltip>,
-
+        </Tooltip>
         <Tooltip title={'导出'}>
           <a
             onClick={() => {
@@ -325,17 +336,17 @@ const TableList: React.FC = () => {
               icon="mdi:file-export"
             />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'批量IRT计算'}>
           <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:calculator" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'批量执行完整流程'}>
           <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:connection" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <TableDropdown
           onSelect={(key) => {
             if (key === 'delete1') {
@@ -372,25 +383,19 @@ const TableList: React.FC = () => {
               key: 'delete2',
               name: '删除IRT',
               icon: (
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                  icon="mdi:delete-sweep-outline"
-                />
+                <Icon style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }} icon="mdi:delete-sweep-outline"/>
               ),
             },
             {
               key: 'delete3',
               name: '删除',
               icon: (
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                  icon="mdi:delete"
-                />
+                <Icon style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }} icon="mdi:delete"/>
               ),
             },
           ]}
-        />,
-      ],
+        />
+      </Space>,
     },
   ];
   return (
@@ -402,7 +407,7 @@ const TableList: React.FC = () => {
         rowKey="id"
         size="small"
         search={{
-          labelWidth: 120,
+          labelWidth: 100,
         }}
         toolBarRender={() => [
           <Button
@@ -425,23 +430,6 @@ const TableList: React.FC = () => {
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>
-              项 &nbsp;&nbsp;
-            </div>
-          }
-        ></FooterToolbar>
-      )}
       {/* 新建列表 */}
       <CreateForm
         form={formCreate}
@@ -523,7 +511,7 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error('你没有删除的决心');
           }
         }}
         deleteModalVisible={deleteModalVisible}
@@ -551,7 +539,7 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error('你没有删除的决心');
           }
         }}
         delete1ModalVisible={delete1ModalVisible}
@@ -579,7 +567,7 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error('你没有删除的决心');
           }
         }}
         delete2ModalVisible={delete2ModalVisible}
