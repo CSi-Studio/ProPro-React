@@ -162,7 +162,7 @@ const TableList: React.FC = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       key:'name',
-      title: '项目名称',
+      title: '项目名',
       dataIndex: 'name',
       render: (dom, record) => {
         return (
@@ -179,19 +179,35 @@ const TableList: React.FC = () => {
     },
     {
       key:'alias',
-      title: '项目别名',
+      title: '别名',
       dataIndex: 'alias',
     },
     {
       key:'expCount',
-      title: '实验个数',
+      title: '实验数',
       dataIndex: 'expCount',
       hideInSearch: true,
       render: (dom, entity) => {
         return (
           <>
-            <Tag color="blue">{dom}</Tag>
+            {dom===0?<Tag color="red">{dom}</Tag>:<Tag color="blue">{dom}</Tag>}
             <Link to={{ pathname: '/experiment/list', search: `?projectId=${entity.id}` }}>
+              <Tag color="green">查看</Tag>
+            </Link>
+          </>
+        );
+      },
+    },
+    {
+      key:'overviewCount',
+      title: '分析数',
+      dataIndex: 'overviewCount',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <>
+            {dom===0?<Tag color="red">{dom}</Tag>:<Tag color="blue">{dom}</Tag>}
+            <Link to={{ pathname: '/overview/list', search: `?projectId=${entity.id}` }}>
               <Tag color="green">查看</Tag>
             </Link>
           </>
@@ -210,25 +226,6 @@ const TableList: React.FC = () => {
       dataIndex: 'owner',
     },
     {
-      key:'anaLibName',
-      title: '标准库',
-      dataIndex: 'anaLibName',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        if(dom === '-'){
-          return  <Tag color="red">未设置</Tag>
-        } else {
-          return (
-            <Tooltip title={dom}>
-              <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.anaLibId}` }}>
-                <Tag color="blue">查看</Tag>
-              </Link>
-            </Tooltip>
-          );
-        }
-      },
-    },
-    {
       key:'insLibName',
       title: '内标库',
       dataIndex: 'insLibName',
@@ -240,6 +237,25 @@ const TableList: React.FC = () => {
           return (
             <Tooltip title={dom}>
               <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.insLibId}` }}>
+                <Tag color="blue">查看</Tag>
+              </Link>
+            </Tooltip>
+          );
+        }
+      },
+    },
+    {
+      key:'anaLibName',
+      title: '标准库',
+      dataIndex: 'anaLibName',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        if(dom === '-'){
+          return  <Tag color="red">未设置</Tag>
+        } else {
+          return (
+            <Tooltip title={dom}>
+              <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.anaLibId}` }}>
                 <Tag color="blue">查看</Tag>
               </Link>
             </Tooltip>
@@ -279,12 +295,6 @@ const TableList: React.FC = () => {
         }
         return false;
       },
-    },
-    {
-      key:'description',
-      title: '项目描述',
-      dataIndex: 'description',
-      hideInSearch: true,
     },
     {
       key:'createDate',

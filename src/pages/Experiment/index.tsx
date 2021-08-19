@@ -28,42 +28,23 @@ const TableList: React.FC = (props) => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '实验名称',
+      title: '实验名',
       dataIndex: 'name',
-      width: '200px',
       render: (dom, entity) => {
         return (
-          <Tooltip title={dom} placement="topLeft">
-            <a
-              onClick={() => {
-                setCurrentRow(entity);
-                setShowDetail(true);
-              }}
-              style={{
-                display: 'block',
-                width: '200px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}>
-              {dom}
-            </a>
-          </Tooltip>
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
         );
       },
     },
     {
-      title: '实验别名',
-      dataIndex: 'alias',
-      render: (dom, entity) => {
-        if (entity?.alias) {
-          return <span>{dom}</span>;
-        }
-        return false;
-      },
-    },
-    {
-      title: '实验类型',
+      title: '类型',
       dataIndex: 'type',
       hideInSearch: true,
       render: (dom) => {
@@ -117,10 +98,11 @@ const TableList: React.FC = (props) => {
       title: 'IRT校验结果',
       dataIndex: 'irt',
       render: (dom, entity) => {
-        if (entity?.irt) {
+        if (entity.irt) {
           return <Tag color="green">{dom}</Tag>;
+        }else{
+          return <Tag color="red">未分析</Tag>;
         }
-        return false;
       },
     },
     {
@@ -177,7 +159,6 @@ const TableList: React.FC = (props) => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-   
         // request={experimentList}
         request={async (params) => {
           const msg = await experimentList({ projectId, ...params });
