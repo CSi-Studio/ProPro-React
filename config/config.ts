@@ -47,5 +47,4 @@ export default defineConfig({
   mfsu: {},
   webpack5: {},
   exportStatic: {},
-  publicPath:"/",
 });
