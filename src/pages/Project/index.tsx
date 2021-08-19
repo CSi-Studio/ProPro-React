@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Form, message, Tag, Tooltip } from 'antd';
+import { Button, Form, message, Tag, Tooltip, Space } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -277,7 +277,8 @@ const TableList: React.FC = () => {
       ellipsis: true,
       fixed: 'right',
       hideInSearch: true,
-      render: (text, record) => [
+      render: (text, record) => 
+        <Space>
         <Tooltip title={'编辑'}>
           <a
             onClick={() => {
@@ -288,7 +289,7 @@ const TableList: React.FC = () => {
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'详情'}>
           <a
             onClick={() => {
@@ -298,7 +299,7 @@ const TableList: React.FC = () => {
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'扫描并更新'}>
           <a
             onClick={() => {
@@ -307,7 +308,7 @@ const TableList: React.FC = () => {
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'查看结果总览'}>
           <a
             onClick={() => {
@@ -319,8 +320,7 @@ const TableList: React.FC = () => {
               icon="mdi:file-eye"
             />
           </a>
-        </Tooltip>,
-
+        </Tooltip>
         <Tooltip title={'导出'}>
           <a
             onClick={() => {
@@ -332,17 +332,17 @@ const TableList: React.FC = () => {
               icon="mdi:file-export"
             />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'批量IRT计算'}>
           <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:calculator" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <Tooltip title={'批量执行完整流程'}>
           <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:connection" />
           </a>
-        </Tooltip>,
+        </Tooltip>
         <TableDropdown
           onSelect={(key) => {
             if (key === 'delete1') {
@@ -390,8 +390,8 @@ const TableList: React.FC = () => {
               ),
             },
           ]}
-        />,
-      ],
+        />
+      </Space>,
     },
   ];
   return (
@@ -403,7 +403,7 @@ const TableList: React.FC = () => {
         rowKey="id"
         size="small"
         search={{
-          labelWidth: 120,
+          labelWidth: 100,
         }}
         toolBarRender={() => [
           <Button
@@ -426,23 +426,6 @@ const TableList: React.FC = () => {
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>
-              项 &nbsp;&nbsp;
-            </div>
-          }
-        ></FooterToolbar>
-      )}
       {/* 新建列表 */}
       <CreateForm
         form={formCreate}
@@ -524,7 +507,7 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error('你没有删除的决心');
           }
         }}
         deleteModalVisible={deleteModalVisible}
@@ -552,7 +535,7 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error('你没有删除的决心');
           }
         }}
         delete1ModalVisible={delete1ModalVisible}
@@ -580,7 +563,7 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error('你没有删除的决心');
           }
         }}
         delete2ModalVisible={delete2ModalVisible}
