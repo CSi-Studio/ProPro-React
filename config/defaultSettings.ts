@@ -6,8 +6,8 @@ const Settings: LayoutSettings & {
 } = {
   navTheme: 'light',
   // 拂晓蓝
-  primaryColor: '#1890ff',
-  // primaryColor: 'tomato',
+  // primaryColor: '#1890ff',
+  primaryColor: 'tomato',
   layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: false,

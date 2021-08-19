@@ -1,5 +1,4 @@
 import { Tooltip } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListDetail, TableListItem, TableListPagination } from './data';
@@ -87,16 +86,13 @@ const TableList: React.FC = (props) => {
   ];
 
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
         toolBarRender={() => [
           <Tooltip title={'blockIndex'} key="blockIndex">
             <Link
@@ -135,7 +131,7 @@ const TableList: React.FC = (props) => {
           setShowDetail(false);
         }}
       />
-    </PageContainer>
+    </>
   );
 };
 

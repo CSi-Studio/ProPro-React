@@ -454,9 +454,6 @@ const TableList: React.FC = (props) => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
         request={async (params) => {
           const msg = await peptideList({ libraryId, ...params });
           return Promise.resolve(msg);

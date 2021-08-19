@@ -13,7 +13,7 @@ import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DictForm from './components/DictForm';
-import UpdateForm from './components/updateDictItem';
+import UpdateForm from './components/UpdateDictItem';
 import AddForm from './components/CreateForm';
 import AddFormItem from './components/CreateItem';
 import DeleteFormItem from './components/DeleteForm';
@@ -310,9 +310,6 @@ const TableList: React.FC = () => {
             />
           ),
           rowExpandable: (record) => record.name !== 'Not Expandable',
-        }}
-        search={{
-          labelWidth: 120,
         }}
         toolBarRender={() => [
           <Button

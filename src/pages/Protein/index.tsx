@@ -151,9 +151,6 @@ const TableList: React.FC = (props) => {
         }
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
         request={proteinList}
         // dataSource={tableListDataSource}
         columns={columns}
