@@ -28,6 +28,9 @@ const TableList: React.FC = (props) => {
   const actionRef = useRef<ActionType>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const { expId } = props?.location?.query.expId;
+
+  
+
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'level',
@@ -40,10 +43,6 @@ const TableList: React.FC = (props) => {
     {
       title: '文件结束位置',
       dataIndex: 'endPtr',
-    },
-    {
-      title: 'range',
-      dataIndex: 'range',
     },
     {
       title: '操作',

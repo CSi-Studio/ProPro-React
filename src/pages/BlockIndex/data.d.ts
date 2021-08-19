@@ -31,6 +31,11 @@ export type deleteListItem = {
   key:string,
   id:string,
 };
+
+export type arrayItem = {
+  array:Array,
+};
+
 export type IdItem = {
   id:string
 }

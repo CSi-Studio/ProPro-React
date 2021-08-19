@@ -2,14 +2,14 @@ import { request } from 'umi';
 import type {  DictListItem,AddItem,AddItemDetail,deleteListItem, IdItem } from './data';
 import {url} from '@/utils/request'
 
-/** 获取库列表 GET /library/list */
+/** 获取字典信息 GET /dict/list */
 export async function dictList() {
   return request(`${url}/dict/list`, {
     method: 'GET',
   });
 }
 
-/** 添加库 POST /api/library/add */
+/** 添加字典 POST /dict/add */
 export async function addList(body: { name:string }) {
   const fileData = new FormData();
   fileData.append('name', body.name);
