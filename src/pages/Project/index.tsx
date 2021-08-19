@@ -358,16 +358,12 @@ const TableList: React.FC = () => {
             />
           </a>
         </Tooltip>
-        <Tooltip title={'批量IRT计算'}>
-          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
+        <Tooltip title={'开始分析'}>
+          <Link to={{ pathname: '/experiment/list', search: `?projectId=${record.id}` }}>
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:calculator" />
-          </a>
+          </Link>
         </Tooltip>
-        <Tooltip title={'批量执行完整流程'}>
-          <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:connection" />
-          </a>
-        </Tooltip>
+        
         <TableDropdown
           onSelect={(key) => {
             if (key === 'delete1') {
