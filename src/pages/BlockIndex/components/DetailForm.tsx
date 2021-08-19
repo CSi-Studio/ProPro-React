@@ -92,7 +92,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
              当前的rt标签数目为:{entity.rts.length}
              </span>
            
-           <Slider range={{draggableTrack:true}}   onChange={setValue} value={sliderValue} max={entity.rts.length} min={0} style={{width: 400}} />
+           <Slider range={{draggableTrack:true}} onChange={setValue} value={sliderValue} max={entity.rts.length} min={0} style={{width: 400}} />
            <Button onClick={async ()=>{
                  setMaxRange(sliderValue[1])
                  setMinRange(sliderValue[0])
