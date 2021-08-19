@@ -458,7 +458,7 @@ const TableList: React.FC = () => {
     },
   ];
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
@@ -624,7 +624,7 @@ const TableList: React.FC = () => {
         cloneModalVisible={cloneModalVisible}
         values={currentRow || {}}
       />
-    </PageContainer>
+    </>
   );
 };
 
