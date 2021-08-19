@@ -14,7 +14,9 @@ export type addFormValueType = {
   owner?: string;
   anaLibId?: string;
   insLibId?: string;
+  methodId?: string;
   description?: string;
+  tags?:Set<string>;
 };
 
 export type CreateFormProps = {
@@ -31,7 +33,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     <ModalForm
       form={props.form}
       title="创建一个项目"
-      width={530}
+      width={800}
       visible={props.createModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
@@ -61,8 +63,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           }}
         />
         <ProFormText width="sm" name="alias" label="项目别名" placeholder="请输入项目别名" />
-      </ProForm.Group>
-      <ProForm.Group>
         <ProFormSelect
           initialValue="DIA"
           options={[
@@ -76,6 +76,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           label="实验类型"
           placeholder="请输入实验类型"
         />
+      </ProForm.Group>
+      <ProForm.Group>
         <ProFormText
           rules={[
             {
@@ -92,15 +94,15 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           label="负责人" 
           placeholder="请输入负责人"
         />
+        <ProFormSelect
+          width="md"
+          name="tags"
+          label="tags"
+          mode='tags'
+        />
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
-          rules={[
-            {
-              required: true,
-              message: '标准库不能为空',
-            },
-          ]}
           width="sm"
           name="anaLibId"
           label="标准库"
@@ -117,12 +119,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           }}
         />
         <ProFormSelect
-          rules={[
-            {
-              required: true,
-              message: '内标库不能为空',
-            },
-          ]}
           width="sm"
           name="insLibId"
           label="内标库"
@@ -138,7 +134,24 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             return res;
           }}
         />
+         <ProFormSelect
+          width="sm"
+          name="methodId"
+          label="方法包"
+          request={async () => {
+            const res: any[] = [];
+            beforeAddData?.data.methods.map((item: { name: any; id: any }) => {
+              const temp: Record<any, any> = {};
+              temp.label = item.name;
+              temp.value = item.id;
+              res.push(temp);
+              return null;
+            });
+            return res;
+          }}
+        />
       </ProForm.Group>
+      
       <ProFormTextArea name="description" label="项目描述" />
     </ModalForm>
   );

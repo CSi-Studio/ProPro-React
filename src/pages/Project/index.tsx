@@ -269,9 +269,13 @@ const TableList: React.FC = () => {
       title: '标签',
       dataIndex: 'tags',
       hideInSearch: true,
-      render: (dom, entity) => {
-        if (entity.tags) {
-          return <Tag>{dom}</Tag>;
+      render: (text, entity) => {
+        if (entity.tags && entity.tags.length !== 0) {
+          let tagsDom:any[] = []
+          entity.tags.forEach(tag=>{
+            tagsDom.push([<Tag key={tag}>{tag}</Tag>])
+          })
+          return <>{tagsDom}</>;
         }
         return false;
       },
