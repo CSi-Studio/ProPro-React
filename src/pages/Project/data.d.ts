@@ -6,6 +6,7 @@ export type TableListItem = {
   owner: string;
   insLibId: string;
   anaLibId: string;
+  methodId: string;
   tags: string[];
   description: string;
   createDate: string;
