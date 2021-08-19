@@ -177,9 +177,7 @@ const TableList: React.FC = (props) => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
+   
         // request={experimentList}
         request={async (params) => {
           const msg = await experimentList({ projectId, ...params });

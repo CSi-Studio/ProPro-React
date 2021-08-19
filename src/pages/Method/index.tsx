@@ -138,9 +138,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
+       
         toolBarRender={() => [
           <Button
             type="primary"
