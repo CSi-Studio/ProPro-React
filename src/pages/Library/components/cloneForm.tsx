@@ -15,7 +15,7 @@ export type CloneFormProps = {
   values: Partial<any>;
   form: any;
 };
-
+const a: number = 1;
 const CloneForm: React.FC<CloneFormProps> = (props) => {
   return (
     <ModalForm

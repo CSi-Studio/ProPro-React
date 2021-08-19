@@ -1,12 +1,10 @@
 import { Tag, Tooltip } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
-import './index.less';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
 
@@ -89,7 +87,7 @@ const TableList: React.FC = (props) => {
       valueType: 'digit',
       hideInSearch: true,
       render: (dom, entity) => {
-        const size = (entity.vendorFileSize) / 1024 / 1024;
+        const size = entity.vendorFileSize / 1024 / 1024;
         return <Tag color="blue">{size.toFixed(0)}MB</Tag>;
       },
     },
@@ -99,15 +97,18 @@ const TableList: React.FC = (props) => {
       render: (dom, entity) => {
         if (entity?.windowRanges) {
           return (
-            <Link
-              to={{
-                pathname: '/blockIndex',
-                search: `?expId=${entity.id}`,
-                state: { projectId },
-              }}
-            >
+            <>
               <Tag color="blue">{entity?.windowRanges.length}</Tag>
-            </Link>
+              <Link
+                to={{
+                  pathname: '/blockIndex',
+                  search: `?expId=${entity.id}`,
+                  state: { projectId },
+                }}
+              >
+                <Tag color="green">查看</Tag>
+              </Link>
+            </>
           );
         }
         return false;
@@ -170,7 +171,7 @@ const TableList: React.FC = (props) => {
     },
   ];
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
@@ -185,7 +186,6 @@ const TableList: React.FC = (props) => {
           const msg = await experimentList({ projectId, ...params });
           return Promise.resolve(msg);
         }}
-        
         columns={columns}
         rowSelection={
           {
@@ -206,7 +206,7 @@ const TableList: React.FC = (props) => {
           setShowDetail(false);
         }}
       />
-    </PageContainer>
+    </>
   );
 };
 

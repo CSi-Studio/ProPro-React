@@ -1,5 +1,4 @@
 import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import {
   libraryList,
@@ -22,7 +21,6 @@ import CloneForm from './components/CloneForm';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
-import './index.less';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
 
@@ -176,15 +174,19 @@ const TableList: React.FC = () => {
       copyable: true,
       width: '150px',
       render: (dom, entity) => {
-        return <Tooltip title={dom} color="#eeeeee" placement="topLeft">
-              <a
-                onClick={() => {
-                  setCurrentRow(entity);
-                  setShowDetail(true);
-                  // setPopup(true);
-                }}
-              >{dom}</a>
+        return (
+          <Tooltip title={dom} color="#eeeeee" placement="topLeft">
+            <a
+              onClick={() => {
+                setCurrentRow(entity);
+                setShowDetail(true);
+                // setPopup(true);
+              }}
+            >
+              {dom}
+            </a>
           </Tooltip>
+        );
       },
     },
     {
@@ -195,10 +197,10 @@ const TableList: React.FC = () => {
       // hideInSearch: true,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
-        if(dom === 'ANA'){
-          return <Tag color="green">{dom}</Tag>
+        if (dom === 'ANA') {
+          return <Tag color="green">{dom}</Tag>;
         }
-        return <Tag color="blue">{dom}</Tag>
+        return <Tag color="blue">{dom}</Tag>;
       },
     },
     {
@@ -451,9 +453,6 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
         toolBarRender={() => [
           <Button
             type="primary"

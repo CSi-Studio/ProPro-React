@@ -1,5 +1,4 @@
 import { Form, message, Tooltip } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -12,7 +11,6 @@ import UpdateForm from './components/UpdateForm';
 import DetailForm from './components/DetailForm';
 import type { predictFormValueType } from './components/PredictForm';
 import PredictForm from './components/PredictForm';
-import './index.less';
 import ContrastList from './components/ContrastList';
 
 /**
@@ -77,7 +75,7 @@ const TableList: React.FC = (props) => {
   const actionRef = useRef<ActionType>();
 
   const { libraryId } = props?.location?.query;
-  
+
   /**
    * 预测肽段碎片
    * @param values
@@ -445,7 +443,7 @@ const TableList: React.FC = (props) => {
     },
   ];
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
@@ -587,7 +585,7 @@ const TableList: React.FC = (props) => {
         deleteModalVisible={deleteModalVisible}
         values={currentRow || {}}
       />
-    </PageContainer>
+    </>
   );
 };
 

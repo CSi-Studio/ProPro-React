@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Button, Form, message, Tag, Tooltip } from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableDropdown } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -21,7 +20,6 @@ import DetailForm from './components/DetailForm';
 import type { updateFormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import DeleteForm from './components/DeleteForm';
-import './index.less';
 import DeleteAna from './components/DeleteAna';
 import DeleteIrt from './components/DeleteIrt';
 import { Link } from 'umi';
@@ -187,12 +185,14 @@ const TableList: React.FC = () => {
       dataIndex: 'expCount',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <>
-          <Tag color="blue">{dom}</Tag>
-          <Link to={{ pathname: '/experiment/list', search: `?projectId=${entity.id}` }}>
-            <Tag color="green">查看</Tag>
-          </Link>
-        </>
+        return (
+          <>
+            <Tag color="blue">{dom}</Tag>
+            <Link to={{ pathname: '/experiment/list', search: `?projectId=${entity.id}` }}>
+              <Tag color="green">查看</Tag>
+            </Link>
+          </>
+        );
       },
     },
     {
@@ -209,14 +209,16 @@ const TableList: React.FC = () => {
       dataIndex: 'anaLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if(dom === null){
-          return  <Tag color="red">未设置</Tag>
+        if (dom === null) {
+          return <Tag color="red">未设置</Tag>;
         } else {
-          return <Tooltip title={dom}>
-            <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.anaLibId}` }}>
-            <Tag color="blue">查看</Tag>
-          </Link>
-        </Tooltip>
+          return (
+            <Tooltip title={dom}>
+              <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.anaLibId}` }}>
+                <Tag color="blue">查看</Tag>
+              </Link>
+            </Tooltip>
+          );
         }
       },
     },
@@ -225,14 +227,16 @@ const TableList: React.FC = () => {
       dataIndex: 'insLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if(dom === undefined){
-          return  <Tag color="red">未设置</Tag>
+        if (dom === undefined) {
+          return <Tag color="red">未设置</Tag>;
         } else {
-          return <Tooltip title={dom}>
-            <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.insLibId}` }}>
-            <Tag color="blue">查看</Tag>
-          </Link>
-        </Tooltip>
+          return (
+            <Tooltip title={dom}>
+              <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.insLibId}` }}>
+                <Tag color="blue">查看</Tag>
+              </Link>
+            </Tooltip>
+          );
         }
       },
     },
@@ -390,7 +394,7 @@ const TableList: React.FC = () => {
     },
   ];
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={''}
@@ -581,7 +585,7 @@ const TableList: React.FC = () => {
         delete2ModalVisible={delete2ModalVisible}
         values={currentRow || {}}
       />
-    </PageContainer>
+    </>
   );
 };
 
