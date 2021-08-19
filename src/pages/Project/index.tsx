@@ -244,6 +244,23 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'methodName',
+      title: '方法包',
+      dataIndex: 'methodName',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        if(dom === '-'){
+          return  <Tag color="red">未设置</Tag>
+        } else {
+          return <Tooltip title={dom}>
+            <Link to={{ pathname: '/method/list', search: `?id=${entity.methodId}` }}>
+            <Tag color="blue">查看</Tag>
+          </Link>
+        </Tooltip>
+        }
+      },
+    },
+    {
       key:'tags',
       title: '标签',
       dataIndex: 'tags',
