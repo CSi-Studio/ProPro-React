@@ -47,8 +47,7 @@ const TableList: React.FC = (props) => {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-              }}
-            >
+              }}>
               {dom}
             </a>
           </Tooltip>

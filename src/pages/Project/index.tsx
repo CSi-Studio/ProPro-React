@@ -163,6 +163,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      key:'name',
       title: '项目名称',
       dataIndex: 'name',
       render: (dom, record) => {
@@ -179,10 +180,12 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'alias',
       title: '项目别名',
       dataIndex: 'alias',
     },
     {
+      key:'expCount',
       title: '实验个数',
       dataIndex: 'expCount',
       hideInSearch: true,
@@ -196,20 +199,23 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'type',
       title: '类型',
       dataIndex: 'type',
       hideInSearch: true,
     },
     {
+      key:'owner',
       title: '负责人',
       dataIndex: 'owner',
     },
     {
+      key:'anaLibName',
       title: '标准库',
       dataIndex: 'anaLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if(dom === null){
+        if(dom === '-'){
           return  <Tag color="red">未设置</Tag>
         } else {
           return <Tooltip title={dom}>
@@ -221,11 +227,12 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'insLibName',
       title: '内标库',
       dataIndex: 'insLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if(dom === undefined){
+        if(dom === '-'){
           return  <Tag color="red">未设置</Tag>
         } else {
           return <Tooltip title={dom}>
@@ -237,6 +244,7 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'tags',
       title: '标签',
       dataIndex: 'tags',
       hideInSearch: true,
@@ -248,17 +256,20 @@ const TableList: React.FC = () => {
       },
     },
     {
+      key:'description',
       title: '项目描述',
       dataIndex: 'description',
       hideInSearch: true,
     },
     {
+      key:'createDate',
       title: '创建时间',
       dataIndex: 'createDate',
       valueType: 'dateTime',
       hideInSearch: true,
     },
     {
+      key:'option',
       title: '操作',
       valueType: 'option',
       copyable: true,
@@ -368,20 +379,14 @@ const TableList: React.FC = () => {
               key: 'delete2',
               name: '删除IRT',
               icon: (
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                  icon="mdi:delete-sweep-outline"
-                />
+                <Icon style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }} icon="mdi:delete-sweep-outline"/>
               ),
             },
             {
               key: 'delete3',
               name: '删除',
               icon: (
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                  icon="mdi:delete"
-                />
+                <Icon style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }} icon="mdi:delete"/>
               ),
             },
           ]}

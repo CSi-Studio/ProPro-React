@@ -66,9 +66,4 @@ export default [
     icon: 'smile',
     component: './Dict',
   },
-
-  // 404
-  {
-    component: './404',
-  },
 ];
