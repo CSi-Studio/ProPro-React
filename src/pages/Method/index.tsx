@@ -1,5 +1,4 @@
 import { Button, message, Tooltip, Form } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { DomainCell, Domain, DomainUpdate } from './data';
 import type { Pagination } from '@/components/Commons/page';
@@ -127,12 +126,12 @@ const TableList: React.FC = () => {
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
           </a>
-        </Tooltip>
+        </Tooltip>,
       ],
     },
   ];
   return (
-    <PageContainer>
+    <>
       <ProTable<DomainCell, Pagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
@@ -212,7 +211,7 @@ const TableList: React.FC = () => {
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
       />
-    </PageContainer>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Drawer, Tooltip } from 'antd';
+import { Button, Drawer } from 'antd';
 import type { TableListDetail } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
@@ -58,120 +58,18 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       render: (dom: any, entity: any) => {
         return (
           <ul>
-            {entity?.rts.map((item: any, index: any) => {
-              return <li key={index}>  <Button>{item}</Button></li>;
+            {entity?.rts?.map((item: any, index: any) => {
+              return (
+                <li key={index}>
+                  <Button>{item}</Button>
+                </li>
+              );
             })}
           </ul>
         );
       },
     },
-    // {
-    //   title: 'range',
-    //   dataIndex:'range',
-    //   render: (dom: any, entity: { range: Record<string, any>; }) => [
-    //     <div
-    //       style={{
-    //         width: '600px',
-    //         color: '#666666',
-    //         display: 'flex',
-    //         justifyContent: 'space-around',
-    //       }}
-    //     >
-
-    //       <div
-    //         key="1"
-    //         style={{
-    //           color: '#666666',
-    //           display: 'flex',
-    //           flexDirection: 'column',
-    //           justifyContent: 'center',
-    //         }}
-    //       >
-    //         start
-    //           <div
-    //             key={entity.range.start}
-    //             style={{
-    //               margin: 0,
-    //             }}
-    //           >
-    //             <p
-    //               style={{
-    //                 margin: '0 2px',
-    //                 width: '160px',
-    //                 whiteSpace: 'nowrap',
-    //                 overflow: 'hidden',
-    //                 textOverflow: 'ellipsis',
-    //               }}
-    //             >
-    //               {entity.range.start}
-    //             </p>
-    //           </div>
-    //       </div>
-    //       <div
-    //         key="3"
-    //         style={{
-    //           color: '#666666',
-    //           display: 'flex',
-    //           flexDirection: 'column',
-    //           justifyContent: 'center',
-    //         }}
-    //       >
-    //         end
-    //         <div
-    //             key={entity.range.end}
-    //             style={{
-    //               margin: 0,
-    //             }}
-    //           >
-    //             <p
-    //               style={{
-    //                 margin: '0 2px',
-    //                 width: '160px',
-    //                 whiteSpace: 'nowrap',
-    //                 overflow: 'hidden',
-    //                 textOverflow: 'ellipsis',
-    //               }}
-    //             >
-    //               {entity.range.end}
-    //             </p>
-    //           </div>
-    //       </div>
-    //       <div
-    //         key="4"
-    //         style={{
-    //           color: '#666666',
-    //           display: 'flex',
-    //           flexDirection: 'column',
-    //           justifyContent: 'center',
-    //           alignItems: 'center',
-    //         }}
-    //       >
-    //         m/z
-    //         <div
-    //             key={entity.range.mz}
-    //             style={{
-    //               margin: 0,
-    //             }}
-    //           >
-    //             <p
-    //               style={{
-    //                 margin: '0 2px',
-    //                 width: '160px',
-    //                 whiteSpace: 'nowrap',
-    //                 overflow: 'hidden',
-    //                 textOverflow: 'ellipsis',
-    //               }}
-    //             >
-    //               {entity.range.mz}
-    //             </p>
-    //           </div>
-    //       </div>
-
-    //     </div>,
-    //   ],
-    // },
   ];
-  columns.push(props.columns.pop());
 
   return (
     <Drawer width={800} visible={props.showDetail} onClose={props.onClose} closable={false}>
@@ -179,7 +77,6 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
         column={1}
         title={props.currentRow}
         request={async () => {
-          console.log('currentrow的id', props.currentRow);
           const msg = await blockIndexDetail({ id: props.currentRow });
           return Promise.resolve(msg);
         }}
