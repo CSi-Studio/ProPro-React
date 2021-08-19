@@ -30,29 +30,6 @@ const TableList: React.FC = (props) => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '项目名称',
-      dataIndex: 'projectName',
-      copyable: true,
-      width: '150px',
-      render: (dom, entity) => {
-        return (
-          <Tooltip title={dom} color="#eeeeee" placement="topLeft">
-            <Link
-              to={{ pathname: '/project/list' }}
-              style={{
-                width: '150px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {dom}
-            </Link>
-          </Tooltip>
-        );
-      },
-    },
-    {
       title: '实验名称',
       dataIndex: 'name',
       width: '200px',
@@ -93,11 +70,11 @@ const TableList: React.FC = (props) => {
       dataIndex: 'type',
       hideInSearch: true,
       render: (dom) => {
-        return <Tag>{dom}</Tag>;
+        return <Tag color="green">{dom}</Tag>;
       },
     },
     {
-      title: 'Aird Size',
+      title: 'Aird文件大小',
       dataIndex: 'airdSize',
       valueType: 'digit',
       hideInSearch: true,
@@ -107,25 +84,17 @@ const TableList: React.FC = (props) => {
       },
     },
     {
-      title: 'Aird Index Size',
-      dataIndex: 'airdIndexSize',
+      title: '厂商文件大小',
+      dataIndex: 'vendorSize',
+      valueType: 'digit',
       hideInSearch: true,
       render: (dom, entity) => {
-        const size = entity.airdIndexSize / 1024 / 1024;
-        return <Tag color="green">{size.toFixed(0)}MB</Tag>;
+        const size = (entity.vendorFileSize) / 1024 / 1024;
+        return <Tag color="blue">{size.toFixed(0)}MB</Tag>;
       },
     },
     {
-      title: '原始文件大小',
-      dataIndex: 'vendorFileSize',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        const size = entity.airdSize / 1024 / 1024;
-        return <Tag color="green">{size.toFixed(0)}MB</Tag>;
-      },
-    },
-    {
-      title: 'Swath窗口列表',
+      title: 'SWATH窗口',
       dataIndex: 'windowRanges',
       render: (dom, entity) => {
         if (entity?.windowRanges) {
@@ -216,6 +185,7 @@ const TableList: React.FC = (props) => {
           const msg = await experimentList({ projectId, ...params });
           return Promise.resolve(msg);
         }}
+        
         columns={columns}
         rowSelection={
           {

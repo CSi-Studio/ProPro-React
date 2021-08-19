@@ -58,4 +58,6 @@ export default {
   'menu.dict': '字典',
   'menu.library': '靶库',
   'menu.peptide': '肽段',
+  'menu.blockIndex': '索引',
+  
 };

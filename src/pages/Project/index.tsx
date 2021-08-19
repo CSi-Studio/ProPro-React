@@ -187,11 +187,12 @@ const TableList: React.FC = () => {
       dataIndex: 'expCount',
       hideInSearch: true,
       render: (dom, entity) => {
-        return (
+        return <>
+          <Tag color="blue">{dom}</Tag>
           <Link to={{ pathname: '/experiment/list', search: `?projectId=${entity.id}` }}>
-            <Tag color="blue">{dom}</Tag>
+            <Tag color="green">查看</Tag>
           </Link>
-        );
+        </>
       },
     },
     {
@@ -207,11 +208,33 @@ const TableList: React.FC = () => {
       title: '标准库',
       dataIndex: 'anaLibName',
       hideInSearch: true,
+      render: (dom, entity) => {
+        if(dom === null){
+          return  <Tag color="red">未设置</Tag>
+        } else {
+          return <Tooltip title={dom}>
+            <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.anaLibId}` }}>
+            <Tag color="blue">查看</Tag>
+          </Link>
+        </Tooltip>
+        }
+      },
     },
     {
       title: '内标库',
       dataIndex: 'insLibName',
       hideInSearch: true,
+      render: (dom, entity) => {
+        if(dom === undefined){
+          return  <Tag color="red">未设置</Tag>
+        } else {
+          return <Tooltip title={dom}>
+            <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.insLibId}` }}>
+            <Tag color="blue">查看</Tag>
+          </Link>
+        </Tooltip>
+        }
+      },
     },
     {
       title: '标签',
@@ -298,14 +321,6 @@ const TableList: React.FC = () => {
               icon="mdi:file-export"
             />
           </a>
-        </Tooltip>,
-        <Tooltip title={'实验列表'}>
-          <Link to={{ pathname: '/experiment/list', search: `?projectId=${record.id}` }}>
-            <Icon
-              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-              icon="mdi:beaker-check"
-            />
-          </Link>
         </Tooltip>,
         <Tooltip title={'批量IRT计算'}>
           <a href={'https://commands.top'} target="_blank" rel="noopener noreferrer">

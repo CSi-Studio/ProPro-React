@@ -58,4 +58,5 @@ export default {
   'menu.protein': 'Protein',
   'menu.library': 'Library',
   'menu.peptide': 'Peptide',
+  'menu.blockIndex': 'BlockIndex',
 };
