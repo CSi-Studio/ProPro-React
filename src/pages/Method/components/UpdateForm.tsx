@@ -23,6 +23,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     <ModalForm
       form={props.form}
       title="更新方法库"
+      width={1200}
       visible={props.updateModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}

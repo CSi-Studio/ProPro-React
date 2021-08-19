@@ -1,34 +1,28 @@
-import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
+import { Button, message, Tooltip, Form } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { dictList ,updateList,addList,addListItem,deleteItem,deleteDict} from './service';
-import type { DictList, TableListItem, TableListPagination,IdItem ,updateListItem,deleteListItem } from './data';
-import { EditFilled, CopyFilled, StepBackwardOutlined, PlusCircleTwoTone, DeleteTwoTone } from '@ant-design/icons';
-import { TableDropdown } from '@ant-design/pro-table';
-// import type { addFormValueType } from './components/CreateForm';
-// import CreateForm from './components/CreateForm';
-import type { updateFormValue} from './components/updateDictItem';
-// import DeleteForm from './components/DeleteForm';
-// import type { cloneFormValueType } from './components/cloneForm';
-// import CloneForm from './components/cloneForm';
+import { dictList, updateList, addList, addListItem, deleteItem, deleteDict } from './service';
+import type {
+  TableListItem,
+  TableListPagination,
+  IdItem,
+  updateListItem,
+  deleteListItem,
+} from './data';
+import { EditFilled, PlusCircleTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DictForm from './components/DictForm';
-
-import UpdateForm from './components/updateDictItem';
+import UpdateForm from './components/UpdateDictItem';
 import AddForm from './components/CreateForm';
 import AddFormItem from './components/CreateItem';
 import DeleteFormItem from './components/DeleteForm';
 import DeleteDictForm from './components/DeleteDict';
-// import './index.less';
-// import DetailForm from './components/DetailForm';
-
 
 const handleAdd = async (values) => {
   const hide = message.loading('正在添加');
   try {
-    await addList(values );
+    await addList(values);
     hide();
     message.success('添加成功');
     return true;
@@ -41,7 +35,7 @@ const handleAdd = async (values) => {
 const handleAddItem = async (values) => {
   const hide = message.loading('正在添加');
   try {
-    await addListItem(values );
+    await addListItem(values);
     hide();
     message.success('添加成功');
     return true;
@@ -75,7 +69,7 @@ const handleAddItem = async (values) => {
 const handleUpdate = async (values) => {
   const hide = message.loading('正在更新');
   try {
-    await updateList( values);
+    await updateList(values);
     hide();
     message.success('编辑成功');
     return true;
@@ -135,7 +129,7 @@ const TableList: React.FC = () => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -197,56 +191,49 @@ const TableList: React.FC = () => {
         <Tooltip title={'新增'} key="add">
           <a
             onClick={() => {
-              console.log('currentrecord',record)
+              console.log('currentrecord', record);
               formCreateItem?.resetFields();
               handleAddModalVisible(true);
-              let objItem={
-                id:record.id,
-              }
-              setId(objItem)
+              let objItem = {
+                id: record.id,
+              };
+              setId(objItem);
 
               // setPopup(true);
             }}
             key="add"
           >
-
-            <PlusCircleTwoTone style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
+            <PlusCircleTwoTone
+              style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
+            />
           </a>
         </Tooltip>,
         <Tooltip title={'刪除'} key="delete">
-         <a
-           onClick={() => {
-             console.log('currentrecord',record)
-             deleteDictForm?.resetFields();
-             handleDeleteDictModalVisible(true);
-             let objId={
-               id:record.id,
-             }
-             setCurrentDelete(objId)
+          <a
+            onClick={() => {
+              console.log('currentrecord', record);
+              deleteDictForm?.resetFields();
+              handleDeleteDictModalVisible(true);
+              let objId = {
+                id: record.id,
+              };
+              setCurrentDelete(objId);
 
-             // setPopup(true);
-           }}
-           key="delete"
-         >
-
-           <DeleteTwoTone style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
-         </a>
-       </Tooltip>,
-      ]
+              // setPopup(true);
+            }}
+            key="delete"
+          >
+            <DeleteTwoTone
+              style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
+            />
+          </a>
+        </Tooltip>,
+      ],
     },
   ];
 
-
-
-
-
-
-
-
-
-
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
@@ -323,9 +310,6 @@ const TableList: React.FC = () => {
             />
           ),
           rowExpandable: (record) => record.name !== 'Not Expandable',
-        }}
-        search={{
-          labelWidth: 120,
         }}
         toolBarRender={() => [
           <Button
@@ -527,7 +511,7 @@ const TableList: React.FC = () => {
         values={currentRow || {}}
       /> */}
       {/* ) : null} */}
-    </PageContainer>
+    </>
   );
 };
 

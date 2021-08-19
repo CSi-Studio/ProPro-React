@@ -136,7 +136,6 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
         column={1}
         title={props.currentRow}
         request={async () => {
-          console.log('currentrow的id', props.currentRow);
           const msg = await blockIndexDetail({ id: props.currentRow });
           return Promise.resolve(msg);
         }}

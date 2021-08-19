@@ -1,5 +1,4 @@
 import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import {
   libraryList,
@@ -22,7 +21,6 @@ import CloneForm from './components/CloneForm';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
-import './index.less';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
 
@@ -178,24 +176,15 @@ const TableList: React.FC = () => {
       render: (dom, entity) => {
         return (
           <Tooltip title={dom} color="#eeeeee" placement="topLeft">
-            <div
-              style={{
-                width: '150px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
+            <a
+              onClick={() => {
+                setCurrentRow(entity);
+                setShowDetail(true);
+                // setPopup(true);
               }}
             >
-              <a
-                onClick={() => {
-                  setCurrentRow(entity);
-                  setShowDetail(true);
-                  // setPopup(true);
-                }}
-              >
-                {dom}
-              </a>
-            </div>
+              {dom}
+            </a>
           </Tooltip>
         );
       },
@@ -208,15 +197,14 @@ const TableList: React.FC = () => {
       // hideInSearch: true,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
-        return (
-          <Tooltip title={dom}>
-            <Tag>{dom}</Tag>
-          </Tooltip>
-        );
+        if (dom === 'ANA') {
+          return <Tag color="green">{dom}</Tag>;
+        }
+        return <Tag color="blue">{dom}</Tag>;
       },
     },
     {
-      title: '伪肽段生成算法',
+      title: '伪肽段算法',
       dataIndex: 'generator',
       width: '120px',
       hideInSearch: true,
@@ -282,14 +270,14 @@ const TableList: React.FC = () => {
         return <span onClick={() => {}}>{entity?.statistic?.Fragment_Count}</span>;
       },
     },
-    {
-      title: '创建时间',
-      width: '150px',
-      dataIndex: 'createDate',
-      hideInSearch: true,
-      sorter: (a, b) => (a.createDate > b.createDate ? -1 : 1),
-      valueType: 'dateTime',
-    },
+    // {
+    //   title: '创建时间',
+    //   width: '150px',
+    //   dataIndex: 'createDate',
+    //   hideInSearch: true,
+    //   sorter: (a, b) => (a.createDate > b.createDate ? -1 : 1),
+    //   valueType: 'dateTime',
+    // },
     {
       title: '描述信息',
       dataIndex: 'description',
@@ -458,16 +446,13 @@ const TableList: React.FC = () => {
     },
   ];
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -624,7 +609,7 @@ const TableList: React.FC = () => {
         cloneModalVisible={cloneModalVisible}
         values={currentRow || {}}
       />
-    </PageContainer>
+    </>
   );
 };
 

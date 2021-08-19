@@ -16,6 +16,8 @@ export type updateFormValueType = {
   alias?: string;
   anaLibId?: string;
   insLibId?: string;
+  methodId?: string;
+  tags?:Set<string>;
 };
 
 export type UpdateFormProps = {
@@ -31,7 +33,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     <ModalForm
       form={props.form}
       title="更新标准库"
-      width={530}
+      width={800}
       visible={props.updateModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
@@ -52,16 +54,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           tooltip="项目名称必须唯一"
         />
         <ProFormText initialValue={props.values.alias} width="sm" name="alias" label="项目别名" />
+        <ProFormSelect initialValue="DIA" width="sm" name="type" label="实验类型" />
+        
       </ProForm.Group>
       <ProForm.Group>
         <ProFormText
           rules={[
             {
-              required: true,
-              message: '标准库不能为空',
-            },
-            {
-              pattern: /^.{1,20}$/,
+              pattern: /^.{0,20}$/,
               message: '负责人过长',
             },
           ]}
@@ -70,16 +70,16 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name="owner"
           label="负责人"
         />
-        <ProFormSelect initialValue="DIA" width="sm" name="type" label="实验类型" />
+         <ProFormSelect
+          initialValue={props.values.tags}
+          width="md"
+          name="tags"
+          label="tags"
+          mode='tags'
+        />
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
-          rules={[
-            {
-              required: true,
-              message: '标准库不能为空',
-            },
-          ]}
           initialValue={props.values.anaLibId}
           width="sm"
           name="anaLibId"
@@ -97,12 +97,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           }}
         />
         <ProFormSelect
-          rules={[
-            {
-              required: true,
-              message: '内标库不能为空',
-            },
-          ]}
           initialValue={props.values.insLibId}
           width="sm"
           name="insLibId"
@@ -110,6 +104,23 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           request={async () => {
             const res: any[] = [];
             beforeAddData?.data.insLibs.map((item: { name: any; id: any }) => {
+              const temp: Record<any, any> = {};
+              temp.label = item.name;
+              temp.value = item.id;
+              res.push(temp);
+              return null;
+            });
+            return res;
+          }}
+        />
+        <ProFormSelect
+          width="sm"
+          name="methodId"
+          initialValue={props.values.methodId}
+          label="方法包"
+          request={async () => {
+            const res: any[] = [];
+            beforeAddData?.data.methods.map((item: { name: any; id: any }) => {
               const temp: Record<any, any> = {};
               temp.label = item.name;
               temp.value = item.id;

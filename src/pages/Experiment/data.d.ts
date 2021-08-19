@@ -2,7 +2,6 @@ export type TableListItem = {
   id: string;
   projectName: string;
   name: string;
-  alias?: string;
   type: string;
   airdSize: number;
   airdIndexSize: number;

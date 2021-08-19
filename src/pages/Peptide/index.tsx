@@ -1,5 +1,4 @@
 import { Form, message, Tooltip } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -12,7 +11,6 @@ import UpdateForm from './components/UpdateForm';
 import DetailForm from './components/DetailForm';
 import type { predictFormValueType } from './components/PredictForm';
 import PredictForm from './components/PredictForm';
-import './index.less';
 import ContrastList from './components/ContrastList';
 
 /**
@@ -77,7 +75,7 @@ const TableList: React.FC = (props) => {
   const actionRef = useRef<ActionType>();
 
   const { libraryId } = props?.location?.query;
-  
+
   /**
    * 预测肽段碎片
    * @param values
@@ -167,18 +165,18 @@ const TableList: React.FC = (props) => {
       dataIndex: 'rt',
       hideInSearch: true,
     },
-    {
-      title: '带电量',
-      width: '160px',
-      dataIndex: 'charge',
-      hideInSearch: true,
-    },
-    {
-      title: '肽段序列',
-      width: '120px',
-      dataIndex: 'fullName',
-      hideInSearch: true,
-    },
+    // {
+    //   title: '带电量',
+    //   width: '160px',
+    //   dataIndex: 'charge',
+    //   hideInSearch: true,
+    // },
+    // {
+    //   title: '肽段序列',
+    //   width: '120px',
+    //   dataIndex: 'fullName',
+    //   hideInSearch: true,
+    // },
     {
       title: '伪肽段',
       width: '120px',
@@ -445,7 +443,7 @@ const TableList: React.FC = (props) => {
     },
   ];
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
@@ -456,9 +454,6 @@ const TableList: React.FC = (props) => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
         request={async (params) => {
           const msg = await peptideList({ libraryId, ...params });
           return Promise.resolve(msg);
@@ -587,7 +582,7 @@ const TableList: React.FC = (props) => {
         deleteModalVisible={deleteModalVisible}
         values={currentRow || {}}
       />
-    </PageContainer>
+    </>
   );
 };
 

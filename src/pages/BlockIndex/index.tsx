@@ -1,15 +1,7 @@
-import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
+import { Tooltip } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { blockIndexDetail, blockIndexList } from './service';
-import type {
-  TableListDetail,
-  TableListItem,
-  TableListPagination,
-  IdItem,
-  updateListItem,
-  deleteListItem,
-} from './data';
+import { blockIndexList } from './service';
+import type { TableListDetail, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
@@ -28,8 +20,7 @@ const TableList: React.FC = (props) => {
   const actionRef = useRef<ActionType>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const { expId } = props?.location?.query.expId;
-
-  
+  console.log(props?.location);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -57,7 +48,6 @@ const TableList: React.FC = (props) => {
             onClick={() => {
               setRowId(record.id);
               setShowDetail(true);
-              console.log(idRow);
             }}
             key="detail"
           >
@@ -92,21 +82,19 @@ const TableList: React.FC = (props) => {
   ];
 
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
         toolBarRender={() => [
           <Tooltip title={'blockIndex'} key="blockIndex">
             <Link
               to={{
                 pathname: '/experiment/list',
+                search: `?projectId=${props?.location?.state?.projectId}`,
               }}
             >
               返回实验列表
@@ -114,6 +102,8 @@ const TableList: React.FC = (props) => {
           </Tooltip>,
         ]}
         request={async (params) => {
+          console.log(expId);
+
           const msg = await blockIndexList({ expId, ...params });
           return Promise.resolve(msg);
         }}
@@ -137,172 +127,7 @@ const TableList: React.FC = (props) => {
           setShowDetail(false);
         }}
       />
-      {/* ) : null} */}
-
-      {/* 编辑列表 */}
-      {/* <UpdateForm
-        form={formUpdate}
-        onSubmit={async (value) => {
-          console.log(value);
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentUpdate(undefined);
-            formUpdate?.resetFields();
-            // setPopup(false);
-          },
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentUpdate || {}}
-      /> */}
-
-      {/* <AddForm
-        form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            // setPopup(false);
-            formCreate?.resetFields();
-          },
-        }}
-        onSubmit={async (value) => {
-          const success = await handleAdd(value);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        createModalVisible={createModalVisible}
-        values={currentRow || {}}
-      /> */}
-
-      {/* <AddFormItem
-        form={formCreateItem}
-        onCancel={{
-          onCancel: () => {
-            handleAddModalVisible(false);
-            // setPopup(false);
-            form?.resetFields();
-          },
-        }}
-        onSubmit={async (value) => {
-          const success = await handleAddItem(value);
-          if (success) {
-            handleAddModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        addModalVisible={addModalVisible}
-        values={currenId || {}}
-      /> */}
-
-      {/* 删除DictItem */}
-      {/* {popup ? ( */}
-      {/* <DeleteFormItem
-        form={deleteForm}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setCurrentDeleteItem(undefined);
-            deleteForm?.resetFields();
-            // setPopup(false);
-          },
-        }}
-        onSubmit={async () => {
-          // handleDeleteModalVisible(false);
-          const success = await handleRemoveItem(currentDeleteItem);
-          if (success) {
-            handleDeleteModalVisible(false);
-            setCurrentDeleteItem(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        deleteModalVisible={deleteModalVisible}
-        values={currentDeleteItem || {}}
-      /> */}
-
-      {/* 删除Dict */}
-      {/* {popup ? ( */}
-      {/* <DeleteDictForm
-        form={deleteDictForm}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteDictModalVisible(false);
-            setCurrentDelete(undefined);
-            deleteDictForm?.resetFields();
-            // setPopup(false);
-          },
-        }}
-        onSubmit={async () => {
-          // handleDeleteModalVisible(false);
-          const success = await handleRemove(currentDelete);
-          console.log('currentdelete', currentDelete);
-          if (success) {
-            handleDeleteDictModalVisible(false);
-            setCurrentDelete(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        deleteDictModalVisible={deleteDictModalVisible}
-        values={currentDelete || {}}
-      /> */}
-
-      {/* ) : null} */}
-
-      {/* 克隆列表 */}
-      {/* {popup ? ( */}
-
-      {/* <CloneForm
-        form={form}
-        onCancel={{
-          onCancel: () => {
-            handleCloneModalVisible(false);
-            setCurrentRow(undefined);
-            form?.resetFields();
-            // setPopup(false);
-          },
-        }}
-        onSubmit={async (params) => {
-          const p: { id: any; newLibName: string; includeDecoy?: boolean } = {
-            id: '',
-            newLibName: '',
-            includeDecoy: false,
-          };
-          p.id = currentRow?.id;
-          p.newLibName = params.newLibName;
-          p.includeDecoy = params.includeDecoy;
-
-          const success = await handleClone(p);
-          if (success) {
-            handleCloneModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        cloneModalVisible={cloneModalVisible}
-        values={currentRow || {}}
-      /> */}
-      {/* ) : null} */}
-    </PageContainer>
+    </>
   );
 };
 

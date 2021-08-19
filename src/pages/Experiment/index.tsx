@@ -1,12 +1,10 @@
 import { Tag, Tooltip } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
-import './index.less';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
 
@@ -30,75 +28,31 @@ const TableList: React.FC = (props) => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '项目名称',
-      dataIndex: 'projectName',
-      copyable: true,
-      width: '150px',
-      render: (dom, entity) => {
-        return (
-          <Tooltip title={dom} color="#eeeeee" placement="topLeft">
-            <div
-              style={{
-                width: '150px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              <a
-                onClick={() => {
-                  setCurrentRow(entity);
-                  setShowDetail(true);
-                }}
-              >
-                {dom}
-              </a>
-            </div>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      title: '实验名称',
+      title: '实验名',
       dataIndex: 'name',
-      width: '200px',
       render: (dom, entity) => {
         return (
-          <Tooltip title={dom} placement="topLeft">
-            <div
-              style={{
-                width: '200px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {dom}
-            </div>
-          </Tooltip>
+          <a
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </a>
         );
       },
     },
     {
-      title: '实验别名',
-      dataIndex: 'alias',
-      render: (dom, entity) => {
-        if (entity?.alias) {
-          return <span>{dom}</span>;
-        }
-        return false;
-      },
-    },
-    {
-      title: '实验类型',
+      title: '类型',
       dataIndex: 'type',
       hideInSearch: true,
       render: (dom) => {
-        return <Tag>{dom}</Tag>;
+        return <Tag color="green">{dom}</Tag>;
       },
     },
     {
-      title: 'Aird Size',
+      title: 'Aird文件大小',
       dataIndex: 'airdSize',
       valueType: 'digit',
       hideInSearch: true,
@@ -108,32 +62,33 @@ const TableList: React.FC = (props) => {
       },
     },
     {
-      title: 'Aird Index Size',
-      dataIndex: 'airdIndexSize',
+      title: '厂商文件大小',
+      dataIndex: 'vendorSize',
+      valueType: 'digit',
       hideInSearch: true,
       render: (dom, entity) => {
-        const size = entity.airdIndexSize / 1024 / 1024;
-        return <Tag color="green">{size.toFixed(0)}MB</Tag>;
+        const size = entity.vendorFileSize / 1024 / 1024;
+        return <Tag color="blue">{size.toFixed(0)}MB</Tag>;
       },
     },
     {
-      title: '原始文件大小',
-      dataIndex: 'vendorFileSize',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        const size = entity.airdSize / 1024 / 1024;
-        return <Tag color="green">{size.toFixed(0)}MB</Tag>;
-      },
-    },
-    {
-      title: 'Swath窗口列表',
+      title: 'SWATH窗口',
       dataIndex: 'windowRanges',
       render: (dom, entity) => {
         if (entity?.windowRanges) {
           return (
-            <Link to={{ pathname: '/blockIndex', search: `?expId=${entity.id}` }}>
+            <>
               <Tag color="blue">{entity?.windowRanges.length}</Tag>
-            </Link>
+              <Link
+                to={{
+                  pathname: '/blockIndex',
+                  search: `?expId=${entity.id}`,
+                  state: { projectId },
+                }}
+              >
+                <Tag color="green">查看</Tag>
+              </Link>
+            </>
           );
         }
         return false;
@@ -143,10 +98,11 @@ const TableList: React.FC = (props) => {
       title: 'IRT校验结果',
       dataIndex: 'irt',
       render: (dom, entity) => {
-        if (entity?.irt) {
+        if (entity.irt) {
           return <Tag color="green">{dom}</Tag>;
+        }else{
+          return <Tag color="red">未分析</Tag>;
         }
-        return false;
       },
     },
     {
@@ -183,25 +139,26 @@ const TableList: React.FC = (props) => {
             to={{
               pathname: '/blockIndex',
               search: `?expId=${record.id}`,
+              state: { projectId },
             }}
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+            <Icon
+              style={{ verticalAlign: 'middle', fontSize: '20px' }}
+              icon="mdi:format-line-spacing"
+            />
           </Link>
         </Tooltip>,
       ],
     },
   ];
   return (
-    <PageContainer>
+    <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={{
-          labelWidth: 120,
-        }}
         // request={experimentList}
         request={async (params) => {
           const msg = await experimentList({ projectId, ...params });
@@ -227,7 +184,7 @@ const TableList: React.FC = (props) => {
           setShowDetail(false);
         }}
       />
-    </PageContainer>
+    </>
   );
 };
 
