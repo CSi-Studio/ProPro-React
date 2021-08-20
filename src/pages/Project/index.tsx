@@ -463,6 +463,7 @@ const TableList: React.FC = () => {
             创建项目
           </Button>,
         ]}
+        tableAlertRender={false}
         request={projectList}
         columns={columns}
         rowSelection={{

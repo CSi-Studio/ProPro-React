@@ -1,4 +1,4 @@
-import { Tooltip } from 'antd';
+import { Button, Input, Tooltip } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListDetail, TableListItem, TableListPagination } from './data';
@@ -26,15 +26,37 @@ const TableList: React.FC = (props) => {
     {
       title: 'level',
       dataIndex: 'level',
+      search:false,
     },
     {
       title: '文件开始位置',
       dataIndex: 'startPtr',
+      search:false
     },
     {
       title: '文件结束位置',
       dataIndex: 'endPtr',
+      search:false
     },
+    {
+      title: 'mz范围',
+      dataIndex: 'range',
+      search:false,
+      render: (dom: any, entity: any) => {
+        if (entity.range) {
+          return (
+            <span>
+              start:{entity?.range?.start}
+              <br />
+              end:{entity?.range?.end}
+              <br />
+            </span>
+          );
+        }
+        return false;
+      },
+    },
+    
     {
       title: '操作',
       valueType: 'option',
@@ -83,36 +105,33 @@ const TableList: React.FC = (props) => {
 
   return (
     <>
+      <Link
+        to={{
+          pathname: '/experiment/list',
+          search: `?projectId=${props?.location?.state?.projectId}`,
+        }}
+      >
+        <Button type="primary">返回实验列表</Button>
+      </Link>
+
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        toolBarRender={() => [
-          <Tooltip title={'blockIndex'} key="blockIndex">
-            <Link
-              to={{
-                pathname: '/experiment/list',
-                search: `?projectId=${props?.location?.state?.projectId}`,
-              }}
-            >
-              返回实验列表
-            </Link>
-          </Tooltip>,
-        ]}
+        search={false}
+        tableAlertRender={false}
         request={async (params) => {
           console.log(expId);
-
-          const msg = await blockIndexList({ expId, ...params });
+          const msg = await blockIndexList({ expId: expId, ...params });
           return Promise.resolve(msg);
         }}
         columns={columns}
+        pagination={ false }
         rowSelection={
           {
-            // onChange: (_, selectedRows) => {
-            // setSelectedRows(selectedRows);
-            // },
+            
           }
         }
       />

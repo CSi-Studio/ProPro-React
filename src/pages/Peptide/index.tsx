@@ -458,6 +458,7 @@ const TableList: React.FC = (props) => {
           const msg = await peptideList({ libraryId, ...params });
           return Promise.resolve(msg);
         }}
+        tableAlertRender={false}
         columns={columns}
         rowSelection={
           {

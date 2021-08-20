@@ -20,6 +20,8 @@ export async function blockIndexList(params: {
   /** 页面的容量 */
   pageSize?: number;
   expId?: string;
+  mzStart?: any;
+  mzEnd?: any;
 }) {
   return request(`${url}/blockindex/list`, {
     method: 'GET',
