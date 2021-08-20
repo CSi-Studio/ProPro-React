@@ -1,7 +1,7 @@
 import { Tag, Tooltip, Form, Button } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList, analyze, prepare } from './service';
-import type { AnalyzeParams, TableListItem, TableListPagination } from './data';
+import type { AnalyzeParams, PrepareAnalyzeVO, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
@@ -17,7 +17,7 @@ const TableList: React.FC = (props) => {
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
-
+  
   /** 更新窗口的弹窗 */
   // const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
@@ -26,8 +26,8 @@ const TableList: React.FC = (props) => {
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
   const projectId = props?.location?.query.projectId;
-  const prepareData = prepare(projectId)
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -140,18 +140,20 @@ const TableList: React.FC = (props) => {
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
-          props?.location?.state?.projectName === undefined
-            ? '实验列表'
-            : props?.location?.state?.projectName
+          props?.location?.state?.projectName === undefined ? '实验列表' : props?.location?.state?.projectName
         }
         actionRef={actionRef}
-        search={{ labelWidth: 'auto' }}
         search={{ labelWidth: 'auto' }}
         rowKey="id"
         size="small"
         tableAlertRender={false}
         // request={experimentList}
         request={async (params) => {
+          const result = await prepare(projectId)
+          if(result.success){
+            console.log('Name:'+result.data.projectName)
+            setPrepareData(result.data)
+          }
           const msg = await experimentList({ projectId, ...params });
           return Promise.resolve(msg);
         }}
@@ -196,7 +198,7 @@ const TableList: React.FC = (props) => {
             }
           }}
           analyzeModalVisible={analyzeModalVisible}
-          values={{ expNum: selectedRows.length, prepareData: prepareData }}
+          values={{ expNum: selectedRows.length, prepareData: prepareData}}
         />
       ) : null}
 
