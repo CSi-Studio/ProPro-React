@@ -1,7 +1,7 @@
 import { Button, message, Tooltip, Form } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { DomainCell, Domain, DomainUpdate } from './data';
-import type { Pagination } from '@/components/Commons/page';
+import type { Pagination } from '@/components/Commons/common';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import React, { useState, useRef } from 'react';

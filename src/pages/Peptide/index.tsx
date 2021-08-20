@@ -143,7 +143,6 @@ const TableList: React.FC = (props) => {
                   setCurrentRow(entity);
                   setShowDetail(true);
                   // eslint-disable-next-line no-console
-                  console.log(currentRow);
                 }}
               >
                 {dom}

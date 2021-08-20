@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Drawer, Form, Input, Slider, Space } from 'antd';
+import { Button, Drawer,  message,  Slider, Space, Spin } from 'antd';
 import type { TableListDetail } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { blockIndexDetail, spectrumCharts } from '../service';
-import { parseInt } from 'lodash';
+import { parseInt, set } from 'lodash';
 import ChartsForm from './DetailChartsForm';
 
 export type UpdateFormProps = {
@@ -22,19 +22,17 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const [showCharts, setShowCharts] = useState<boolean>(false);
   const [smallRange, setSmallRange] = useState<boolean>(true);
   const [chartsData,setChartsData] = useState<any>();
-  const [rtData,setRtData] = useState<any>();
+  const [rtData,setRtData] = useState<any>(12);
   const [maxRange,setMaxRange] = useState<any>();
   const [minRange,setMinRange] = useState<any>();
   const [detailValue,setDetailValue] = useState<any>([0,0]);
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
     setMaxRT(values.max)
     setMintRT(values.min)
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
   };
   const columns = [
     {
@@ -92,7 +90,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
              当前的rt标签数目为:{entity.rts.length}
              </span>
            
-           <Slider range={{draggableTrack:true}}   onChange={setValue} value={sliderValue} max={entity.rts.length} min={0} style={{width: 400}} />
+           <Slider range={{draggableTrack:true}} onChange={setValue} value={sliderValue} max={entity.rts.length} min={0} style={{width: 400}} />
            <Button onClick={async ()=>{
                  setMaxRange(sliderValue[1])
                  setMinRange(sliderValue[0])
@@ -107,10 +105,13 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
                 return <li key={index}>  
                 <Button type="dashed" block onClick={async ()=>{
                   setShowCharts(true);
-                  const msg = await spectrumCharts({ blockIndexId:entity.id,rt:item });
+                  const hide = message.loading('正在加载');
+                  const msg =await spectrumCharts({ blockIndexId:entity.id,rt:item });
+                  hide()
                   setChartsData(msg.data);
                   setRtData(item);
                 }}>
+                   
                   {item}
                   </Button>
                   </li>;
@@ -147,6 +148,13 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       <ChartsForm 
         onCancel={{
           onCancel: () => {
+            setShowCharts(false)
+            setChartsData(undefined)
+            setRtData("")
+          },
+        }}
+        onSubmit={{
+          onSubmit: () => {
             setShowCharts(false)
           },
         }}

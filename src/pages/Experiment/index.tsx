@@ -1,20 +1,22 @@
-import { Tag, Tooltip } from 'antd';
+import { Tag, Tooltip, Form, Button } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { experimentList } from './service';
-import type { TableListItem, TableListPagination } from './data';
+import { experimentList, analyze } from './service';
+import type { AnalyzeParams, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
+import AnalyzeForm from './components/AnalyzeForm';
 import { Link } from 'umi';
 
 const TableList: React.FC = (props) => {
-  // const [formCreate] = Form.useForm();
+  const [formAnalyze] = Form.useForm();
+  const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
   // const [formUpdate] = Form.useForm();
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
 
   /** 更新窗口的弹窗 */
   // const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -107,18 +109,6 @@ const TableList: React.FC = (props) => {
       },
     },
     {
-      title: '创建时间',
-      dataIndex: 'createDate',
-      hideInSearch: true,
-      valueType: 'dateTime',
-      render: (dom, entity) => {
-        if (entity?.createDate) {
-          return <span>{dom}</span>;
-        }
-        return false;
-      },
-    },
-    {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
@@ -171,15 +161,50 @@ const TableList: React.FC = (props) => {
           const msg = await experimentList({ projectId, ...params });
           return Promise.resolve(msg);
         }}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              handleAnalyzeModalVisible(true);
+            }}
+          >
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
+            开始分析
+          </Button>,
+        ]}
         columns={columns}
         rowSelection={
           {
-            // onChange: (_, selectedRows) => {
-            // setSelectedRows(selectedRows);
-            // },
+            onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows);
+            },
           }
         }
       />
+
+      {(selectedRows && selectedRows.length)?(<AnalyzeForm
+        form={formAnalyze}
+        onCancel={{
+          onCancel: () => {
+            handleAnalyzeModalVisible(false);
+            formAnalyze?.resetFields();
+          },
+        }}
+        onSubmit={async (value: AnalyzeParams) => {
+          value.expIdList = selectedRows.map(e=>e.id);
+          value.projectId = projectId;
+          const success = await analyze(value);
+          if (success) {
+            handleAnalyzeModalVisible(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        analyzeModalVisible={analyzeModalVisible}
+        values={{ expNum: selectedRows.length }}
+      />):null}
 
       {/* 列表详情 */}
       <DetailForm

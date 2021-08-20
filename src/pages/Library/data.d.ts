@@ -9,11 +9,11 @@ export type TableListItem = {
   organism: string[];
   createDate: number | string;
   lastModifiedDate?: number | string;
-};
+}
 
 export type TableListPagination = {
   pageSize: number;
   totalNum: number;
   totalPage: number;
   currentPageNo: number;
-};
+}
