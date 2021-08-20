@@ -1,6 +1,6 @@
 import { Tag, Tooltip, Form, Button } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { experimentList, analyze } from './service';
+import { experimentList, analyze, prepare } from './service';
 import type { AnalyzeParams, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
@@ -27,6 +27,7 @@ const TableList: React.FC = (props) => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const projectId = props?.location?.query.projectId;
+  const prepareData = prepare(projectId)
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -54,23 +55,15 @@ const TableList: React.FC = (props) => {
       },
     },
     {
-      title: 'Aird文件大小',
-      dataIndex: 'airdSize',
-      valueType: 'digit',
+      title: 'Aird : Vendor(MB)',
+      dataIndex: 'fileSize',
       hideInSearch: true,
       render: (dom, entity) => {
-        const size = (entity.airdSize + entity.airdIndexSize) / 1024 / 1024;
-        return <Tag color="green">{size.toFixed(0)}MB</Tag>;
-      },
-    },
-    {
-      title: '厂商文件大小',
-      dataIndex: 'vendorSize',
-      valueType: 'digit',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        const size = entity.vendorFileSize / 1024 / 1024;
-        return <Tag color="blue">{size.toFixed(0)}MB</Tag>;
+        const airdSize = (entity.airdSize + entity.airdIndexSize) / 1024 / 1024;
+        const vendorSize = entity.vendorFileSize / 1024 / 1024;
+        const deltaRatio = ((vendorSize - airdSize)/vendorSize*100).toFixed(1)+"%";
+
+        return <><Tag color="blue">{airdSize.toFixed(0)}</Tag><Tag color="blue">{vendorSize.toFixed(0)}</Tag><Tag color="green">{deltaRatio}</Tag></>;
       },
     },
     {
@@ -167,37 +160,37 @@ const TableList: React.FC = (props) => {
           </Button>,
         ]}
         columns={columns}
-        rowSelection={
-          {
-            onChange: (_, selectedRows) => {
+        rowSelection={{
+          onChange: (selectedRowKeys, selectedRows) => {
             setSelectedRows(selectedRows);
-            },
-          }
-        }
-      />
-
-      {(selectedRows && selectedRows.length)?(<AnalyzeForm
-        form={formAnalyze}
-        onCancel={{
-          onCancel: () => {
-            handleAnalyzeModalVisible(false);
-            formAnalyze?.resetFields();
           },
         }}
-        onSubmit={async (value: AnalyzeParams) => {
-          value.expIdList = selectedRows.map(e=>e.id);
-          value.projectId = projectId;
-          const success = await analyze(value);
-          if (success) {
-            handleAnalyzeModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
+      />
+
+      {selectedRows && selectedRows.length ? (
+        <AnalyzeForm
+          form={formAnalyze}
+          onCancel={{
+            onCancel: () => {
+              handleAnalyzeModalVisible(false);
+              formAnalyze?.resetFields();
+            },
+          }}
+          onSubmit={async (value: AnalyzeParams) => {
+            value.expIdList = selectedRows.map((e) => e.id);
+            value.projectId = projectId;
+            const success = await analyze(value);
+            if (success) {
+              handleAnalyzeModalVisible(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
             }
-          }
-        }}
-        analyzeModalVisible={analyzeModalVisible}
-        values={{ expNum: selectedRows.length }}
-      />):null}
+          }}
+          analyzeModalVisible={analyzeModalVisible}
+          values={{ expNum: selectedRows.length, prepareData: prepareData }}
+        />
+      ) : null}
 
       {/* 列表详情 */}
       <DetailForm
