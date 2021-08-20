@@ -151,6 +151,7 @@ const TableList: React.FC = (props) => {
         }
         actionRef={actionRef}
         rowKey="id"
+        tableAlertRender={false}
         request={proteinList}
         // dataSource={tableListDataSource}
         columns={columns}

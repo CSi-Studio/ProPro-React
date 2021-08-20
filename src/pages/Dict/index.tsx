@@ -240,6 +240,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
+        tableAlertRender={false}
         expandable={{
           expandedRowRender: (record) => (
             <ProTable
@@ -307,6 +308,7 @@ const TableList: React.FC = () => {
               options={false}
               dataSource={record.item}
               pagination={false}
+              tableAlertRender={false}
             />
           ),
           rowExpandable: (record) => record.name !== 'Not Expandable',

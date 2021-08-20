@@ -144,6 +144,7 @@ const TableList: React.FC = (props) => {
   return (
     <PageContainer>
       <ProTable<TableListItem, TableListPagination>
+        tableAlertRender={false}
         scroll={{ x: 'max-content' }}
         size="small"
         headerTitle={

@@ -445,6 +445,7 @@ const TableList: React.FC = () => {
             创建项目
           </Button>,
         ]}
+        tableAlertRender={false}
         request={projectList}
         // dataSource={tableListDataSource}
         columns={columns}
