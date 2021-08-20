@@ -449,7 +449,7 @@ const TableList: React.FC = () => {
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle=""
+        headerTitle="靶列表"
         actionRef={actionRef}
         rowKey="id"
         size="small"

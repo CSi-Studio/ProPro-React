@@ -37,6 +37,7 @@ const TableList: React.FC = (props) => {
         return (
           <a
             onClick={() => {
+              console.log(props);
               setCurrentRow(entity);
               setShowDetail(true);
             }}
@@ -78,7 +79,7 @@ const TableList: React.FC = (props) => {
                 to={{
                   pathname: '/blockIndex',
                   search: `?expId=${entity.id}`,
-                  state: { projectId },
+                  state: { projectId, expName: entity.name },
                 }}
               >
                 <Tag color="green">查看</Tag>
@@ -105,11 +106,11 @@ const TableList: React.FC = (props) => {
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
-      render: (text, record) => [
+      render: (dom, entity) => [
         <Tooltip title={'详情'} key="detail">
           <a
             onClick={() => {
-              setCurrentRow(record);
+              setCurrentRow(entity);
               setShowDetail(true);
             }}
             key="edit"
@@ -121,8 +122,8 @@ const TableList: React.FC = (props) => {
           <Link
             to={{
               pathname: '/blockIndex',
-              search: `?expId=${record.id}`,
-              state: { projectId },
+              search: `?expId=${entity.id}`,
+              state: { projectId, expName: entity.name },
             }}
           >
             <Icon
@@ -138,8 +139,14 @@ const TableList: React.FC = (props) => {
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle=""
+        headerTitle={
+          props?.location?.state?.projectName === undefined
+            ? '实验列表'
+            : props?.location?.state?.projectName
+        }
         actionRef={actionRef}
+        search={{ labelWidth: 'auto' }}
+        search={{ labelWidth: 'auto' }}
         rowKey="id"
         size="small"
         // request={experimentList}

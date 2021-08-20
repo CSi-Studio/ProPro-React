@@ -1,4 +1,5 @@
 import { ModalForm } from "@ant-design/pro-form";
+import { Spin } from "antd";
 import ReactECharts from 'echarts-for-react';
 
 
@@ -8,6 +9,7 @@ import ReactECharts from 'echarts-for-react';
     chartsData:any;
     onCancel: Record<string, () => void>;
     rtData:any;
+    onSubmit: Record<string, () => void>;
   };
   
 
@@ -15,14 +17,12 @@ import ReactECharts from 'echarts-for-react';
   const ChartsForm: React.FC<ChartsFormProps> = (props) => {
     const xAxisData = props.chartsData?.x
     const yAxisData = props.chartsData?.y
-    const rtData = props.rtData
+    const rts = props.rtData
     const option = {
-
       toolbox: {
-        left:"right",
+        left:"middle",
         show: true,
         feature: {
-            restore: {},
             saveAsImage: {}
         }
     },
@@ -33,7 +33,7 @@ import ReactECharts from 'echarts-for-react';
       },
   
       title: {
-        text: 'Rt时间:'+{rtData},
+        text:"RT时间:"+ rts,
         
       },
       dataZoom:{
@@ -42,7 +42,6 @@ import ReactECharts from 'echarts-for-react';
       xAxis: {
         type: 'category',
         data: xAxisData,
-      
       },
       yAxis: {
         type: 'value',
@@ -55,10 +54,10 @@ import ReactECharts from 'echarts-for-react';
       ],
     };
     return (
-      <ModalForm visible={props.showCharts} modalProps={props.onCancel}  >
+      <ModalForm visible={props.showCharts} modalProps={props.onCancel} onFinish={props.onSubmit}  >
+        
         <ReactECharts option={option} style={{ height: 400 }} />
- 
-   
+    
   
       </ModalForm>
     );
