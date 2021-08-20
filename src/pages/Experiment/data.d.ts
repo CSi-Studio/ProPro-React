@@ -17,3 +17,17 @@ export type TableListPagination = {
   totalPage: number;
   currentPageNo: number;
 };
+
+export type PrepareAnalyzeVO = {
+  insLibList: Array;
+  anaLibList:Array;
+  methodList:Array;
+}
+
+export type AnalyzeParams = {
+  projectId:string;
+  expIdList: Array<string>;
+  methodId: string;
+  anaLibId: string;
+  insLibId: string;
+}

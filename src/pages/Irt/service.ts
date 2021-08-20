@@ -2,6 +2,7 @@ import { request } from 'umi';
 import type { TableAddItem } from './data';
 import {url} from '@/utils/request'
 import * as ecStat from "echarts-stat";
+
 /** 获取肽段列表 GET /peptide/list */
 export async function proteinList(params: {
   // query

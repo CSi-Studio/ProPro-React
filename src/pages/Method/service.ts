@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import type { Pagination } from '@/components/Commons/page';
+import type { Pagination } from '@/components/Commons/common';
 import {url} from '@/utils/request'
 
 /** 获取方法列表 GET /method/list */
