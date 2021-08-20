@@ -85,7 +85,12 @@ const TableList: React.FC = (props) => {
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle=""
+        search={{ labelWidth: 'auto' }}
+        headerTitle={
+          props?.location?.state?.expName === undefined
+            ? '索引列表'
+            : props?.location?.state?.expName
+        }
         actionRef={actionRef}
         rowKey="id"
         size="small"

@@ -161,7 +161,7 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      key:'name',
+      key: 'name',
       title: '项目名',
       dataIndex: 'name',
       render: (dom, record) => {
@@ -178,20 +178,26 @@ const TableList: React.FC = () => {
       },
     },
     {
-      key:'alias',
+      key: 'alias',
       title: '别名',
       dataIndex: 'alias',
     },
     {
-      key:'expCount',
+      key: 'expCount',
       title: '实验数',
       dataIndex: 'expCount',
       hideInSearch: true,
       render: (dom, entity) => {
         return (
           <>
-            {dom===0?<Tag color="red">{dom}</Tag>:<Tag color="blue">{dom}</Tag>}
-            <Link to={{ pathname: '/experiment/list', search: `?projectId=${entity.id}` }}>
+            {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
+            <Link
+              to={{
+                pathname: '/experiment/list',
+                state: { projectName: entity.name },
+                search: `?projectId=${entity.id}`,
+              }}
+            >
               <Tag color="green">查看</Tag>
             </Link>
           </>
@@ -199,14 +205,14 @@ const TableList: React.FC = () => {
       },
     },
     {
-      key:'overviewCount',
+      key: 'overviewCount',
       title: '分析数',
       dataIndex: 'overviewCount',
       hideInSearch: true,
       render: (dom, entity) => {
         return (
           <>
-            {dom===0?<Tag color="red">{dom}</Tag>:<Tag color="blue">{dom}</Tag>}
+            {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
             <Link to={{ pathname: '/overview/list', search: `?projectId=${entity.id}` }}>
               <Tag color="green">查看</Tag>
             </Link>
@@ -215,24 +221,24 @@ const TableList: React.FC = () => {
       },
     },
     {
-      key:'type',
+      key: 'type',
       title: '类型',
       dataIndex: 'type',
       hideInSearch: true,
     },
     {
-      key:'owner',
+      key: 'owner',
       title: '负责人',
       dataIndex: 'owner',
     },
     {
-      key:'insLibName',
+      key: 'insLibName',
       title: '内标库',
       dataIndex: 'insLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if(dom === '-'){
-          return  <Tag color="red">未设置</Tag>
+        if (dom === '-') {
+          return <Tag color="red">未设置</Tag>;
         } else {
           return (
             <Tooltip title={dom}>
@@ -245,13 +251,13 @@ const TableList: React.FC = () => {
       },
     },
     {
-      key:'anaLibName',
+      key: 'anaLibName',
       title: '标准库',
       dataIndex: 'anaLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if(dom === '-'){
-          return  <Tag color="red">未设置</Tag>
+        if (dom === '-') {
+          return <Tag color="red">未设置</Tag>;
         } else {
           return (
             <Tooltip title={dom}>
@@ -264,47 +270,49 @@ const TableList: React.FC = () => {
       },
     },
     {
-      key:'methodName',
+      key: 'methodName',
       title: '方法包',
       dataIndex: 'methodName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if(dom === '-'){
-          return  <Tag color="red">未设置</Tag>
+        if (dom === '-') {
+          return <Tag color="red">未设置</Tag>;
         } else {
-          return <Tooltip title={dom}>
-            <Link to={{ pathname: '/method/list', search: `?id=${entity.methodId}` }}>
-            <Tag color="blue">查看</Tag>
-          </Link>
-        </Tooltip>
+          return (
+            <Tooltip title={dom}>
+              <Link to={{ pathname: '/method/list', search: `?id=${entity.methodId}` }}>
+                <Tag color="blue">查看</Tag>
+              </Link>
+            </Tooltip>
+          );
         }
       },
     },
     {
-      key:'tags',
+      key: 'tags',
       title: '标签',
       dataIndex: 'tags',
       hideInSearch: true,
       render: (text, entity) => {
         if (entity.tags && entity.tags.length !== 0) {
-          let tagsDom:any[] = []
-          entity.tags.forEach(tag=>{
-            tagsDom.push([<Tag key={tag}>{tag}</Tag>])
-          })
+          let tagsDom: any[] = [];
+          entity.tags.forEach((tag) => {
+            tagsDom.push([<Tag key={tag}>{tag}</Tag>]);
+          });
           return <>{tagsDom}</>;
         }
         return false;
       },
     },
     {
-      key:'createDate',
+      key: 'createDate',
       title: '创建时间',
       dataIndex: 'createDate',
       valueType: 'dateTime',
       hideInSearch: true,
     },
     {
-      key:'option',
+      key: 'option',
       title: '操作',
       valueType: 'option',
       copyable: true,
@@ -312,124 +320,134 @@ const TableList: React.FC = () => {
       ellipsis: true,
       fixed: 'right',
       hideInSearch: true,
-      render: (text, record) => 
+      render: (text, record) => (
         <Space>
-        <Tooltip title={'编辑'}>
-          <a
-            onClick={() => {
-              formUpdate?.resetFields();
-              handleUpdateModalVisible(true);
-              setCurrentRow(record);
+          <Tooltip title={'编辑'}>
+            <a
+              onClick={() => {
+                formUpdate?.resetFields();
+                handleUpdateModalVisible(true);
+                setCurrentRow(record);
+              }}
+            >
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+            </a>
+          </Tooltip>
+          <Tooltip title={'详情'}>
+            <a
+              onClick={() => {
+                setCurrentRow(record);
+                setShowDetail(true);
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:file-document"
+              />
+            </a>
+          </Tooltip>
+          <Tooltip title={'扫描并更新'}>
+            <a
+              onClick={() => {
+                handleScan({ projectId: record.id });
+              }}
+            >
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />
+            </a>
+          </Tooltip>
+          <Tooltip title={'查看结果总览'}>
+            <a
+              onClick={() => {
+                message.success('我是查看结果总览');
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                icon="mdi:file-eye"
+              />
+            </a>
+          </Tooltip>
+          <Tooltip title={'导出'}>
+            <a
+              onClick={() => {
+                message.success('我是导出');
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                icon="mdi:file-export"
+              />
+            </a>
+          </Tooltip>
+          <Tooltip title={'开始分析'}>
+            <Link to={{ pathname: '/experiment/list', search: `?projectId=${record.id}` }}>
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:calculator" />
+            </Link>
+          </Tooltip>
+
+          <TableDropdown
+            onSelect={(key) => {
+              if (key === 'delete1') {
+                message.success('我是删除分析结果');
+                formDelete?.resetFields();
+                handleDelete1ModalVisible(true);
+                setCurrentRow(record);
+              }
+              if (key === 'delete2') {
+                message.success('我是删除IRT');
+                formDelete?.resetFields();
+                handleDelete2ModalVisible(true);
+                setCurrentRow(record);
+              }
+              if (key === 'delete3') {
+                message.success('我是删除');
+                formDelete?.resetFields();
+                handleDeleteModalVisible(true);
+                setCurrentRow(record);
+              }
             }}
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
-          </a>
-        </Tooltip>
-        <Tooltip title={'详情'}>
-          <a
-            onClick={() => {
-              setCurrentRow(record);
-              setShowDetail(true);
-            }}
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
-          </a>
-        </Tooltip>
-        <Tooltip title={'扫描并更新'}>
-          <a
-            onClick={() => {
-              handleScan({ projectId: record.id });
-            }}
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />
-          </a>
-        </Tooltip>
-        <Tooltip title={'查看结果总览'}>
-          <a
-            onClick={() => {
-              message.success('我是查看结果总览');
-            }}
-          >
-            <Icon
-              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-              icon="mdi:file-eye"
-            />
-          </a>
-        </Tooltip>
-        <Tooltip title={'导出'}>
-          <a
-            onClick={() => {
-              message.success('我是导出');
-            }}
-          >
-            <Icon
-              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-              icon="mdi:file-export"
-            />
-          </a>
-        </Tooltip>
-        <Tooltip title={'开始分析'}>
-          <Link to={{ pathname: '/experiment/list', search: `?projectId=${record.id}` }}>
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:calculator" />
-          </Link>
-        </Tooltip>
-        
-        <TableDropdown
-          onSelect={(key) => {
-            if (key === 'delete1') {
-              message.success('我是删除分析结果');
-              formDelete?.resetFields();
-              handleDelete1ModalVisible(true);
-              setCurrentRow(record);
-            }
-            if (key === 'delete2') {
-              message.success('我是删除IRT');
-              formDelete?.resetFields();
-              handleDelete2ModalVisible(true);
-              setCurrentRow(record);
-            }
-            if (key === 'delete3') {
-              message.success('我是删除');
-              formDelete?.resetFields();
-              handleDeleteModalVisible(true);
-              setCurrentRow(record);
-            }
-          }}
-          menus={[
-            {
-              key: 'delete1',
-              name: '删除分析结果',
-              icon: (
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                  icon="mdi:delete-sweep"
-                />
-              ),
-            },
-            {
-              key: 'delete2',
-              name: '删除IRT',
-              icon: (
-                <Icon style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }} icon="mdi:delete-sweep-outline"/>
-              ),
-            },
-            {
-              key: 'delete3',
-              name: '删除',
-              icon: (
-                <Icon style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }} icon="mdi:delete"/>
-              ),
-            },
-          ]}
-        />
-      </Space>,
+            menus={[
+              {
+                key: 'delete1',
+                name: '删除分析结果',
+                icon: (
+                  <Icon
+                    style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                    icon="mdi:delete-sweep"
+                  />
+                ),
+              },
+              {
+                key: 'delete2',
+                name: '删除IRT',
+                icon: (
+                  <Icon
+                    style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                    icon="mdi:delete-sweep-outline"
+                  />
+                ),
+              },
+              {
+                key: 'delete3',
+                name: '删除',
+                icon: (
+                  <Icon
+                    style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                    icon="mdi:delete"
+                  />
+                ),
+              },
+            ]}
+          />
+        </Space>
+      ),
     },
   ];
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle={''}
+        headerTitle="项目列表"
         actionRef={actionRef}
         rowKey="id"
         size="small"
@@ -446,7 +464,6 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={projectList}
-        // dataSource={tableListDataSource}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

@@ -238,6 +238,7 @@ const TableList: React.FC = () => {
         scroll={{ x: 'max-content' }}
         headerTitle=""
         actionRef={actionRef}
+        search={{ labelWidth: 'auto' }}
         rowKey="id"
         size="small"
         expandable={{
@@ -326,7 +327,6 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={dictList}
-        // dataSource={tableListDataSource}
         columns={columns}
         rowSelection={
           {
@@ -338,7 +338,6 @@ const TableList: React.FC = () => {
       />
 
       {/* 列表详情 */}
-      {/* {popup ? ( */}
       <DictForm
         showDetail={showDetail}
         currentRow={currentRow}
@@ -346,10 +345,8 @@ const TableList: React.FC = () => {
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
-          // setPopup(false);
         }}
       />
-      {/* ) : null} */}
 
       {/* 编辑列表 */}
       <UpdateForm
@@ -401,7 +398,6 @@ const TableList: React.FC = () => {
         onCancel={{
           onCancel: () => {
             handleAddModalVisible(false);
-            // setPopup(false);
             form?.resetFields();
           },
         }}
@@ -419,7 +415,7 @@ const TableList: React.FC = () => {
       />
 
       {/* 删除DictItem */}
-      {/* {popup ? ( */}
+
       <DeleteFormItem
         form={deleteForm}
         onCancel={{
@@ -427,11 +423,9 @@ const TableList: React.FC = () => {
             handleDeleteModalVisible(false);
             setCurrentDeleteItem(undefined);
             deleteForm?.resetFields();
-            // setPopup(false);
           },
         }}
         onSubmit={async () => {
-          // handleDeleteModalVisible(false);
           const success = await handleRemoveItem(currentDeleteItem);
           if (success) {
             handleDeleteModalVisible(false);
@@ -446,7 +440,7 @@ const TableList: React.FC = () => {
       />
 
       {/* 删除Dict */}
-      {/* {popup ? ( */}
+
       <DeleteDictForm
         form={deleteDictForm}
         onCancel={{
@@ -454,11 +448,9 @@ const TableList: React.FC = () => {
             handleDeleteDictModalVisible(false);
             setCurrentDelete(undefined);
             deleteDictForm?.resetFields();
-            // setPopup(false);
           },
         }}
         onSubmit={async () => {
-          // handleDeleteModalVisible(false);
           const success = await handleRemove(currentDelete);
           console.log('currentdelete', currentDelete);
           if (success) {
@@ -472,45 +464,6 @@ const TableList: React.FC = () => {
         deleteDictModalVisible={deleteDictModalVisible}
         values={currentDelete || {}}
       />
-
-      {/* ) : null} */}
-
-      {/* 克隆列表 */}
-      {/* {popup ? ( */}
-
-      {/* <CloneForm
-        form={form}
-        onCancel={{
-          onCancel: () => {
-            handleCloneModalVisible(false);
-            setCurrentRow(undefined);
-            form?.resetFields();
-            // setPopup(false);
-          },
-        }}
-        onSubmit={async (params) => {
-          const p: { id: any; newLibName: string; includeDecoy?: boolean } = {
-            id: '',
-            newLibName: '',
-            includeDecoy: false,
-          };
-          p.id = currentRow?.id;
-          p.newLibName = params.newLibName;
-          p.includeDecoy = params.includeDecoy;
-
-          const success = await handleClone(p);
-          if (success) {
-            handleCloneModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        cloneModalVisible={cloneModalVisible}
-        values={currentRow || {}}
-      /> */}
-      {/* ) : null} */}
     </>
   );
 };

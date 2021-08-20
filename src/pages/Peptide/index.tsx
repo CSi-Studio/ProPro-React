@@ -448,10 +448,11 @@ const TableList: React.FC = (props) => {
         scroll={{ x: 'max-content' }}
         headerTitle={
           props?.location?.state?.libraryName === undefined
-            ? ''
+            ? '肽段列表'
             : props?.location?.state?.libraryName
         }
         actionRef={actionRef}
+        search={{ labelWidth: 'auto' }}
         rowKey="id"
         size="small"
         request={async (params) => {
