@@ -95,7 +95,7 @@ const TableList: React.FC = (props) => {
       dataIndex: 'irt',
       render: (dom, entity) => {
         if (entity.irt) {
-          return <Tag color="green">{dom}</Tag>;
+          return <Tag color="green">{entity.irt.si.formula}</Tag>;
         } else {
           return <Tag color="red">未分析</Tag>;
         }
@@ -162,7 +162,9 @@ const TableList: React.FC = (props) => {
             type="primary"
             key="primary"
             onClick={() => {
-              handleAnalyzeModalVisible(true);
+              if(selectedRows && selectedRows.length > 0){
+                handleAnalyzeModalVisible(true);
+              }
             }}
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
