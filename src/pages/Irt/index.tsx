@@ -1,9 +1,11 @@
 import { Button, Form, message, Tooltip } from 'antd';
+import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { addList, proteinList } from './service';
 import type { TableAddItem, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
+import './index.less';
 import CreateForm from './components/CreateForm';
 import { Icon } from '@iconify/react';
 
@@ -140,18 +142,21 @@ const TableList: React.FC = (props) => {
     },
   ];
   return (
-    <>
+    <PageContainer>
       <ProTable<TableListItem, TableListPagination>
+        tableAlertRender={false}
         scroll={{ x: 'max-content' }}
         size="small"
         headerTitle={
           props?.location?.state?.libraryName === undefined
-            ? '蛋白列表'
+            ? ''
             : props?.location?.state?.libraryName
         }
         actionRef={actionRef}
         rowKey="id"
-        tableAlertRender={false}
+        search={{
+          labelWidth: 120,
+        }}
         request={proteinList}
         // dataSource={tableListDataSource}
         columns={columns}
@@ -178,7 +183,7 @@ const TableList: React.FC = (props) => {
         }
       />
       {/* 添加列表 */}
-      <CreateForm
+      {/* <CreateForm
         form={formCreate}
         onCancel={{
           onCancel: () => {
@@ -198,8 +203,8 @@ const TableList: React.FC = (props) => {
         }}
         createModalVisible={createModalVisible}
         values={createRow || {}}
-      />
-    </>
+      /> */}
+    </PageContainer>
   );
 };
 

@@ -157,7 +157,7 @@ const TableList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -463,6 +463,7 @@ const TableList: React.FC = () => {
             创建项目
           </Button>,
         ]}
+        tableAlertRender={false}
         request={projectList}
         columns={columns}
         rowSelection={{

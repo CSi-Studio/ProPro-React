@@ -16,7 +16,6 @@ export type UpdateFormProps = {
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const [sliderValue,setValue] = useState<any>();
-
   const [maxRT,setMaxRT] = useState<any>();
   const [minRT,setMintRT] = useState<any>();
   const [showCharts, setShowCharts] = useState<boolean>(false);

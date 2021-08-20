@@ -22,6 +22,10 @@ export type PrepareAnalyzeVO = {
   insLibList: Array;
   anaLibList:Array;
   methodList:Array;
+  insLibId:string
+  anaLibId:string
+  methodId:string
+  projectName:string
 }
 
 export type AnalyzeParams = {

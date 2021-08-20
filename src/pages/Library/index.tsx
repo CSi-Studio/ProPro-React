@@ -1,4 +1,4 @@
-import { Button, Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
+import { Dropdown, Menu, message, Tag, Tooltip, Form } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import {
   libraryList,
@@ -344,6 +344,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
+        tableAlertRender={false}
         toolBarRender={() => [
           <Tooltip title={'新增'} key="add">
             <a>
