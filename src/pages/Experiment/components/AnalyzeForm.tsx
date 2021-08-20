@@ -19,8 +19,8 @@ const AnalyzeForm: React.FC<AnalyzeFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title="准备分析"
-      width={400}
+      title={"开始分析-"+(props.values.expNum?props.values.expNum:0)+"个实验被选中"}
+      width={800}
       visible={props.analyzeModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}

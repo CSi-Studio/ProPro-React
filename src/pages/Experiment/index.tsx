@@ -16,7 +16,7 @@ const TableList: React.FC = (props) => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
 
   /** 更新窗口的弹窗 */
   // const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
@@ -102,7 +102,7 @@ const TableList: React.FC = (props) => {
       render: (dom, entity) => {
         if (entity.irt) {
           return <Tag color="green">{dom}</Tag>;
-        }else{
+        } else {
           return <Tag color="red">未分析</Tag>;
         }
       },
@@ -162,20 +162,21 @@ const TableList: React.FC = (props) => {
               handleAnalyzeModalVisible(true);
             }}
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}开始分析
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
+            开始分析
           </Button>,
         ]}
         columns={columns}
         rowSelection={
           {
-            // onChange: (_, selectedRows) => {
-            // setSelectedRows(selectedRows);
-            // },
+            onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows);
+            },
           }
         }
       />
 
-      <AnalyzeForm
+      {(selectedRows && selectedRows.length)?(<AnalyzeForm
         form={formAnalyze}
         onCancel={{
           onCancel: () => {
@@ -184,6 +185,8 @@ const TableList: React.FC = (props) => {
           },
         }}
         onSubmit={async (value: AnalyzeParams) => {
+          value.expIdList = selectedRows.map(e=>e.id);
+          value.projectId = projectId;
           const success = await analyze(value);
           if (success) {
             handleAnalyzeModalVisible(false);
@@ -193,11 +196,8 @@ const TableList: React.FC = (props) => {
           }
         }}
         analyzeModalVisible={analyzeModalVisible}
-        values={
-          {expIdList: selectedRowsState,
-          projectId: projectId}
-        }
-      />
+        values={{ expNum: selectedRows.length }}
+      />):null}
 
       {/* 列表详情 */}
       <DetailForm
