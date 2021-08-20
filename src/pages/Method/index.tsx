@@ -139,10 +139,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-<<<<<<< HEAD
         tableAlertRender={false}
-=======
->>>>>>> cb8304f11deaceeb22b91c307dfd6a9b95325c12
         toolBarRender={() => [
           <Button
             type="primary"
