@@ -19,8 +19,6 @@ const TableList: React.FC = (props) => {
 
   const actionRef = useRef<ActionType>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const { expId } = props?.location?.query.expId;
-  console.log(props?.location);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -128,12 +126,11 @@ const TableList: React.FC = (props) => {
         search={false}
         tableAlertRender={false}
         request={async (params) => {
-          console.log(expId);
-          const msg = await blockIndexList({ expId: expId, ...params });
+          const msg = await blockIndexList({ expId:props?.location?.query?.expId, ...params });
           return Promise.resolve(msg);
         }}
         columns={columns}
-        pagination={ false }
+        pagination={false}
         rowSelection={
           {
             
