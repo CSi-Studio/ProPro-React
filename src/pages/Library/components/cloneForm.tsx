@@ -1,6 +1,7 @@
 import React from 'react';
 import { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
 import { Button } from 'antd';
+import { TableListItem } from '../data';
 
 export type cloneFormValueType = {
   id: any;
@@ -12,7 +13,7 @@ export type CloneFormProps = {
   onSubmit: (values: cloneFormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
   cloneModalVisible: boolean;
-  values: Partial<any>;
+  values?: TableListItem[];
   form: any;
 };
 const a: number = 1;
