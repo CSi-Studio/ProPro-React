@@ -134,11 +134,15 @@ const TableList: React.FC = () => {
     <>
       <ProTable<DomainCell, Pagination>
         scroll={{ x: 'max-content' }}
-        headerTitle=""
+        headerTitle="方法列表"
+        search={{ labelWidth: 'auto' }}
         actionRef={actionRef}
         rowKey="id"
         size="small"
+<<<<<<< HEAD
         tableAlertRender={false}
+=======
+>>>>>>> cb8304f11deaceeb22b91c307dfd6a9b95325c12
         toolBarRender={() => [
           <Button
             type="primary"

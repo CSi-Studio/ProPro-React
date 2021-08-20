@@ -22,13 +22,17 @@ export async function experimentList(params: {
 }
 
 /** 获取分析前的参数 GET /analyze/prepare */
-export async function prepare() {
+export async function prepare(projectId:string) {
+  console.log('发起网络请求')
   return request(`${url}/analyze/prepare`, {
     method: 'GET',
-  });
+    params:{
+      projectId:projectId
+    }
+  })
 }
 
-/** 添加项目 POST /api/project/add */
+/** 添加项目 POST /project/analyze */
 export async function analyze(params: AnalyzeParams) {
   return request<Task>(`${url}/analyze/analyze`, {
     method: 'POST',

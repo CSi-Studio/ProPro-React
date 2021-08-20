@@ -146,7 +146,7 @@ const TableList: React.FC = (props) => {
         size="small"
         headerTitle={
           props?.location?.state?.libraryName === undefined
-            ? ''
+            ? '蛋白列表'
             : props?.location?.state?.libraryName
         }
         actionRef={actionRef}
