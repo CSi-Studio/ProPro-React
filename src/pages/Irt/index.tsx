@@ -1,10 +1,18 @@
-import { IrtOption, peptideList } from './service';
-import React, { useState } from 'react';
+import { IrtOption, peptideList, option } from './service';
+import React, { useEffect, useState } from 'react';
 // import './index.less';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
+import { Button } from 'antd';
 
-const titleAll = ["气温变化", "空气质量指数", "C31231231231232131221", "D", "气温变化", "空气质量指数"];
+const titleAll = [
+  '气温变化',
+  '空气质量指数',
+  'C31231231231232131221',
+  'D',
+  '气温变化',
+  '空气质量指数',
+];
 const dataAll = [
   [
     [10.0, 8.04],
@@ -17,7 +25,7 @@ const dataAll = [
     [4.0, 4.26],
     [12.0, 10.84],
     [7.0, 4.82],
-    [5.0, 5.68]
+    [5.0, 5.68],
   ],
   [
     [10.0, 9.14],
@@ -29,7 +37,7 @@ const dataAll = [
     [6.0, 6.13],
     [4.0, 3.1],
     [12.0, 9.13],
-    [7.0, 7.26]
+    [7.0, 7.26],
   ],
   [
     [10.0, 7.46],
@@ -42,7 +50,7 @@ const dataAll = [
     [4.0, 5.39],
     [12.0, 8.15],
     [7.0, 6.42],
-    [5.0, 5.73]
+    [5.0, 5.73],
   ],
   [
     [8.0, 6.58],
@@ -55,7 +63,7 @@ const dataAll = [
     [19.0, 12.5],
     [8.0, 5.56],
     [8.0, 7.91],
-    [8.0, 6.89]
+    [8.0, 6.89],
   ],
   [
     [10.0, 8.04],
@@ -68,7 +76,7 @@ const dataAll = [
     [4.0, 4.26],
     [12.0, 10.84],
     [7.0, 4.82],
-    [5.0, 5.68]
+    [5.0, 5.68],
   ],
   [
     [10.0, 9.14],
@@ -80,7 +88,7 @@ const dataAll = [
     [6.0, 6.13],
     [4.0, 3.1],
     [12.0, 9.13],
-    [7.0, 7.26]
+    [7.0, 7.26],
   ],
   [
     [10.0, 8.04],
@@ -93,7 +101,7 @@ const dataAll = [
     [4.0, 4.26],
     [12.0, 10.84],
     [7.0, 4.82],
-    [5.0, 5.68]
+    [5.0, 5.68],
   ],
   [
     [10.0, 9.14],
@@ -105,7 +113,7 @@ const dataAll = [
     [6.0, 6.13],
     [4.0, 3.1],
     [12.0, 9.13],
-    [7.0, 7.26]
+    [7.0, 7.26],
   ],
   [
     [10.0, 7.46],
@@ -118,7 +126,7 @@ const dataAll = [
     [4.0, 5.39],
     [12.0, 8.15],
     [7.0, 6.42],
-    [5.0, 5.73]
+    [5.0, 5.73],
   ],
   [
     [8.0, 6.58],
@@ -131,7 +139,7 @@ const dataAll = [
     [19.0, 12.5],
     [8.0, 5.56],
     [8.0, 7.91],
-    [8.0, 6.89]
+    [8.0, 6.89],
   ],
   [
     [10.0, 8.04],
@@ -144,7 +152,7 @@ const dataAll = [
     [4.0, 4.26],
     [12.0, 10.84],
     [7.0, 4.82],
-    [5.0, 5.68]
+    [5.0, 5.68],
   ],
   [
     [10.0, 9.14],
@@ -156,36 +164,39 @@ const dataAll = [
     [6.0, 6.13],
     [4.0, 3.1],
     [12.0, 9.13],
-    [7.0, 7.26]
-  ]
+    [7.0, 7.26],
+  ],
 ];
-
-const TableList: React.FC =  () => {
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
-  /** 全选 */
-  const [handleOption, setHandleOption] = useState();
-// const a = props.location.query;
-const aa = async () => {
-  // const result = await peptideList(a)
-  // console.log(result.data);
-  const irt = new IrtOption(dataAll,titleAll,5);
-  const option = irt.getIrtOption();
-  setHandleOption(option)
-}
-aa();
-
+const loadingOption = {
+  text: '加载中...',
+  color: '#4413c2',
+  textColor: '#270240',
+  maskColor: 'rgba(194, 88, 86, 0.3)',
+  zlevel: 0,
+};
+const TableList: React.FC = () => {
+  const [handleOption, setHandleOption] = useState({});
+  useEffect(() => {
+    const aa = async () => {
+      // const result = await peptideList(a)
+      // console.log(result.data);
+      const irt = new IrtOption(dataAll, titleAll, 5);
+      const option = irt.getIrtOption();
+      setHandleOption(option);
+    };
+    aa();
+    setHandleOption(option);
+  }, [handleOption]);
   return (
-    // <PageContainer>
-      <ProCard>
-      <ReactECharts option={handleOption} style={{width:'100%', height: '150vh' }} />
-      </ProCard>
-    // </PageContainer>
+    <ProCard>
+      <ReactECharts
+        // loadingOption={loadingOption}
+        // showLoading={true}
+        option={handleOption}
+        style={{ width: '100%', height: '150vh' }}
+      />
+    </ProCard>
   );
 };
 
 export default TableList;
-
-
-
-
