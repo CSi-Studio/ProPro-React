@@ -21,7 +21,7 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
     <ModalForm
       form={props.form}
       title="预测肽段碎片"
-      width={530}
+      width={800}
       visible={props.predictModalVisible}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
@@ -71,8 +71,8 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
           name="isotope"
           label="是否考虑同位素"
         />
-      </ProForm.Group>
-      <ProFormDigit
+        <ProFormDigit
+        initialValue={10}
         width="sm"
         name="limit"
         label="最大预测片段数"
@@ -84,6 +84,7 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
         ]}
         placeholder="请输入最大片段数"
       ></ProFormDigit>
+      </ProForm.Group>
     </ModalForm>
   );
 };

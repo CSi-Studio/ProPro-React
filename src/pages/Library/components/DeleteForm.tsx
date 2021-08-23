@@ -11,9 +11,8 @@ export type DeleteFormProps = {
   onSubmit: (value: FormValueType) => Promise<void>;
   onCancel: Record<string, () => void>;
   deleteModalVisible: boolean;
-  values: FormValueType;
   form: any;
-  currentRow: any;
+  selectedRowsState: any;
 };
 
 const DeleteForm: React.FC<DeleteFormProps> = (props) => {
@@ -38,7 +37,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             }}
             color="red"
           >
-            {props?.currentRow?.name}
+            {props?.selectedRowsState[0]?.name}
           </Tag>
           以确认删除。
         </div>
