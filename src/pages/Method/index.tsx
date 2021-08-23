@@ -53,7 +53,7 @@ const TableList: React.FC = () => {
   // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-
+  const [total,setTotal] = useState<any>();
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
@@ -153,7 +153,14 @@ const TableList: React.FC = () => {
             创建库
           </Button>,
         ]}
-        request={list}
+        request={async (params) => {
+          const msg = await list({ ...params });
+          console.log(msg)
+          setTotal(msg.totalNum)
+          return Promise.resolve(msg);}}
+          pagination={{
+            total:total
+          }}
         columns={columns}
         rowSelection={
           {

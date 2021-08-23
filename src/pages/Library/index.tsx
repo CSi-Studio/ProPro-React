@@ -350,7 +350,7 @@ const TableList: React.FC = () => {
         size="small"
         tableAlertRender={false}
         pagination={{
-         current:pageNo
+         total:total
         }}
         toolBarRender={() => [
           <Tooltip title={'新增'} key="add">
