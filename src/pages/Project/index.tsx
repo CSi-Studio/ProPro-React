@@ -191,15 +191,9 @@ const TableList: React.FC = () => {
         return (
           <>
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
-            <Link
-              to={{
-                pathname: '/experiment/list',
-                state: { projectName: entity.name },
-                search: `?projectId=${entity.id}`,
-              }}
-            >
+            {dom !== 0 ? <Link to={{ pathname: '/experiment/list', state: { projectName: entity.name }, search: `?projectId=${entity.id}`, }}>
               <Tag color="green">查看</Tag>
-            </Link>
+            </Link>: null}
           </>
         );
       },
@@ -213,9 +207,9 @@ const TableList: React.FC = () => {
         return (
           <>
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
-            <Link to={{ pathname: '/overview/list', search: `?projectId=${entity.id}` }}>
+            {dom !== 0 ? <Link to={{ pathname: '/overview/list', search: `?projectId=${entity.id}` }}>
               <Tag color="green">查看</Tag>
-            </Link>
+            </Link>:null}
           </>
         );
       },
