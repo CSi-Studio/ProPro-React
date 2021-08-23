@@ -156,7 +156,6 @@ const TableList: React.FC = (props) => {
         tableAlertRender={false}
         request={async (params) => {
           const msg = await proteinList({ ...params });
-          console.log(msg)
           setTotal(msg.totalNum)
           return Promise.resolve(msg);}}
         // dataSource={tableListDataSource}

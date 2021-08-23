@@ -154,7 +154,7 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [total,setTotal] = useState<any>();
+  const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
@@ -191,9 +191,17 @@ const TableList: React.FC = () => {
         return (
           <>
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
-            {dom !== 0 ? <Link to={{ pathname: '/experiment/list', state: { projectName: entity.name }, search: `?projectId=${entity.id}`, }}>
-              <Tag color="green">查看</Tag>
-            </Link>: null}
+            {dom !== 0 ? (
+              <Link
+                to={{
+                  pathname: '/experiment/list',
+                  state: { projectName: entity.name },
+                  search: `?projectId=${entity.id}`,
+                }}
+              >
+                <Tag color="green">查看</Tag>
+              </Link>
+            ) : null}
           </>
         );
       },
@@ -207,9 +215,11 @@ const TableList: React.FC = () => {
         return (
           <>
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
-            {dom !== 0 ? <Link to={{ pathname: '/overview/list', search: `?projectId=${entity.id}` }}>
-              <Tag color="green">查看</Tag>
-            </Link>:null}
+            {dom !== 0 ? (
+              <Link to={{ pathname: '/overview/list', search: `?projectId=${entity.id}` }}>
+                <Tag color="green">查看</Tag>
+              </Link>
+            ) : null}
           </>
         );
       },
@@ -355,10 +365,7 @@ const TableList: React.FC = () => {
                 message.success('我是查看结果总览');
               }}
             >
-              <Icon
-                style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                icon="mdi:file-eye"
-              />
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-eye" />
             </a>
           </Tooltip>
           <Tooltip title={'导出'}>
@@ -367,10 +374,7 @@ const TableList: React.FC = () => {
                 message.success('我是导出');
               }}
             >
-              <Icon
-                style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                icon="mdi:file-export"
-              />
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-export" />
             </a>
           </Tooltip>
           <Tooltip title={'开始分析'}>
@@ -406,7 +410,7 @@ const TableList: React.FC = () => {
                 name: '删除分析结果',
                 icon: (
                   <Icon
-                    style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                    style={{ verticalAlign: 'middle', fontSize: '20px' }}
                     icon="mdi:delete-sweep"
                   />
                 ),
@@ -416,7 +420,7 @@ const TableList: React.FC = () => {
                 name: '删除IRT',
                 icon: (
                   <Icon
-                    style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
+                    style={{ verticalAlign: 'middle', fontSize: '20px' }}
                     icon="mdi:delete-sweep-outline"
                   />
                 ),
@@ -425,10 +429,7 @@ const TableList: React.FC = () => {
                 key: 'delete3',
                 name: '删除',
                 icon: (
-                  <Icon
-                    style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-                    icon="mdi:delete"
-                  />
+                  <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:delete" />
                 ),
               },
             ]}
@@ -459,13 +460,13 @@ const TableList: React.FC = () => {
         ]}
         tableAlertRender={false}
         pagination={{
-          total:total
+          total: total,
         }}
         request={async (params) => {
           const msg = await projectList({ ...params });
-          console.log(msg)
-          setTotal(msg.totalNum)
-          return Promise.resolve(msg);}}
+          setTotal(msg.totalNum);
+          return Promise.resolve(msg);
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

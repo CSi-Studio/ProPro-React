@@ -133,7 +133,6 @@ const TableList: React.FC = () => {
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
 
-
   /** 删除窗口的弹窗 */
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   const [deleteDictModalVisible, handleDeleteDictModalVisible] = useState<boolean>(false);
@@ -142,7 +141,7 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 克隆窗口的弹窗 */
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
-  const [total,setTotal] = useState<any>();
+  const [total, setTotal] = useState<any>();
   /** 库详情的抽屉 */
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [currentUpdate, setCurrentUpdate] = useState<updateListItem>();
@@ -194,7 +193,6 @@ const TableList: React.FC = () => {
         <Tooltip title={'新增'} key="add">
           <a
             onClick={() => {
-              console.log('currentrecord', record);
               formCreateItem?.resetFields();
               handleAddModalVisible(true);
               let objItem = {
@@ -214,7 +212,6 @@ const TableList: React.FC = () => {
         <Tooltip title={'刪除'} key="delete">
           <a
             onClick={() => {
-              console.log('currentrecord', record);
               deleteDictForm?.resetFields();
               handleDeleteDictModalVisible(true);
               let objId = {
@@ -246,7 +243,7 @@ const TableList: React.FC = () => {
         size="small"
         tableAlertRender={false}
         pagination={{
-          total:total
+          total: total,
         }}
         expandable={{
           expandedRowRender: (record) => (
@@ -263,8 +260,6 @@ const TableList: React.FC = () => {
                     <Tooltip title={'编辑'} key="edit">
                       <a
                         onClick={() => {
-                          console.log('record', record);
-
                           formUpdate?.resetFields();
                           handleUpdateModalVisible(true);
                           let obj = {
@@ -272,11 +267,7 @@ const TableList: React.FC = () => {
                             key: record1.key,
                             value: record1.value,
                           };
-                          console.log('obj', obj);
-
                           setCurrentUpdate(obj);
-
-                          // setPopup(true);
                         }}
                         key="edit"
                       >
@@ -294,11 +285,7 @@ const TableList: React.FC = () => {
                             id: record.id,
                             key: record1.key,
                           };
-                          console.log('odj', odj);
-
                           setCurrentDeleteItem(odj);
-
-                          // setPopup(true);
                         }}
                         key="deleteItem"
                       >
@@ -336,11 +323,10 @@ const TableList: React.FC = () => {
         ]}
         request={async (params) => {
           const msg = await dictList({ ...params });
-          console.log(msg)
-          setTotal(msg.totalNum)
-          return Promise.resolve(msg);}}
+          setTotal(msg.totalNum);
+          return Promise.resolve(msg);
+        }}
         columns={columns}
-        
         rowSelection={
           {
             // onChange: (_, selectedRows) => {
@@ -349,7 +335,7 @@ const TableList: React.FC = () => {
           }
         }
       />
-      
+
       {/* 列表详情 */}
       <DictForm
         showDetail={showDetail}
@@ -465,7 +451,6 @@ const TableList: React.FC = () => {
         }}
         onSubmit={async () => {
           const success = await handleRemove(currentDelete);
-          console.log('currentdelete', currentDelete);
           if (success) {
             handleDeleteDictModalVisible(false);
             setCurrentDelete(undefined);

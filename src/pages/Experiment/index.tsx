@@ -37,7 +37,6 @@ const TableList: React.FC = (props) => {
         return (
           <a
             onClick={() => {
-              console.log(props);
               setCurrentRow(entity);
               setShowDetail(true);
             }}

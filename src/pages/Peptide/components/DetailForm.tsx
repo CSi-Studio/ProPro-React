@@ -55,7 +55,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
 
     {
       title: '离子片段',
-      render: (dom: any, entity: { fragments: any[]; }) => [
+      render: (dom: any, entity: { fragments: any[] }) => [
         <div
           style={{
             width: '600px',
@@ -226,7 +226,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
     {
       title: '伪肽段片段',
-      render: (dom: any, entity: { decoyFragments: any[]; }) => [
+      render: (dom: any, entity: { decoyFragments: any[] }) => [
         <div
           style={{
             width: '600px',
@@ -399,7 +399,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   columns.push(props.columns.pop());
 
   return (
-    <Drawer width={800} visible={props.showDetail} onClose={props.onClose} closable={false}>
+    <Drawer width={700} visible={props.showDetail} onClose={props.onClose} closable={false}>
       {props.currentRow?.peptideRef && (
         <ProDescriptions<TableListItem>
           column={1}

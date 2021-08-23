@@ -1,4 +1,4 @@
-import { Form, message, Tooltip, Tag, Space } from 'antd';
+import { Form, message, Tooltip, Tag, Space, Row, Col } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -66,7 +66,7 @@ const TableList: React.FC = (props) => {
   /** 对比肽段碎片的弹窗 */
   const [formContrast] = Form.useForm();
   const [contrastModalVisible, handleContrastModalVisible] = useState<boolean>(false);
-  const [total,setTotal] = useState<any>();
+  const [total, setTotal] = useState<any>();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 预测弹窗 */
@@ -154,182 +154,72 @@ const TableList: React.FC = (props) => {
           title: 'CutInfo',
           dataIndex: 'cutInfo',
           hideInSearch: true,
+          width: 100,
           render: (dom, entity) => [
-            <div
-              key="1"
-              style={{
-                color: '#666666',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
+            <Row gutter={[8, 8]}>
               {entity.fragments.map((item) => (
-                <div
-                  key={item.intensity}
-                  style={{
-                    margin: 0,
-                  }}
-                >
-                  <p
-                    style={{
-                      textAlign: 'center',
-                      margin: '0 2px',
-                      width: '50px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {item.cutInfo}
-                  </p>
-                </div>
+                <Col span={16}>{item.cutInfo}</Col>
               ))}
-            </div>,
+            </Row>,
           ],
         },
         {
           title: '碎片荷质比',
           dataIndex: 'mz',
           hideInSearch: true,
+          width: 200,
           render: (dom, entity) => [
-            <div
-              key="1"
-              style={{
-                color: '#666666',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
+            <Row gutter={[8, 8]}>
               {entity.fragments.map((item) => (
-                <div
-                  key={item.intensity}
-                  style={{
-                    margin: 0,
-                  }}
-                >
-                  <p
-                    style={{
-                      margin: '0 2px',
-                      width: '160px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {item.mz}
-                  </p>
-                </div>
+                <Col span={16}>
+                  <Tooltip title={item.mz}>{item.mz}</Tooltip>
+                </Col>
               ))}
-            </div>,
+            </Row>,
           ],
         },
         {
           title: '强度',
           dataIndex: 'intensity',
           hideInSearch: true,
+          width: 120,
           render: (dom, entity) => [
-            <div
-              key="1"
-              style={{
-                color: '#666666',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
+            <Row gutter={[8, 8]}>
               {entity.fragments.map((item) => (
-                <div
-                  key={item.intensity}
-                  style={{
-                    margin: 0,
-                  }}
-                >
-                  <p
-                    style={{
-                      margin: '0 2px',
-                    }}
-                  >
-                    {item.intensity}
-                  </p>
-                </div>
+                <Col span={16}>{item.intensity}</Col>
               ))}
-            </div>,
+            </Row>,
           ],
         },
         {
           title: '带电量',
           dataIndex: 'charge',
           hideInSearch: true,
+          width: 60,
           render: (dom, entity) => [
-            <div
-              key="1"
-              style={{
-                color: '#666666',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
+            <Row gutter={[8, 8]}>
               {entity.fragments.map((item) => (
-                <div
-                  key={item.intensity}
-                  style={{
-                    margin: 0,
-                  }}
-                >
-                  <p
-                    style={{
-                      margin: '0 2px',
-                      width: '15px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {item.charge}
-                  </p>
-                </div>
+                <Col span={16}>{item.charge}</Col>
               ))}
-            </div>,
+            </Row>,
           ],
         },
         {
           title: 'Annotations',
           dataIndex: 'Annotations',
           hideInSearch: true,
+          width: 150,
           render: (dom, entity) => [
-            <div
-              key="1"
-              style={{
-                color: '#666666',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
+            <Row gutter={[8, 8]}>
               {entity.fragments.map((item) => (
-                <div
-                  key={item.intensity}
-                  style={{
-                    margin: 0,
-                  }}
+                <Col
+                  style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  span={24}
                 >
-                  <p
-                    style={{
-                      margin: '0 2px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    <Tooltip title={item.annotations}>{item.annotations}</Tooltip>
-                  </p>
-                </div>
+                  <Tooltip title={item.annotations}>{item.annotations}</Tooltip>
+                </Col>
               ))}
-            </div>,
+            </Row>,
           ],
         },
       ],
@@ -373,10 +263,7 @@ const TableList: React.FC = (props) => {
             }}
             key="predict"
           >
-            <Icon
-              style={{ verticalAlign: 'middle', fontSize: '20px', color: '#0D93F7' }}
-              icon="mdi:robot-dead"
-            />
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:robot-dead" />
           </a>
         </Tooltip>,
         <Tooltip title={'删除'} key="delete">
@@ -388,10 +275,7 @@ const TableList: React.FC = (props) => {
             }}
             key="delete"
           >
-            <Icon
-              style={{ verticalAlign: 'middle', fontSize: '18px', color: '#0D93F7' }}
-              icon="mdi:delete"
-            />
+            <Icon style={{ verticalAlign: 'middle', fontSize: '18px' }} icon="mdi:delete" />
           </a>
         </Tooltip>,
       ],
@@ -401,6 +285,7 @@ const TableList: React.FC = (props) => {
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
+        bordered
         headerTitle={
           props?.location?.state?.libraryName === undefined
             ? '肽段列表'
@@ -411,11 +296,11 @@ const TableList: React.FC = (props) => {
         rowKey="id"
         size="small"
         pagination={{
-          total:total
+          total: total,
         }}
         request={async (params) => {
           const msg = await peptideList({ libraryId, ...params });
-          setTotal(msg.totalNum)
+          setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
         tableAlertRender={false}

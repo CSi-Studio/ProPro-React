@@ -1,9 +1,8 @@
-import { IrtOption, peptideList, option } from './service';
+import { IrtOption, peptideList } from './service';
 import React, { useEffect, useState } from 'react';
 // import './index.less';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
-import { Button } from 'antd';
 
 const titleAll = [
   '气温变化',
@@ -179,14 +178,12 @@ const TableList: React.FC = () => {
   useEffect(() => {
     const aa = async () => {
       // const result = await peptideList(a)
-      // console.log(result.data);
       const irt = new IrtOption(dataAll, titleAll, 5);
       const option = irt.getIrtOption();
       setHandleOption(option);
     };
     aa();
-    setHandleOption(option);
-  }, [handleOption]);
+  }, []);
   return (
     <ProCard>
       <ReactECharts

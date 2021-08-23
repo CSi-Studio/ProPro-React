@@ -155,7 +155,6 @@ const TableList: React.FC = () => {
         ]}
         request={async (params) => {
           const msg = await list({ ...params });
-          console.log(msg)
           setTotal(msg.totalNum)
           return Promise.resolve(msg);}}
           pagination={{
