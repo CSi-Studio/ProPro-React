@@ -35,6 +35,7 @@ const TableList: React.FC = (props) => {
   // const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [createRow, setCreateRow] = useState<TableAddItem>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [total,setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -157,7 +158,14 @@ const TableList: React.FC = (props) => {
         search={{
           labelWidth: 120,
         }}
-        request={proteinList}
+        pagination={{
+          total:total
+        }}
+        request={async (params) => {
+          const msg = await proteinList({ ...params });
+          console.log(msg)
+          setTotal(msg.totalNum)
+          return Promise.resolve(msg);}}
         // dataSource={tableListDataSource}
         columns={columns}
         toolBarRender={() => [

@@ -66,6 +66,7 @@ const TableList: React.FC = (props) => {
   /** 对比肽段碎片的弹窗 */
   const [formContrast] = Form.useForm();
   const [contrastModalVisible, handleContrastModalVisible] = useState<boolean>(false);
+  const [total,setTotal] = useState<any>();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 预测弹窗 */
@@ -407,8 +408,12 @@ const TableList: React.FC = (props) => {
         search={{ labelWidth: 'auto' }}
         rowKey="id"
         size="small"
+        pagination={{
+          total:total
+        }}
         request={async (params) => {
           const msg = await peptideList({ libraryId, ...params });
+          setTotal(msg.totalNum)
           return Promise.resolve(msg);
         }}
         tableAlertRender={false}

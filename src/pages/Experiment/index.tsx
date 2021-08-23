@@ -23,7 +23,7 @@ const TableList: React.FC = (props) => {
 
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
+  const [total,setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
@@ -146,6 +146,9 @@ const TableList: React.FC = (props) => {
         search={{ labelWidth: 'auto' }}
         rowKey="id"
         size="small"
+        pagination={{
+          total:total
+        }}
         tableAlertRender={false}
         // request={experimentList}
         request={async (params) => {
@@ -155,6 +158,7 @@ const TableList: React.FC = (props) => {
             setPrepareData(result.data)
           }
           const msg = await experimentList({ projectId, ...params });
+          setTotal(msg.totalNum)
           return Promise.resolve(msg);
         }}
         toolBarRender={() => [

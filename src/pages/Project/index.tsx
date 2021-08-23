@@ -154,7 +154,7 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
+  const [total,setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
@@ -458,7 +458,14 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         tableAlertRender={false}
-        request={projectList}
+        pagination={{
+          total:total
+        }}
+        request={async (params) => {
+          const msg = await projectList({ ...params });
+          console.log(msg)
+          setTotal(msg.totalNum)
+          return Promise.resolve(msg);}}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
