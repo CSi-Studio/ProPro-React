@@ -1,6 +1,5 @@
 import { request } from 'umi';
-import {url} from '@/utils/request';
-import * as ecStat from "echarts-stat";
+import { url } from '@/utils/request';
 
 const expList = '61234a56a6d49035211f90b4,61234a56a6d49035211f90b5';
 
@@ -8,9 +7,9 @@ const expList = '61234a56a6d49035211f90b4,61234a56a6d49035211f90b5';
 export async function peptideList() {
   return request(`${url}/experiment/getIrts`, {
     method: 'GET',
-    params:{
-      expList
-    }
+    params: {
+      expList,
+    },
   });
 }
 export class IrtOption {
@@ -25,8 +24,18 @@ export class IrtOption {
   private titleHeight: number; //  标题高度
   private Width: number; // 总宽度
   // constructor：构造函数，在实例化对象的时候执行
-  constructor(data: any[], titles: any[],num: number = 5, gridHeight: number = 23,gridPaddingHeight: number = 8,gridPaddingWight: number = 6,
-    totalPaddingHeight: number = 5,totalPaddingWidth: number = 3,titleHeight: number = 3,Width: number = 100) {
+  constructor(
+    data: any[],
+    titles: any[],
+    num: number = 5,
+    gridHeight: number = 23,
+    gridPaddingHeight: number = 8,
+    gridPaddingWight: number = 6,
+    totalPaddingHeight: number = 5,
+    totalPaddingWidth: number = 3,
+    titleHeight: number = 3,
+    Width: number = 100,
+  ) {
     this.data = data;
     this.titles = titles;
     this.num = num;
@@ -43,19 +52,19 @@ export class IrtOption {
     return `${this.Width}`;
   }
 
-  getIrtOption(): any  {
+  getIrtOption(): any {
     return {
       title: this.getIrtTitle(this.titles),
       grid: this.getIrtGrids(this.data.length),
       tooltip: {
-        formatter: "Group : ({c})"
+        formatter: 'Group : ({c})',
       },
       xAxis: this.getIrtAxis(this.data.length, true),
       yAxis: this.getIrtAxis(this.data.length, false),
-      series: this.getIrtSeries(this.data)
+      series: this.getIrtSeries(this.data),
     };
   }
-  
+
   private getIrtGrids(count: number) {
     const grids: any = [];
     for (let i: number = 0; i < count; i += 1) {
@@ -63,30 +72,34 @@ export class IrtOption {
         left: `${(i % this.num) * Math.floor(this.Width / this.num) + this.totalPaddingWidth}%`,
         top: `${this.gridHeight * Math.floor(i / this.num) + this.totalPaddingHeight}%`,
         width: `${Math.floor(this.Width / this.num) - this.gridPaddingWight}%`,
-        height: `${this.gridHeight - this.gridPaddingHeight}%`
+        height: `${this.gridHeight - this.gridPaddingHeight}%`,
       };
       grids.push(item);
     }
     return grids;
   }
-  
+
   private getIrtTitle(titleArray: any) {
     const titles = [];
     for (let i = 0; i < titleArray.length; i += 1) {
       const item = {
         text: titleArray[i],
-        textAlign: "center",
+        textAlign: 'center',
         padding: 0,
-        left:
-          `${(i % this.num) * Math.floor(this.Width / this.num) + Math.floor((Math.floor(this.Width / this.num) - this.gridPaddingWight) / 2) +this.totalPaddingWidth}%`,
-        top:
-          `${this.gridHeight * Math.floor(i / this.num) + this.totalPaddingHeight - this.titleHeight}%`
+        left: `${
+          (i % this.num) * Math.floor(this.Width / this.num) +
+          Math.floor((Math.floor(this.Width / this.num) - this.gridPaddingWight) / 2) +
+          this.totalPaddingWidth
+        }%`,
+        top: `${
+          this.gridHeight * Math.floor(i / this.num) + this.totalPaddingHeight - this.titleHeight
+        }%`,
       };
       titles.push(item);
     }
     return titles;
   }
-  
+
   private getIrtAxis(count: number, scaleTag: boolean) {
     const Axis = [];
     for (let i = 0; i < count; i += 1) {
@@ -94,98 +107,80 @@ export class IrtOption {
     }
     return Axis;
   }
-  
+
   private getIrtSeries(data: any[]) {
     const series = [];
     for (let i = 0; i < data.length; i += 1) {
-      const regressionDemo = ecStat.regression("linear", data[i], 1);
-      const markLineOpt = {
-        animation: false,
-        label: {
-          formatter: regressionDemo.expression,
-          align: "right"
-        },
-        lineStyle: {
-          type: "solid"
-        },
-        tooltip: {
-          formatter: regressionDemo.expression
-        },
-        data: [
-          [
-            {
-              coord: regressionDemo.points[0],
-              symbol: "none"
-            },
-            {
-              coord: regressionDemo.points[regressionDemo.points.length - 1],
-              symbol: "none"
-            }
-          ]
-        ]
-      };
+      //
       const seriesItem = {
-        type: "scatter",
+        type: 'scatter',
         showSymbol: false,
         xAxisIndex: i,
         yAxisIndex: i,
         data: data[i],
-        markLine: markLineOpt
+        markLine: null,
       };
       series.push(seriesItem);
     }
     return series;
   }
 
-  private getSeriesData(xdata: [],ydata: []){
+  private getSeriesData(xdata: [], ydata: []) {
     const data = [];
     const length = Math.min(xdata.length, ydata.length);
     for (let i = 0; i < length; i += 1) {
-      data.push([xdata[i],ydata[i]]);
+      data.push([xdata[i], ydata[i]]);
     }
     return data;
   }
 
-  private getMarkLine(data: number[],slope: number,intercept: number,formula: string){
+  private getMarkLine(data: number[], slope: number, intercept: number, formula: string) {
     const markLineOpt = {
-        animation: false,
-        label: {
-          formatter: formula,
-          align: "right"
-        },
-        lineStyle: {
-          type: "solid"
-        },
-        tooltip: {
-          formatter: formula
-        },
-        data: [
-          [
-            {
-              coord: Math.min(...data) * slope + intercept,
-              symbol: "none"
-            },
-            {
-              coord: Math.max(...data) * slope + intercept,
-              symbol: "none"
-            }
-          ]
-        ]
-      };
+      animation: false,
+      label: {
+        formatter: formula,
+        align: 'right',
+      },
+      lineStyle: {
+        type: 'solid',
+      },
+      tooltip: {
+        formatter: formula,
+      },
+      data: [
+        [
+          {
+            coord: Math.min(...data) * slope + intercept,
+            symbol: 'none',
+          },
+          {
+            coord: Math.max(...data) * slope + intercept,
+            symbol: 'none',
+          },
+        ],
+      ],
+    };
     return markLineOpt;
   }
 }
 
-function getSeriesData(xdata: [],ydata: []){
+function getSeriesData(xdata: [], ydata: []) {
   const data = [];
   const length = Math.min(xdata.length, ydata.length);
   for (let i = 0; i < length; i += 1) {
-    data.push([xdata[i],ydata[i]]);
+    data.push([xdata[i], ydata[i]]);
   }
   return data;
 }
 
-const titleAll = ["气温变化", "空气质量指数", "C31231231231232131221", "D", "气温变化", "空气质量指数"];
+const titleAll = [
+  '气温变化',
+  '空气质量指数',
+  'C31231231231232131221',
+  'D',
+  '气温变化',
+  '空气质量指数',
+];
 const dataAll = [
   [
     [10.0, 8.04],
@@ -198,7 +193,7 @@ const dataAll = [
     [4.0, 4.26],
     [12.0, 10.84],
     [7.0, 4.82],
-    [5.0, 5.68]
+    [5.0, 5.68],
   ],
   [
     [10.0, 9.14],
@@ -210,7 +205,7 @@ const dataAll = [
     [6.0, 6.13],
     [4.0, 3.1],
     [12.0, 9.13],
-    [7.0, 7.26]
+    [7.0, 7.26],
   ],
   [
     [10.0, 7.46],
@@ -223,7 +218,7 @@ const dataAll = [
     [4.0, 5.39],
     [12.0, 8.15],
     [7.0, 6.42],
-    [5.0, 5.73]
+    [5.0, 5.73],
   ],
   [
     [8.0, 6.58],
@@ -236,7 +231,7 @@ const dataAll = [
     [19.0, 12.5],
     [8.0, 5.56],
     [8.0, 7.91],
-    [8.0, 6.89]
+    [8.0, 6.89],
   ],
   [
     [10.0, 8.04],
@@ -249,7 +244,7 @@ const dataAll = [
     [4.0, 4.26],
     [12.0, 10.84],
     [7.0, 4.82],
-    [5.0, 5.68]
+    [5.0, 5.68],
   ],
   [
     [10.0, 9.14],
@@ -261,7 +256,7 @@ const dataAll = [
     [6.0, 6.13],
     [4.0, 3.1],
     [12.0, 9.13],
-    [7.0, 7.26]
+    [7.0, 7.26],
   ],
   [
     [10.0, 8.04],
@@ -274,7 +269,7 @@ const dataAll = [
     [4.0, 4.26],
     [12.0, 10.84],
     [7.0, 4.82],
-    [5.0, 5.68]
+    [5.0, 5.68],
   ],
   [
     [10.0, 9.14],
@@ -286,7 +281,7 @@ const dataAll = [
     [6.0, 6.13],
     [4.0, 3.1],
     [12.0, 9.13],
-    [7.0, 7.26]
+    [7.0, 7.26],
   ],
   [
     [10.0, 7.46],
@@ -299,7 +294,7 @@ const dataAll = [
     [4.0, 5.39],
     [12.0, 8.15],
     [7.0, 6.42],
-    [5.0, 5.73]
+    [5.0, 5.73],
   ],
   [
     [8.0, 6.58],
@@ -312,7 +307,7 @@ const dataAll = [
     [19.0, 12.5],
     [8.0, 5.56],
     [8.0, 7.91],
-    [8.0, 6.89]
+    [8.0, 6.89],
   ],
   [
     [10.0, 8.04],
@@ -325,7 +320,7 @@ const dataAll = [
     [4.0, 4.26],
     [12.0, 10.84],
     [7.0, 4.82],
-    [5.0, 5.68]
+    [5.0, 5.68],
   ],
   [
     [10.0, 9.14],
@@ -337,8 +332,8 @@ const dataAll = [
     [6.0, 6.13],
     [4.0, 3.1],
     [12.0, 9.13],
-    [7.0, 7.26]
-  ]
+    [7.0, 7.26],
+  ],
 ];
 // const irtList = peptideList();
 // for(let i = 1; i < irtList.PromiseResult.data.length; i += 1){
@@ -346,6 +341,5 @@ const dataAll = [
 // }
 // console.log(irtList);
 
-const irt = new IrtOption(dataAll,titleAll,5);
+const irt = new IrtOption(dataAll, titleAll, 5);
 export const option = irt.getIrtOption();
-
