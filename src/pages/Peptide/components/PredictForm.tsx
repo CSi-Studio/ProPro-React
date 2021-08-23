@@ -1,5 +1,6 @@
 import React from 'react';
 import ProForm, { ProFormSelect, ModalForm, ProFormDigit } from '@ant-design/pro-form';
+import { PeptideType, SpModelType, YesOrNo } from '@/components/Enums/Selects';
 
 export type predictFormValueType = {
   spModel: string;
@@ -35,16 +36,7 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
               message: '碰撞方式不能为空',
             },
           ]}
-          options={[
-            {
-              value: 'HCD',
-              label: 'HCD',
-            },
-            {
-              value: 'CID',
-              label: 'CID',
-            },
-          ]}
+          options={SpModelType}
           width="sm"
           name="spModel"
           label="碰撞方式"
@@ -57,33 +49,24 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
               message: '是否考虑同位素',
             },
           ]}
-          options={[
-            {
-              value: 'true',
-              label: 'true',
-            },
-            {
-              value: 'false',
-              label: 'false',
-            },
-          ]}
+          options={YesOrNo}
           width="sm"
           name="isotope"
           label="是否考虑同位素"
         />
         <ProFormDigit
-        initialValue={10}
-        width="sm"
-        name="limit"
-        label="最大预测片段数"
-        rules={[
-          {
-            required: true,
-            message: '最大片段数不能为空',
-          },
-        ]}
-        placeholder="请输入最大片段数"
-      ></ProFormDigit>
+          initialValue={10}
+          width="sm"
+          name="limit"
+          label="最大预测片段数"
+          rules={[
+            {
+              required: true,
+              message: '最大片段数不能为空',
+            },
+          ]}
+          placeholder="请输入最大片段数"
+        ></ProFormDigit>
       </ProForm.Group>
     </ModalForm>
   );

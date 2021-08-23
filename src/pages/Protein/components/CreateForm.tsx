@@ -8,6 +8,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import { message, Tag } from 'antd';
 import { Icon } from '@iconify/react';
+import { ProteinType, SpModelType, YesOrNo } from '@/components/Enums/Selects';
 
 export type addFormValueType = {
   createTage?: string;
@@ -66,16 +67,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               message: '请选择review类型',
             },
           ]}
-          options={[
-            {
-              value: 'true',
-              label: '已review',
-            },
-            {
-              value: 'false',
-              label: '未review',
-            },
-          ]}
+          options={ProteinType.reviewed}
           width="sm"
           name="reviewed"
           label="reviewed"
@@ -139,16 +131,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               message: '请选择是否新建库',
             },
           ]}
-          options={[
-            {
-              value: 'true',
-              label: '新建库',
-            },
-            {
-              value: 'false',
-              label: '不建库',
-            },
-          ]}
+          options={ProteinType.createLibrary}
           width="sm"
           name="createLibrary"
           label="createLibrary"
@@ -188,16 +171,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               message: '请选择spModel',
             },
           ]}
-          options={[
-            {
-              value: 'HCD',
-              label: 'HCD',
-            },
-            {
-              value: 'CID',
-              label: 'CID',
-            },
-          ]}
+          options={SpModelType}
           // fieldProps={{ onChange: (val) => console.log('status', status) }}
           width="sm"
           name="spModel"
@@ -211,16 +185,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               message: '请选择isoTope',
             },
           ]}
-          options={[
-            {
-              value: 'true',
-              label: '是的',
-            },
-            {
-              value: 'false',
-              label: '不是',
-            },
-          ]}
+          options={YesOrNo}
           width="sm"
           name="isotope"
           label="isotope"

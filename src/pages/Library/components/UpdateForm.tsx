@@ -5,6 +5,7 @@ import ProForm, {
   ProFormTextArea,
   ModalForm,
 } from '@ant-design/pro-form';
+import { LibraryType } from '@/components/Enums/Selects';
 
 export type updateFormValueType = {
   name?: string;
@@ -43,16 +44,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         />
         <ProFormSelect
           initialValue={props.values.type}
-          options={[
-            {
-              value: 'INS',
-              label: 'INS',
-            },
-            {
-              value: 'ANA',
-              label: 'ANA',
-            },
-          ]}
+          options={LibraryType}
           width="sm"
           name="type"
           label="库类型"
@@ -60,7 +52,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       </ProForm.Group>
 
       <ProFormTextArea
-        initialValue={props.values.description}
+        initialValue={props.values.description == undefined ? '' : props.values.description}
         label="详情描述"
         name="description"
       />

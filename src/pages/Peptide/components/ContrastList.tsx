@@ -85,16 +85,14 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
     <ModalForm
       form={props.form}
       title="🧩 肽段碎片比较"
-      width={530}
+      width={600}
       modalProps={props.onCancel}
       onFinish={props.onSubmit}
       visible={props.contrastModalVisible}
       submitter={{
-        // 配置按钮文本
         searchConfig: {
           submitText: '提交',
         },
-        // 完全自定义整个区域
         render: (_props) => {
           return [
             <Button
@@ -156,7 +154,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
             });
           }}
           pagination={false}
-          // toolBarRender={false}
+          options={{ fullScreen: false, reload: false, setting: true, density: false }}
           search={false}
           rowKey="key"
           tableAlertRender={false}

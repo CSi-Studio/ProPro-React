@@ -9,6 +9,7 @@ import ProForm, {
 import { Button, Input, message, Space, Tabs, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
+import { LibraryType } from '@/components/Enums/Selects';
 
 const { TabPane } = Tabs;
 export type addFormValueType = {
@@ -59,16 +60,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                   message: '库类型不能为空',
                 },
               ]}
-              options={[
-                {
-                  value: 'INS',
-                  label: '内标库',
-                },
-                {
-                  value: 'ANA',
-                  label: '标准库',
-                },
-              ]}
+              options={LibraryType}
               width="sm"
               name="type"
               label="库类型"
@@ -144,16 +136,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                     message: '库类型不能为空',
                   },
                 ]}
-                options={[
-                  {
-                    value: 'INS',
-                    label: '内标库',
-                  },
-                  {
-                    value: 'ANA',
-                    label: '标准库',
-                  },
-                ]}
+                options={LibraryType}
                 width="sm"
                 name="type"
                 label="库类型"
