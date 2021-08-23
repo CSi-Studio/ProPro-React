@@ -14,7 +14,7 @@ export type TableListPagination = {
   pageSize: number;
   totalNum: number;
   totalPage: number;
-  currentPageNo: number;
+  current: number;
 };
 export type TableAddItem = {
   createTage?: string;

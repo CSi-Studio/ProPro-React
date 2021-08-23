@@ -6,7 +6,7 @@ import {url} from '@/utils/request'
 export async function libraryList(params: {
   // query
   /** 当前的页码 */
-  current?: number;
+  pageNo?: number;
   /** 页面的容量 */
   pageSize?: number;
 }) {
