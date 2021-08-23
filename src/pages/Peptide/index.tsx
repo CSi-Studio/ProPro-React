@@ -1,4 +1,4 @@
-import { Form, message, Tooltip } from 'antd';
+import { Form, message, Tooltip, Tag, Space } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -125,73 +125,31 @@ const TableList: React.FC = (props) => {
     {
       title: 'PeptideRef',
       dataIndex: 'peptideRef',
-      width: '100px',
-      // hideInSearch: true,
       render: (dom, entity) => {
-        return (
-          <Tooltip title={dom} placement="topLeft">
-            <div
-              style={{
-                width: '150px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              <a
-                onClick={() => {
-                  setCurrentRow(entity);
-                  setShowDetail(true);
-                  // eslint-disable-next-line no-console
-                }}
-              >
-                {dom}
-              </a>
-            </div>
-          </Tooltip>
-        );
+        return <Space direction="vertical">
+          <Tag color="green">真:{entity.peptideRef}</Tag>
+          <Tag color="red">伪:{entity.decoySequence}</Tag>
+        </Space>
       },
     },
     {
-      title: 'm / z',
+      title: 'm/z',
       dataIndex: 'mz',
-      width: '120px',
       hideInSearch: true,
     },
     {
       title: 'RT',
-      width: '160px',
       dataIndex: 'rt',
-      hideInSearch: true,
-    },
-    // {
-    //   title: '带电量',
-    //   width: '160px',
-    //   dataIndex: 'charge',
-    //   hideInSearch: true,
-    // },
-    // {
-    //   title: '肽段序列',
-    //   width: '120px',
-    //   dataIndex: 'fullName',
-    //   hideInSearch: true,
-    // },
-    {
-      title: '伪肽段',
-      width: '120px',
-      dataIndex: 'decoySequence',
       hideInSearch: true,
     },
     {
       title: '离子片段',
-      width: '120px',
       dataIndex: 'fragments',
       hideInSearch: true,
       children: [
         {
           title: 'CutInfo',
           dataIndex: 'cutInfo',
-          width: '50px',
           hideInSearch: true,
           render: (dom, entity) => [
             <div
@@ -230,7 +188,6 @@ const TableList: React.FC = (props) => {
         {
           title: '碎片荷质比',
           dataIndex: 'mz',
-          width: '160px',
           hideInSearch: true,
           render: (dom, entity) => [
             <div
@@ -268,7 +225,6 @@ const TableList: React.FC = (props) => {
         {
           title: '强度',
           dataIndex: 'intensity',
-          width: '60px',
           hideInSearch: true,
           render: (dom, entity) => [
             <div
@@ -302,7 +258,6 @@ const TableList: React.FC = (props) => {
         {
           title: '带电量',
           dataIndex: 'charge',
-          width: '60px',
           hideInSearch: true,
           render: (dom, entity) => [
             <div
@@ -341,7 +296,6 @@ const TableList: React.FC = (props) => {
         {
           title: 'Annotations',
           dataIndex: 'Annotations',
-          width: '80px',
           hideInSearch: true,
           render: (dom, entity) => [
             <div
@@ -363,7 +317,6 @@ const TableList: React.FC = (props) => {
                   <p
                     style={{
                       margin: '0 2px',
-                      width: '80px',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -458,6 +411,7 @@ const TableList: React.FC = (props) => {
           const msg = await peptideList({ libraryId, ...params });
           return Promise.resolve(msg);
         }}
+        tableAlertRender={false}
         columns={columns}
         rowSelection={
           {

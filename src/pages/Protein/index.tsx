@@ -28,7 +28,9 @@ const TableList: React.FC = (props) => {
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
-
+  const [pageSize,setPageSize] = useState<number>(20);
+  const [pageNo,setPageSizeNo] = useState<any>(0);
+  const [total,setTotal] = useState<any>();
   const [formCreate] = Form.useForm();
   // const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [createRow, setCreateRow] = useState<TableAddItem>();
@@ -151,9 +153,14 @@ const TableList: React.FC = (props) => {
         }
         actionRef={actionRef}
         rowKey="id"
-        request={proteinList}
+        tableAlertRender={false}
+        request={async (params) => {
+          const msg = await proteinList({ ...params });
+          return Promise.resolve(msg);}}
         // dataSource={tableListDataSource}
         columns={columns}
+        pagination={{
+        }}
         toolBarRender={() => [
           <Button
             type="primary"

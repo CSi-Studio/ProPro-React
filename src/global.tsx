@@ -1,5 +1,5 @@
 import { Button, message, notification } from 'antd';
-import { useIntl } from 'umi';
+import {  useIntl } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings;

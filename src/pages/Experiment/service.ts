@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { url } from '@/utils/request';
 import type { Task } from '@/components/Commons/common'
-import type { PrepareAnalyzeVO, AnalyzeParams } from './data'
+import type { AnalyzeParams } from './data'
 
 
 /** 获取实验列表 GET /experiment/list */
