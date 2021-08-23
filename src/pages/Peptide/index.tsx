@@ -126,10 +126,12 @@ const TableList: React.FC = (props) => {
       title: 'PeptideRef',
       dataIndex: 'peptideRef',
       render: (dom, entity) => {
-        return <Space direction="vertical">
-          <Tag color="green">真:{entity.peptideRef}</Tag>
-          <Tag color="red">伪:{entity.decoySequence}</Tag>
-        </Space>
+        return (
+          <Space direction="vertical">
+            <Tag color="green">真:{entity.peptideRef}</Tag>
+            <Tag color="red">伪:{entity.decoySequence}</Tag>
+          </Space>
+        );
       },
     },
     {
@@ -401,7 +403,7 @@ const TableList: React.FC = (props) => {
         headerTitle={
           props?.location?.state?.libraryName === undefined
             ? '肽段列表'
-            : props?.location?.state?.libraryName
+            : '标准库名称：' + props?.location?.state?.libraryName
         }
         actionRef={actionRef}
         search={{ labelWidth: 'auto' }}

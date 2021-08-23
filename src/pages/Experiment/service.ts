@@ -23,7 +23,6 @@ export async function experimentList(params: {
 
 /** 获取分析前的参数 GET /analyze/prepare */
 export async function prepare(projectId:string) {
-  console.log('发起网络请求')
   return request(`${url}/analyze/prepare`, {
     method: 'GET',
     params:{

@@ -23,6 +23,7 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
+import { handle } from '@/components/Commons/CRUD';
 
 /**
  * 添加库
@@ -41,6 +42,10 @@ const handleAdd = async (values: addFormValueType) => {
     return false;
   }
 };
+
+// function handleAdd(value: any, callback: any, msgOne: string, msgTwo: string, msgThree: string) {
+//   handle(value, callback, msgOne, msgTwo, msgThree);
+// }
 /**
  * 克隆库
  * @param values
@@ -161,9 +166,9 @@ const TableList: React.FC = () => {
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [pageSize,setPageSize] = useState<number>(20);
-  const [pageNo,setPageSizeNo] = useState<any>(0);
-  const [total,setTotal] = useState<any>();
+  const [pageSize, setPageSize] = useState<number>(20);
+  const [pageNo, setPageSizeNo] = useState<any>(0);
+  const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
@@ -179,7 +184,6 @@ const TableList: React.FC = () => {
                 setCurrentRow(entity);
                 setShowDetail(true);
                 // setPopup(true);
-                
               }}
             >
               {dom}
@@ -350,7 +354,7 @@ const TableList: React.FC = () => {
         size="small"
         tableAlertRender={false}
         pagination={{
-         current:pageNo
+          current: pageNo,
         }}
         toolBarRender={() => [
           <Tooltip title={'新增'} key="add">
@@ -567,7 +571,7 @@ const TableList: React.FC = () => {
           },
         }}
         onSubmit={async (value: addFormValueType) => {
-          const success = await handleAdd(value as addFormValueType);
+          const success = handleAdd(value, addList({ ...value }), '123', '123', '123');
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {

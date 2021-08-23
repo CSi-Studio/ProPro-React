@@ -70,7 +70,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             rules={[
               {
                 required: true,
-                message: '不传文件，你手写库内容吗？ 😅',
+                message: '需上传文件',
               },
             ]}
             icon={
@@ -103,7 +103,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             fieldProps={{
               beforeUpload: (info) => {
                 return new Promise((resolve, reject) => {
-                  message.success(`您将要上传的是 ${info.name}， 🤏 您配吗`);
+                  message.success(`您将要上传的是 ${info.name}`);
                   // eslint-disable-next-line prefer-promise-reject-errors
                   return reject(false);
                 });

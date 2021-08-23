@@ -17,7 +17,7 @@ const TableList: React.FC = (props) => {
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
-  
+
   /** 更新窗口的弹窗 */
   // const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
@@ -62,9 +62,15 @@ const TableList: React.FC = (props) => {
       render: (dom, entity) => {
         const airdSize = (entity.airdSize + entity.airdIndexSize) / 1024 / 1024;
         const vendorSize = entity.vendorFileSize / 1024 / 1024;
-        const deltaRatio = ((vendorSize - airdSize)/vendorSize*100).toFixed(1)+"%";
+        const deltaRatio = (((vendorSize - airdSize) / vendorSize) * 100).toFixed(1) + '%';
 
-        return <><Tag color="blue">{airdSize.toFixed(0)}</Tag><Tag color="blue">{vendorSize.toFixed(0)}</Tag><Tag color="green">{deltaRatio}</Tag></>;
+        return (
+          <>
+            <Tag color="blue">{airdSize.toFixed(0)}</Tag>
+            <Tag color="blue">{vendorSize.toFixed(0)}</Tag>
+            <Tag color="green">{deltaRatio}</Tag>
+          </>
+        );
       },
     },
     {
@@ -140,7 +146,9 @@ const TableList: React.FC = (props) => {
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
-          props?.location?.state?.projectName === undefined ? '实验列表' : props?.location?.state?.projectName
+          props?.location?.state?.projectName === undefined
+            ? '实验列表'
+            : '项目名称：' + props?.location?.state?.projectName
         }
         actionRef={actionRef}
         search={{ labelWidth: 'auto' }}
@@ -149,10 +157,9 @@ const TableList: React.FC = (props) => {
         tableAlertRender={false}
         // request={experimentList}
         request={async (params) => {
-          const result = await prepare(projectId)
-          if(result.success){
-            console.log('Name:'+result.data.projectName)
-            setPrepareData(result.data)
+          const result = await prepare(projectId);
+          if (result.success) {
+            setPrepareData(result.data);
           }
           const msg = await experimentList({ projectId, ...params });
           return Promise.resolve(msg);
@@ -162,7 +169,7 @@ const TableList: React.FC = (props) => {
             type="primary"
             key="primary"
             onClick={() => {
-              if(selectedRows && selectedRows.length > 0){
+              if (selectedRows && selectedRows.length > 0) {
                 handleAnalyzeModalVisible(true);
               }
             }}
@@ -200,7 +207,7 @@ const TableList: React.FC = (props) => {
             }
           }}
           analyzeModalVisible={analyzeModalVisible}
-          values={{ expNum: selectedRows.length, prepareData: prepareData}}
+          values={{ expNum: selectedRows.length, prepareData: prepareData }}
         />
       ) : null}
 
