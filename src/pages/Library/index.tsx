@@ -161,7 +161,9 @@ const TableList: React.FC = () => {
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
+  const [pageSize,setPageSize] = useState<number>(20);
+  const [pageNo,setPageSizeNo] = useState<any>(0);
+  const [total,setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
@@ -176,6 +178,8 @@ const TableList: React.FC = () => {
               onClick={() => {
                 setCurrentRow(entity);
                 setShowDetail(true);
+                // setPopup(true);
+                
               }}
             >
               {dom}
@@ -345,6 +349,9 @@ const TableList: React.FC = () => {
         rowKey="id"
         size="small"
         tableAlertRender={false}
+        pagination={{
+         current:pageNo
+        }}
         toolBarRender={() => [
           <Tooltip title={'新增'} key="add">
             <a>

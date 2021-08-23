@@ -124,12 +124,11 @@ const TableList: React.FC = (props) => {
           const msg = await blockIndexList({ expId:props?.location?.query?.expId, ...params });
           return Promise.resolve(msg);
         }}
+        
         columns={columns}
         pagination={false}
         rowSelection={
-          {
-            
-          }
+          { }
         }
       />
 
