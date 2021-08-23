@@ -1,5 +1,6 @@
 import React from 'react';
 import ProForm, { ProFormSelect, ProFormText, ModalForm } from '@ant-design/pro-form';
+import { YesOrNo } from '@/components/Enums/Selects';
 
 export type updateFormValueType = {
   isUnique?: boolean;
@@ -39,16 +40,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         />
         <ProFormSelect
           // initialValue={props.values.isUnique}
-          options={[
-            {
-              value: 'true',
-              label: '是',
-            },
-            {
-              value: 'false',
-              label: '否',
-            },
-          ]}
+          options={YesOrNo}
           width="sm"
           name="isUnique"
           label="是否唯一"

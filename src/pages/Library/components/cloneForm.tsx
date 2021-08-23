@@ -2,6 +2,7 @@ import React from 'react';
 import { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
 import { Button } from 'antd';
 import { TableListItem } from '../data';
+import { YesOrNo } from '@/components/Enums/Selects';
 
 export type cloneFormValueType = {
   id: any;
@@ -60,16 +61,7 @@ const CloneForm: React.FC<CloneFormProps> = (props) => {
       />
       <ProFormSelect
         initialValue="false"
-        options={[
-          {
-            value: 'false',
-            label: '否',
-          },
-          {
-            value: 'true',
-            label: '是',
-          },
-        ]}
+        options={YesOrNo}
         width="sm"
         name="includeDecoy"
         label="克隆是否包含伪肽段"

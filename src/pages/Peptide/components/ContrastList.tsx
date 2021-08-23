@@ -154,7 +154,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
             });
           }}
           pagination={false}
-          options={false}
+          options={{ fullScreen: false, reload: false, setting: true, density: false }}
           search={false}
           rowKey="key"
           tableAlertRender={false}
