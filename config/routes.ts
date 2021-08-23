@@ -18,15 +18,15 @@ export default [
     component: './Experiment',
     hideInMenu: true,
   },
-  // // IRT界面
-  // {
-  //   key: 'irt',
-  //   name: 'IRT',
-  //   icon: 'profile',
-  //   path: '/irt/list',
-  //   component: './IRT',
-  //   hideInMenu: true,
-  // }, 
+  // IRT界面
+  {
+    key: 'irt',
+    name: 'IRT',
+    icon: 'profile',
+    path: '/irt/list',
+    component: './IRT',
+    hideInMenu: true,
+  }, 
   //BlockIndex界面
   {
     key: 'blockIndex',
