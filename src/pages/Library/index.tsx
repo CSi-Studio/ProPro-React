@@ -571,7 +571,8 @@ const TableList: React.FC = () => {
           },
         }}
         onSubmit={async (value: addFormValueType) => {
-          const success = handleAdd(value, addList({ ...value }), '123', '123', '123');
+          // const success = handleAdd(value, addList({ ...value }), '123', '123', '123');
+          const success = await handleAdd(value as addFormValueType);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {

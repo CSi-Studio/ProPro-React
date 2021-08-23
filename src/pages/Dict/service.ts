@@ -3,9 +3,19 @@ import type {  DictListItem,AddItem,AddItemDetail,deleteListItem, IdItem } from 
 import {url} from '@/utils/request'
 
 /** 获取字典信息 GET /dict/list */
-export async function dictList() {
+export async function dictList(params: {
+  // query
+  /** 当前的页码 */
+  current?: number;
+  /** 页面的容量 */
+  pageSize?: number;
+  /** 选择的标准库ID */
+}) {
   return request(`${url}/dict/list`, {
     method: 'GET',
+    params: {
+      ...params,
+    },
   });
 }
 

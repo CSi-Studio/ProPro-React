@@ -132,6 +132,8 @@ const TableList: React.FC = () => {
   // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+
+
   /** 删除窗口的弹窗 */
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   const [deleteDictModalVisible, handleDeleteDictModalVisible] = useState<boolean>(false);
@@ -140,6 +142,7 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 克隆窗口的弹窗 */
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
+  const [total,setTotal] = useState<any>();
   /** 库详情的抽屉 */
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [currentUpdate, setCurrentUpdate] = useState<updateListItem>();
@@ -242,6 +245,9 @@ const TableList: React.FC = () => {
         rowKey="id"
         size="small"
         tableAlertRender={false}
+        pagination={{
+          total:total
+        }}
         expandable={{
           expandedRowRender: (record) => (
             <ProTable
@@ -328,8 +334,13 @@ const TableList: React.FC = () => {
             新建字典表
           </Button>,
         ]}
-        request={dictList}
+        request={async (params) => {
+          const msg = await dictList({ ...params });
+          console.log(msg)
+          setTotal(msg.totalNum)
+          return Promise.resolve(msg);}}
         columns={columns}
+        
         rowSelection={
           {
             // onChange: (_, selectedRows) => {
@@ -338,7 +349,7 @@ const TableList: React.FC = () => {
           }
         }
       />
-
+      
       {/* 列表详情 */}
       <DictForm
         showDetail={showDetail}
