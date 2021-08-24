@@ -1,4 +1,4 @@
-import { Button, message, Tooltip, Form } from 'antd';
+import { Button, message, Tooltip, Form, Tag } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { DomainCell, Domain, DomainUpdate } from './data';
 import type { Pagination } from '@/components/Commons/common';
@@ -7,7 +7,8 @@ import UpdateForm from './components/UpdateForm';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
-import { update, add, list } from './service';
+import { update, add, list, removeList } from './service';
+import DeleteForm from './components/DeleteForm';
 
 /**
  * 添加库
@@ -41,22 +42,37 @@ const handleUpdate = async (values: DomainUpdate) => {
     return false;
   }
 };
+/**
+ * 删除库
+ * @param selectedRowsState
+ */
+const handleRemove = async (selectedRowsState: any[]) => {
+  try {
+    await removeList({
+      methodIds: selectedRowsState[0].id,
+    });
+    message.success('删除成功，希望你不要后悔 🥳');
+    return true;
+  } catch (error) {
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
 
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
-  // const [formDelete] = Form.useForm();
-  // const [formClone] = Form.useForm();
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
-  /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [formDelete] = Form.useForm();
+  // /** 全选 */
+  const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [total,setTotal] = useState<any>();
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** 删除窗口的弹窗 */
+  const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
 
+  const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<DomainCell>();
   const columns: ProColumns<DomainCell>[] = [
@@ -141,6 +157,29 @@ const TableList: React.FC = () => {
         size="small"
         tableAlertRender={false}
         toolBarRender={() => [
+          <Tooltip placement="top" title={'删除'} key="delete">
+            <a
+              key="delete"
+              onClick={async () => {
+                formDelete?.resetFields();
+                if (selectedRowsState?.length > 0) {
+                  if (selectedRowsState.length == 1) {
+                    handleDeleteModalVisible(true);
+                  } else {
+                    message.warn('目前只支持单个库的删除');
+                    setSelectedRows([]);
+                  }
+                } else {
+                  message.warn('请选择要删除的库');
+                }
+              }}
+            >
+              <Tag color="error">
+                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+                删除
+              </Tag>
+            </a>
+          </Tooltip>,
           <Button
             type="primary"
             key="primary"
@@ -155,19 +194,21 @@ const TableList: React.FC = () => {
         ]}
         request={async (params) => {
           const msg = await list({ ...params });
-          setTotal(msg.totalNum)
-          return Promise.resolve(msg);}}
-          pagination={{
-            total:total
-          }}
+          setTotal(msg.totalNum);
+          return Promise.resolve(msg);
+        }}
+        pagination={{
+          total: total,
+        }}
         columns={columns}
-        rowSelection={
-          {
-            // onChange: (_, selectedRows) => {
-            // setSelectedRows(selectedRows);
-            // },
-          }
-        }
+        rowSelection={{
+          selectedRowKeys: selectedRowsState?.map((item) => {
+            return item.id;
+          }),
+          onChange: (_, selectedRowKeys) => {
+            setSelectedRows(selectedRowKeys);
+          },
+        }}
       />
 
       {/* 新建列表 */}
@@ -215,6 +256,33 @@ const TableList: React.FC = () => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
+      />
+      {/* 删除列表 */}
+      <DeleteForm
+        selectedRowsState={selectedRowsState}
+        form={formDelete}
+        onCancel={{
+          onCancel: () => {
+            handleDeleteModalVisible(false);
+            setSelectedRows([]);
+            formDelete?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          if (value.name === selectedRowsState[0]?.name) {
+            const success = await handleRemove(selectedRowsState);
+            if (success) {
+              handleDeleteModalVisible(false);
+              setSelectedRows([]);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          } else {
+            message.error('你没有删除的决心，给👴🏻 爬');
+          }
+        }}
+        deleteModalVisible={deleteModalVisible}
       />
     </>
   );

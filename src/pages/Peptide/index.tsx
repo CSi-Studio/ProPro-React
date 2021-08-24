@@ -49,7 +49,7 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
   }
 };
 
-const TableList: React.FC = (props) => {
+const TableList: React.FC = (props: any) => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */

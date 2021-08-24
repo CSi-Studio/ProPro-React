@@ -141,7 +141,7 @@ const TableList: React.FC = () => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -157,7 +157,6 @@ const TableList: React.FC = () => {
   const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
 
   const columns: ProColumns<TableListItem>[] = [
     {

@@ -1,6 +1,6 @@
 import { request } from 'umi';
 import type { Pagination } from '@/components/Commons/common';
-import {url} from '@/utils/request'
+import { url } from '@/utils/request';
 
 /** 获取方法列表 GET /method/list */
 export async function list(params: Pagination) {
@@ -35,6 +35,15 @@ export async function add(params: any) {
 export async function update(params: any) {
   return request(`${url}/method/update`, {
     method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
+/** 删除库 GET library/remove  */
+export async function removeList(params: { methodIds: any }) {
+  return request(`${url}/method/remove`, {
+    method: 'GET',
     params: {
       ...params,
     },

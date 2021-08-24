@@ -166,9 +166,7 @@ const TableList: React.FC = () => {
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [pageSize, setPageSize] = useState<number>(20);
-  const [pageNo, setPageSizeNo] = useState<any>(0);
-  const [total, setTotal] = useState<any>();
+  const [pageNo] = useState<any>(0);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
