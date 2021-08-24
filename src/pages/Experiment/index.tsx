@@ -181,7 +181,7 @@ const TableList: React.FC = (props: any) => {
             开始分析
           </Button>,
           <Button type="primary" key="primary">
-            {selectedRows && selectedRows.length > 0 ? (
+            {selectedRows && selectedRows.length > 0 && selectedRows.length <= 50? (
               <Link
                 to={{
                   pathname: '/irt/list',
@@ -199,7 +199,7 @@ const TableList: React.FC = (props: any) => {
             ) : (
               <a
                 onClick={() => {
-                  message.warn('至少选择一个实验 🔬');
+                  message.warn('至少选择一个实验 🔬，至多50个');
                 }}
               >
                 <Icon
