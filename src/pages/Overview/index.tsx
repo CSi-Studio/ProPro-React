@@ -57,6 +57,16 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      key: 'type',
+      title: '类型',
+      dataIndex: 'type',
+    },
+    {
+      key: 'createDate',
+      title: '生成时间',
+      dataIndex: 'createDate',
+    },
+    {
       key: 'tags',
       title: '标签',
       dataIndex: 'tags',
@@ -71,17 +81,6 @@ const TableList: React.FC = (props: any) => {
         }
         return false;
       },
-    },
-    {
-      key: 'type',
-      title: '类型',
-      dataIndex: 'type',
-    },
-
-    {
-      key: 'createDate',
-      title: '生成时间',
-      dataIndex: 'createDate',
     },
     {
       key: 'note',
@@ -167,10 +166,8 @@ const TableList: React.FC = (props: any) => {
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
           value.id = updateRow?.id as unknown as string;
-          var mapvalue = { id: value.id, tags: value.tags, note: value.note };
-          console.log('mapvalue', mapvalue);
+          var mapvalue={id:value.id,tags:value.tags,note:value.note}
           const success = await handleUpdate(mapvalue);
-          console.log('value', value);
           if (success) {
             handleUpdateModalVisible(false);
             setUpdateRow(undefined);
