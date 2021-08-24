@@ -131,6 +131,7 @@ export class IrtOption {
       }
       const markLineOpt = {
           animation: false,
+          silent:true,
           label: {
             formatter: formula,
             align: "right"
