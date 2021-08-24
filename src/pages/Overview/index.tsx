@@ -5,7 +5,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { TableDropdown } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {
-   overviewList
+   overviewList, updateList
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
 
@@ -13,18 +13,38 @@ import type { TableListItem, TableListPagination } from './data';
 import { Link } from 'umi';
 import { detail } from '../Method/service';
 import DetailForm from './components/overviewdetail';
+import UpdateForm, { updateFormValueType } from './components/UpdateForm';
+
+
+
+/**
+ * 更新库
+ * @param values
+ */
+ const handleUpdate = async (values: any) => {
+  const hide = message.loading('正在更新');
+  try {
+    await updateList({ ...values });
+    hide();
+    message.success('编辑成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('编辑失败，请重试!');
+    return false;
+  }
+};
 
 const TableList: React.FC = (props:any) => {
-
   const [formUpdate] = Form.useForm();
-  const [formDelete] = Form.useForm();
-  /** 全局弹窗 */
-
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const [updateRow, setUpdateRow] = useState<TableListItem>();
+   /** 更新窗口的弹窗 */
+   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const projectId = props?.location?.query.projectId;
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -78,6 +98,31 @@ const TableList: React.FC = (props:any) => {
       dataIndex: 'note',
       hideInSearch: true,
     },
+    {
+      key: 'option',
+      title: '操作',
+      valueType: 'option',
+      copyable: true,
+      width: 100,
+      ellipsis: true,
+      fixed: 'right',
+      hideInSearch: true,
+      render: (text, record) => (
+        <Space>
+          <Tooltip title={'编辑'}>
+            <a
+              onClick={() => {
+                formUpdate?.resetFields();
+                handleUpdateModalVisible(true);
+                setUpdateRow(record);
+              }}
+            >
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+            </a>
+          </Tooltip>
+        </Space>
+      ),
+    },
   ];
   return (
     <>
@@ -87,6 +132,7 @@ const TableList: React.FC = (props:any) => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
+        search={false}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -124,7 +170,34 @@ const TableList: React.FC = (props:any) => {
           setShowDetail(false);
         }}
       />
-
+    {/* 编辑列表 */}
+    <UpdateForm
+        form={formUpdate}
+        onCancel={{
+          onCancel: () => {
+            handleUpdateModalVisible(false);
+            setUpdateRow(undefined);
+            formUpdate?.resetFields();
+          },
+        }}
+        onSubmit={async (value) => {
+          // eslint-disable-next-line no-param-reassign
+          value.id = updateRow?.id as unknown as string;
+          var mapvalue={id:value.id,tags:value.tags,note:value.note}
+          console.log('mapvalue',mapvalue)
+          const success = await handleUpdate(mapvalue);
+          console.log("value",value)
+          if (success) {
+            handleUpdateModalVisible(false);
+            setUpdateRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={updateRow || {}}
+      />
     
 
 

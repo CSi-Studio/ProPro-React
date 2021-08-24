@@ -59,6 +59,7 @@ export default [
    path: '/overview',
    icon: 'smile',
   component: './Overview',
+  hideInMenu: true,
   },
   //肽段
   {
