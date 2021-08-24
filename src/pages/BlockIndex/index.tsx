@@ -44,10 +44,8 @@ const TableList: React.FC = (props: any) => {
         if (entity.range) {
           return (
             <span>
-              start:{entity?.range?.start}
-              <br />
-              end:{entity?.range?.end}
-              <br />
+  {entity?.range?.start}~{entity?.range?.end}
+
             </span>
           );
         }

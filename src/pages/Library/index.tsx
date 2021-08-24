@@ -23,7 +23,6 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
-import { handle } from '@/components/Commons/CRUD';
 
 /**
  * 添加库

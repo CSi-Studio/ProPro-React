@@ -11,8 +11,6 @@ import DetailForm from './components/overviewdetail';
 import UpdateForm, { updateFormValueType } from './components/UpdateForm';
 import { Link } from 'umi';
 
-
-
 /**
  * 更新库
  * @param values
@@ -39,8 +37,8 @@ const TableList: React.FC = (props:any) => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [updateRow, setUpdateRow] = useState<TableListItem>();
-   /** 更新窗口的弹窗 */
-   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** 更新窗口的弹窗 */
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const projectId = props?.location?.query.projectId;
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -61,6 +59,16 @@ const TableList: React.FC = (props:any) => {
       },
     },
     {
+      key: 'type',
+      title: '类型',
+      dataIndex: 'type',
+    },
+    {
+      key: 'createDate',
+      title: '生成时间',
+      dataIndex: 'createDate',
+    },
+    {
       key: 'tags',
       title: '标签',
       dataIndex: 'tags',
@@ -75,17 +83,6 @@ const TableList: React.FC = (props:any) => {
         }
         return false;
       },
-    },
-    {
-      key: 'type',
-      title: '类型',
-      dataIndex: 'type',
-    },
-
-    {
-      key: 'createDate',
-      title: '生成时间',
-      dataIndex: 'createDate',
     },
     {
       key: 'note',
@@ -132,7 +129,6 @@ const TableList: React.FC = (props:any) => {
           <Link
             to={{
               pathname: '/project/list',
-           
             }}
           >
             <Button type="primary">返回项目列表</Button>
@@ -175,9 +171,7 @@ const TableList: React.FC = (props:any) => {
           // eslint-disable-next-line no-param-reassign
           value.id = updateRow?.id as unknown as string;
           var mapvalue={id:value.id,tags:value.tags,note:value.note}
-          console.log('mapvalue',mapvalue)
           const success = await handleUpdate(mapvalue);
-          console.log("value",value)
           if (success) {
             handleUpdateModalVisible(false);
             setUpdateRow(undefined);
