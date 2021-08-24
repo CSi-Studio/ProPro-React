@@ -59,4 +59,5 @@ export default {
   'menu.library': 'Library',
   'menu.peptide': 'Peptide',
   'menu.blockIndex': 'BlockIndex',
+  'menu.task': 'Task',
 };

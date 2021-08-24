@@ -5,7 +5,7 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ReactECharts from 'echarts-for-react';
 import ProDescriptions from '@ant-design/pro-descriptions';
 
-export type UpdateFormProps = {
+export type detailFormProps = {
   showDetail: any;
   currentRow: any;
   columns: any;
@@ -13,7 +13,7 @@ export type UpdateFormProps = {
   // values: Partial<API.RuleListItem>;
 };
 
-const DetailForm: React.FC<UpdateFormProps> = (props) => {
+const DetailForm: React.FC<detailFormProps> = (props) => {
   const xAxisData1 = props?.currentRow?.statistic?.Peptide_Dist_On_Mz_5?.x;
   const xAxisData2 = props?.currentRow?.statistic?.Peptide_Dist_On_RT_5?.x;
   const data1 = props?.currentRow?.statistic?.Peptide_Dist_On_Mz_5?.y;
