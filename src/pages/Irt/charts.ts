@@ -1,10 +1,7 @@
-import * as ecStat from "echarts-stat";
 
 export class IrtOption {
     private data: any[]; // 点数据数组
-    private ydata: any[]; // 点数据数组
-    private titles: any[]; // 标题数组
-    private num: number; // 每行grid数量
+    private gridNumInRow: number; // 每行grid数量
     private gridHeight: number; // grid高度
     private gridPaddingHeight: number; // grid高度下缩进（行距）
     private gridPaddingWight: number; // grid宽度右缩进
@@ -12,12 +9,12 @@ export class IrtOption {
     private totalPaddingWidth: number; // 整体宽度左缩进,值小于gridPaddingWight
     private titleHeight: number; //  标题高度
     private Width: number; // 总宽度
+
     // constructor：构造函数，在实例化对象的时候执行
-    constructor(data: any[], titles: any[],num: number = 5, gridHeight: number = 23,gridPaddingHeight: number = 8,gridPaddingWight: number = 6,
-      totalPaddingHeight: number = 5,totalPaddingWidth: number = 3,titleHeight: number = 3,Width: number = 100) {
+    constructor(data: any[], gridNumInRow: number = 5, gridHeight: number = 100,gridPaddingHeight: number = 50,gridPaddingWight: number = 6,
+      totalPaddingHeight: number = 20,totalPaddingWidth: number = 4,titleHeight: number = 20,Width: number = 100) {
       this.data = data;
-      this.titles = titles;
-      this.num = num;
+      this.gridNumInRow = gridNumInRow;
       this.gridHeight = gridHeight;
       this.gridPaddingHeight = gridPaddingHeight;
       this.gridPaddingWight = gridPaddingWight;
@@ -25,7 +22,6 @@ export class IrtOption {
       this.totalPaddingWidth = totalPaddingWidth;
       this.titleHeight = titleHeight;
       this.Width = Width;
-      this.ydata = [];
     }
   
     getWidth(): string {
@@ -33,14 +29,15 @@ export class IrtOption {
     }
   
     getIrtOption(): any  {
+      const gridNumber = this.data.length;
       return {
-        title: this.getIrtTitle(this.titles),
-        grid: this.getIrtGrids(this.data.length),
+        title: this.getIrtTitle(this.data),
+        grid: this.getIrtGrids(gridNumber),
         tooltip: {
           formatter: "Group : ({c})"
         },
-        xAxis: this.getIrtAxis(this.data.length, true),
-        yAxis: this.getIrtAxis(this.data.length, false),
+        xAxis: this.getIrtAxis(gridNumber, true),
+        yAxis: this.getIrtAxis(gridNumber, false),
         series: this.getIrtSeries(this.data)
       };
     }
@@ -49,27 +46,31 @@ export class IrtOption {
       const grids: any = [];
       for (let i: number = 0; i < count; i += 1) {
         const item: any = {
-          left: `${(i % this.num) * Math.floor(this.Width / this.num) + this.totalPaddingWidth}%`,
-          top: `${this.gridHeight * Math.floor(i / this.num) + this.totalPaddingHeight}%`,
-          width: `${Math.floor(this.Width / this.num) - this.gridPaddingWight}%`,
-          height: `${this.gridHeight - this.gridPaddingHeight}%`
+          left: `${(i % this.gridNumInRow) * Math.floor(this.Width / this.gridNumInRow) + this.totalPaddingWidth}%`,
+          top: `${(this.gridHeight + this.gridPaddingHeight) * Math.floor(i / this.gridNumInRow) + this.totalPaddingHeight}px`,
+          width: `${Math.floor(this.Width / this.gridNumInRow) - this.gridPaddingWight}%`,
+          height: `${this.gridHeight}px`
         };
         grids.push(item);
       }
       return grids;
     }
     
-    private getIrtTitle(titleArray: any) {
+    private getIrtTitle(data: any) {
       const titles = [];
-      for (let i = 0; i < titleArray.length; i += 1) {
+      for (let i = 0; i < data.length; i += 1) {
         const item = {
-          text: titleArray[i],
+          text: data[i].name,
           textAlign: "center",
+          textStyle:{
+            fontSize: 10   
+          },
           padding: 0,
           left:
-            `${(i % this.num) * Math.floor(this.Width / this.num) + Math.floor((Math.floor(this.Width / this.num) - this.gridPaddingWight) / 2) +this.totalPaddingWidth}%`,
+            `${(i % this.gridNumInRow) * Math.floor(this.Width / this.gridNumInRow) + Math.floor((Math.floor(this.Width / this.gridNumInRow) - this.gridPaddingWight) / 2) +this.totalPaddingWidth}%`,
           top:
-            `${this.gridHeight * Math.floor(i / this.num) + this.totalPaddingHeight - this.titleHeight}%`
+            `${(this.gridHeight + this.gridPaddingHeight) * Math.floor(i / this.gridNumInRow) + this.totalPaddingHeight - this.titleHeight}px`,
+
         };
         titles.push(item);
       }
@@ -87,39 +88,22 @@ export class IrtOption {
     private getIrtSeries(data: any[]) {
       const series = [];
       for (let i = 0; i < data.length; i += 1) {
-        const regressionDemo = ecStat.regression("linear", data[i], 1);
-        const markLineOpt = {
-          animation: false,
-          label: {
-            formatter: regressionDemo.expression,
-            align: "right"
-          },
-          lineStyle: {
-            type: "solid"
-          },
-          tooltip: {
-            formatter: regressionDemo.expression
-          },
-          data: [
-            [
-              {
-                coord: regressionDemo.points[0],
-                symbol: "none"
-              },
-              {
-                coord: regressionDemo.points[regressionDemo.points.length - 1],
-                symbol: "none"
-              }
-            ]
-          ]
-        };
-        const seriesItem = {
+        let seriesItem = {
           type: "scatter",
           showSymbol: false,
           xAxisIndex: i,
           yAxisIndex: i,
-          data: data[i],
-          markLine: markLineOpt
+          data: this.getSeriesData(data[i].irt.selected.x, data[i].irt.selected.y),
+          markLine: this.getMarkLine(data[i].irt.selected.y, data[i].irt.si.slope, data[i].irt.si.intercept, data[i].irt.si.formula)
+        };
+        series.push(seriesItem);
+        seriesItem = {
+          type: "scatter",
+          showSymbol: false,
+          xAxisIndex: i,
+          yAxisIndex: i,
+          data: this.getSeriesData(data[i].irt.unselected.x, data[i].irt.unselected.y),
+          markLine: null
         };
         series.push(seriesItem);
       }
@@ -136,6 +120,9 @@ export class IrtOption {
     }
   
     private getMarkLine(data: number[],slope: number,intercept: number,formula: string){
+      if(data.length === 0){
+        return null;
+      }
       const markLineOpt = {
           animation: false,
           label: {
@@ -151,11 +138,11 @@ export class IrtOption {
           data: [
             [
               {
-                coord: Math.min(...data) * slope + intercept,
+                coord: [Math.min(...data) * slope + intercept, Math.min(...data) ],
                 symbol: "none"
               },
               {
-                coord: Math.max(...data) * slope + intercept,
+                coord: [Math.max(...data) * slope + intercept, Math.max(...data) ],
                 symbol: "none"
               }
             ]

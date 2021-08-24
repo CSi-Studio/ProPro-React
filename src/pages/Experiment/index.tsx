@@ -9,7 +9,7 @@ import DetailForm from './components/DetailForm';
 import AnalyzeForm from './components/AnalyzeForm';
 import { Link } from 'umi';
 
-const TableList: React.FC = (props) => {
+const TableList: React.FC = (props: any) => {
   const [formAnalyze] = Form.useForm();
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
   // const [formUpdate] = Form.useForm();
@@ -37,7 +37,6 @@ const TableList: React.FC = (props) => {
         return (
           <a
             onClick={() => {
-              console.log(props);
               setCurrentRow(entity);
               setShowDetail(true);
             }}
@@ -181,10 +180,27 @@ const TableList: React.FC = (props) => {
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
             开始分析
           </Button>,
+          <Button
+            type="primary"
+            key="primary"
+            // onClick={() => {
+            //   if (selectedRows && selectedRows.length > 0) {
+
+            //   }
+            // }}
+          >
+            <Link to={{
+                  pathname: '/irt/list',
+                  search: `?expList=${selectedRows?.map((item)=>{return item.id})}`,
+                }}>
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
+            查看IRT
+            </Link>
+          </Button>,
         ]}
         columns={columns}
         rowSelection={{
-          onChange: (selectedRowKeys, selectedRows) => {
+          onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}

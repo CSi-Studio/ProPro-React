@@ -8,7 +8,7 @@ import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
 
-const TableList: React.FC = (props) => {
+const TableList: React.FC = (props: any) => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
@@ -24,22 +24,22 @@ const TableList: React.FC = (props) => {
     {
       title: 'level',
       dataIndex: 'level',
-      search:false,
+      search: false,
     },
     {
       title: '文件开始位置',
       dataIndex: 'startPtr',
-      search:false
+      search: false,
     },
     {
       title: '文件结束位置',
       dataIndex: 'endPtr',
-      search:false
+      search: false,
     },
     {
       title: 'mz范围',
       dataIndex: 'range',
-      search:false,
+      search: false,
       render: (dom: any, entity: any) => {
         if (entity.range) {
           return (
@@ -54,7 +54,7 @@ const TableList: React.FC = (props) => {
         return false;
       },
     },
-    
+
     {
       title: '操作',
       valueType: 'option',
@@ -121,15 +121,12 @@ const TableList: React.FC = (props) => {
         search={false}
         tableAlertRender={false}
         request={async (params) => {
-          const msg = await blockIndexList({ expId:props?.location?.query?.expId, ...params });
+          const msg = await blockIndexList({ expId: props?.location?.query?.expId, ...params });
           return Promise.resolve(msg);
         }}
-        
         columns={columns}
         pagination={false}
-        rowSelection={
-          { }
-        }
+        rowSelection={{}}
       />
 
       {/* 列表详情 */}

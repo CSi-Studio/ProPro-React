@@ -23,7 +23,7 @@ const handleAdd = async (values: any) => {
     return false;
   }
 };
-const TableList: React.FC = (props) => {
+const TableList: React.FC = (props: any) => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
@@ -156,7 +156,6 @@ const TableList: React.FC = (props) => {
         tableAlertRender={false}
         request={async (params) => {
           const msg = await proteinList({ ...params });
-          console.log(msg)
           setTotal(msg.totalNum)
           return Promise.resolve(msg);}}
         // dataSource={tableListDataSource}
