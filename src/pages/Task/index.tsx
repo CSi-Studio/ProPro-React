@@ -92,6 +92,8 @@ const TableList: React.FC = () => {
       title: '花费时间',
       hideInSearch: true,
       dataIndex: 'totalCost',
+      align: 'right',
+      width: '70px',
       render: (text, record) => {
         if (record.totalCost >= 1000) {
           return <Tag>{record.totalCost / 1000}s</Tag>;
@@ -112,6 +114,7 @@ const TableList: React.FC = () => {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
+      width: '100',
       hideInSearch: true,
       render: (text, record) => [
         <Tooltip title={'详情'} key="detail">
