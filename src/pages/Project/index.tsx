@@ -215,7 +215,7 @@ const TableList: React.FC = () => {
           <>
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
             {dom !== 0 ? (
-              <Link to={{ pathname: '/overview/list', search: `?projectId=${entity.id}` }}>
+              <Link to={{ pathname: '/overview', search: `?projectId=${entity.id}` }}>
                 <Tag color="green">查看</Tag>
               </Link>
             ) : null}
@@ -307,6 +307,7 @@ const TableList: React.FC = () => {
         return false;
       },
     },
+   
     {
       key: 'createDate',
       title: '创建时间',
