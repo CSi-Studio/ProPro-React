@@ -94,7 +94,7 @@ export class IrtOption {
           xAxisIndex: i,
           yAxisIndex: i,
           data: this.getSeriesData(data[i].irt.selected.x, data[i].irt.selected.y),
-          markLine: this.getMarkLine(data[i].irt.selected.x, data[i].irt.si.slope, data[i].irt.si.intercept, data[i].irt.si.formula)
+          markLine: this.getMarkLine(data[i].irt.selected.y, data[i].irt.si.slope, data[i].irt.si.intercept, data[i].irt.si.formula)
         };
         series.push(seriesItem);
         seriesItem = {
@@ -138,11 +138,11 @@ export class IrtOption {
           data: [
             [
               {
-                coord: [Math.min(...data), Math.min(...data) * slope + intercept],
+                coord: [Math.min(...data) * slope + intercept, Math.min(...data) ],
                 symbol: "none"
               },
               {
-                coord: [Math.max(...data), Math.max(...data) * slope + intercept],
+                coord: [Math.max(...data) * slope + intercept, Math.max(...data) ],
                 symbol: "none"
               }
             ]

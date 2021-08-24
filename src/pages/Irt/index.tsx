@@ -15,7 +15,7 @@ const TableList: React.FC = (props) => {
       const result = await irtList(props?.location?.query.expList)
       const irt = new IrtOption(result.data, gridNumberInRow);
       const option = irt.getIrtOption();
-      // console.log("option ",option);   
+       console.log("option ",option);   
       setHandleOption(option);
     };
     aa();
