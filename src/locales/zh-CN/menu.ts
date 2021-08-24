@@ -59,5 +59,5 @@ export default {
   'menu.library': '靶库',
   'menu.peptide': '肽段',
   'menu.blockIndex': '索引',
-  
+  'menu.task': '任务',
 };

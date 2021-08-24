@@ -1,8 +1,8 @@
 export type Pagination = {
   pageSize: number;
   totalNum: number;
-  totalPage: number;
-  currentPageNo: number;
+  total: number;
+  current: number;
 }
 
 export type Task = {
