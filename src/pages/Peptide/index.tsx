@@ -1,4 +1,4 @@
-import { Form, message, Tooltip, Tag, Space, Row, Col, Table } from 'antd';
+import { Form, message, Tooltip, Tag, Space, Table } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
