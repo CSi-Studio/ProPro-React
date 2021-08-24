@@ -4,6 +4,7 @@ import ProForm, {
   ProFormSelect,
 } from '@ant-design/pro-form';
 import { AnalyzeParams } from '../data';
+import {YesOrNo} from '@/components/Enums/Selects'
 
 export type AnalyzeFormProps = {
   onSubmit: (values: AnalyzeParams) => Promise<void>;
@@ -77,7 +78,15 @@ const AnalyzeForm: React.FC<AnalyzeFormProps> = (props) => {
           }}
         />
       </ProForm.Group>
-    
+      <ProForm.Group>
+      <ProFormSelect
+          initialValue={'false'}
+          width="sm"
+          name="onlyIrt"
+          label="仅执行Irt"
+          options={YesOrNo}
+        />
+      </ProForm.Group>
     </ModalForm>
   );
 };
