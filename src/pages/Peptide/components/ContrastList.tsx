@@ -8,7 +8,7 @@ import ProTable from '@ant-design/pro-table';
 export type ContrastListFormProps = {
   contrastModalVisible: boolean;
   onSubmit: (values: any) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   values: any;
   form: any;
   predictList: any;
@@ -86,7 +86,12 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       form={props.form}
       title="🧩 肽段碎片比较"
       width={600}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
       visible={props.contrastModalVisible}
       submitter={{

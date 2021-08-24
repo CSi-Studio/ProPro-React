@@ -583,11 +583,9 @@ const TableList: React.FC = () => {
       {/* 新建列表 */}
       <CreateForm
         form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            formCreate?.resetFields();
-          },
+        onCancel={() => {
+          handleModalVisible(false);
+          formCreate?.resetFields();
         }}
         onSubmit={async (value: addFormValueType) => {
           // const success = handleAdd(value, addList({ ...value }), '123', '123', '123');
@@ -617,12 +615,10 @@ const TableList: React.FC = () => {
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
           value.id = currentRow?.id as string;
@@ -643,12 +639,10 @@ const TableList: React.FC = () => {
       <DeleteForm
         selectedRowsState={selectedRowsState}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setSelectedRows([]);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
           if (value.name === selectedRowsState[0]?.name) {
@@ -670,12 +664,10 @@ const TableList: React.FC = () => {
       {/* 克隆列表 */}
       <CloneForm
         form={formClone}
-        onCancel={{
-          onCancel: () => {
-            handleCloneModalVisible(false);
-            setSelectedRows([]);
-            formClone?.resetFields();
-          },
+        onCancel={() => {
+          handleCloneModalVisible(false);
+          setSelectedRows([]);
+          formClone?.resetFields();
         }}
         onSubmit={async (params) => {
           const p: { id: any; newLibName: string; includeDecoy?: boolean } = {

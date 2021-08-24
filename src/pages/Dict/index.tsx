@@ -19,7 +19,7 @@ import AddFormItem from './components/CreateItem';
 import DeleteFormItem from './components/DeleteForm';
 import DeleteDictForm from './components/DeleteDict';
 
-const handleAdd = async (values) => {
+const handleAdd = async (values: { name: string }) => {
   const hide = message.loading('正在添加');
   try {
     await addList(values);
@@ -32,7 +32,7 @@ const handleAdd = async (values) => {
     return false;
   }
 };
-const handleAddItem = async (values) => {
+const handleAddItem = async (values: { id: string; key: string; value: string }) => {
   const hide = message.loading('正在添加');
   try {
     await addListItem(values);
@@ -45,28 +45,12 @@ const handleAddItem = async (values) => {
     return false;
   }
 };
-// /**
-//  * 克隆库
-//  * @param values
-//  */
-// const handleClone = async (values: cloneFormValueType) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await cloneList(values);
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败，请重试！');
-//     return false;
-//   }
-// };
-// /**
-//  * 更新库
-//  * @param values
-//  */
-const handleUpdate = async (values) => {
+
+/**
+ * 更新库
+ * @param values
+ */
+const handleUpdate = async (values: any) => {
   const hide = message.loading('正在更新');
   try {
     await updateList(values);
@@ -79,11 +63,11 @@ const handleUpdate = async (values) => {
     return false;
   }
 };
-// /**
-//  * 删除库
-//  * @param currentRow
-//  */
-const handleRemoveItem = async (values) => {
+/**
+ * 删除库
+ * @param currentRow
+ */
+const handleRemoveItem = async (values: any) => {
   try {
     await deleteItem(values);
     message.success('删除成功，即将刷新');
@@ -94,7 +78,7 @@ const handleRemoveItem = async (values) => {
   }
 };
 
-const handleRemove = async (values) => {
+const handleRemove = async (values: any) => {
   try {
     await deleteDict(values);
     message.success('删除成功，即将刷新');
@@ -105,20 +89,6 @@ const handleRemove = async (values) => {
   }
 };
 
-// const handleAdd = async () => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await dictList();
-//     hide();
-//     message.success('添加成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('添加失败请重试！');
-//     return false;
-//   }
-// };
-
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -126,21 +96,16 @@ const TableList: React.FC = () => {
   const [formCreateItem] = Form.useForm();
   const [deleteForm] = Form.useForm();
   const [deleteDictForm] = Form.useForm();
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
-  /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-
   /** 删除窗口的弹窗 */
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   const [deleteDictModalVisible, handleDeleteDictModalVisible] = useState<boolean>(false);
   /** 更新窗口的弹窗 */
   const [addModalVisible, handleAddModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  /** 克隆窗口的弹窗 */
-  const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
+
   const [total, setTotal] = useState<any>();
   /** 库详情的抽屉 */
   const [currentRow, setCurrentRow] = useState<TableListItem>();
@@ -183,7 +148,6 @@ const TableList: React.FC = () => {
               form?.resetFields();
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-              // setPopup(true);
             }}
             key="edit"
           >
@@ -199,8 +163,6 @@ const TableList: React.FC = () => {
                 id: record.id,
               };
               setId(objItem);
-
-              // setPopup(true);
             }}
             key="add"
           >
@@ -218,8 +180,6 @@ const TableList: React.FC = () => {
                 id: record.id,
               };
               setCurrentDelete(objId);
-
-              // setPopup(true);
             }}
             key="delete"
           >
@@ -314,7 +274,6 @@ const TableList: React.FC = () => {
             onClick={() => {
               form?.resetFields();
               handleModalVisible(true);
-              // setPopup(true);
             }}
           >
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
@@ -360,12 +319,10 @@ const TableList: React.FC = () => {
             }
           }
         }}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentUpdate(undefined);
-            formUpdate?.resetFields();
-          },
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentUpdate(undefined);
+          formUpdate?.resetFields();
         }}
         updateModalVisible={updateModalVisible}
         values={currentUpdate || {}}
@@ -373,11 +330,9 @@ const TableList: React.FC = () => {
 
       <AddForm
         form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            formCreate?.resetFields();
-          },
+        onCancel={() => {
+          handleModalVisible(false);
+          formCreate?.resetFields();
         }}
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -394,11 +349,9 @@ const TableList: React.FC = () => {
 
       <AddFormItem
         form={formCreateItem}
-        onCancel={{
-          onCancel: () => {
-            handleAddModalVisible(false);
-            form?.resetFields();
-          },
+        onCancel={() => {
+          handleAddModalVisible(false);
+          form?.resetFields();
         }}
         onSubmit={async (value) => {
           const success = await handleAddItem(value);
@@ -414,15 +367,12 @@ const TableList: React.FC = () => {
       />
 
       {/* 删除DictItem */}
-
       <DeleteFormItem
         form={deleteForm}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setCurrentDeleteItem(undefined);
-            deleteForm?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setCurrentDeleteItem(undefined);
+          deleteForm?.resetFields();
         }}
         onSubmit={async () => {
           const success = await handleRemoveItem(currentDeleteItem);
@@ -435,19 +385,17 @@ const TableList: React.FC = () => {
           }
         }}
         deleteModalVisible={deleteModalVisible}
-        values={currentDeleteItem || {}}
+        values={currentDeleteItem}
       />
 
       {/* 删除Dict */}
 
       <DeleteDictForm
         form={deleteDictForm}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteDictModalVisible(false);
-            setCurrentDelete(undefined);
-            deleteDictForm?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteDictModalVisible(false);
+          setCurrentDelete(undefined);
+          deleteDictForm?.resetFields();
         }}
         onSubmit={async () => {
           const success = await handleRemove(currentDelete);
@@ -460,7 +408,7 @@ const TableList: React.FC = () => {
           }
         }}
         deleteDictModalVisible={deleteDictModalVisible}
-        values={currentDelete || {}}
+        values={currentDelete}
       />
     </>
   );

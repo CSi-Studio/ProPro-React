@@ -307,7 +307,7 @@ const TableList: React.FC = () => {
         return false;
       },
     },
-   
+
     {
       key: 'createDate',
       title: '创建时间',
@@ -477,11 +477,9 @@ const TableList: React.FC = () => {
       {/* 新建列表 */}
       <CreateForm
         form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            formCreate?.resetFields();
-          },
+        onCancel={() => {
+          handleModalVisible(false);
+          formCreate?.resetFields();
         }}
         onSubmit={async (value: addFormValueType) => {
           const success = await handleAdd(value as addFormValueType);
@@ -510,12 +508,10 @@ const TableList: React.FC = () => {
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
@@ -537,12 +533,10 @@ const TableList: React.FC = () => {
       <DeleteForm
         currentRow={currentRow}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setCurrentRow(undefined);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setCurrentRow(undefined);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
           if (value.name === currentRow?.name) {
@@ -565,12 +559,10 @@ const TableList: React.FC = () => {
       <DeleteAna
         currentRow={currentRow}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDelete1ModalVisible(false);
-            setCurrentRow(undefined);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDelete1ModalVisible(false);
+          setCurrentRow(undefined);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
           if (value.name === currentRow?.name) {
@@ -593,12 +585,10 @@ const TableList: React.FC = () => {
       <DeleteIrt
         currentRow={currentRow}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDelete2ModalVisible(false);
-            setCurrentRow(undefined);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDelete2ModalVisible(false);
+          setCurrentRow(undefined);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
           if (value.name === currentRow?.name) {

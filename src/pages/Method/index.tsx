@@ -1,4 +1,4 @@
-import { Button, message, Tooltip, Form, Tag } from 'antd';
+import { message, Tooltip, Form, Tag } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { DomainCell, Domain, DomainUpdate } from './data';
 import type { Pagination } from '@/components/Commons/common';
@@ -222,11 +222,9 @@ const TableList: React.FC = () => {
       {/* 新建列表 */}
       <CreateForm
         form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            formCreate?.resetFields();
-          },
+        onCancel={() => {
+          handleModalVisible(false);
+          formCreate?.resetFields();
         }}
         onSubmit={async (value: Domain) => {
           const success = await handleAdd(value);
@@ -243,12 +241,10 @@ const TableList: React.FC = () => {
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
@@ -269,12 +265,10 @@ const TableList: React.FC = () => {
       <DeleteForm
         selectedRowsState={selectedRowsState}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setSelectedRows([]);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
           if (value.name === selectedRowsState[0]?.name) {

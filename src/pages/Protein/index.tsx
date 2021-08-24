@@ -131,7 +131,7 @@ const TableList: React.FC = (props: any) => {
       hideInSearch: true,
       render: (dom, entity) => {
         return (
-          <a href={entity.uniProtLink ? entity.uniProtLink : 'http://www.csibio.net/'}>UniProt</a>
+          <a href={entity?.uniPortLink ? entity.uniPortLink : 'http://www.csibio.net/'}>UniProt</a>
         );
       },
     },
@@ -196,12 +196,9 @@ const TableList: React.FC = (props: any) => {
       {/* 添加列表 */}
       <CreateForm
         form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            // setPopup(false);
-            formCreate?.resetFields();
-          },
+        onCancel={() => {
+           handleModalVisible(false);
+           formCreate?.resetFields();
         }}
         onSubmit={async (value) => {
           const success = await handleAdd(value);

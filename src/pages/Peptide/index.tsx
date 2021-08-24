@@ -356,12 +356,10 @@ const TableList: React.FC = (props: any) => {
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
@@ -382,12 +380,10 @@ const TableList: React.FC = (props: any) => {
       {/* 预测肽段碎片弹窗 */}
       <PredictForm
         form={formPredict}
-        onCancel={{
-          onCancel: () => {
-            setCurrentRow(undefined);
-            handlePredictModalVisible(false);
-            formPredict?.resetFields();
-          },
+        onCancel={() => {
+          setCurrentRow(undefined);
+          handlePredictModalVisible(false);
+          formPredict?.resetFields();
         }}
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
@@ -406,12 +402,10 @@ const TableList: React.FC = (props: any) => {
       {/* 预测对比弹窗 */}
       <ContrastList
         form={formContrast}
-        onCancel={{
-          onCancel: () => {
-            handleContrastModalVisible(false);
-            setCurrentRow(undefined);
-            formContrast?.resetFields();
-          },
+        onCancel={() => {
+          handleContrastModalVisible(false);
+          setCurrentRow(undefined);
+          formContrast?.resetFields();
         }}
         onSubmit={async (value) => {
           const success = await handleContrast(value);
@@ -432,12 +426,10 @@ const TableList: React.FC = (props: any) => {
       <DeleteForm
         currentRow={currentRow}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setCurrentRow(undefined);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setCurrentRow(undefined);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
           if (value.name === currentRow?.peptideRef) {

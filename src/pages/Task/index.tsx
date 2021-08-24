@@ -7,7 +7,7 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import { list, removeList } from './service';
 import DeleteForm from './components/DeleteForm';
-import { CheckCircleOutlined, SyncOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
 import DetailForm from './components/DetailForm';
 
 /**
@@ -105,12 +105,7 @@ const TableList: React.FC = () => {
       sorter: (a, b) => (a.totalCost > b.totalCost ? -1 : 1),
       render: (text, record) => {
         if (record.totalCost >= 1000) {
-          return (
-            <Tag>
-              {record.totalCost / 1000}
-              <strong>s</strong>
-            </Tag>
-          );
+          return <Tag>{record.totalCost / 1000}m</Tag>;
         }
         if (record.totalCost) {
           return <Tag>{text}ms</Tag>;
@@ -215,12 +210,10 @@ const TableList: React.FC = () => {
       <DeleteForm
         selectedRowsState={selectedRowsState}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setSelectedRows([]);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
           if (value.name === selectedRowsState[0]?.name) {

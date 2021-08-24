@@ -9,7 +9,7 @@ export type FormValueType = {
 
 export type DeleteFormProps = {
   onSubmit: (value: FormValueType) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   deleteModalVisible: boolean;
   values: FormValueType;
   form: any;
@@ -23,7 +23,12 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
       title="你确定要删除吗？"
       width={530}
       visible={props.deleteModalVisible}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
     >
       <Space direction="vertical" style={{ textAlign: 'center', width: '100%' }}>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Drawer, message, Slider, Space, Spin } from 'antd';
+import { Button, Drawer, message, Slider, Space } from 'antd';
 import type { TableListDetail } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { blockIndexDetail, spectrumCharts } from '../service';
-import { parseInt, set } from 'lodash';
+import { parseInt } from 'lodash';
 import ChartsForm from './DetailChartsForm';
 
 export type UpdateFormProps = {
@@ -16,8 +16,8 @@ export type UpdateFormProps = {
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const [sliderValue, setValue] = useState<any>();
-  const [maxRT, setMaxRT] = useState<any>();
-  const [minRT, setMintRT] = useState<any>();
+  // const [maxRT, setMaxRT] = useState<any>();
+  // const [minRT, setMintRT] = useState<any>();
   const [showCharts, setShowCharts] = useState<boolean>(false);
   const [smallRange, setSmallRange] = useState<boolean>(true);
   const [chartsData, setChartsData] = useState<any>();
@@ -26,12 +26,12 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const [minRange, setMinRange] = useState<any>();
   const [detailValue, setDetailValue] = useState<any>([0, 0]);
 
-  const onFinish = (values: any) => {
-    setMaxRT(values.max);
-    setMintRT(values.min);
-  };
+  // const onFinish = (values: any) => {
+  //   setMaxRT(values.max);
+  //   setMintRT(values.min);
+  // };
 
-  const onFinishFailed = (errorInfo: any) => {};
+  // const onFinishFailed = (errorInfo: any) => {};
   const columns = [
     {
       title: 'ID',
@@ -160,17 +160,13 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
         columns={columns as ProDescriptionsItemProps<TableListDetail>[]}
       />
       <ChartsForm
-        onCancel={{
-          onCancel: () => {
-            setShowCharts(false);
-            setChartsData(undefined);
-            setRtData('');
-          },
+        onCancel={() => {
+          setShowCharts(false);
+          setChartsData(undefined);
+          setRtData('');
         }}
-        onSubmit={{
-          onSubmit: () => {
-            setShowCharts(false);
-          },
+        onSubmit={() => {
+          setShowCharts(false);
         }}
         rtData={rtData}
         chartsData={chartsData}

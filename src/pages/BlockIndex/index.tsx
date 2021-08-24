@@ -9,8 +9,6 @@ import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
 
 const TableList: React.FC = (props: any) => {
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
 

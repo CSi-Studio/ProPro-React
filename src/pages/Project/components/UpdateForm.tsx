@@ -17,12 +17,12 @@ export type updateFormValueType = {
   anaLibId?: string;
   insLibId?: string;
   methodId?: string;
-  tags?:Set<string>;
+  tags?: Set<string>;
 };
 
 export type UpdateFormProps = {
   onSubmit: (values: updateFormValueType) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   updateModalVisible: boolean;
   values: any;
   form: any;
@@ -35,7 +35,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       title="更新标准库"
       width={800}
       visible={props.updateModalVisible}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
     >
       <ProForm.Group>
@@ -55,7 +60,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         />
         <ProFormText initialValue={props.values.alias} width="sm" name="alias" label="项目别名" />
         <ProFormSelect initialValue="DIA" width="sm" name="type" label="实验类型" />
-        
       </ProForm.Group>
       <ProForm.Group>
         <ProFormText
@@ -70,12 +74,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name="owner"
           label="负责人"
         />
-         <ProFormSelect
+        <ProFormSelect
           initialValue={props.values.tags}
           width="md"
           name="tags"
           label="tags"
-          mode='tags'
+          mode="tags"
         />
       </ProForm.Group>
       <ProForm.Group>

@@ -171,7 +171,7 @@ const TableList: React.FC = (props: any) => {
               }
             }}
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
             开始分析
           </Button>,
           <Button type="primary" key="primary">
@@ -217,11 +217,9 @@ const TableList: React.FC = (props: any) => {
       {selectedRows && selectedRows.length ? (
         <AnalyzeForm
           form={formAnalyze}
-          onCancel={{
-            onCancel: () => {
-              handleAnalyzeModalVisible(false);
-              formAnalyze?.resetFields();
-            },
+          onCancel={() => {
+            handleAnalyzeModalVisible(false);
+            formAnalyze?.resetFields();
           }}
           onSubmit={async (value: AnalyzeParams) => {
             value.expIdList = selectedRows.map((e) => e.id);

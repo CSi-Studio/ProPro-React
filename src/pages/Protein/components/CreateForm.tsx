@@ -24,7 +24,7 @@ export type addFormValueType = {
 
 export type CreateFormProps = {
   onSubmit: (values: addFormValueType) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   createModalVisible: boolean;
   values: Partial<any>;
   form: any;
@@ -44,7 +44,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       title="导入蛋白文件"
       width={530}
       visible={props.createModalVisible}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
     >
       <ProForm.Group>
