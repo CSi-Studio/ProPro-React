@@ -14,10 +14,10 @@ export type UpdateFormProps = {
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
   return (
-    <Drawer width={800} visible={props.showDetail} onClose={props.onClose} closable={false}>
+    <Drawer width={500} visible={props.showDetail} onClose={props.onClose} closable={false}>
       {props.currentRow?.name && (
         <ProDescriptions<TableListItem>
-          column={2}
+          column={1}
           title={props.currentRow?.name}
           request={async () => ({
             data: props.currentRow || {},

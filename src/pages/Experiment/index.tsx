@@ -9,7 +9,7 @@ import DetailForm from './components/DetailForm';
 import AnalyzeForm from './components/AnalyzeForm';
 import { Link } from 'umi';
 
-const TableList: React.FC = (props) => {
+const TableList: React.FC = (props: any) => {
   const [formAnalyze] = Form.useForm();
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
   // const [formUpdate] = Form.useForm();
@@ -37,7 +37,6 @@ const TableList: React.FC = (props) => {
         return (
           <a
             onClick={() => {
-              console.log(props);
               setCurrentRow(entity);
               setShowDetail(true);
             }}
