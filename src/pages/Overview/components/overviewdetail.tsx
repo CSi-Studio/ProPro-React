@@ -1,10 +1,10 @@
 import React from 'react';
-import { Collapse, Drawer } from 'antd';
+import { Drawer } from 'antd';
 import type { TableListItem } from '@/pages/Overview/data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { ProColumns } from '@ant-design/pro-table';
-import { CaretRightOutlined } from '@ant-design/icons';
+
 import ReactJson from 'react-json-view';
 
 export type UpdateFormProps = {
@@ -21,7 +21,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const columns: ProColumns<TableListItem>[]=[
     {
         key: 'name',
-        title: 'overView名',
+        title: '概览名',
         dataIndex: 'name',
     },
     {
@@ -31,13 +31,13 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
     {
         key: 'params',
-        title: 'overview全览',
+        title: '分析概览',
         dataIndex: 'params',
         render: (dom: any, entity: any) => {
-            if (entity.params) {
+            if (entity) {
               return (
                 <div>
-                <ReactJson src={entity.params} />
+                <ReactJson src={entity} />
               </div>
               );
             }

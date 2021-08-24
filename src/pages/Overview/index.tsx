@@ -46,10 +46,21 @@ const TableList: React.FC = (props:any) => {
       },
     },
     {
-      key: 'label',
+      key: 'tags',
       title: '标签',
-      dataIndex: 'label',
+      dataIndex: 'tags',
+      hideInSearch: true,
+      render: (text, entity) => {
+        if (entity.tags && entity.tags.length !== 0) {
+          let tagsDom: any[] = [];
+          entity.tags.forEach((tag) => {
+            tagsDom.push([<Tag key={tag}>{tag}</Tag>]);
+          });
+          return <>{tagsDom}</>;
+        }
+        return false;
       },
+    },
     {
       key: 'type',
       title: '类型',
@@ -67,8 +78,6 @@ const TableList: React.FC = (props:any) => {
       dataIndex: 'note',
       hideInSearch: true,
     },
- 
-
   ];
   return (
     <>

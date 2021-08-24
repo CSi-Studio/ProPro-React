@@ -4,7 +4,7 @@ projectId: string;
 expId: string;
 name: string;
 expName: string;
-label: string;
+tags: string[];
 insLibId: string;
 anaLibId: string;
 type: string;
