@@ -349,7 +349,6 @@ const TableList: React.FC = () => {
       rowData.push(record);
       setSelectedRows(rowData);
     } else {
-      console.log(rowData);
       if (rowData.indexOf(record) >= 0) {
         rowData.splice(rowData.indexOf(record), 1);
       } else {
@@ -627,7 +626,6 @@ const TableList: React.FC = () => {
           },
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as string;
           const success = await handleUpdate(value);
           if (success) {
