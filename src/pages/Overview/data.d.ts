@@ -1,0 +1,26 @@
+export type TableListItem = {
+id: string;
+projectId: string;
+expId: string;
+name: string;
+expName: string;
+label: string;
+insLibId: string;
+anaLibId: string;
+type: string;
+params:any;
+createDate:string;
+lastModifiedDate:string;
+statistic:any;
+weights:any;
+note:string;
+featureMap:any;
+};
+
+export type TableListPagination = {
+    pageSize: number;
+    totalNum: number;
+    totalPage: number;
+    currentPageNo: number;
+  }
+

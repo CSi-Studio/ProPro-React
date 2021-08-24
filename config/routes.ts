@@ -52,6 +52,14 @@ export default [
     icon: 'hdd',
     component: './Library',
   },
+  //overview
+  {
+   key: 'overview',
+   name:'overview',
+   path: '/overview',
+   icon: 'smile',
+  component: './Overview',
+  },
   //肽段
   {
     path: '/peptide/list',
