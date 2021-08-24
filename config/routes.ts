@@ -1,6 +1,6 @@
 export default [
   // 主界面
-  { path: '/', redirect: './Project' },
+  { path: '/', redirect: './Project/list' },
   // 项目
   {
     key: 'project',
@@ -59,6 +59,7 @@ export default [
    path: '/overview',
    icon: 'smile',
   component: './Overview',
+  hideInMenu: true,
   },
   //肽段
   {

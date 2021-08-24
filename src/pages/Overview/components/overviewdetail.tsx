@@ -11,7 +11,6 @@ export type UpdateFormProps = {
   currentRow: any;
   columns: any;
   onClose: () => void;
-  // values: Partial<API.RuleListItem>;
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
