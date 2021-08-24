@@ -360,7 +360,7 @@ const TableList: React.FC = () => {
               <Tag
                 color="green"
                 onClick={() => {
-                  formClone?.resetFields();
+                  formCreate?.resetFields();
                   handleModalVisible(true);
                 }}
               >

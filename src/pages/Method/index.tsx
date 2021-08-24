@@ -136,11 +136,13 @@ const TableList: React.FC = () => {
               formUpdate?.resetFields();
               handleUpdateModalVisible(true);
               setCurrentRow(record);
-              // setPopup(true);
             }}
             key="edit"
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
+              编辑
+            </Tag>
           </a>
         </Tooltip>,
       ],
@@ -157,6 +159,23 @@ const TableList: React.FC = () => {
         size="small"
         tableAlertRender={false}
         toolBarRender={() => [
+          <Tooltip title={'新增'} key="add">
+            <a>
+              <Tag
+                color="green"
+                onClick={() => {
+                  formCreate?.resetFields();
+                  handleModalVisible(true);
+                }}
+              >
+                <Icon
+                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                  icon="mdi:playlist-plus"
+                />
+                新增
+              </Tag>
+            </a>
+          </Tooltip>,
           <Tooltip placement="top" title={'删除'} key="delete">
             <a
               key="delete"
@@ -180,17 +199,6 @@ const TableList: React.FC = () => {
               </Tag>
             </a>
           </Tooltip>,
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              formCreate?.resetFields();
-              handleModalVisible(true);
-            }}
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
-            创建库
-          </Button>,
         ]}
         request={async (params) => {
           const msg = await list({ ...params });
