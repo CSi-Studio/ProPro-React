@@ -7,13 +7,15 @@ import ProCard from '@ant-design/pro-card';
 
 // 每行grid的个数
 const gridNumberInRow = 5;
+const xName = `LibTime`;
+const yName = `RealTime/s`;
 const TableList: React.FC = (props) => {
 
   const [handleOption, setHandleOption] = useState({});
   useEffect(() => {
     const aa = async () => {
       const result = await irtList(props?.location?.query.expList)
-      const irt = new IrtOption(result.data, gridNumberInRow);
+      const irt = new IrtOption(result.data, gridNumberInRow, xName, yName);
       const option = irt.getIrtOption();
        console.log("option ",option);   
       setHandleOption(option);
