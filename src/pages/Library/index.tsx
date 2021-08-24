@@ -345,14 +345,17 @@ const TableList: React.FC = () => {
 
   const selectRow = (record: any) => {
     const rowData = [...selectedRowsState];
-    rowData?.map((item, index) => {
-      if (item.id === record.id) {
-        rowData.splice(record, 1);
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
       } else {
         rowData.push(record);
       }
-    });
-    setSelectedRows(rowData);
+      setSelectedRows(rowData);
+    }
   };
   return (
     <>
@@ -366,7 +369,7 @@ const TableList: React.FC = () => {
         pagination={{
           current: pageNo,
         }}
-        onRow={(record) => {
+        onRow={(record, index) => {
           return {
             onClick: () => {
               selectRow(record);
@@ -623,7 +626,6 @@ const TableList: React.FC = () => {
           },
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as string;
           const success = await handleUpdate(value);
           if (success) {

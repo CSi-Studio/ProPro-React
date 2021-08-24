@@ -1,6 +1,6 @@
 export default [
   // 主界面
-  { path: '/', component: './Project' },
+  { path: '/', redirect: './Project' },
   // 项目
   {
     key: 'project',
@@ -26,7 +26,7 @@ export default [
     path: '/irt/list',
     component: './IRT',
     hideInMenu: true,
-  }, 
+  },
   //BlockIndex界面
   {
     key: 'blockIndex',
@@ -52,6 +52,14 @@ export default [
     icon: 'hdd',
     component: './Library',
   },
+  //overview
+  {
+   key: 'overview',
+   name:'overview',
+   path: '/overview',
+   icon: 'smile',
+  component: './Overview',
+  },
   //肽段
   {
     path: '/peptide/list',
@@ -72,7 +80,18 @@ export default [
     key: 'dict',
     name: 'dict',
     path: '/dict',
-    icon: 'smile',
+    icon: 'ReadOutlined',
     component: './Dict',
+  },
+  // 任务界面
+  {
+    key: 'task',
+    name: 'task',
+    path: '/task/list',
+    icon: 'UnorderedListOutlined',
+    component: './Task',
+  },
+  {
+    component: './404',
   },
 ];
