@@ -1,4 +1,4 @@
-import { Button, Input, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListDetail, TableListItem, TableListPagination } from './data';
@@ -103,18 +103,9 @@ const TableList: React.FC = (props: any) => {
 
   return (
     <>
-      <Link
-        to={{
-          pathname: '/experiment/list',
-          search: `?projectId=${props?.location?.state?.projectId}`,
-        }}
-      >
-        <Button type="primary">返回实验列表</Button>
-      </Link>
-
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle=""
+        headerTitle={'实验名：' + props?.location?.state.expName}
         actionRef={actionRef}
         rowKey="id"
         size="small"
@@ -126,6 +117,16 @@ const TableList: React.FC = (props: any) => {
         }}
         columns={columns}
         pagination={false}
+        toolBarRender={() => [
+          <Link
+            to={{
+              pathname: '/experiment/list',
+              search: `?projectId=${props?.location?.state?.projectId}`,
+            }}
+          >
+            <Button type="primary">返回实验列表</Button>
+          </Link>,
+        ]}
         rowSelection={{}}
       />
 

@@ -11,16 +11,10 @@ import { Link } from 'umi';
 
 const TableList: React.FC = (props: any) => {
   const [formAnalyze] = Form.useForm();
+  /* 分析窗口变量 */
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
-  // const [formUpdate] = Form.useForm();
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
-
-  /** 更新窗口的弹窗 */
-  // const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [total, setTotal] = useState<any>();
@@ -181,13 +175,14 @@ const TableList: React.FC = (props: any) => {
             开始分析
           </Button>,
           <Button type="primary" key="primary">
-            {selectedRows && selectedRows.length > 0 && selectedRows.length <= 50? (
+            {selectedRows && selectedRows.length > 0 && selectedRows.length <= 50 ? (
               <Link
                 to={{
                   pathname: '/irt/list',
                   search: `?expList=${selectedRows?.map((item) => {
                     return item.id;
                   })}`,
+                  state: { projectId, expNum: selectedRows.length },
                 }}
               >
                 <Icon

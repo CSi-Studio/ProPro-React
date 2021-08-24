@@ -7,7 +7,6 @@ export type TaskTableItem = {
   createDate: string;
   lastModifiedDate: string;
   logs: Log[];
-  totalCost: null;
+  totalCost: number;
   features: null;
-  startTime: number;
 };

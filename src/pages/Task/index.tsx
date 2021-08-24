@@ -2,14 +2,13 @@ import { message, Tooltip, Form, Tag } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { TaskTableItem } from './data';
 import type { Pagination } from '@/components/Commons/common';
-import CreateForm from './components/CreateForm';
-import UpdateForm from './components/UpdateForm';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import { list, removeList } from './service';
 import DeleteForm from './components/DeleteForm';
-import { CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, SyncOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import DetailForm from './components/DetailForm';
 
 /**
  * 库详情
@@ -45,15 +44,11 @@ const handleRemove = async (selectedRowsState: any[]) => {
 };
 
 const TableList: React.FC = () => {
-  const [formCreate] = Form.useForm();
-  const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
   // /** 全选 */
   const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
-  /** 新建窗口的弹窗 */
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  /** 更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** 库详情的抽屉 */
+  const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
 
@@ -64,14 +59,20 @@ const TableList: React.FC = () => {
     {
       title: '任务名称',
       dataIndex: 'name',
+      render: (text, record) => {
+        return <a>{text}</a>;
+      },
     },
     {
       title: '任务模板',
       dataIndex: 'taskTemplate',
+      hideInSearch: true,
     },
     {
       title: '任务状态',
       dataIndex: 'status',
+      hideInSearch: true,
+
       render: (text, record) => {
         if (record.status == 'SUCCESS') {
           return (
@@ -89,40 +90,44 @@ const TableList: React.FC = () => {
     },
     {
       title: '花费时间',
-      dataIndex: 'startTime',
+      hideInSearch: true,
+      dataIndex: 'totalCost',
+      align: 'right',
+      width: '70px',
       render: (text, record) => {
-        return <Tag color="success">{record.startTime / 360000}</Tag>;
+        if (record.totalCost >= 1000) {
+          return <Tag>{record.totalCost / 1000}s</Tag>;
+        }
+        if (record.totalCost) {
+          return <Tag>{text}ms</Tag>;
+        }
+        return false;
       },
     },
     {
       title: '创建时间',
+      hideInSearch: true,
       dataIndex: 'createDate',
       valueType: 'dateTime',
     },
     {
-      title: '修改时间',
-      dataIndex: 'lastModifiedDate',
-      valueType: 'dateTime',
-    },
-
-    {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
+      width: '100',
       hideInSearch: true,
       render: (text, record) => [
-        <Tooltip title={'编辑'} key="edit">
+        <Tooltip title={'详情'} key="detail">
           <a
             onClick={() => {
-              formUpdate?.resetFields();
-              handleUpdateModalVisible(true);
               setCurrentRow(record);
+              setShowDetail(true);
             }}
             key="edit"
           >
             <Tag color="blue">
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
-              编辑
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
+              详情
             </Tag>
           </a>
         </Tooltip>,
@@ -131,7 +136,7 @@ const TableList: React.FC = () => {
   ];
   return (
     <>
-      <ProTable<DomainCell, Pagination>
+      <ProTable<TaskTableItem, Pagination>
         scroll={{ x: 'max-content' }}
         headerTitle="方法列表"
         search={{ labelWidth: 'auto' }}
@@ -140,23 +145,6 @@ const TableList: React.FC = () => {
         size="small"
         tableAlertRender={false}
         toolBarRender={() => [
-          <Tooltip title={'新增'} key="add">
-            <a>
-              <Tag
-                color="green"
-                onClick={() => {
-                  formCreate?.resetFields();
-                  handleModalVisible(true);
-                }}
-              >
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:playlist-plus"
-                />
-                新增
-              </Tag>
-            </a>
-          </Tooltip>,
           <Tooltip placement="top" title={'删除'} key="delete">
             <a
               key="delete"
@@ -199,52 +187,15 @@ const TableList: React.FC = () => {
           },
         }}
       />
-
-      {/* 新建列表 */}
-      <CreateForm
-        form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            formCreate?.resetFields();
-          },
+      {/* 列表详情 */}
+      <DetailForm
+        showDetail={showDetail}
+        currentRow={currentRow}
+        columns={columns}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
         }}
-        onSubmit={async (value: Domain) => {
-          const success = await handleAdd(value);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        createModalVisible={createModalVisible}
-        values={currentRow || {}}
-      />
-      {/* 编辑列表 */}
-      <UpdateForm
-        form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
-        }}
-        onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
-          value.id = currentRow?.id as string;
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
       />
       {/* 删除列表 */}
       <DeleteForm

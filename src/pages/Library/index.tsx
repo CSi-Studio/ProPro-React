@@ -181,7 +181,6 @@ const TableList: React.FC = () => {
               onClick={() => {
                 setCurrentRow(entity);
                 setShowDetail(true);
-                // setPopup(true);
               }}
             >
               {dom}
