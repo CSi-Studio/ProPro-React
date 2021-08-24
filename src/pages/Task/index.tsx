@@ -60,7 +60,16 @@ const TableList: React.FC = () => {
       title: '任务名称',
       dataIndex: 'name',
       render: (text, record) => {
-        return <a>{text}</a>;
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            {text}
+          </a>
+        );
       },
     },
     {
@@ -72,7 +81,6 @@ const TableList: React.FC = () => {
       title: '任务状态',
       dataIndex: 'status',
       hideInSearch: true,
-
       render: (text, record) => {
         if (record.status == 'SUCCESS') {
           return (
@@ -93,15 +101,21 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       dataIndex: 'totalCost',
       align: 'right',
-      width: '70px',
+      width: '100px',
+      sorter: (a, b) => (a.totalCost > b.totalCost ? -1 : 1),
       render: (text, record) => {
         if (record.totalCost >= 1000) {
-          return <Tag>{record.totalCost / 1000}s</Tag>;
+          return (
+            <Tag>
+              {record.totalCost / 1000}
+              <strong>s</strong>
+            </Tag>
+          );
         }
         if (record.totalCost) {
           return <Tag>{text}ms</Tag>;
         }
-        return false;
+        return <Tag>未开始</Tag>;
       },
     },
     {

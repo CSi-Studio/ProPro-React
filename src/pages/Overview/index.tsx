@@ -5,7 +5,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { overviewList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import DetailForm from './components/overviewdetail';
+import DetailForm from './components/Overviewdetail';
 
 const TableList: React.FC = (props: any) => {
   /** 库详情的抽屉 */
