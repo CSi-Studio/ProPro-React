@@ -8,11 +8,13 @@ export class IrtOption {
     private totalPaddingHeight: number; // 整体高度上缩进
     private totalPaddingWidth: number; // 整体宽度左缩进,值小于gridPaddingWight
     private titleHeight: number; //  标题高度
-    private Width: number; // 总宽度
+    private Width: number; // 总宽度 
+    private xName: string;
+    private yName: string;
 
     // constructor：构造函数，在实例化对象的时候执行
-    constructor(data: any[], gridNumInRow: number = 5, gridHeight: number = 100,gridPaddingHeight: number = 50,gridPaddingWight: number = 6,
-      totalPaddingHeight: number = 20,totalPaddingWidth: number = 4,titleHeight: number = 20,Width: number = 100) {
+    constructor(data: any[], gridNumInRow: number = 5, xName: string = ``, yName: string = ``,  gridHeight: number = 100, gridPaddingHeight: number = 80,gridPaddingWight: number = 6,
+      totalPaddingHeight: number = 50,totalPaddingWidth: number = 5,titleHeight: number = 20,Width: number = 100) {
       this.data = data;
       this.gridNumInRow = gridNumInRow;
       this.gridHeight = gridHeight;
@@ -22,6 +24,8 @@ export class IrtOption {
       this.totalPaddingWidth = totalPaddingWidth;
       this.titleHeight = titleHeight;
       this.Width = Width;
+      this.xName = xName;
+      this.yName = yName;
     }
   
     getWidth(): string {
@@ -34,10 +38,10 @@ export class IrtOption {
         title: this.getIrtTitle(this.data),
         grid: this.getIrtGrids(gridNumber),
         tooltip: {
-          formatter: "Group : ({c})"
+          formatter: "({c})"
         },
-        xAxis: this.getIrtAxis(gridNumber, true),
-        yAxis: this.getIrtAxis(gridNumber, false),
+        xAxis: this.getIrtAxis(gridNumber, true, this.xName),
+        yAxis: this.getIrtAxis(gridNumber, false, this.yName),
         series: this.getIrtSeries(this.data)
       };
     }
@@ -77,10 +81,10 @@ export class IrtOption {
       return titles;
     }
     
-    private getIrtAxis(count: number, scaleTag: boolean) {
+    private getIrtAxis(count: number, scaleTag: boolean, axisName: string) {
       const Axis = [];
       for (let i = 0; i < count; i += 1) {
-        Axis.push({ gridIndex: i, scale: scaleTag });
+        Axis.push({ gridIndex: i, scale: scaleTag, name: axisName, nameLocation:'start',nameTextStyle : { padding: 10, }});
       }
       return Axis;
     }
@@ -93,6 +97,7 @@ export class IrtOption {
           showSymbol: false,
           xAxisIndex: i,
           yAxisIndex: i,
+          color: "#32CD32",
           data: this.getSeriesData(data[i].irt.selected.x, data[i].irt.selected.y),
           markLine: this.getMarkLine(data[i].irt.selected.y, data[i].irt.si.slope, data[i].irt.si.intercept, data[i].irt.si.formula)
         };
@@ -102,6 +107,7 @@ export class IrtOption {
           showSymbol: false,
           xAxisIndex: i,
           yAxisIndex: i,
+          color: "#f00",
           data: this.getSeriesData(data[i].irt.unselected.x, data[i].irt.unselected.y),
           markLine: null
         };

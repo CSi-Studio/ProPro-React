@@ -1,4 +1,4 @@
-import { Tag, Tooltip, Form, Button } from 'antd';
+import { Tag, Tooltip, Form, Button, message } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList, analyze, prepare } from './service';
 import type { AnalyzeParams, PrepareAnalyzeVO, TableListItem, TableListPagination } from './data';
@@ -23,7 +23,7 @@ const TableList: React.FC = (props: any) => {
 
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [total,setTotal] = useState<any>();
+  const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
@@ -154,7 +154,7 @@ const TableList: React.FC = (props: any) => {
         rowKey="id"
         size="small"
         pagination={{
-          total:total
+          total: total,
         }}
         tableAlertRender={false}
         // request={experimentList}
@@ -164,7 +164,7 @@ const TableList: React.FC = (props: any) => {
             setPrepareData(result.data);
           }
           const msg = await experimentList({ projectId, ...params });
-          setTotal(msg.totalNum)
+          setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
         toolBarRender={() => [
@@ -180,22 +180,35 @@ const TableList: React.FC = (props: any) => {
             <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
             开始分析
           </Button>,
-          <Button
-            type="primary"
-            key="primary"
-            // onClick={() => {
-            //   if (selectedRows && selectedRows.length > 0) {
-
-            //   }
-            // }}
-          >
-            <Link to={{
+          <Button type="primary" key="primary">
+            {selectedRows && selectedRows.length > 0 ? (
+              <Link
+                to={{
                   pathname: '/irt/list',
-                  search: `?expList=${selectedRows?.map((item)=>{return item.id})}`,
-                }}>
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
-            查看IRT
-            </Link>
+                  search: `?expList=${selectedRows?.map((item) => {
+                    return item.id;
+                  })}`,
+                }}
+              >
+                <Icon
+                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                  icon="mdi:playlist-plus"
+                />
+                查看IRT
+              </Link>
+            ) : (
+              <a
+                onClick={() => {
+                  message.warn('至少选择一个实验 🔬');
+                }}
+              >
+                <Icon
+                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                  icon="mdi:playlist-plus"
+                />
+                查看IRT
+              </a>
+            )}
           </Button>,
         ]}
         columns={columns}

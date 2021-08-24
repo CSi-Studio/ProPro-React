@@ -1,4 +1,4 @@
-import { Form, message, Tooltip, Tag, Space, Row, Col } from 'antd';
+import { Form, message, Tooltip, Tag, Space, Row, Col, Table } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -154,72 +154,101 @@ const TableList: React.FC = (props: any) => {
           title: 'CutInfo',
           dataIndex: 'cutInfo',
           hideInSearch: true,
-          width: 100,
           render: (dom, entity) => [
-            <Row gutter={[8, 8]}>
-              {entity.fragments.map((item) => (
-                <Col span={16}>{item.cutInfo}</Col>
-              ))}
-            </Row>,
+            <Table
+              showHeader={false}
+              bordered={false}
+              pagination={false}
+              size="small"
+              dataSource={entity.fragments}
+              columns={[
+                {
+                  dataIndex: 'cutInfo',
+                },
+              ]}
+            />,
+            // <Row>
+            //   {entity.fragments.map((item) => (
+            //     <Col span={6}>{item.cutInfo}</Col>
+            //   ))}
+            // </Row>,
           ],
         },
         {
           title: '碎片荷质比',
           dataIndex: 'mz',
           hideInSearch: true,
-          width: 200,
+          // width: 200,
           render: (dom, entity) => [
-            <Row gutter={[8, 8]}>
-              {entity.fragments.map((item) => (
-                <Col span={16}>
-                  <Tooltip title={item.mz}>{item.mz}</Tooltip>
-                </Col>
-              ))}
-            </Row>,
+            <Table
+              showHeader={false}
+              bordered={false}
+              pagination={false}
+              size="small"
+              dataSource={entity.fragments}
+              columns={[
+                {
+                  dataIndex: 'mz',
+                },
+              ]}
+            />,
           ],
         },
         {
           title: '强度',
           dataIndex: 'intensity',
           hideInSearch: true,
-          width: 120,
           render: (dom, entity) => [
-            <Row gutter={[8, 8]}>
-              {entity.fragments.map((item) => (
-                <Col span={16}>{item.intensity}</Col>
-              ))}
-            </Row>,
+            <Table
+              showHeader={false}
+              bordered={false}
+              pagination={false}
+              size="small"
+              dataSource={entity.fragments}
+              columns={[
+                {
+                  dataIndex: 'intensity',
+                },
+              ]}
+            />,
           ],
         },
         {
           title: '带电量',
           dataIndex: 'charge',
           hideInSearch: true,
-          width: 60,
           render: (dom, entity) => [
-            <Row gutter={[8, 8]}>
-              {entity.fragments.map((item) => (
-                <Col span={16}>{item.charge}</Col>
-              ))}
-            </Row>,
+            <Table
+              showHeader={false}
+              bordered={false}
+              pagination={false}
+              size="small"
+              dataSource={entity.fragments}
+              columns={[
+                {
+                  dataIndex: 'charge',
+                },
+              ]}
+            />,
           ],
         },
         {
           title: 'Annotations',
           dataIndex: 'Annotations',
           hideInSearch: true,
-          width: 150,
           render: (dom, entity) => [
-            <Row gutter={[8, 8]}>
-              {entity.fragments.map((item) => (
-                <Col
-                  style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  span={24}
-                >
-                  <Tooltip title={item.annotations}>{item.annotations}</Tooltip>
-                </Col>
-              ))}
-            </Row>,
+            <Table
+              showHeader={false}
+              bordered={false}
+              pagination={false}
+              size="small"
+              dataSource={entity.fragments}
+              columns={[
+                {
+                  dataIndex: 'annotations',
+                },
+              ]}
+            />,
           ],
         },
       ],
@@ -285,7 +314,6 @@ const TableList: React.FC = (props: any) => {
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        bordered
         headerTitle={
           props?.location?.state?.libraryName === undefined
             ? '肽段列表'

@@ -342,6 +342,21 @@ const TableList: React.FC = () => {
       ],
     },
   ];
+
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRowsState];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
@@ -353,6 +368,13 @@ const TableList: React.FC = () => {
         tableAlertRender={false}
         pagination={{
           current: pageNo,
+        }}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
         }}
         toolBarRender={() => [
           <Tooltip title={'新增'} key="add">
@@ -604,7 +626,6 @@ const TableList: React.FC = () => {
           },
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as string;
           const success = await handleUpdate(value);
           if (success) {
