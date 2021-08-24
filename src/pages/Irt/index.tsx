@@ -6,7 +6,7 @@ import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
 
 // 每行grid的个数
-const gridNumberInRow = 5;
+const gridNumberInRow = 4;
 const xName = `LibTime`;
 const yName = `RealTime/s`;
 const TableList: React.FC = (props) => {
