@@ -189,11 +189,7 @@ const TableList: React.FC = (props: any) => {
             开始分析
           </Button>,
           <Button type="primary" key="primary">
-<<<<<<< HEAD
             {selectedRows && selectedRows.length > 0 ? (
-=======
-            {selectedRows && selectedRows.length > 0 && selectedRows.length <= 50 ? (
->>>>>>> efc020bb086d0c0af12733585ce22d07b854fe94
               <Link
                 to={{
                   pathname: '/irt/list',
