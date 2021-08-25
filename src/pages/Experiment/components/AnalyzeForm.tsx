@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import ProForm, {
-  ModalForm,
-  ProFormSelect,
-} from '@ant-design/pro-form';
+import React from 'react';
+import ProForm, { ModalForm, ProFormSelect } from '@ant-design/pro-form';
 import { AnalyzeParams } from '../data';
-import {YesOrNo} from '@/components/Enums/Selects'
+import { YesOrNo } from '@/components/Enums/Selects';
 
 export type AnalyzeFormProps = {
   onSubmit: (values: AnalyzeParams) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   analyzeModalVisible: boolean;
   values: Partial<any>;
   form: any;
@@ -19,10 +16,21 @@ const AnalyzeForm: React.FC<AnalyzeFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title={"项目名:"+(values.prepareData?.projectName)+",开始分析-"+(values.expNum?values.expNum:0)+"个实验被选中"}
+      title={
+        '项目名:' +
+        values.prepareData?.projectName +
+        ',开始分析-' +
+        (values.expNum ? values.expNum : 0) +
+        '个实验被选中'
+      }
       width={800}
       visible={props.analyzeModalVisible}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
     >
       <ProForm.Group>
@@ -60,7 +68,7 @@ const AnalyzeForm: React.FC<AnalyzeFormProps> = (props) => {
             return res;
           }}
         />
-         <ProFormSelect
+        <ProFormSelect
           initialValue={values.prepareData?.methodId}
           width="sm"
           name="methodId"
@@ -79,7 +87,7 @@ const AnalyzeForm: React.FC<AnalyzeFormProps> = (props) => {
         />
       </ProForm.Group>
       <ProForm.Group>
-      <ProFormSelect
+        <ProFormSelect
           initialValue={'false'}
           width="sm"
           name="onlyIrt"

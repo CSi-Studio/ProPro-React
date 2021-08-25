@@ -11,16 +11,10 @@ import { Link } from 'umi';
 
 const TableList: React.FC = (props: any) => {
   const [formAnalyze] = Form.useForm();
+  /* 分析窗口变量 */
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
-  // const [formUpdate] = Form.useForm();
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
-
-  /** 更新窗口的弹窗 */
-  // const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [total, setTotal] = useState<any>();
@@ -84,6 +78,7 @@ const TableList: React.FC = (props: any) => {
                 to={{
                   pathname: '/blockIndex',
                   search: `?expId=${entity.id}`,
+                  
                   state: { projectId, expName: entity.name },
                 }}
               >
@@ -142,6 +137,19 @@ const TableList: React.FC = (props: any) => {
   ];
   return (
     <>
+    <div style={{background:'#FFF'}}>
+      <Link 
+          to={{
+            pathname: '/project/list',
+          
+          }}
+        >
+          <Tag color="blue" style={{margin:'0 0 0 30px'}}>
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+              返回项目列表
+          </Tag>
+         </Link>
+    </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
@@ -154,7 +162,7 @@ const TableList: React.FC = (props: any) => {
         rowKey="id"
         size="small"
         pagination={{
-          total: total,
+          pageSize:50
         }}
         tableAlertRender={false}
         // request={experimentList}
@@ -177,17 +185,22 @@ const TableList: React.FC = (props: any) => {
               }
             }}
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
+            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
             开始分析
           </Button>,
           <Button type="primary" key="primary">
+<<<<<<< HEAD
             {selectedRows && selectedRows.length > 0 ? (
+=======
+            {selectedRows && selectedRows.length > 0 && selectedRows.length <= 50 ? (
+>>>>>>> efc020bb086d0c0af12733585ce22d07b854fe94
               <Link
                 to={{
                   pathname: '/irt/list',
                   search: `?expList=${selectedRows?.map((item) => {
                     return item.id;
                   })}`,
+                  state: { projectId, expNum: selectedRows.length },
                 }}
               >
                 <Icon
@@ -222,11 +235,9 @@ const TableList: React.FC = (props: any) => {
       {selectedRows && selectedRows.length ? (
         <AnalyzeForm
           form={formAnalyze}
-          onCancel={{
-            onCancel: () => {
-              handleAnalyzeModalVisible(false);
-              formAnalyze?.resetFields();
-            },
+          onCancel={() => {
+            handleAnalyzeModalVisible(false);
+            formAnalyze?.resetFields();
           }}
           onSubmit={async (value: AnalyzeParams) => {
             value.expIdList = selectedRows.map((e) => e.id);

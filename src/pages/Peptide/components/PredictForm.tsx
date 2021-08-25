@@ -1,6 +1,6 @@
 import React from 'react';
 import ProForm, { ProFormSelect, ModalForm, ProFormDigit } from '@ant-design/pro-form';
-import { PeptideType, SpModelType, YesOrNo } from '@/components/Enums/Selects';
+import { SpModelType, YesOrNo } from '@/components/Enums/Selects';
 
 export type predictFormValueType = {
   spModel: string;
@@ -11,7 +11,7 @@ export type predictFormValueType = {
 
 export type PredictFormProps = {
   onSubmit: (values: predictFormValueType) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   predictModalVisible: boolean;
   values: any;
   form: any;
@@ -24,7 +24,12 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
       title="预测肽段碎片"
       width={800}
       visible={props.predictModalVisible}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
     >
       <ProForm.Group>

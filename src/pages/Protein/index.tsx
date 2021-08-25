@@ -1,4 +1,4 @@
-import { Button, Form, message, Tooltip } from 'antd';
+import { Button, Form, message, Tag, Tooltip } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { addList, proteinList } from './service';
 import type { TableAddItem, TableListItem, TableListPagination } from './data';
@@ -6,6 +6,7 @@ import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import { Icon } from '@iconify/react';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 /**
  * 添加库
@@ -27,10 +28,8 @@ const TableList: React.FC = (props: any) => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
-  const [pageSize,setPageSize] = useState<number>(20);
-  const [pageNo,setPageSizeNo] = useState<any>(0);
-  const [total,setTotal] = useState<any>();
+  // const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
+  const [total, setTotal] = useState<any>();
   const [formCreate] = Form.useForm();
   // const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [createRow, setCreateRow] = useState<TableAddItem>();
@@ -63,7 +62,15 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'reviewed',
       hideInSearch: true,
       render: (dom, entity) => {
-        return entity.reviewed ? '✅' : '❌';
+        return entity.reviewed ? (
+          <Tag icon={<CheckCircleOutlined />} color="success">
+            已审核
+          </Tag>
+        ) : (
+          <Tag icon={<CloseCircleOutlined />} color="error">
+            未审核
+          </Tag>
+        );
       },
     },
     {
@@ -120,11 +127,11 @@ const TableList: React.FC = (props: any) => {
     },
     {
       title: 'UniProt链接🔗',
-      dataIndex: 'uniPortLink',
+      dataIndex: 'uniProtLink',
       hideInSearch: true,
       render: (dom, entity) => {
         return (
-          <a href={entity.uniProtLink ? entity.uniProtLink : 'http://www.csibio.net/'}>UniProt</a>
+          <a href={entity?.uniProtLink ? entity?.uniProtLink : 'http://www.csibio.net/'}>UniProt</a>
         );
       },
     },
@@ -156,13 +163,14 @@ const TableList: React.FC = (props: any) => {
         tableAlertRender={false}
         request={async (params) => {
           const msg = await proteinList({ ...params });
-          setTotal(msg.totalNum)
-          return Promise.resolve(msg);}}
+          setTotal(msg.totalNum);
+          return Promise.resolve(msg);
+        }}
         // dataSource={tableListDataSource}
         columns={columns}
         pagination={{
-          total:total
-          }}
+          total: total,
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -188,12 +196,9 @@ const TableList: React.FC = (props: any) => {
       {/* 添加列表 */}
       <CreateForm
         form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            // setPopup(false);
-            formCreate?.resetFields();
-          },
+        onCancel={() => {
+          handleModalVisible(false);
+          formCreate?.resetFields();
         }}
         onSubmit={async (value) => {
           const success = await handleAdd(value);

@@ -134,12 +134,12 @@ const handleRepeatCount = async (libraryId: string) => {
 
 /**
  * 删除库
- * @param selectedRowsState
+ * @param selectedRows
  */
-const handleRemove = async (selectedRowsState: TableListItem[]) => {
+const handleRemove = async (selectedRows: TableListItem[]) => {
   try {
     await removeList({
-      libraryIds: selectedRowsState[0].id,
+      libraryIds: selectedRows[0].id,
     });
     message.success('删除成功，希望你不要后悔 🥳');
     return true;
@@ -155,7 +155,7 @@ const TableList: React.FC = () => {
   const [formDelete] = Form.useForm();
   const [formClone] = Form.useForm();
   /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -341,9 +341,9 @@ const TableList: React.FC = () => {
       ],
     },
   ];
-
+  /* 点击行选中相关 */
   const selectRow = (record: any) => {
-    const rowData = [...selectedRowsState];
+    const rowData = [...selectedRows];
     if (rowData.length == 0) {
       rowData.push(record);
       setSelectedRows(rowData);
@@ -397,8 +397,8 @@ const TableList: React.FC = () => {
             <a
               onClick={() => {
                 formClone?.resetFields();
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
                     handleCloneModalVisible(true);
                     setSelectedRows([]);
                   } else {
@@ -425,16 +425,16 @@ const TableList: React.FC = () => {
                     <a
                       key="Shuffle"
                       onClick={() => {
-                        if (selectedRowsState?.length > 0) {
-                          if (selectedRowsState.length == 1) {
+                        if (selectedRows?.length > 0) {
+                          if (selectedRows.length == 1) {
                             const values = {
-                              libraryId: selectedRowsState[0].id,
+                              libraryId: selectedRows[0].id,
                               generator: 'shuffle',
                             };
                             handleGenerate(values);
                             setSelectedRows([]);
                           }
-                          if (selectedRowsState.length > 1) {
+                          if (selectedRows.length > 1) {
                             message.warn('目前只支持单个库的伪肽段生成');
                             setSelectedRows([]);
                           }
@@ -455,56 +455,56 @@ const TableList: React.FC = () => {
                 </Menu.Item>
                 <Menu.Item key="2">
                   <Tooltip placement="left" title={'Nico方法'} key="Nico">
-                    <Tag>
-                      <a
-                        key="Nico"
-                        onClick={() => {
-                          if (selectedRowsState?.length > 0) {
-                            if (selectedRowsState.length == 1) {
-                              const values = {
-                                libraryId: selectedRowsState[0].id,
-                                generator: 'nico',
-                              };
-                              handleGenerate(values);
-                              setSelectedRows([]);
-                            }
-                            if (selectedRowsState.length > 1) {
-                              message.warn('目前只支持单个库的伪肽段生成');
-                              setSelectedRows([]);
-                            }
-                          } else {
-                            message.warn('请先选择一个库');
+                    <a
+                      key="Nico"
+                      onClick={() => {
+                        if (selectedRows?.length > 0) {
+                          if (selectedRows.length == 1) {
+                            const values = {
+                              libraryId: selectedRows[0].id,
+                              generator: 'nico',
+                            };
+                            handleGenerate(values);
+                            setSelectedRows([]);
                           }
-                        }}
-                      >
+                          if (selectedRows.length > 1) {
+                            message.warn('目前只支持单个库的伪肽段生成');
+                            setSelectedRows([]);
+                          }
+                        } else {
+                          message.warn('请先选择一个库');
+                        }
+                      }}
+                    >
+                      <Tag>
                         <Icon
                           style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
                           icon="mdi:alpha-n-circle"
                         />
                         Nico方法
-                      </a>
-                    </Tag>
+                      </Tag>
+                    </a>
                   </Tooltip>
                 </Menu.Item>
               </Menu>
             }
           >
-            <Tag color="blue">
-              <Tooltip title={'生成伪肽段'} key="generateDecoys">
+            <Tooltip title={'生成伪肽段'} key="generateDecoys">
+              <Tag color="blue">
                 <Icon
                   style={{ verticalAlign: '-5px', fontSize: '18px', color: '#0D93F7' }}
                   icon="mdi:alpha-p-box"
                 />
                 生成伪肽段
-              </Tooltip>
-            </Tag>
+              </Tag>
+            </Tooltip>
           </Dropdown>,
           <Tooltip placement="top" title={'统计基本信息'} key="statistics">
             <a
               onClick={() => {
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
-                    handleStatistic(selectedRowsState[0].id);
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
+                    handleStatistic(selectedRows[0].id);
                     setSelectedRows([]);
                   } else {
                     message.warn('目前只支持单个库的基本信息的统计');
@@ -525,9 +525,9 @@ const TableList: React.FC = () => {
             <a
               key="repeatCount"
               onClick={() => {
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
-                    handleRepeatCount(selectedRowsState[0].id);
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
+                    handleRepeatCount(selectedRows[0].id);
                     setSelectedRows([]);
                   } else {
                     message.warn('目前只支持单个库的肽段重复率的统计');
@@ -549,8 +549,8 @@ const TableList: React.FC = () => {
               key="delete"
               onClick={async () => {
                 formDelete?.resetFields();
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
                     handleDeleteModalVisible(true);
                   } else {
                     message.warn('目前只支持单个库的删除');
@@ -571,7 +571,7 @@ const TableList: React.FC = () => {
         request={libraryList}
         columns={columns}
         rowSelection={{
-          selectedRowKeys: selectedRowsState?.map((item) => {
+          selectedRowKeys: selectedRows?.map((item) => {
             return item.id;
           }),
           onChange: (_, selectedRowKeys) => {
@@ -583,11 +583,9 @@ const TableList: React.FC = () => {
       {/* 新建列表 */}
       <CreateForm
         form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            formCreate?.resetFields();
-          },
+        onCancel={() => {
+          handleModalVisible(false);
+          formCreate?.resetFields();
         }}
         onSubmit={async (value: addFormValueType) => {
           // const success = handleAdd(value, addList({ ...value }), '123', '123', '123');
@@ -617,12 +615,10 @@ const TableList: React.FC = () => {
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
           value.id = currentRow?.id as string;
@@ -641,18 +637,16 @@ const TableList: React.FC = () => {
 
       {/* 删除列表 */}
       <DeleteForm
-        selectedRowsState={selectedRowsState}
+        selectedRows={selectedRows}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setSelectedRows([]);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === selectedRowsState[0]?.name) {
-            const success = await handleRemove(selectedRowsState);
+          if (value.name === selectedRows[0]?.name) {
+            const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
               setSelectedRows([]);
@@ -670,12 +664,10 @@ const TableList: React.FC = () => {
       {/* 克隆列表 */}
       <CloneForm
         form={formClone}
-        onCancel={{
-          onCancel: () => {
-            handleCloneModalVisible(false);
-            setSelectedRows([]);
-            formClone?.resetFields();
-          },
+        onCancel={() => {
+          handleCloneModalVisible(false);
+          setSelectedRows([]);
+          formClone?.resetFields();
         }}
         onSubmit={async (params) => {
           const p: { id: any; newLibName: string; includeDecoy?: boolean } = {
@@ -683,7 +675,7 @@ const TableList: React.FC = () => {
             newLibName: '',
             includeDecoy: false,
           };
-          p.id = selectedRowsState[0].id;
+          p.id = selectedRows[0].id;
           p.newLibName = params.newLibName;
           p.includeDecoy = params.includeDecoy;
 
@@ -697,7 +689,7 @@ const TableList: React.FC = () => {
           }
         }}
         cloneModalVisible={cloneModalVisible}
-        values={selectedRowsState}
+        values={selectedRows}
       />
     </>
   );

@@ -1,13 +1,11 @@
 import React from 'react';
 import ProForm, { ProFormSelect, ProFormText, ModalForm } from '@ant-design/pro-form';
-import { YesOrNo } from '@/components/Enums/Selects';
 
 export type updateFormValueType = {
-  isUnique?: boolean;
-  mz?: number;
-  protein?: string;
-  rt?: number;
+  name?: string;
   id: string;
+  tags?: any;
+  note?: string;
 };
 
 export type UpdateFormProps = {
@@ -22,8 +20,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title="编辑肽段库"
-      width={530}
+      title="更新概览"
+      width={400}
       visible={props.updateModalVisible}
       modalProps={{
         maskClosable: false,
@@ -34,22 +32,28 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       onFinish={props.onSubmit}
     >
       <ProForm.Group>
-        <ProFormText initialValue={props.values.mz} width="sm" name="mz" label="荷质比（m/z）" />
-        <ProFormText initialValue={props.values.rt} width="sm" name="rt" label="RT" />
         <ProFormText
+          rules={[
+            {
+              required: true,
+              message: '项目名称不能为空',
+            },
+          ]}
           disabled
-          initialValue={props.values.proteinIdentifier}
+          initialValue={props.values.name}
           width="sm"
-          name="protein"
-          label="蛋白质标识符"
+          name="name"
+          label="概览名"
+          tooltip="概览名必须唯一"
         />
         <ProFormSelect
-          // initialValue={props.values.isUnique}
-          options={YesOrNo}
-          width="sm"
-          name="isUnique"
-          label="是否唯一"
+          initialValue={props.values.tags}
+          width="md"
+          name="tags"
+          label="tags"
+          mode="tags"
         />
+        <ProFormText initialValue={props.values.note} width="sm" name="note" label="标注" />
       </ProForm.Group>
     </ModalForm>
   );

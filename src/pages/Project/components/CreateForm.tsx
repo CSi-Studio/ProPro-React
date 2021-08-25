@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProForm, {
   ProFormText,
   ModalForm,
@@ -22,7 +22,7 @@ export type addFormValueType = {
 
 export type CreateFormProps = {
   onSubmit: (values: addFormValueType) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   createModalVisible: boolean;
   values: Partial<any>;
   form: any;
@@ -36,7 +36,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       title="创建一个项目"
       width={800}
       visible={props.createModalVisible}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
     >
       <ProForm.Group>

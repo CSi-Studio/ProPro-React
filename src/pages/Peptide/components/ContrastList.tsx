@@ -8,7 +8,7 @@ import ProTable from '@ant-design/pro-table';
 export type ContrastListFormProps = {
   contrastModalVisible: boolean;
   onSubmit: (values: any) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   values: any;
   form: any;
   predictList: any;
@@ -21,7 +21,7 @@ export type TableListItem = {
 };
 const ContrastList: React.FC<ContrastListFormProps> = (props) => {
   /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<{ mz: string; cutInfo: string }[]>();
+  const [selectedRows, setSelectedRows] = useState<{ mz: string; cutInfo: string }[]>();
   const columns: ProColumns[] = [
     {
       title: '库中肽段碎片荷质比',
@@ -86,7 +86,12 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       form={props.form}
       title="🧩 肽段碎片比较"
       width={600}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
       visible={props.contrastModalVisible}
       submitter={{
@@ -99,7 +104,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
               type="primary"
               key="submit"
               onClick={() => {
-                _props.form?.setFieldsValue({ fragments: selectedRowsState });
+                _props.form?.setFieldsValue({ fragments: selectedRows });
                 _props.form?.submit?.();
               }}
             >

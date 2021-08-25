@@ -1,4 +1,4 @@
-import { Button, Input, Tooltip } from 'antd';
+import { Button, Tag, Tooltip } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListDetail, TableListItem, TableListPagination } from './data';
@@ -7,12 +7,11 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
+import { LeftCircleFilled } from '@ant-design/icons';
 
 const TableList: React.FC = (props: any) => {
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  // const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
 
   const [idRow, setRowId] = useState<any>();
   const [detaileRow, setDetailRow] = useState<TableListDetail>();
@@ -25,11 +24,13 @@ const TableList: React.FC = (props: any) => {
       title: 'level',
       dataIndex: 'level',
       search: false,
+      sorter:(a,b) =>(a.level < b.level ? -1:1)
     },
     {
       title: '文件开始位置',
       dataIndex: 'startPtr',
       search: false,
+      sorter:(a,b) =>(a.startPtr < b.startPtr ? -1:1)
     },
     {
       title: '文件结束位置',
@@ -39,15 +40,21 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'mz范围',
       dataIndex: 'range',
+      sorter: (a, b) => {
+        if (a.range?.start < b.range?.start) {
+          return -1;
+        }
+        if (a.range?.start> b.range?.start) {
+          return 1;
+        }
+        return 0;
+      },
       search: false,
       render: (dom: any, entity: any) => {
         if (entity.range) {
           return (
             <span>
-              start:{entity?.range?.start}
-              <br />
-              end:{entity?.range?.end}
-              <br />
+            {entity?.range?.start}~{entity?.range?.end}
             </span>
           );
         }
@@ -103,18 +110,22 @@ const TableList: React.FC = (props: any) => {
 
   return (
     <>
-      <Link
-        to={{
-          pathname: '/experiment/list',
-          search: `?projectId=${props?.location?.state?.projectId}`,
-        }}
-      >
-        <Button type="primary">返回实验列表</Button>
-      </Link>
-
+      <div style={{ background: '#FFF' }}>
+        <Link
+          to={{
+            pathname: '/experiment/list',
+            search: `?projectId=${props?.location?.state?.projectId}`,
+          }}
+        >
+          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
+            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+            返回实验列表
+          </Tag>
+        </Link>
+      </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle=""
+        headerTitle={'实验名：' + props?.location?.state.expName}
         actionRef={actionRef}
         rowKey="id"
         size="small"
@@ -126,6 +137,7 @@ const TableList: React.FC = (props: any) => {
         }}
         columns={columns}
         pagination={false}
+        toolBarRender={() => []}
         rowSelection={{}}
       />
 
@@ -138,6 +150,7 @@ const TableList: React.FC = (props: any) => {
           setDetailRow(undefined);
           setShowDetail(false);
         }}
+        expNameRow={props?.location?.state?.expName}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import { Form, message, Tooltip, Tag, Space, Row, Col, Table } from 'antd';
+import { Form, message, Tooltip, Tag, Space, Table } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -50,10 +50,8 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
 };
 
 const TableList: React.FC = (props: any) => {
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   /** 删除窗口的弹窗 */
   const [formDelete] = Form.useForm();
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
@@ -103,9 +101,7 @@ const TableList: React.FC = (props: any) => {
   const handleContrast = async (value: { fragments: any[] }) => {
     const hide = message.loading('正在加载');
     value.fragments.map((item: any) => {
-      // eslint-disable-next-line no-param-reassign
       item.predict = null;
-      // eslint-disable-next-line no-param-reassign
       delete item.key;
       return true;
     });
@@ -178,7 +174,6 @@ const TableList: React.FC = (props: any) => {
           title: '碎片荷质比',
           dataIndex: 'mz',
           hideInSearch: true,
-          // width: 200,
           render: (dom, entity) => [
             <Table
               showHeader={false}
@@ -269,7 +264,10 @@ const TableList: React.FC = (props: any) => {
             }}
             key="detail"
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
+              编辑
+            </Tag>
           </a>
         </Tooltip>,
         <Tooltip title={'详情'} key="detail">
@@ -280,36 +278,31 @@ const TableList: React.FC = (props: any) => {
             }}
             key="detail"
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
-          </a>
-        </Tooltip>,
-        <Tooltip title={'预测肽段碎片'} key="predict">
-          <a
-            onClick={() => {
-              formPredict?.resetFields();
-              handlePredictModalVisible(true);
-              setCurrentRow(record);
-            }}
-            key="predict"
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:robot-dead" />
-          </a>
-        </Tooltip>,
-        <Tooltip title={'删除'} key="delete">
-          <a
-            onClick={() => {
-              formDelete?.resetFields();
-              handleDeleteModalVisible(true);
-              setCurrentRow(record);
-            }}
-            key="delete"
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '18px' }} icon="mdi:delete" />
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
+              详情
+            </Tag>
           </a>
         </Tooltip>,
       ],
     },
   ];
+  /* 行选择 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
+
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
@@ -333,13 +326,69 @@ const TableList: React.FC = (props: any) => {
         }}
         tableAlertRender={false}
         columns={columns}
-        rowSelection={
-          {
-            // onChange: (_, selectedRows) => {
-            // setSelectedRows(selectedRows);
-            // },
-          }
-        }
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
+        toolBarRender={() => [
+          <Tooltip title={'预测肽段碎片'} key="predict">
+            <a
+              onClick={() => {
+                formPredict?.resetFields();
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
+                    handlePredictModalVisible(true);
+                    // setSelectedRows([]);
+                  } else {
+                    message.warn('目前只支持单个肽段的预测');
+                    setSelectedRows([]);
+                  }
+                } else {
+                  message.warn('请选择一个的肽段');
+                }
+              }}
+            >
+              <Tag color="blue">
+                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:robot-dead" />
+                预测肽段碎片
+              </Tag>
+            </a>
+          </Tooltip>,
+          <Tooltip title={'删除'} key="delete">
+            <a
+              onClick={() => {
+                formDelete?.resetFields();
+                handleDeleteModalVisible(true);
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
+                    handleDeleteModalVisible(true);
+                  } else {
+                    message.warn('目前只支持单个肽段的删除');
+                    setSelectedRows([]);
+                  }
+                } else {
+                  message.warn('请选择一个的肽段');
+                }
+              }}
+            >
+              <Tag color="error">
+                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+                删除
+              </Tag>
+            </a>
+          </Tooltip>,
+        ]}
+        rowSelection={{
+          selectedRowKeys: selectedRows?.map((item) => {
+            return item.id;
+          }),
+          onChange: (_, selectedRowKeys) => {
+            setSelectedRows(selectedRowKeys);
+          },
+        }}
       />
 
       {/* 列表详情 */}
@@ -356,15 +405,12 @@ const TableList: React.FC = (props: any) => {
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as string;
           const success = await handleUpdate(value);
           if (success) {
@@ -382,16 +428,13 @@ const TableList: React.FC = (props: any) => {
       {/* 预测肽段碎片弹窗 */}
       <PredictForm
         form={formPredict}
-        onCancel={{
-          onCancel: () => {
-            setCurrentRow(undefined);
-            handlePredictModalVisible(false);
-            formPredict?.resetFields();
-          },
+        onCancel={() => {
+          setSelectedRows([]);
+          handlePredictModalVisible(false);
+          formPredict?.resetFields();
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
-          value.peptideId = currentRow?.id as string;
+          value.peptideId = selectedRows[0]?.id as string;
           const success = await handlePredict(value);
           if (success) {
             handlePredictModalVisible(false);
@@ -406,45 +449,41 @@ const TableList: React.FC = (props: any) => {
       {/* 预测对比弹窗 */}
       <ContrastList
         form={formContrast}
-        onCancel={{
-          onCancel: () => {
-            handleContrastModalVisible(false);
-            setCurrentRow(undefined);
-            formContrast?.resetFields();
-          },
+        onCancel={() => {
+          handleContrastModalVisible(false);
+          setSelectedRows([]);
+          formContrast?.resetFields();
         }}
         onSubmit={async (value) => {
           const success = await handleContrast(value);
           if (success) {
             handleContrastModalVisible(false);
-            setCurrentRow(undefined);
+            setSelectedRows([]);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
         contrastModalVisible={contrastModalVisible}
-        values={currentRow}
+        values={selectedRows[0]}
         predictList={predictList}
       />
 
       {/* 删除列表 */}
       <DeleteForm
-        currentRow={currentRow}
+        currentRow={selectedRows[0]}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setCurrentRow(undefined);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === currentRow?.peptideRef) {
-            const success = await handleRemove(currentRow);
+          if (value.name === selectedRows[0]?.peptideRef) {
+            const success = await handleRemove(selectedRows[0]);
             if (success) {
               handleDeleteModalVisible(false);
-              setCurrentRow(undefined);
+              setSelectedRows([]);
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -454,7 +493,7 @@ const TableList: React.FC = (props: any) => {
           }
         }}
         deleteModalVisible={deleteModalVisible}
-        values={currentRow || {}}
+        values={selectedRows[0] || {}}
       />
     </>
   );

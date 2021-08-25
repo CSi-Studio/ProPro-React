@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Drawer, message, Slider, Space, Spin } from 'antd';
+import { Button, Drawer, message, Slider, Space, Tag } from 'antd';
 import type { TableListDetail } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { blockIndexDetail, spectrumCharts } from '../service';
-import { parseInt, set } from 'lodash';
+import { parseInt } from 'lodash';
 import ChartsForm from './DetailChartsForm';
 
 export type UpdateFormProps = {
@@ -12,12 +12,13 @@ export type UpdateFormProps = {
   currentRow: any;
   columns: any;
   onClose: () => void;
+  expNameRow:any;
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const [sliderValue, setValue] = useState<any>();
-  const [maxRT, setMaxRT] = useState<any>();
-  const [minRT, setMintRT] = useState<any>();
+  // const [maxRT, setMaxRT] = useState<any>();
+  // const [minRT, setMintRT] = useState<any>();
   const [showCharts, setShowCharts] = useState<boolean>(false);
   const [smallRange, setSmallRange] = useState<boolean>(true);
   const [chartsData, setChartsData] = useState<any>();
@@ -25,13 +26,15 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const [maxRange, setMaxRange] = useState<any>();
   const [minRange, setMinRange] = useState<any>();
   const [detailValue, setDetailValue] = useState<any>([0, 0]);
+  var getRandomColor = function(){
+    return '#'+Math.floor(Math.random()*16777215).toString(16);
+  }
+  // const onFinish = (values: any) => {
+  //   setMaxRT(values.max);
+  //   setMintRT(values.min);
+  // };
 
-  const onFinish = (values: any) => {
-    setMaxRT(values.max);
-    setMintRT(values.min);
-  };
-
-  const onFinishFailed = (errorInfo: any) => {};
+  // const onFinishFailed = (errorInfo: any) => {};
   const columns = [
     {
       title: 'ID',
@@ -80,7 +83,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           <>
             {/* <Slider vertical reverse={true} dots onChange={setValue} value={sliderValue} style={{height: 400}}   range={{draggableTrack:true}}  max={entity.rts.length} min={0} /> */}
 
-            <Space direction="vertical">
+            {/* <Space direction="vertical" >
               <span>
                 当前的rt时间范围为:{entity.rts[0]}~~{entity.rts[entity.rts.length - 1]}
               </span>
@@ -113,32 +116,44 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
                   style={{ width: 400 }}
                 />
               </span>
-              <ul>
-                {entity?.rts.map((item: any, index: any) => {
-                  if (index < parseInt(detailValue[1]) && index > parseInt(detailValue[0])) {
-                    return (
-                      <li key={index}>
-                        <Button
-                          type="dashed"
-                          block
-                          onClick={async () => {
-                            setShowCharts(true);
-                            const hide = message.loading('正在加载');
-                            const msg = await spectrumCharts({ blockIndexId: entity.id, rt: item });
-                            hide();
-                            setChartsData(msg.data);
-                            setRtData(item);
-                          }}
-                        >
-                          {item}
-                        </Button>
-                      </li>
+            </Space> */}
+           
+            <span style={{width:'800px'}}>
+            {         
+             
+                entity?.rts.map((item: any, index: any) => {
+                              
+                    return (              
+                      // <Button
+                      //     type="dashed"
+                      //     block
+                      //     onClick={async () => {
+                      //       setShowCharts(true);
+                      //       const hide = message.loading('正在加载');
+                      //       const msg = await spectrumCharts({ blockIndexId: entity.id, rt: item });
+                      //       hide();
+                      //       setChartsData(msg.data);
+                      //       setRtData(item);
+                      //     }}
+                      //   >
+                      //     {item}
+                      // </Button> 
+                      <Space direction={"horizontal"} size={1}>
+                      <Tag key={index}   onClick={async () => {
+                        setShowCharts(true);
+                        const hide = message.loading('正在加载');
+                        const msg = await spectrumCharts({ blockIndexId: entity.id, rt: item });
+                        hide();
+                        setChartsData(msg.data);
+                        setRtData(item);
+                      }}>{item}</Tag>    
+                      </Space>                 
                     );
-                  }
+             
                   return null;
                 })}
-              </ul>
-            </Space>
+            </span>
+  
           </>
         );
       },
@@ -146,10 +161,10 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   ];
 
   return (
-    <Drawer width={700} visible={props.showDetail} onClose={props.onClose} closable={false}>
+    <Drawer width={900} visible={props.showDetail} onClose={props.onClose} closable={false}>
       <ProDescriptions<TableListDetail>
         column={2}
-        title={props.currentRow}
+        title={props.expNameRow}
         request={async () => {
           const msg = await blockIndexDetail({ id: props.currentRow });
           return Promise.resolve(msg);
@@ -160,17 +175,13 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
         columns={columns as ProDescriptionsItemProps<TableListDetail>[]}
       />
       <ChartsForm
-        onCancel={{
-          onCancel: () => {
-            setShowCharts(false);
-            setChartsData(undefined);
-            setRtData('');
-          },
+        onCancel={() => {
+          setShowCharts(false);
+          setChartsData(undefined);
+          setRtData('');
         }}
-        onSubmit={{
-          onSubmit: () => {
-            setShowCharts(false);
-          },
+        onSubmit={() => {
+          setShowCharts(false);
         }}
         rtData={rtData}
         chartsData={chartsData}

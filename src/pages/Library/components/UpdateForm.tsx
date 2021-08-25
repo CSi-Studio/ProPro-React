@@ -16,7 +16,7 @@ export type updateFormValueType = {
 
 export type UpdateFormProps = {
   onSubmit: (values: updateFormValueType) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   updateModalVisible: boolean;
   values: any;
   form: any;
@@ -29,7 +29,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       title="更新标准库"
       width={530}
       visible={props.updateModalVisible}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
     >
       <ProForm.Group>

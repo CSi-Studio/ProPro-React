@@ -12,12 +12,11 @@ export type cloneFormValueType = {
 
 export type CloneFormProps = {
   onSubmit: (values: cloneFormValueType) => Promise<void>;
-  onCancel: Record<string, () => void>;
+  onCancel: () => void;
   cloneModalVisible: boolean;
   values?: TableListItem[];
   form: any;
 };
-const a: number = 1;
 const CloneForm: React.FC<CloneFormProps> = (props) => {
   return (
     <ModalForm
@@ -25,7 +24,12 @@ const CloneForm: React.FC<CloneFormProps> = (props) => {
       title="克隆一个库"
       width={400}
       visible={props.cloneModalVisible}
-      modalProps={props.onCancel}
+      modalProps={{
+        maskClosable: false,
+        onCancel: () => {
+          props.onCancel();
+        },
+      }}
       onFinish={props.onSubmit}
       submitter={{
         searchConfig: {

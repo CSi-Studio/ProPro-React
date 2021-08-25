@@ -23,9 +23,9 @@ export async function detail(params: any) {
 }
 
 /** 删除库 GET library/remove  */
-export async function removeList(params: { taskIds: any }) {
+export async function removeList(params: { idList: any }) {
   return request(`${url}/task/remove`, {
-    method: 'GET',
+    method: 'POST',
     params: {
       ...params,
     },

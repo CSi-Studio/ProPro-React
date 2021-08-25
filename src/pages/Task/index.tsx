@@ -7,33 +7,20 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import { list, removeList } from './service';
 import DeleteForm from './components/DeleteForm';
-import { CheckCircleOutlined, SyncOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
 import DetailForm from './components/DetailForm';
 
 /**
- * 库详情
- * @param values
- */
-// const handleUpdate = async (values: DomainUpdate) => {
-//   const hide = message.loading('正在更新');
-//   try {
-//     await update({ ...values });
-//     hide();
-//     message.success('编辑成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     return false;
-//   }
-// };
-/**
  * 删除库
- * @param selectedRowsState
+ * @param selectedRows
  */
-const handleRemove = async (selectedRowsState: any[]) => {
+const handleRemove = async (selectedRows: any[]) => {
+  const idList = selectedRows.map((item) => {
+    return item.id;
+  });
   try {
     await removeList({
-      taskIds: selectedRowsState[0].id,
+      idList,
     });
     message.success('删除成功，希望你不要后悔 🥳');
     return true;
@@ -46,7 +33,7 @@ const handleRemove = async (selectedRowsState: any[]) => {
 const TableList: React.FC = () => {
   const [formDelete] = Form.useForm();
   // /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -60,7 +47,16 @@ const TableList: React.FC = () => {
       title: '任务名称',
       dataIndex: 'name',
       render: (text, record) => {
-        return <a>{text}</a>;
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            {text}
+          </a>
+        );
       },
     },
     {
@@ -72,7 +68,6 @@ const TableList: React.FC = () => {
       title: '任务状态',
       dataIndex: 'status',
       hideInSearch: true,
-
       render: (text, record) => {
         if (record.status == 'SUCCESS') {
           return (
@@ -92,14 +87,17 @@ const TableList: React.FC = () => {
       title: '花费时间',
       hideInSearch: true,
       dataIndex: 'totalCost',
+      align: 'right',
+      width: '100px',
+      sorter: (a, b) => (a.totalCost > b.totalCost ? -1 : 1),
       render: (text, record) => {
         if (record.totalCost >= 1000) {
-          return <Tag>{record.totalCost / 1000}s</Tag>;
+          return <Tag>{record.totalCost / 1000}m</Tag>;
         }
         if (record.totalCost) {
           return <Tag>{text}ms</Tag>;
         }
-        return false;
+        return <Tag>未开始</Tag>;
       },
     },
     {
@@ -112,6 +110,7 @@ const TableList: React.FC = () => {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
+      width: '100',
       hideInSearch: true,
       render: (text, record) => [
         <Tooltip title={'详情'} key="detail">
@@ -135,7 +134,7 @@ const TableList: React.FC = () => {
     <>
       <ProTable<TaskTableItem, Pagination>
         scroll={{ x: 'max-content' }}
-        headerTitle="方法列表"
+        headerTitle="任务列表"
         search={{ labelWidth: 'auto' }}
         actionRef={actionRef}
         rowKey="id"
@@ -147,15 +146,10 @@ const TableList: React.FC = () => {
               key="delete"
               onClick={async () => {
                 formDelete?.resetFields();
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
-                    handleDeleteModalVisible(true);
-                  } else {
-                    message.warn('目前只支持单个库的删除');
-                    setSelectedRows([]);
-                  }
+                if (selectedRows?.length > 0) {
+                  handleDeleteModalVisible(true);
                 } else {
-                  message.warn('请选择要删除的库');
+                  message.warn('请选择要删除的库，支持多选');
                 }
               }}
             >
@@ -176,7 +170,7 @@ const TableList: React.FC = () => {
         }}
         columns={columns}
         rowSelection={{
-          selectedRowKeys: selectedRowsState?.map((item) => {
+          selectedRowKeys: selectedRows?.map((item) => {
             return item.id;
           }),
           onChange: (_, selectedRowKeys) => {
@@ -196,18 +190,16 @@ const TableList: React.FC = () => {
       />
       {/* 删除列表 */}
       <DeleteForm
-        selectedRowsState={selectedRowsState}
+        selectedRows={selectedRows}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setSelectedRows([]);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === selectedRowsState[0]?.name) {
-            const success = await handleRemove(selectedRowsState);
+          if (value.name === '我确认删除') {
+            const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
               setSelectedRows([]);

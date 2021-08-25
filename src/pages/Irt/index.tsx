@@ -3,6 +3,8 @@ import { IrtOption } from './charts';
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
+import { Button } from 'antd';
+import { Link } from 'umi';
 
 // 每行grid的个数
 const gridNumberInRow = 4;
@@ -19,7 +21,7 @@ const TableList: React.FC = (props) => {
 
   const [handleOption, setHandleOption] = useState({});
   useEffect(() => {
-    const aa = async () => {
+    const op = async () => {
       const result = await irtList(props?.location?.query.expList)
       const irt = new IrtOption(result.data, gridNumberInRow, xName, yName, gridHeight, gridPaddingHeight);
       const option = irt.getIrtOption();
@@ -27,10 +29,22 @@ const TableList: React.FC = (props) => {
       Height = Math.ceil(result.data.length / gridNumberInRow) * (gridHeight+gridPaddingHeight);
       setHandleOption(option);
     };
-    aa();
+    op();
   }, []);
   return (
-    <ProCard>
+    <ProCard
+      title={props?.location?.state?.expNum + '个实验的IRT结果'}
+      extra={
+        <Link
+          to={{
+            pathname: '/experiment/list',
+            search: `?projectId=${props?.location?.state?.projectId}`,
+          }}
+        >
+          <Button type="primary">返回实验列表</Button>
+        </Link>
+      }
+    >
       <ReactECharts
         option={handleOption}
         style={{ width: `100%` , height: Height}}

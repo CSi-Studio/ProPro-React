@@ -1,16 +1,15 @@
 import { Icon } from '@iconify/react';
-import { Button, Form, message, Tag, Tooltip, Space } from 'antd';
+import { Form, message, Tag, Tooltip, Space, Dropdown, Menu } from 'antd';
 import React, { useState, useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { TableDropdown } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {
   addList,
   peptideScan,
   projectList,
-  removeAna,
   removeIrt,
   removeList,
+  removeRes,
   updateList,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -20,9 +19,9 @@ import DetailForm from './components/DetailForm';
 import type { updateFormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import DeleteForm from './components/DeleteForm';
-import DeleteAna from './components/DeleteAna';
 import DeleteIrt from './components/DeleteIrt';
 import { Link } from 'umi';
+import DeleteRes from './components/DeleteRes';
 
 /**
  * 添加库
@@ -97,15 +96,16 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
     return false;
   }
 };
+
 /**
  * 删除分析结果
  * @param projectId
  */
-const handleRmAna = async (currentRow: TableListItem | undefined) => {
-  if (!currentRow) return true;
+const handleRmRes = async (row: TableListItem | undefined) => {
+  if (!row) return true;
   const hide = message.loading('正在扫描');
   try {
-    await removeAna({ projectId: currentRow.id });
+    await removeRes({ projectId: row.id });
     hide();
     message.success('删除分析结果成功，希望你不要后悔 🥳');
     return true;
@@ -115,6 +115,7 @@ const handleRmAna = async (currentRow: TableListItem | undefined) => {
     return false;
   }
 };
+
 /**
  * 删除IRT
  * @param currentRow
@@ -138,10 +139,11 @@ const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
-  /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [formDeleteRes] = Form.useForm();
+  const [formDeleteIrt] = Form.useForm();
+
+  /** 多选 */
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -154,8 +156,11 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  /** 分页相关 */
   const [total, setTotal] = useState<any>();
+
   const actionRef = useRef<ActionType>();
+  /** 当选当前行  */
   const [currentRow, setCurrentRow] = useState<TableListItem>();
 
   const columns: ProColumns<TableListItem>[] = [
@@ -192,6 +197,13 @@ const TableList: React.FC = () => {
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
             {dom !== 0 ? (
               <Link
+                style={{
+                  margin: 0,
+                  width: '200px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
                 to={{
                   pathname: '/experiment/list',
                   state: { projectName: entity.name },
@@ -307,7 +319,7 @@ const TableList: React.FC = () => {
         return false;
       },
     },
-   
+
     {
       key: 'createDate',
       title: '创建时间',
@@ -334,7 +346,10 @@ const TableList: React.FC = () => {
                 setCurrentRow(record);
               }}
             >
-              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+              <Tag color="blue">
+                <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:file-edit" />
+                编辑
+              </Tag>
             </a>
           </Tooltip>
           <Tooltip title={'详情'}>
@@ -344,22 +359,16 @@ const TableList: React.FC = () => {
                 setShowDetail(true);
               }}
             >
-              <Icon
-                style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                icon="mdi:file-document"
-              />
+              <Tag color="blue">
+                <Icon
+                  style={{ verticalAlign: '-5px', fontSize: '18px' }}
+                  icon="mdi:file-document"
+                />
+                详情
+              </Tag>
             </a>
           </Tooltip>
-          <Tooltip title={'扫描并更新'}>
-            <a
-              onClick={() => {
-                handleScan({ projectId: record.id });
-              }}
-            >
-              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-search" />
-            </a>
-          </Tooltip>
-          <Tooltip title={'查看结果总览'}>
+          {/* <Tooltip title={'查看结果总览'}>
             <a
               onClick={() => {
                 message.success('我是查看结果总览');
@@ -367,77 +376,35 @@ const TableList: React.FC = () => {
             >
               <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-eye" />
             </a>
-          </Tooltip>
-          <Tooltip title={'导出'}>
-            <a
-              onClick={() => {
-                message.success('我是导出');
-              }}
-            >
-              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-export" />
-            </a>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title={'开始分析'}>
             <Link to={{ pathname: '/experiment/list', search: `?projectId=${record.id}` }}>
-              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:calculator" />
+              <Tag color="blue">
+                <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:calculator" />
+                分析
+              </Tag>
             </Link>
           </Tooltip>
-
-          <TableDropdown
-            onSelect={(key) => {
-              if (key === 'delete1') {
-                message.success('我是删除分析结果');
-                formDelete?.resetFields();
-                handleDelete1ModalVisible(true);
-                setCurrentRow(record);
-              }
-              if (key === 'delete2') {
-                message.success('我是删除IRT');
-                formDelete?.resetFields();
-                handleDelete2ModalVisible(true);
-                setCurrentRow(record);
-              }
-              if (key === 'delete3') {
-                message.success('我是删除');
-                formDelete?.resetFields();
-                handleDeleteModalVisible(true);
-                setCurrentRow(record);
-              }
-            }}
-            menus={[
-              {
-                key: 'delete1',
-                name: '删除分析结果',
-                icon: (
-                  <Icon
-                    style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                    icon="mdi:delete-sweep"
-                  />
-                ),
-              },
-              {
-                key: 'delete2',
-                name: '删除IRT',
-                icon: (
-                  <Icon
-                    style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                    icon="mdi:delete-sweep-outline"
-                  />
-                ),
-              },
-              {
-                key: 'delete3',
-                name: '删除',
-                icon: (
-                  <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:delete" />
-                ),
-              },
-            ]}
-          />
         </Space>
       ),
     },
   ];
+
+  /* 点击行选中相关 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
@@ -447,16 +414,166 @@ const TableList: React.FC = () => {
         rowKey="id"
         size="small"
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalVisible(true);
-            }}
+          <Tooltip title={'新增'} key="add">
+            <a>
+              <Tag
+                color="green"
+                onClick={() => {
+                  handleModalVisible(true);
+                }}
+              >
+                <Icon
+                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                  icon="mdi:playlist-plus"
+                />
+                新增
+              </Tag>
+            </a>
+          </Tooltip>,
+          <Tooltip title={'扫描并更新'} key="scan">
+            <a
+              onClick={() => {
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
+                    handleScan({ projectId: selectedRows[0].id });
+                  } else {
+                    message.warn('目前只支持单个项目的扫描');
+                    setSelectedRows([]);
+                  }
+                } else {
+                  message.warn('请选择要扫描的项目');
+                }
+              }}
+            >
+              <Tag color="blue">
+                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-search" />
+                扫描并更新
+              </Tag>
+            </a>
+          </Tooltip>,
+          <Tooltip title={'导出'} key="export">
+            <a
+              onClick={() => {
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
+                    message.success('我是导出');
+                    // handleScan({ projectId: selectedRows[0].id });
+                  } else {
+                    message.warn('目前只支持单个项目的导出');
+                    setSelectedRows([]);
+                  }
+                } else {
+                  message.warn('请选择要导出的项目');
+                }
+              }}
+            >
+              <Tag color="blue">
+                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-export" />
+                导出
+              </Tag>
+            </a>
+          </Tooltip>,
+          <Dropdown
+            key="delete"
+            overlay={
+              <Menu>
+                <Menu.Item key="1">
+                  <Tooltip placement="left" title={'删除分析结果'}>
+                    <a
+                      key="deleteRes"
+                      onClick={() => {
+                        if (selectedRows?.length > 0) {
+                          if (selectedRows.length == 1) {
+                            formDeleteRes?.resetFields();
+                            handleDelete1ModalVisible(true);
+                          }
+                          if (selectedRows.length > 1) {
+                            message.warn('目前只支持单个项目的删除');
+                            setSelectedRows([]);
+                          }
+                        } else {
+                          message.warn('请先选择一个项目');
+                        }
+                      }}
+                    >
+                      <Tag color="error">
+                        <Icon
+                          style={{ verticalAlign: '-5px', fontSize: '18px' }}
+                          icon="mdi:delete-sweep"
+                        />
+                        删除分析结果
+                      </Tag>
+                    </a>
+                  </Tooltip>
+                </Menu.Item>
+                <Menu.Item key="2">
+                  <Tooltip placement="left" title={'删除IRT'}>
+                    <a
+                      key="deleteIrt"
+                      onClick={() => {
+                        if (selectedRows?.length > 0) {
+                          if (selectedRows.length == 1) {
+                            formDeleteIrt?.resetFields();
+                            handleDelete2ModalVisible(true);
+                          }
+                          if (selectedRows.length > 1) {
+                            message.warn('目前只支持单个项目的删除');
+                            setSelectedRows([]);
+                          }
+                        } else {
+                          message.warn('请先选择一个项目');
+                        }
+                      }}
+                    >
+                      <Tag color="error">
+                        <Icon
+                          style={{ verticalAlign: '-5px', fontSize: '18px' }}
+                          icon="mdi:delete-sweep-outline"
+                        />
+                        删除IRT
+                      </Tag>
+                    </a>
+                  </Tooltip>
+                </Menu.Item>
+                <Menu.Item key="3">
+                  <Tooltip placement="left" title={'删除项目'}>
+                    <a
+                      key="deletePjc"
+                      onClick={() => {
+                        if (selectedRows?.length > 0) {
+                          if (selectedRows.length == 1) {
+                            formDelete?.resetFields();
+                            handleDeleteModalVisible(true);
+                          }
+                          if (selectedRows.length > 1) {
+                            message.warn('目前只支持单个项目的删除');
+                            setSelectedRows([]);
+                          }
+                        } else {
+                          message.warn('请先选择一个项目');
+                        }
+                      }}
+                    >
+                      <Tag color="error">
+                        <Icon
+                          style={{ verticalAlign: '-5px', fontSize: '18px' }}
+                          icon="mdi:delete"
+                        />
+                        删除项目
+                      </Tag>
+                    </a>
+                  </Tooltip>
+                </Menu.Item>
+              </Menu>
+            }
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />{' '}
-            创建项目
-          </Button>,
+            <Tooltip title={'删除'} key="delete">
+              <Tag color="error">
+                <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:delete" />
+                删除
+              </Tag>
+            </Tooltip>
+          </Dropdown>,
         ]}
         tableAlertRender={false}
         pagination={{
@@ -468,20 +585,28 @@ const TableList: React.FC = () => {
           return Promise.resolve(msg);
         }}
         columns={columns}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
         rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
+          selectedRowKeys: selectedRows?.map((item) => {
+            return item.id;
+          }),
+          onChange: (_, selectedRowKeys) => {
+            setSelectedRows(selectedRowKeys);
           },
         }}
       />
       {/* 新建列表 */}
       <CreateForm
         form={formCreate}
-        onCancel={{
-          onCancel: () => {
-            handleModalVisible(false);
-            formCreate?.resetFields();
-          },
+        onCancel={() => {
+          handleModalVisible(false);
+          formCreate?.resetFields();
         }}
         onSubmit={async (value: addFormValueType) => {
           const success = await handleAdd(value as addFormValueType);
@@ -510,15 +635,12 @@ const TableList: React.FC = () => {
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
-        onCancel={{
-          onCancel: () => {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            formUpdate?.resetFields();
-          },
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as unknown as string;
           const success = await handleUpdate(value);
           if (success) {
@@ -535,21 +657,19 @@ const TableList: React.FC = () => {
 
       {/* 删除列表 */}
       <DeleteForm
-        currentRow={currentRow}
+        currentRow={selectedRows[0]}
         form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDeleteModalVisible(false);
-            setCurrentRow(undefined);
-            formDelete?.resetFields();
-          },
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === currentRow?.name) {
-            const success = await handleRemove(currentRow);
+          if (value.name === selectedRows[0]?.name) {
+            const success = await handleRemove(selectedRows[0]);
             if (success) {
               handleDeleteModalVisible(false);
-              setCurrentRow(undefined);
+              setSelectedRows([]);
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -559,25 +679,23 @@ const TableList: React.FC = () => {
           }
         }}
         deleteModalVisible={deleteModalVisible}
-        values={currentRow || {}}
+        values={selectedRows[0] || {}}
       />
       {/* 删除分析结果 */}
-      <DeleteAna
-        currentRow={currentRow}
-        form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDelete1ModalVisible(false);
-            setCurrentRow(undefined);
-            formDelete?.resetFields();
-          },
+      <DeleteRes
+        currentRow={selectedRows[0]}
+        form={formDeleteRes}
+        onCancel={() => {
+          handleDelete1ModalVisible(false);
+          setSelectedRows([]);
+          formDeleteRes?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === currentRow?.name) {
-            const success = await handleRmAna(currentRow);
+          if (value.name == '我要删除分析结果') {
+            const success = await handleRmRes(selectedRows[0]);
             if (success) {
-              handleDelete2ModalVisible(false);
-              setCurrentRow(undefined);
+              handleDelete1ModalVisible(false);
+              setSelectedRows([]);
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -587,25 +705,23 @@ const TableList: React.FC = () => {
           }
         }}
         delete1ModalVisible={delete1ModalVisible}
-        values={currentRow || {}}
+        values={selectedRows[0] || {}}
       />
       {/* 删除IRT */}
       <DeleteIrt
-        currentRow={currentRow}
-        form={formDelete}
-        onCancel={{
-          onCancel: () => {
-            handleDelete2ModalVisible(false);
-            setCurrentRow(undefined);
-            formDelete?.resetFields();
-          },
+        currentRow={selectedRows[0]}
+        form={formDeleteIrt}
+        onCancel={() => {
+          handleDelete2ModalVisible(false);
+          setSelectedRows([]);
+          formDeleteIrt?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === currentRow?.name) {
-            const success = await handleRmIrt(currentRow);
+          if (value.name === '我要删除IRT') {
+            const success = await handleRmIrt(selectedRows[0]);
             if (success) {
               handleDelete2ModalVisible(false);
-              setCurrentRow(undefined);
+              setSelectedRows([]);
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -615,7 +731,7 @@ const TableList: React.FC = () => {
           }
         }}
         delete2ModalVisible={delete2ModalVisible}
-        values={currentRow || {}}
+        values={selectedRows[0] || {}}
       />
     </>
   );
