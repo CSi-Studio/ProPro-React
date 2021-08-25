@@ -21,7 +21,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     <ModalForm
       form={props.form}
       title="更新概览"
-      width={800}
+      width={400}
       visible={props.updateModalVisible}
       modalProps={{
         maskClosable: false,
@@ -46,9 +46,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           label="概览名"
           tooltip="概览名必须唯一"
         />
-        <ProFormText initialValue={props.values.note} width="sm" name="note" label="标注" />
-      </ProForm.Group>
-      <ProForm.Group>
         <ProFormSelect
           initialValue={props.values.tags}
           width="md"
@@ -56,6 +53,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           label="tags"
           mode="tags"
         />
+        <ProFormText initialValue={props.values.note} width="sm" name="note" label="标注" />
       </ProForm.Group>
     </ModalForm>
   );

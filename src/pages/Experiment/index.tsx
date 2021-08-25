@@ -136,6 +136,19 @@ const TableList: React.FC = (props: any) => {
   ];
   return (
     <>
+    <div style={{background:'#FFF'}}>
+      <Link 
+          to={{
+            pathname: '/project/list',
+          
+          }}
+        >
+          <Tag color="blue" style={{margin:'0 0 0 30px'}}>
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+              返回项目列表
+          </Tag>
+         </Link>
+    </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
