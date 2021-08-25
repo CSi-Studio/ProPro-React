@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import {url} from '@/utils/request'
+import { url } from '@/utils/request';
 
 /** 获取肽段列表 GET /peptide/list */
 export async function peptideList(params: {
@@ -62,10 +62,6 @@ export async function updateFragment(params: { peptideId?: string }, fragments: 
     headers: {
       'Content-Type': 'application/json',
     },
-    // data: {
-    //   fragments: JSON.stringify(fragments),
-    //   // fragments,
-    // },
   });
 }
 
