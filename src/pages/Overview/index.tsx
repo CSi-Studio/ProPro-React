@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Form, message, Space, Tag, Tooltip } from 'antd';
+import {  Form, message, Space, Tag, Tooltip } from 'antd';
 import React, { useState, useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -67,6 +67,22 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'createDate',
     },
     {
+      key: 'peakCount',
+      title: '峰统计',
+      dataIndex: 'statstic',
+      render: (text, entity) => {
+        return <p>{entity?.statistic?.TOTAL_PEAK_COUNT}</p>
+      }
+    },
+    {
+      key: 'peptideCount',
+      title: '肽段统计',
+      dataIndex: 'statstic',
+      render: (text, entity) => {
+        return <p>{entity?.statistic?.TOTAL_PEPTIDE_COUNT}</p>
+      }
+    },
+    {
       key: 'tags',
       title: '标签',
       dataIndex: 'tags',
@@ -116,6 +132,18 @@ const TableList: React.FC = (props: any) => {
   ];
   return (
     <>
+    <div style={{background:'#FFF'}}>
+      <Link 
+          to={{
+            pathname: '/project/list',
+          }}
+        >
+          <Tag color="blue" style={{margin:'0 0 0 30px'}}>
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+              返回项目列表
+          </Tag>
+         </Link>
+    </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle="概要列表"
@@ -124,13 +152,7 @@ const TableList: React.FC = (props: any) => {
         size="small"
         search={false}
         toolBarRender={() => [
-          <Link
-            to={{
-              pathname: '/project/list',
-            }}
-          >
-            <Button type="primary">返回项目列表</Button>
-          </Link>,
+          
         ]}
         tableAlertRender={false}
         pagination={{
