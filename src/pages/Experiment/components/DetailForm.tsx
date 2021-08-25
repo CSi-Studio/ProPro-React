@@ -16,12 +16,13 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const upData:any[]=[]
   const downData: any[]=[]
   const xData:any[]=[]
+  const features:any[]=[]
   props?.currentRow?.windowRanges.map((item: any, index: string)=>{
     upData.push(item?.end-item?.start)
     downData.push(item?.start)
     xData.push(index)
+    features.push(item?.features)
   })
-  console.log(upData,downData)
   const option = {
     title: {
       text: '窗口表',
@@ -36,7 +37,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       formatter: function (params: any[]) {
         var tar = params[0];
         var tar2 = params[1];
-        return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value + '<br/>' +tar2.seriesName + ' : ' + tar2.value;
+        return tar.name + '<br/>' + 'start' + ' : ' + tar.value + '<br/>' +'end' + ' : ' + (tar.value+tar2.value) + '<br/>'+' owid'+':'+tar2.value;
       },
     },
     // grid: {
@@ -52,6 +53,9 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
     yAxis: {
       type: 'value',
+      min: function (value: { min: number; }) {
+        return value.min;
+    }
     },
     series: [
       {
@@ -79,12 +83,12 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           position: 'inside',
         },
         data: upData,
-      },
+      },  
     ],
   };
 
   return (
-    <Drawer width={500} visible={props.showDetail} onClose={props.onClose} closable={false}>
+    <Drawer width={700} visible={props.showDetail} onClose={props.onClose} closable={false}>
       {props.currentRow?.name && (
         <ProDescriptions<TableListItem>
           column={1}
