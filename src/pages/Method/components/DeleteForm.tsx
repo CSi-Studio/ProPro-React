@@ -12,7 +12,7 @@ export type DeleteFormProps = {
   onCancel: () => void;
   deleteModalVisible: boolean;
   form: any;
-  selectedRowsState: any;
+  selectedRows: any;
 };
 
 const DeleteForm: React.FC<DeleteFormProps> = (props) => {
@@ -42,7 +42,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             }}
             color="red"
           >
-            {props?.selectedRowsState[0]?.name}
+            {props?.selectedRows[0]?.name}
           </Tag>
           以确认删除。
         </div>

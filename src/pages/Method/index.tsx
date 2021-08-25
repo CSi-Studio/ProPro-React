@@ -44,12 +44,12 @@ const handleUpdate = async (values: DomainUpdate) => {
 };
 /**
  * 删除库
- * @param selectedRowsState
+ * @param selectedRows
  */
-const handleRemove = async (selectedRowsState: any[]) => {
+const handleRemove = async (selectedRows: any[]) => {
   try {
     await removeList({
-      methodIds: selectedRowsState[0].id,
+      methodIds: selectedRows[0].id,
     });
     message.success('删除成功，希望你不要后悔 🥳');
     return true;
@@ -64,7 +64,7 @@ const TableList: React.FC = () => {
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
   // /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<any[]>([]);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 更新窗口的弹窗 */
@@ -181,8 +181,8 @@ const TableList: React.FC = () => {
               key="delete"
               onClick={async () => {
                 formDelete?.resetFields();
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
                     handleDeleteModalVisible(true);
                   } else {
                     message.warn('目前只支持单个库的删除');
@@ -210,7 +210,7 @@ const TableList: React.FC = () => {
         }}
         columns={columns}
         rowSelection={{
-          selectedRowKeys: selectedRowsState?.map((item) => {
+          selectedRowKeys: selectedRows?.map((item) => {
             return item.id;
           }),
           onChange: (_, selectedRowKeys) => {
@@ -263,7 +263,7 @@ const TableList: React.FC = () => {
       />
       {/* 删除列表 */}
       <DeleteForm
-        selectedRowsState={selectedRowsState}
+        selectedRows={selectedRows}
         form={formDelete}
         onCancel={() => {
           handleDeleteModalVisible(false);
@@ -271,8 +271,8 @@ const TableList: React.FC = () => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === selectedRowsState[0]?.name) {
-            const success = await handleRemove(selectedRowsState);
+          if (value.name === selectedRows[0]?.name) {
+            const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
               setSelectedRows([]);

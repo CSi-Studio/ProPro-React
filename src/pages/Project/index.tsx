@@ -1,16 +1,15 @@
 import { Icon } from '@iconify/react';
-import { Button, Form, message, Tag, Tooltip, Space, Dropdown, Menu } from 'antd';
+import { Form, message, Tag, Tooltip, Space, Dropdown, Menu } from 'antd';
 import React, { useState, useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { TableDropdown } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {
   addList,
   peptideScan,
   projectList,
-  removeAna,
   removeIrt,
   removeList,
+  removeRes,
   updateList,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -107,7 +106,7 @@ const handleRmRes = async (row: TableListItem | undefined) => {
   if (!row) return true;
   const hide = message.loading('正在扫描');
   try {
-    await removeAna({ projectId: row.id });
+    await removeRes({ projectId: row.id });
     hide();
     message.success('删除分析结果成功，希望你不要后悔 🥳');
     return true;
@@ -140,9 +139,11 @@ const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
+  const [formDeleteRes] = Form.useForm();
+  const [formDeleteIrt] = Form.useForm();
 
   /** 多选 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -195,14 +196,14 @@ const TableList: React.FC = () => {
           <>
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
             {dom !== 0 ? (
-              <Link 
-              style={{
-                margin: 0,
-                width: '200px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
+              <Link
+                style={{
+                  margin: 0,
+                  width: '200px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
                 to={{
                   pathname: '/experiment/list',
                   state: { projectName: entity.name },
@@ -391,7 +392,7 @@ const TableList: React.FC = () => {
 
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
-    const rowData = [...selectedRowsState];
+    const rowData = [...selectedRows];
     if (rowData.length == 0) {
       rowData.push(record);
       setSelectedRows(rowData);
@@ -432,9 +433,9 @@ const TableList: React.FC = () => {
           <Tooltip title={'扫描并更新'} key="scan">
             <a
               onClick={() => {
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
-                    handleScan({ projectId: selectedRowsState[0].id });
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
+                    handleScan({ projectId: selectedRows[0].id });
                   } else {
                     message.warn('目前只支持单个项目的扫描');
                     setSelectedRows([]);
@@ -453,10 +454,10 @@ const TableList: React.FC = () => {
           <Tooltip title={'导出'} key="export">
             <a
               onClick={() => {
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
                     message.success('我是导出');
-                    // handleScan({ projectId: selectedRowsState[0].id });
+                    // handleScan({ projectId: selectedRows[0].id });
                   } else {
                     message.warn('目前只支持单个项目的导出');
                     setSelectedRows([]);
@@ -481,12 +482,12 @@ const TableList: React.FC = () => {
                     <a
                       key="deleteRes"
                       onClick={() => {
-                        if (selectedRowsState?.length > 0) {
-                          if (selectedRowsState.length == 1) {
-                            formDelete?.resetFields();
+                        if (selectedRows?.length > 0) {
+                          if (selectedRows.length == 1) {
+                            formDeleteRes?.resetFields();
                             handleDelete1ModalVisible(true);
                           }
-                          if (selectedRowsState.length > 1) {
+                          if (selectedRows.length > 1) {
                             message.warn('目前只支持单个项目的删除');
                             setSelectedRows([]);
                           }
@@ -510,12 +511,12 @@ const TableList: React.FC = () => {
                     <a
                       key="deleteIrt"
                       onClick={() => {
-                        if (selectedRowsState?.length > 0) {
-                          if (selectedRowsState.length == 1) {
-                            formDelete?.resetFields();
+                        if (selectedRows?.length > 0) {
+                          if (selectedRows.length == 1) {
+                            formDeleteIrt?.resetFields();
                             handleDelete2ModalVisible(true);
                           }
-                          if (selectedRowsState.length > 1) {
+                          if (selectedRows.length > 1) {
                             message.warn('目前只支持单个项目的删除');
                             setSelectedRows([]);
                           }
@@ -539,12 +540,12 @@ const TableList: React.FC = () => {
                     <a
                       key="deletePjc"
                       onClick={() => {
-                        if (selectedRowsState?.length > 0) {
-                          if (selectedRowsState.length == 1) {
+                        if (selectedRows?.length > 0) {
+                          if (selectedRows.length == 1) {
                             formDelete?.resetFields();
                             handleDeleteModalVisible(true);
                           }
-                          if (selectedRowsState.length > 1) {
+                          if (selectedRows.length > 1) {
                             message.warn('目前只支持单个项目的删除');
                             setSelectedRows([]);
                           }
@@ -592,7 +593,7 @@ const TableList: React.FC = () => {
           };
         }}
         rowSelection={{
-          selectedRowKeys: selectedRowsState?.map((item) => {
+          selectedRowKeys: selectedRows?.map((item) => {
             return item.id;
           }),
           onChange: (_, selectedRowKeys) => {
@@ -640,7 +641,6 @@ const TableList: React.FC = () => {
           formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as unknown as string;
           const success = await handleUpdate(value);
           if (success) {
@@ -657,7 +657,7 @@ const TableList: React.FC = () => {
 
       {/* 删除列表 */}
       <DeleteForm
-        currentRow={selectedRowsState[0]}
+        currentRow={selectedRows[0]}
         form={formDelete}
         onCancel={() => {
           handleDeleteModalVisible(false);
@@ -665,8 +665,8 @@ const TableList: React.FC = () => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === selectedRowsState[0]?.name) {
-            const success = await handleRemove(selectedRowsState[0]);
+          if (value.name === selectedRows[0]?.name) {
+            const success = await handleRemove(selectedRows[0]);
             if (success) {
               handleDeleteModalVisible(false);
               setSelectedRows([]);
@@ -679,20 +679,21 @@ const TableList: React.FC = () => {
           }
         }}
         deleteModalVisible={deleteModalVisible}
-        values={selectedRowsState[0] || {}}
+        values={selectedRows[0] || {}}
       />
       {/* 删除分析结果 */}
       <DeleteRes
-        currentRow={selectedRowsState[0]}
-        form={formDelete}
+        currentRow={selectedRows[0]}
+        form={formDeleteRes}
         onCancel={() => {
           handleDelete1ModalVisible(false);
           setSelectedRows([]);
-          formDelete?.resetFields();
+          formDeleteRes?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === '我要删除分析结果') {
-            const success = await handleRmRes(selectedRowsState[0]);
+          console.log(value);
+          if (value.name == '我要删除分析结果') {
+            const success = await handleRmRes(selectedRows[0]);
             if (success) {
               handleDelete1ModalVisible(false);
               setSelectedRows([]);
@@ -705,20 +706,20 @@ const TableList: React.FC = () => {
           }
         }}
         delete1ModalVisible={delete1ModalVisible}
-        values={selectedRowsState[0] || {}}
+        values={selectedRows[0] || {}}
       />
       {/* 删除IRT */}
       <DeleteIrt
-        currentRow={selectedRowsState[0]}
-        form={formDelete}
+        currentRow={selectedRows[0]}
+        form={formDeleteIrt}
         onCancel={() => {
           handleDelete2ModalVisible(false);
           setSelectedRows([]);
-          formDelete?.resetFields();
+          formDeleteIrt?.resetFields();
         }}
         onSubmit={async (value) => {
           if (value.name === '我要删除IRT') {
-            const success = await handleRmIrt(selectedRowsState[0]);
+            const success = await handleRmIrt(selectedRows[0]);
             if (success) {
               handleDelete2ModalVisible(false);
               setSelectedRows([]);
@@ -731,7 +732,7 @@ const TableList: React.FC = () => {
           }
         }}
         delete2ModalVisible={delete2ModalVisible}
-        values={selectedRowsState[0] || {}}
+        values={selectedRows[0] || {}}
       />
     </>
   );

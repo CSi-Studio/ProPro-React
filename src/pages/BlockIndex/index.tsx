@@ -11,7 +11,7 @@ import { LeftCircleFilled } from '@ant-design/icons';
 
 const TableList: React.FC = (props: any) => {
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  // const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
 
   const [idRow, setRowId] = useState<any>();
   const [detaileRow, setDetailRow] = useState<TableListDetail>();
@@ -43,8 +43,7 @@ const TableList: React.FC = (props: any) => {
         if (entity.range) {
           return (
             <span>
-  {entity?.range?.start}~{entity?.range?.end}
-
+              {entity?.range?.start}~{entity?.range?.end}
             </span>
           );
         }
@@ -100,19 +99,19 @@ const TableList: React.FC = (props: any) => {
 
   return (
     <>
-    <div style={{background:'#FFF'}}>
-      <Link 
+      <div style={{ background: '#FFF' }}>
+        <Link
           to={{
             pathname: '/experiment/list',
             search: `?projectId=${props?.location?.state?.projectId}`,
           }}
         >
-          <Tag color="blue" style={{margin:'0 0 0 30px'}}>
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-              返回实验列表
+          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
+            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+            返回实验列表
           </Tag>
-         </Link>
-    </div>
+        </Link>
+      </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={'实验名：' + props?.location?.state.expName}
@@ -127,9 +126,7 @@ const TableList: React.FC = (props: any) => {
         }}
         columns={columns}
         pagination={false}
-        toolBarRender={() => [
-        
-        ]}
+        toolBarRender={() => []}
         rowSelection={{}}
       />
 
