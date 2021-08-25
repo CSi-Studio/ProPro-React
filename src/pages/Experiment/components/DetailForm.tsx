@@ -16,14 +16,17 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const upData:any[]=[]
   const downData: any[]=[]
   const xData:any[]=[]
+  const features:any[]=[]
   props?.currentRow?.windowRanges.map((item: any, index: string)=>{
-    upData.push(item?.end)
+    upData.push(item?.end-item?.start)
     downData.push(item?.start)
     xData.push(index)
+    features.push(item?.features)
   })
   const option = {
     title: {
-      text: 'SwathCharts',
+      text: '窗口表',
+      subtext: 'Swath Chart'
     },
     tooltip: {
       trigger: 'axis',
@@ -34,15 +37,15 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       formatter: function (params: any[]) {
         var tar = params[0];
         var tar2 = params[1];
-        return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value + '<br/>' +tar2.seriesName + ' : ' + tar2.value;
+        return tar.name + '<br/>' + 'start' + ' : ' + tar.value + '<br/>' +'end' + ' : ' + (tar.value+tar2.value) + '<br/>'+' owid'+':'+tar2.value;
       },
     },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true,
-    },
+    // grid: {
+    //   left: '3%',
+    //   right: '4%',
+    //   bottom: '3%',
+    //   containLabel: true,
+    // },
     xAxis: {
       type: 'category',
       splitLine: { show: false },
@@ -50,6 +53,9 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
     yAxis: {
       type: 'value',
+      min: function (value: { min: number; }) {
+        return value.min;
+    }
     },
     series: [
       {
@@ -77,12 +83,12 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           position: 'inside',
         },
         data: upData,
-      },
+      },  
     ],
   };
 
   return (
-    <Drawer width={500} visible={props.showDetail} onClose={props.onClose} closable={false}>
+    <Drawer width={700} visible={props.showDetail} onClose={props.onClose} closable={false}>
       {props.currentRow?.name && (
         <ProDescriptions<TableListItem>
           column={1}
@@ -96,7 +102,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           columns={props.columns as ProDescriptionsItemProps<TableListItem>[]}
         />
       )}
-      <ReactECharts option={option} style={{ height: 400 }} />
+      <ReactECharts option={option} style={{ height: 800 }} />
     </Drawer>
      
   );
