@@ -1,4 +1,4 @@
-import { Button, Tooltip } from 'antd';
+import { Button, Tag, Tooltip } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListDetail, TableListItem, TableListPagination } from './data';
@@ -7,6 +7,7 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
+import { LeftCircleFilled } from '@ant-design/icons';
 
 const TableList: React.FC = (props: any) => {
   /** 全选 */
@@ -99,6 +100,19 @@ const TableList: React.FC = (props: any) => {
 
   return (
     <>
+    <div style={{background:'#FFF'}}>
+      <Link 
+          to={{
+            pathname: '/experiment/list',
+            search: `?projectId=${props?.location?.state?.projectId}`,
+          }}
+        >
+          <Tag color="blue" style={{margin:'0 0 0 30px'}}>
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+              返回实验列表
+          </Tag>
+         </Link>
+    </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={'实验名：' + props?.location?.state.expName}
@@ -114,14 +128,7 @@ const TableList: React.FC = (props: any) => {
         columns={columns}
         pagination={false}
         toolBarRender={() => [
-          <Link
-            to={{
-              pathname: '/experiment/list',
-              search: `?projectId=${props?.location?.state?.projectId}`,
-            }}
-          >
-            <Button type="primary">返回实验列表</Button>
-          </Link>,
+        
         ]}
         rowSelection={{}}
       />

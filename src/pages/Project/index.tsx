@@ -191,7 +191,14 @@ const TableList: React.FC = () => {
           <>
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
             {dom !== 0 ? (
-              <Link
+              <Link 
+              style={{
+                margin: 0,
+                width: '200px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
                 to={{
                   pathname: '/experiment/list',
                   state: { projectName: entity.name },
