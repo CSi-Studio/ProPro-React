@@ -97,6 +97,7 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
     return false;
   }
 };
+
 /**
  * 删除分析结果
  * @param projectId
@@ -115,6 +116,7 @@ const handleRmAna = async (currentRow: TableListItem | undefined) => {
     return false;
   }
 };
+
 /**
  * 删除IRT
  * @param currentRow
@@ -141,7 +143,7 @@ const TableList: React.FC = () => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
@@ -386,19 +388,16 @@ const TableList: React.FC = () => {
           <TableDropdown
             onSelect={(key) => {
               if (key === 'delete1') {
-                message.success('我是删除分析结果');
                 formDelete?.resetFields();
                 handleDelete1ModalVisible(true);
                 setCurrentRow(record);
               }
               if (key === 'delete2') {
-                message.success('我是删除IRT');
                 formDelete?.resetFields();
                 handleDelete2ModalVisible(true);
                 setCurrentRow(record);
               }
               if (key === 'delete3') {
-                message.success('我是删除');
                 formDelete?.resetFields();
                 handleDeleteModalVisible(true);
                 setCurrentRow(record);
