@@ -1,12 +1,12 @@
 import { Button, Form, message, Tag, Tooltip } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { addList, proteinList } from './service';
-import type { TableAddItem, TableListItem, TableListPagination } from './data';
+import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import { Icon } from '@iconify/react';
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, LinkOutlined } from '@ant-design/icons';
 
 /**
  * 添加库
@@ -25,34 +25,29 @@ const handleAdd = async (values: any) => {
   }
 };
 const TableList: React.FC = (props: any) => {
-  /** 全局弹窗 */
-  // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const [total, setTotal] = useState<any>();
   const [formCreate] = Form.useForm();
-  // const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const [createRow, setCreateRow] = useState<TableAddItem>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '标识符',
       dataIndex: 'identifier',
-      width: '100px',
       render: (dom) => {
         return (
           <Tooltip title={dom} placement="topLeft">
-            <div
+            {/* <div
               style={{
                 width: '150px',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
               }}
-            >
-              {dom}
-            </div>
+            > */}
+            {dom}
+            {/* </div> */}
           </Tooltip>
         );
       },
@@ -94,15 +89,28 @@ const TableList: React.FC = (props: any) => {
         );
       },
     },
+
     {
-      title: '有机生物',
-      dataIndex: 'organism',
-      hideInSearch: true,
-    },
-    {
-      title: '基因🧬',
+      title: '基因',
       dataIndex: 'gene',
       hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <>
+            <a href={entity?.uniProtLink} target="_blank">
+              <Tag icon={<LinkOutlined />} color="blue">
+                UniProt
+              </Tag>
+            </a>
+            <a href={entity?.alphaFoldLink} target="_blank">
+              <Tag icon={<LinkOutlined />} color="blue">
+                alphaFold
+              </Tag>
+            </a>
+            <Tag>{dom}</Tag>
+          </>
+        );
+      },
     },
     {
       title: '序列号',
@@ -113,7 +121,7 @@ const TableList: React.FC = (props: any) => {
           <Tooltip title={dom} placement="topLeft">
             <div
               style={{
-                width: '150px',
+                width: '300px',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -126,28 +134,38 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'UniProt链接🔗',
-      dataIndex: 'uniProtLink',
+      title: '有机生物',
+      dataIndex: 'organism',
       hideInSearch: true,
       render: (dom, entity) => {
         return (
-          <a href={entity?.uniProtLink ? entity?.uniProtLink : 'http://www.csibio.net/'}>UniProt</a>
-        );
-      },
-    },
-    {
-      title: 'alphaFoldLink链接🔗',
-      dataIndex: 'alphaFoldLink',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        return (
-          <a href={entity.alphaFoldLink ? entity.alphaFoldLink : 'http://www.csibio.net/'}>
-            AlphaFold
+          <a
+            onClick={() => {
+              console.log(entity);
+            }}
+          >
+            <Tag color="geekblue">{dom}</Tag>
           </a>
         );
       },
     },
   ];
+
+  /* 点击行选中相关 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
@@ -166,32 +184,44 @@ const TableList: React.FC = (props: any) => {
           setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
-        // dataSource={tableListDataSource}
         columns={columns}
         pagination={{
           total: total,
         }}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              formCreate?.resetFields();
-              handleModalVisible(true);
-              // setPopup(true);
-            }}
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
-            导入蛋白库
-          </Button>,
+          <Tooltip title={'导入蛋白库'} key="add">
+            <a>
+              <Tag
+                color="green"
+                onClick={() => {
+                  formCreate?.resetFields();
+                  handleModalVisible(true);
+                }}
+              >
+                <Icon
+                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                  icon="mdi:playlist-plus"
+                />
+                导入蛋白库
+              </Tag>
+            </a>
+          </Tooltip>,
         ]}
-        rowSelection={
-          {
-            // onChange: (_, selectedRows) => {
-            // setSelectedRows(selectedRows);
-            // },
-          }
-        }
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
+        rowSelection={{
+          selectedRowKeys: selectedRows?.map((item) => {
+            return item.id;
+          }),
+          onChange: (_, selectedRowKeys) => {
+            setSelectedRows(selectedRowKeys);
+          },
+        }}
       />
       {/* 添加列表 */}
       <CreateForm
@@ -210,7 +240,6 @@ const TableList: React.FC = (props: any) => {
           }
         }}
         createModalVisible={createModalVisible}
-        values={createRow || {}}
       />
     </>
   );
