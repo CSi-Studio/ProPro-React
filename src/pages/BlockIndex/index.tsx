@@ -142,6 +142,7 @@ const TableList: React.FC = (props: any) => {
           setDetailRow(undefined);
           setShowDetail(false);
         }}
+        expNameRow={props?.location?.state?.expName}
       />
     </>
   );

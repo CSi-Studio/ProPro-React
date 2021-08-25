@@ -78,6 +78,7 @@ const TableList: React.FC = (props: any) => {
                 to={{
                   pathname: '/blockIndex',
                   search: `?expId=${entity.id}`,
+                  
                   state: { projectId, expName: entity.name },
                 }}
               >

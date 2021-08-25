@@ -12,6 +12,7 @@ export type UpdateFormProps = {
   currentRow: any;
   columns: any;
   onClose: () => void;
+  expNameRow:any;
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
@@ -149,7 +150,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     <Drawer width={700} visible={props.showDetail} onClose={props.onClose} closable={false}>
       <ProDescriptions<TableListDetail>
         column={2}
-        title={props.currentRow}
+        title={props.expNameRow}
         request={async () => {
           const msg = await blockIndexDetail({ id: props.currentRow });
           return Promise.resolve(msg);
