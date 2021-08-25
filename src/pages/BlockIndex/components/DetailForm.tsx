@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Drawer, message, Slider, Space, Tag } from 'antd';
+import { Button, Drawer, message, Slider, Space, Tag, Tooltip } from 'antd';
 import type { TableListDetail } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
@@ -120,25 +120,9 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
            
             <span style={{width:'800px'}}>
             {         
-             
-                entity?.rts.map((item: any, index: any) => {
-                              
-                    return (              
-                      // <Button
-                      //     type="dashed"
-                      //     block
-                      //     onClick={async () => {
-                      //       setShowCharts(true);
-                      //       const hide = message.loading('正在加载');
-                      //       const msg = await spectrumCharts({ blockIndexId: entity.id, rt: item });
-                      //       hide();
-                      //       setChartsData(msg.data);
-                      //       setRtData(item);
-                      //     }}
-                      //   >
-                      //     {item}
-                      // </Button> 
-                      <Space direction={"horizontal"} size={1}>
+                entity?.rts.map((item: any, index: any) => {          
+                    return (             
+                    <Space direction={"horizontal"} size={1}>                  
                       <Tag key={index}   onClick={async () => {
                         setShowCharts(true);
                         const hide = message.loading('正在加载');
@@ -146,12 +130,13 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
                         hide();
                         setChartsData(msg.data);
                         setRtData(item);
-                      }}>{item}</Tag>    
-                      </Space>                 
+                      }}>{item}
+                      </Tag>    
+                    </Space>                 
                     );
-             
                   return null;
-                })}
+                })
+            }
             </span>
   
           </>

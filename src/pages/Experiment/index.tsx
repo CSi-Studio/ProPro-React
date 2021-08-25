@@ -15,11 +15,12 @@ const TableList: React.FC = (props: any) => {
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
+  const [currentRow, setCurrentRow] = useState<TableListItem[]>();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<TableListItem>();
+  
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
   const projectId = props?.location?.query.projectId;
 
