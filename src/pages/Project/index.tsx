@@ -96,13 +96,12 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
     return false;
   }
 };
+
 /**
  * 删除分析结果
  * @param projectId
  */
 const handleRmRes = async (row: TableListItem | undefined) => {
-  console.log(row);
-
   if (!row) return true;
   const hide = message.loading('正在扫描');
   try {
@@ -116,6 +115,7 @@ const handleRmRes = async (row: TableListItem | undefined) => {
     return false;
   }
 };
+
 /**
  * 删除IRT
  * @param currentRow
@@ -691,7 +691,6 @@ const TableList: React.FC = () => {
           formDeleteRes?.resetFields();
         }}
         onSubmit={async (value) => {
-          console.log(value);
           if (value.name == '我要删除分析结果') {
             const success = await handleRmRes(selectedRows[0]);
             if (success) {

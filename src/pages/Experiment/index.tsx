@@ -78,6 +78,7 @@ const TableList: React.FC = (props: any) => {
                 to={{
                   pathname: '/blockIndex',
                   search: `?expId=${entity.id}`,
+                  
                   state: { projectId, expName: entity.name },
                 }}
               >
@@ -161,7 +162,7 @@ const TableList: React.FC = (props: any) => {
         rowKey="id"
         size="small"
         pagination={{
-          total: total,
+          pageSize:50
         }}
         tableAlertRender={false}
         // request={experimentList}

@@ -6,7 +6,7 @@ export type TableListItem = {
   organism: string;
   gene: string;
   sequence: string;
-  uniPortLink: string;
+  uniProtLink: string;
   alphaFoldLink: string;
 };
 
