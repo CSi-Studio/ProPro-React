@@ -13,8 +13,8 @@ export class IrtOption {
     private yName: string;
 
     // constructor：构造函数，在实例化对象的时候执行
-    constructor(data: any[], gridNumInRow: number = 5, xName: string = ``, yName: string = ``,  gridHeight: number = 160, gridPaddingHeight: number = 80,gridPaddingWight: number = 6,
-      totalPaddingHeight: number = 50, totalPaddingWidth: number = 5,titleHeight: number = 20,Width: number = 100) {
+    constructor(data: any[], gridNumInRow: number = 5, xName: string = ``, yName: string = ``,  gridHeight: number = 160, gridPaddingHeight: number = 80, totalPaddingHeight: number = 20,
+      gridPaddingWight: number = 6, totalPaddingWidth: number = 5, titleHeight: number = 20, Width: number = 100) {
       this.data = data;
       this.gridNumInRow = gridNumInRow;
       this.gridHeight = gridHeight;
@@ -38,7 +38,7 @@ export class IrtOption {
         title: this.getIrtTitle(this.data),
         grid: this.getIrtGrids(gridNumber),
         tooltip: {
-          formatter: "({c})"
+          formatter: `${this.xName} , ${this.yName}<br>{c}`
         },
         xAxis: this.getIrtAxis(gridNumber, true, this.xName),
         yAxis: this.getIrtAxis(gridNumber, false, this.yName),
