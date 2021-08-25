@@ -15,9 +15,12 @@ import DetailForm from './components/DetailForm';
  * @param selectedRows
  */
 const handleRemove = async (selectedRows: any[]) => {
+  const idList = selectedRows.map((item) => {
+    return item.id;
+  });
   try {
     await removeList({
-      taskIds: selectedRows[0].id,
+      idList,
     });
     message.success('删除成功，希望你不要后悔 🥳');
     return true;
@@ -144,14 +147,9 @@ const TableList: React.FC = () => {
               onClick={async () => {
                 formDelete?.resetFields();
                 if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handleDeleteModalVisible(true);
-                  } else {
-                    message.warn('目前只支持单个库的删除');
-                    setSelectedRows([]);
-                  }
+                  handleDeleteModalVisible(true);
                 } else {
-                  message.warn('请选择要删除的库');
+                  message.warn('请选择要删除的库，支持多选');
                 }
               }}
             >
@@ -200,7 +198,7 @@ const TableList: React.FC = () => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === selectedRows[0]?.name) {
+          if (value.name === '我确认删除') {
             const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
