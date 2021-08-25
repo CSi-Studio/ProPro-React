@@ -170,21 +170,37 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       render: (dom, record) => {
         return (
-          <a
-            onClick={() => {
-              setCurrentRow(record);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
+          <Tooltip title={'Id:' + record.id} placement="topLeft">
+            <a
+              onClick={() => {
+                setCurrentRow(record);
+                setShowDetail(true);
+              }}
+            >
+              {dom}
+            </a>
+          </Tooltip>
         );
+      },
+    },
+    {
+      title: 'ProjectId',
+      dataIndex: 'id',
+      hideInTable: true,
+      render: (dom) => {
+        return <Tag>{dom}</Tag>;
       },
     },
     {
       key: 'alias',
       title: '别名',
       dataIndex: 'alias',
+      render: (dom, entity) => {
+        if (entity.alias) {
+          return <Tag>{dom}</Tag>;
+        }
+        return false;
+      },
     },
     {
       key: 'expCount',

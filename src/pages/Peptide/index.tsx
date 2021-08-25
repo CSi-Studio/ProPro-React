@@ -253,7 +253,6 @@ const TableList: React.FC = (props: any) => {
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
-      width: '120px',
       render: (text, record) => [
         <Tooltip title={'编辑'} key="edit">
           <a
@@ -308,9 +307,17 @@ const TableList: React.FC = (props: any) => {
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
-          props?.location?.state?.libraryName === undefined
-            ? '肽段列表'
-            : '标准库名称：' + props?.location?.state?.libraryName
+          props?.location?.state?.libraryName === undefined ? (
+            <>
+              <a>靶库 </a> &nbsp;&nbsp;/&nbsp;&nbsp;
+              <a> 肽段列表</a>
+            </>
+          ) : (
+            <>
+              <>靶库 </> &nbsp;&nbsp;/&nbsp;&nbsp;
+              <a> {'标准库：' + props?.location?.state?.libraryName}</a>
+            </>
+          )
         }
         actionRef={actionRef}
         search={{ labelWidth: 'auto' }}

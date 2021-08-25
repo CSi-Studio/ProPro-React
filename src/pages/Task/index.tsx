@@ -48,15 +48,25 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       render: (text, record) => {
         return (
-          <a
-            onClick={() => {
-              setCurrentRow(record);
-              setShowDetail(true);
-            }}
-          >
-            {text}
-          </a>
+          <Tooltip title={'Id:' + record.id} placement="topLeft">
+            <a
+              onClick={() => {
+                setCurrentRow(record);
+                setShowDetail(true);
+              }}
+            >
+              {text}
+            </a>
+          </Tooltip>
         );
+      },
+    },
+    {
+      title: 'TaskId',
+      dataIndex: 'id',
+      hideInTable: true,
+      render: (text, record) => {
+        return <Tag>{text}</Tag>;
       },
     },
     {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, Tooltip } from 'antd';
+import { Drawer, Tag, Tooltip } from 'antd';
 import type { TableListItem } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
@@ -13,12 +13,18 @@ export type UpdateFormProps = {
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const columns = [
     {
-      title: 'ID',
+      title: 'PeptideId',
       dataIndex: 'id',
+      render: (dom: any) => {
+        return <Tag>{dom}</Tag>;
+      },
     },
     {
-      title: '标准库ID',
+      title: 'LibraryId',
       dataIndex: 'libraryId',
+      render: (dom: any) => {
+        return <Tag>{dom}</Tag>;
+      },
     },
     {
       title: '蛋白质名称',
@@ -402,7 +408,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     <Drawer width={700} visible={props.showDetail} onClose={props.onClose} closable={false}>
       {props.currentRow?.peptideRef && (
         <ProDescriptions<TableListItem>
-          column={1}
+          column={2}
           title={props.currentRow?.peptideRef}
           request={async () => ({
             data: props.currentRow || {},

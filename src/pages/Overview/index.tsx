@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import {  Form, message, Space, Tag, Tooltip } from 'antd';
+import { Form, message, Space, Tag, Tooltip } from 'antd';
 import React, { useState, useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -45,17 +45,20 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
+          <Tooltip title={'Id:' + entity.id} placement="topLeft">
+            <a
+              onClick={() => {
+                setCurrentRow(entity);
+                setShowDetail(true);
+              }}
+            >
+              {dom}
+            </a>
+          </Tooltip>
         );
       },
     },
+
     {
       key: 'type',
       title: '类型',
@@ -71,16 +74,16 @@ const TableList: React.FC = (props: any) => {
       title: '峰统计',
       dataIndex: 'statstic',
       render: (text, entity) => {
-        return <p>{entity?.statistic?.TOTAL_PEAK_COUNT}</p>
-      }
+        return <>{entity?.statistic?.TOTAL_PEAK_COUNT}</>;
+      },
     },
     {
       key: 'peptideCount',
       title: '肽段统计',
       dataIndex: 'statstic',
       render: (text, entity) => {
-        return <p>{entity?.statistic?.TOTAL_PEPTIDE_COUNT}</p>
-      }
+        return <>{entity?.statistic?.TOTAL_PEPTIDE_COUNT}</>;
+      },
     },
     {
       key: 'tags',
@@ -103,18 +106,21 @@ const TableList: React.FC = (props: any) => {
       title: '标注',
       dataIndex: 'note',
       hideInSearch: true,
+      render: (dom, entity) => {
+        if (entity.note) {
+          return <>{entity?.statistic?.TOTAL_PEPTIDE_COUNT}</>;
+        }
+        return false;
+      },
     },
     {
       key: 'option',
       title: '操作',
       valueType: 'option',
-      copyable: true,
-      width: 100,
-      ellipsis: true,
       fixed: 'right',
       hideInSearch: true,
       render: (text, record) => (
-        <Space>
+        <>
           <Tooltip title={'编辑'}>
             <a
               onClick={() => {
@@ -123,27 +129,46 @@ const TableList: React.FC = (props: any) => {
                 setUpdateRow(record);
               }}
             >
-              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+              <Tag color="blue">
+                <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+                编辑
+              </Tag>
             </a>
           </Tooltip>
-        </Space>
+          <Tooltip title={'编辑'}>
+            <a
+              onClick={() => {
+                setCurrentRow(record);
+                setShowDetail(true);
+              }}
+            >
+              <Tag color="blue">
+                <Icon
+                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                  icon="mdi:file-document"
+                />
+                详情
+              </Tag>
+            </a>
+          </Tooltip>
+        </>
       ),
     },
   ];
   return (
     <>
-    <div style={{background:'#FFF'}}>
-      <Link 
+      <div style={{ background: '#FFF' }}>
+        <Link
           to={{
             pathname: '/project/list',
           }}
         >
-          <Tag color="blue" style={{margin:'0 0 0 30px'}}>
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-              返回项目列表
+          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
+            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+            返回项目列表
           </Tag>
-         </Link>
-    </div>
+        </Link>
+      </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle="概要列表"
@@ -151,9 +176,7 @@ const TableList: React.FC = (props: any) => {
         rowKey="id"
         size="small"
         search={false}
-        toolBarRender={() => [
-          
-        ]}
+        toolBarRender={() => []}
         tableAlertRender={false}
         pagination={{
           total: total,
@@ -188,7 +211,7 @@ const TableList: React.FC = (props: any) => {
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
           value.id = updateRow?.id as unknown as string;
-          var mapvalue={id:value.id,tags:value.tags,note:value.note}
+          var mapvalue = { id: value.id, tags: value.tags, note: value.note };
           const success = await handleUpdate(mapvalue);
           if (success) {
             handleUpdateModalVisible(false);
