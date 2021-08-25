@@ -26,16 +26,8 @@ export type CreateFormProps = {
   onSubmit: (values: addFormValueType) => Promise<void>;
   onCancel: () => void;
   createModalVisible: boolean;
-  values: Partial<any>;
   form: any;
 };
-
-// const [mode, setMode] = React.useState(true);
-
-// const changeMode = value => {
-//     setMode(value ? true : false);
-// };
-
 const CreateForm: React.FC<CreateFormProps> = (props) => {
   const [createVisible, setCreate] = useState<boolean>(true);
   return (
@@ -78,7 +70,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           label="reviewed"
         />
       </ProForm.Group>
-
       <ProFormUploadDragger
         rules={[
           {
@@ -110,24 +101,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         fieldProps={{
           beforeUpload: (info) => {
             return new Promise((resolve, reject) => {
-              message.success(`您将要上传的是 ${info.name}， 🤏 您配吗`);
-              // eslint-disable-next-line prefer-promise-reject-errors
+              message.success(`您将要上传的是 ${info.name}`);
               return reject(false);
             });
           },
         }}
       />
-
-      {/* <Switch onChange={changeMode} />  創建庫
-         <Switch
-          checked={input}
-          checkedChildren="Input"
-          unCheckedChildren="TextArea"
-          onChange={() => {
-            setInput(!input);
-          }}
-        /> */}
-
       <ProForm.Group>
         <ProFormSelect
           rules={[
@@ -149,11 +128,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               }
             },
           }}
-
-          // optionItemRender(item) {
-          //   console.log(item.label+'-'+item.value)
-          //   return item.label + ' - ' + item.value;
-          // }
         />
 
         <ProFormText
@@ -177,7 +151,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             },
           ]}
           options={SpModelType}
-          // fieldProps={{ onChange: (val) => console.log('status', status) }}
           width="sm"
           name="spModel"
           label="spModel"
