@@ -147,7 +147,7 @@ const TableList: React.FC = () => {
     <>
       <ProTable<TaskTableItem, Pagination>
         scroll={{ x: 'max-content' }}
-        headerTitle="方法列表"
+        headerTitle="任务列表"
         search={{ labelWidth: 'auto' }}
         actionRef={actionRef}
         rowKey="id"

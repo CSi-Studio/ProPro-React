@@ -341,7 +341,7 @@ const TableList: React.FC = () => {
       ],
     },
   ];
-
+  /* 点击行选中相关 */
   const selectRow = (record: any) => {
     const rowData = [...selectedRowsState];
     if (rowData.length == 0) {
@@ -455,49 +455,49 @@ const TableList: React.FC = () => {
                 </Menu.Item>
                 <Menu.Item key="2">
                   <Tooltip placement="left" title={'Nico方法'} key="Nico">
-                    <Tag>
-                      <a
-                        key="Nico"
-                        onClick={() => {
-                          if (selectedRowsState?.length > 0) {
-                            if (selectedRowsState.length == 1) {
-                              const values = {
-                                libraryId: selectedRowsState[0].id,
-                                generator: 'nico',
-                              };
-                              handleGenerate(values);
-                              setSelectedRows([]);
-                            }
-                            if (selectedRowsState.length > 1) {
-                              message.warn('目前只支持单个库的伪肽段生成');
-                              setSelectedRows([]);
-                            }
-                          } else {
-                            message.warn('请先选择一个库');
+                    <a
+                      key="Nico"
+                      onClick={() => {
+                        if (selectedRowsState?.length > 0) {
+                          if (selectedRowsState.length == 1) {
+                            const values = {
+                              libraryId: selectedRowsState[0].id,
+                              generator: 'nico',
+                            };
+                            handleGenerate(values);
+                            setSelectedRows([]);
                           }
-                        }}
-                      >
+                          if (selectedRowsState.length > 1) {
+                            message.warn('目前只支持单个库的伪肽段生成');
+                            setSelectedRows([]);
+                          }
+                        } else {
+                          message.warn('请先选择一个库');
+                        }
+                      }}
+                    >
+                      <Tag>
                         <Icon
                           style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
                           icon="mdi:alpha-n-circle"
                         />
                         Nico方法
-                      </a>
-                    </Tag>
+                      </Tag>
+                    </a>
                   </Tooltip>
                 </Menu.Item>
               </Menu>
             }
           >
-            <Tag color="blue">
-              <Tooltip title={'生成伪肽段'} key="generateDecoys">
+            <Tooltip title={'生成伪肽段'} key="generateDecoys">
+              <Tag color="blue">
                 <Icon
                   style={{ verticalAlign: '-5px', fontSize: '18px', color: '#0D93F7' }}
                   icon="mdi:alpha-p-box"
                 />
                 生成伪肽段
-              </Tooltip>
-            </Tag>
+              </Tag>
+            </Tooltip>
           </Dropdown>,
           <Tooltip placement="top" title={'统计基本信息'} key="statistics">
             <a
