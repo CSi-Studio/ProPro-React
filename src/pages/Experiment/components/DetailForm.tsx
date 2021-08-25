@@ -17,13 +17,15 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const downData: any[]=[]
   const xData:any[]=[]
   props?.currentRow?.windowRanges.map((item: any, index: string)=>{
-    upData.push(item?.end)
+    upData.push(item?.end-item?.start)
     downData.push(item?.start)
     xData.push(index)
   })
+  console.log(upData,downData)
   const option = {
     title: {
-      text: 'SwathCharts',
+      text: '窗口表',
+      subtext: 'Swath Chart'
     },
     tooltip: {
       trigger: 'axis',
@@ -37,12 +39,12 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
         return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value + '<br/>' +tar2.seriesName + ' : ' + tar2.value;
       },
     },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true,
-    },
+    // grid: {
+    //   left: '3%',
+    //   right: '4%',
+    //   bottom: '3%',
+    //   containLabel: true,
+    // },
     xAxis: {
       type: 'category',
       splitLine: { show: false },
@@ -96,7 +98,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           columns={props.columns as ProDescriptionsItemProps<TableListItem>[]}
         />
       )}
-      <ReactECharts option={option} style={{ height: 400 }} />
+      <ReactECharts option={option} style={{ height: 800 }} />
     </Drawer>
      
   );
