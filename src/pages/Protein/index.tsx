@@ -28,7 +28,7 @@ const TableList: React.FC = (props: any) => {
   /** 全局弹窗 */
   // const [popup, setPopup] = useState<boolean>(false);
   /** 全选 */
-  // const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>();
+  // const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
   const [total, setTotal] = useState<any>();
   const [formCreate] = Form.useForm();
   // const [currentRow, setCurrentRow] = useState<TableListItem>();
@@ -197,8 +197,8 @@ const TableList: React.FC = (props: any) => {
       <CreateForm
         form={formCreate}
         onCancel={() => {
-           handleModalVisible(false);
-           formCreate?.resetFields();
+          handleModalVisible(false);
+          formCreate?.resetFields();
         }}
         onSubmit={async (value) => {
           const success = await handleAdd(value);

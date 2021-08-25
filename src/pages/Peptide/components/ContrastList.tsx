@@ -21,7 +21,7 @@ export type TableListItem = {
 };
 const ContrastList: React.FC<ContrastListFormProps> = (props) => {
   /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<{ mz: string; cutInfo: string }[]>();
+  const [selectedRows, setSelectedRows] = useState<{ mz: string; cutInfo: string }[]>();
   const columns: ProColumns[] = [
     {
       title: '库中肽段碎片荷质比',
@@ -104,7 +104,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
               type="primary"
               key="submit"
               onClick={() => {
-                _props.form?.setFieldsValue({ fragments: selectedRowsState });
+                _props.form?.setFieldsValue({ fragments: selectedRows });
                 _props.form?.submit?.();
               }}
             >

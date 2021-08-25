@@ -51,7 +51,7 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
 
 const TableList: React.FC = (props: any) => {
   /** 全选 */
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   /** 删除窗口的弹窗 */
   const [formDelete] = Form.useForm();
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
@@ -289,7 +289,7 @@ const TableList: React.FC = (props: any) => {
   ];
   /* 行选择 */
   const selectRow = (record: any) => {
-    const rowData = [...selectedRowsState];
+    const rowData = [...selectedRows];
     if (rowData.length == 0) {
       rowData.push(record);
       setSelectedRows(rowData);
@@ -338,8 +338,8 @@ const TableList: React.FC = (props: any) => {
             <a
               onClick={() => {
                 formPredict?.resetFields();
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
                     handlePredictModalVisible(true);
                     // setSelectedRows([]);
                   } else {
@@ -362,8 +362,8 @@ const TableList: React.FC = (props: any) => {
               onClick={() => {
                 formDelete?.resetFields();
                 handleDeleteModalVisible(true);
-                if (selectedRowsState?.length > 0) {
-                  if (selectedRowsState.length == 1) {
+                if (selectedRows?.length > 0) {
+                  if (selectedRows.length == 1) {
                     handleDeleteModalVisible(true);
                   } else {
                     message.warn('目前只支持单个肽段的删除');
@@ -382,7 +382,7 @@ const TableList: React.FC = (props: any) => {
           </Tooltip>,
         ]}
         rowSelection={{
-          selectedRowKeys: selectedRowsState?.map((item) => {
+          selectedRowKeys: selectedRows?.map((item) => {
             return item.id;
           }),
           onChange: (_, selectedRowKeys) => {
@@ -434,7 +434,7 @@ const TableList: React.FC = (props: any) => {
           formPredict?.resetFields();
         }}
         onSubmit={async (value) => {
-          value.peptideId = selectedRowsState[0]?.id as string;
+          value.peptideId = selectedRows[0]?.id as string;
           const success = await handlePredict(value);
           if (success) {
             handlePredictModalVisible(false);
@@ -465,13 +465,13 @@ const TableList: React.FC = (props: any) => {
           }
         }}
         contrastModalVisible={contrastModalVisible}
-        values={selectedRowsState[0]}
+        values={selectedRows[0]}
         predictList={predictList}
       />
 
       {/* 删除列表 */}
       <DeleteForm
-        currentRow={selectedRowsState[0]}
+        currentRow={selectedRows[0]}
         form={formDelete}
         onCancel={() => {
           handleDeleteModalVisible(false);
@@ -479,8 +479,8 @@ const TableList: React.FC = (props: any) => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === selectedRowsState[0]?.peptideRef) {
-            const success = await handleRemove(selectedRowsState[0]);
+          if (value.name === selectedRows[0]?.peptideRef) {
+            const success = await handleRemove(selectedRows[0]);
             if (success) {
               handleDeleteModalVisible(false);
               setSelectedRows([]);
@@ -493,7 +493,7 @@ const TableList: React.FC = (props: any) => {
           }
         }}
         deleteModalVisible={deleteModalVisible}
-        values={selectedRowsState[0] || {}}
+        values={selectedRows[0] || {}}
       />
     </>
   );

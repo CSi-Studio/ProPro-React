@@ -56,7 +56,7 @@ export async function removeList(params: { projectId: any }) {
   });
 }
 /** 删除项目 GET project/remove  */
-export async function removeAna(params: { projectId: any }) {
+export async function removeRes(params: { projectId: any }) {
   return request(`${url}/project/removeAna`, {
     method: 'GET',
     params: {
