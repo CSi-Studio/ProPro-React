@@ -161,9 +161,7 @@ const TableList: React.FC = (props: any) => {
         search={{ labelWidth: 'auto' }}
         rowKey="id"
         size="small"
-        pagination={{
-          total: total,
-        }}
+        pagination={false}
         tableAlertRender={false}
         // request={experimentList}
         request={async (params) => {
