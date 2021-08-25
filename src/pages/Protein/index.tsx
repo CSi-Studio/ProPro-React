@@ -127,11 +127,11 @@ const TableList: React.FC = (props: any) => {
     },
     {
       title: 'UniProt链接🔗',
-      dataIndex: 'uniPortLink',
+      dataIndex: 'uniProtLink',
       hideInSearch: true,
       render: (dom, entity) => {
         return (
-          <a href={entity?.uniPortLink ? entity.uniPortLink : 'http://www.csibio.net/'}>UniProt</a>
+          <a href={entity?.uniProtLink ? entity?.uniProtLink : 'http://www.csibio.net/'}>UniProt</a>
         );
       },
     },

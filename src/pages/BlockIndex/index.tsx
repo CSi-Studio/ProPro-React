@@ -24,11 +24,13 @@ const TableList: React.FC = (props: any) => {
       title: 'level',
       dataIndex: 'level',
       search: false,
+      sorter:(a,b) =>(a.level < b.level ? -1:1)
     },
     {
       title: '文件开始位置',
       dataIndex: 'startPtr',
       search: false,
+      sorter:(a,b) =>(a.startPtr < b.startPtr ? -1:1)
     },
     {
       title: '文件结束位置',
@@ -38,13 +40,21 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'mz范围',
       dataIndex: 'range',
+      sorter: (a, b) => {
+        if (a.range?.start < b.range?.start) {
+          return -1;
+        }
+        if (a.range?.start> b.range?.start) {
+          return 1;
+        }
+        return 0;
+      },
       search: false,
       render: (dom: any, entity: any) => {
         if (entity.range) {
           return (
             <span>
-  {entity?.range?.start}~{entity?.range?.end}
-
+            {entity?.range?.start}~{entity?.range?.end}
             </span>
           );
         }
