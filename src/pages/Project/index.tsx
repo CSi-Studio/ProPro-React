@@ -139,8 +139,9 @@ const handleRmIrt = async (currentRow: TableListItem | undefined) => {
    const data=await getDict()
    console.log("data",data)
    data.data.map((item:any,index:string)=>{
-    sessionStorage.setItem(item.name,JSON.stringify(item.item))
+      sessionStorage.setItem(item.name,JSON.stringify(item.item))
    })
+
    
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();

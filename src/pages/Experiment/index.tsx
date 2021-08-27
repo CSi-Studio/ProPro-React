@@ -60,6 +60,21 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      title: 'OverView数目',
+      dataIndex: 'id',
+      hideInSearch: true,
+      render: (dom,entity) => {
+        return <Link
+        to={{
+          pathname: '/overView',
+          state: {projectId:projectId, expId: entity.id },
+        }}
+      >
+        <Tag color="green">查看</Tag>
+      </Link>
+      },
+    },
+    {
       title: 'Aird : Vendor(MB)',
       dataIndex: 'fileSize',
       hideInSearch: true,

@@ -3,11 +3,12 @@ import { Form, message, Space, Tag, Tooltip } from 'antd';
 import React, { useState, useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { overviewList, updateList } from './service';
+import { overviewList, overviewList2, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-import DetailForm from './components/Overviewdetail';
+
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
+import DetailForm from './components/overviewdetail';
 
 /**
  * 更新库
@@ -31,13 +32,18 @@ const TableList: React.FC = (props: any) => {
   const [formUpdate] = Form.useForm();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [showLink, setShowLink] = useState<boolean>(false);
   const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [updateRow, setUpdateRow] = useState<TableListItem>();
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const projectId = props?.location?.query.projectId;
+  
+  const projectId = props?.location?.query?.projectId;
+  const pjId = props?.location?.state?.projectId;
+  const expId = props?.location?.state?.expId
+
   const columns: ProColumns<TableListItem>[] = [
     {
       key: 'name',
@@ -120,6 +126,7 @@ const TableList: React.FC = (props: any) => {
       fixed: 'right',
       hideInSearch: true,
       render: (text, record) => (
+        
         <>
           <Tooltip title={'编辑'}>
             <a
@@ -155,12 +162,14 @@ const TableList: React.FC = (props: any) => {
       ),
     },
   ];
+ 
   return (
     <>
-      <div style={{ background: '#FFF' }}>
+      <div style={{ background: '#FFF' }} key="1" hidden={projectId==null}>
         <Link
           to={{
             pathname: '/project/list',
+          
           }}
         >
           <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
@@ -169,6 +178,20 @@ const TableList: React.FC = (props: any) => {
           </Tag>
         </Link>
       </div>
+      <div style={{ background: '#FFF' }} key="2" hidden={projectId!=null}>
+        <Link
+          to={{
+            pathname: '/experiment/list',
+            search: `?projectId=${pjId}`,
+          }}
+        >
+          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
+            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+            返回实验列表
+          </Tag>
+        </Link>
+      </div>
+      
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle="概要列表"
@@ -182,9 +205,15 @@ const TableList: React.FC = (props: any) => {
           total: total,
         }}
         request={async (params) => {
-          const msg = await overviewList({ projectId: projectId, ...params });
-          setTotal(msg.totalNum);
-          return Promise.resolve(msg);
+          if(projectId){
+            const msg = await overviewList({ projectId: projectId, ...params });
+            setTotal(msg.totalNum);
+            return Promise.resolve(msg);
+          }else{
+            const msg = await overviewList2({ projectId: pjId,expId:expId ,...params });
+            setTotal(msg.totalNum);
+            return Promise.resolve(msg);
+          }      
         }}
         columns={columns}
         rowSelection={{}}
