@@ -1,6 +1,6 @@
-import { Button, message, Tooltip, Form } from 'antd';
+import { Button, message, Tooltip, Form, Tag } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { dictList, updateList, addList, addListItem, deleteItem, deleteDict } from './service';
+import { dictList, updateList, addList, addListItem, deleteItem, deleteDict, getDict } from './service';
 import type {
   TableListItem,
   TableListPagination,
@@ -56,6 +56,13 @@ const handleUpdate = async (values: any) => {
     await updateList(values);
     hide();
     message.success('编辑成功');
+    sessionStorage.clear()
+    const data=await getDict()
+    console.log("data",data)
+    data.data.map((item:any,index:string)=>{
+        sessionStorage.setItem(item.name,JSON.stringify(item.item))
+    })
+  
     return true;
   } catch (error) {
     hide();
@@ -71,6 +78,12 @@ const handleRemoveItem = async (values: any) => {
   try {
     await deleteItem(values);
     message.success('删除成功，即将刷新');
+    sessionStorage.clear()
+    const data=await getDict()
+    console.log("data",data)
+    data.data.map((item:any,index:string)=>{
+        sessionStorage.setItem(item.name,JSON.stringify(item.item))
+    })
     return true;
   } catch (error) {
     message.error('删除失败，请重试');
@@ -82,11 +95,26 @@ const handleRemove = async (values: any) => {
   try {
     await deleteDict(values);
     message.success('删除成功，即将刷新');
+    const data=await getDict()
+    console.log("data",data)
+    data.data.map((item:any,index:string)=>{
+        sessionStorage.setItem(item.name,JSON.stringify(item.item))
+    })
     return true;
   } catch (error) {
     message.error('删除失败，请重试');
     return false;
   }
+};
+
+const reFreshCache = async() => {
+  sessionStorage.clear()
+    const data=await getDict()
+    console.log("data",data)
+    data.data.map((item:any,index:string)=>{
+        sessionStorage.setItem(item.name,JSON.stringify(item.item))
+    })
+    message.info('刷新缓存成功')
 };
 
 const TableList: React.FC = () => {
@@ -268,17 +296,40 @@ const TableList: React.FC = () => {
           rowExpandable: (record) => record.name !== 'Not Expandable',
         }}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              form?.resetFields();
-              handleModalVisible(true);
-            }}
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
-            新建字典表
-          </Button>,
+          <Tooltip title={'刷新缓存'} key="add">
+          <a>
+            <Tag
+              color="green"
+              onClick={() => {
+                reFreshCache()
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:playlist-plus"
+              />
+              刷新缓存
+            </Tag>
+          </a>
+        </Tooltip>,
+          <Tooltip title={'新增'} key="add">
+          <a>
+            <Tag
+              color="green"
+              onClick={() => {
+                form?.resetFields();
+                handleModalVisible(true);
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:playlist-plus"
+              />
+              新增
+            </Tag>
+          </a>
+        </Tooltip>,
+      
         ]}
         request={async (params) => {
           const msg = await dictList({ ...params });
