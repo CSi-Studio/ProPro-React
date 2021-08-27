@@ -8,7 +8,7 @@ import type {
   updateListItem,
   deleteListItem,
 } from './data';
-import { EditFilled, PlusCircleTwoTone, DeleteTwoTone } from '@ant-design/icons';
+import { EditFilled, PlusCircleTwoTone, DeleteTwoTone, RedoOutlined } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
@@ -109,12 +109,13 @@ const handleRemove = async (values: any) => {
 
 const reFreshCache = async() => {
   sessionStorage.clear()
-    const data=await getDict()
-    console.log("data",data)
-    data.data.map((item:any,index:string)=>{
-        sessionStorage.setItem(item.name,JSON.stringify(item.item))
-    })
-    message.info('刷新缓存成功')
+  const data=await getDict()
+    
+  data.data.map((item:any,index:string)=>{
+    sessionStorage.setItem(item.name,JSON.stringify(item.item))
+  })
+    console.log("data",sessionStorage.length)
+  message.info('刷新缓存成功')
 };
 
 const TableList: React.FC = () => {
@@ -304,9 +305,9 @@ const TableList: React.FC = () => {
                 reFreshCache()
               }}
             >
-              <Icon
+              <RedoOutlined 
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                icon="mdi:playlist-plus"
+                
               />
               刷新缓存
             </Tag>
