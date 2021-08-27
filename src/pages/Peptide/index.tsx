@@ -305,7 +305,7 @@ const TableList: React.FC = (props: any) => {
         headerTitle={
           props?.location?.state?.libraryName === undefined ? (
             <>
-              <Text>实验列表</Text>
+              <Text>肽段列表</Text>
             </>
           ) : (
             <>
@@ -314,11 +314,11 @@ const TableList: React.FC = (props: any) => {
                   pathname: '/library/list',
                 }}
               >
-                <Text type="secondary">项目列表</Text>
+                <Text type="secondary">靶库</Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
-                <Text>项目名：{props?.location?.state?.libraryName}</Text>
+                <Text>肽段列表 所属库：{props?.location?.state?.libraryName}</Text>
               </a>
             </>
           )

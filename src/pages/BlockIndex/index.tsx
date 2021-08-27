@@ -140,7 +140,7 @@ const TableList: React.FC = (props: any) => {
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
-                <Text>实验名：{props?.location?.state.expName}</Text>
+                <Text>索引列表 所属实验：{props?.location?.state.expName}</Text>
               </a>
             </>
           )

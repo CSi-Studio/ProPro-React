@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Form, message, Space, Tag, Tooltip } from 'antd';
+import { Form, message, Tag, Tooltip, Typography } from 'antd';
 import React, { useState, useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -8,7 +8,7 @@ import type { TableListItem, TableListPagination } from './data';
 
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
-import DetailForm from './components/overviewdetail';
+import DetailForm from './components/Overviewdetail';
 
 /**
  * 更新库
@@ -27,7 +27,7 @@ const handleUpdate = async (values: any) => {
     return false;
   }
 };
-
+const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   const [formUpdate] = Form.useForm();
   /** 库详情的抽屉 */
@@ -39,10 +39,10 @@ const TableList: React.FC = (props: any) => {
   const [updateRow, setUpdateRow] = useState<TableListItem>();
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  
+
   const projectId = props?.location?.query?.projectId;
   const pjId = props?.location?.state?.projectId;
-  const expId = props?.location?.state?.expId
+  const expId = props?.location?.state?.expId;
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -126,7 +126,6 @@ const TableList: React.FC = (props: any) => {
       fixed: 'right',
       hideInSearch: true,
       render: (text, record) => (
-        
         <>
           <Tooltip title={'编辑'}>
             <a
@@ -162,39 +161,32 @@ const TableList: React.FC = (props: any) => {
       ),
     },
   ];
- 
+
   return (
     <>
-      <div style={{ background: '#FFF' }} key="1" hidden={projectId==null}>
-        <Link
-          to={{
-            pathname: '/project/list',
-          
-          }}
-        >
-          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
-            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-            返回项目列表
-          </Tag>
-        </Link>
-      </div>
-      <div style={{ background: '#FFF' }} key="2" hidden={projectId!=null}>
-        <Link
-          to={{
-            pathname: '/experiment/list',
-            search: `?projectId=${pjId}`,
-          }}
-        >
-          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
-            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-            返回实验列表
-          </Tag>
-        </Link>
-      </div>
-      
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle="概要列表"
+        headerTitle={
+          props?.location?.state?.projectName === undefined ? (
+            <>
+              <Text>概要列表</Text>
+            </>
+          ) : (
+            <>
+              <Link
+                to={{
+                  pathname: '/project/list',
+                }}
+              >
+                <Text type="secondary">项目列表</Text>
+              </Link>
+              &nbsp;&nbsp;/&nbsp;&nbsp;
+              <a>
+                <Text>概要列表 所属项目：{props?.location?.state?.projectName}</Text>
+              </a>
+            </>
+          )
+        }
         actionRef={actionRef}
         rowKey="id"
         size="small"
@@ -205,15 +197,15 @@ const TableList: React.FC = (props: any) => {
           total: total,
         }}
         request={async (params) => {
-          if(projectId){
+          if (projectId) {
             const msg = await overviewList({ projectId: projectId, ...params });
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
-          }else{
-            const msg = await overviewList2({ projectId: pjId,expId:expId ,...params });
+          } else {
+            const msg = await overviewList2({ projectId: pjId, expId: expId, ...params });
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
-          }      
+          }
         }}
         columns={columns}
         rowSelection={{}}
