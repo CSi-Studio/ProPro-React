@@ -20,10 +20,8 @@ const PSelect: React.FC<dictProps> = (props) => {
   const data=JSON.parse(sessionStorage.getItem(props.dictName))
   newData=[]
   data.map((item:any,index:string)=>{
-    if(newData.indexOf({value:item.key,label:item.value})===-1){
       console.log('index',newData.indexOf({value:item.key,label:item.value}))
       newData.push({value:item.key,label:item.value})
-    }
   })
   console.log("newData",newData)
   return (

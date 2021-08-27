@@ -62,7 +62,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'OverView数目',
+      title: 'OverView',
       dataIndex: 'id',
       hideInSearch: true,
       render: (dom,entity) => {
