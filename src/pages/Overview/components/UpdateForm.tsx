@@ -15,7 +15,6 @@ export type UpdateFormProps = {
   values: any;
   form: any;
 };
-
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <ModalForm

@@ -13,7 +13,6 @@ export type updateListItem = {
   key:string,
   value:string,
   id:string,
-
 };
 export type deleteListItem = {
   key:string,

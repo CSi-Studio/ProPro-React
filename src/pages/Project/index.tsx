@@ -22,6 +22,7 @@ import DeleteForm from './components/DeleteForm';
 import DeleteIrt from './components/DeleteIrt';
 import { Link } from 'umi';
 import DeleteRes from './components/DeleteRes';
+import { getDict } from '../Dict/service';
 
 /**
  * 添加库
@@ -135,6 +136,12 @@ const handleRmIrt = async (currentRow: TableListItem | undefined) => {
   }
 };
 
+   const data=await getDict()
+   console.log("data",data)
+   data.data.map((item:any,index:string)=>{
+    sessionStorage.setItem(item.name,JSON.stringify(item.item))
+   })
+   
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();

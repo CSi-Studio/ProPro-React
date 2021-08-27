@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ProFormTextArea, ModalForm, ProFormText } from '@ant-design/pro-form';
-
+import { getDict } from '../service';
 export type updateFormValueType = {
   key?: string;
   value?: string;
@@ -30,8 +30,13 @@ export type updateFormValue = {
   key?: any;
   value?: any;
 };
+ 
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+
+const UpdateForm: React.FC<UpdateFormProps> =   (props) => {
+
+
+
   return (
     <ModalForm
       form={props.form}

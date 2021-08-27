@@ -48,7 +48,7 @@ export async function addListItem(body: { id:string;key:string;value:string }) {
   });
 }
 
-/** 更新库 POST /api/library/update */
+/** 更新库 POST /api/dict/update */
 export async function updateList(body: {  id: string; key?: any; value?: any }) {
   const fileData = new FormData();
   fileData.append('id', body.id);
@@ -82,22 +82,8 @@ export async function deleteDict(body: {  id: string;}) {
   });
 }
 
-// /** 克隆库 GET library/remove  */
-// export async function cloneList(params: { id: any; newLibName: string; includeDecoy?: boolean }) {
-//   return request('/api/library/clone', {
-//     method: 'GET',
-//     params: {
-//       ...params,
-//     },
-//   });
-// }
-
-// /** 删除库 GET library/remove  */
-// export async function removeList(params: { libraryIds: any }) {
-//   return request('/api/library/remove', {
-//     method: 'GET',
-//     params: {
-//       ...params,
-//     },
-//   });
-// }
+export async function getDict() {
+  return request(`${url}/dict/getAll`, {
+    method: 'GET',
+  });
+}
