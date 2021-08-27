@@ -23,8 +23,8 @@ const TableList: React.FC = (props: any) => {
   const actionRef = useRef<ActionType>();
 
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
-  const projectId = props?.location?.query.projectId;
-  const projectName = props?.location?.state.projectName;
+  const projectId = props?.location?.query?.projectId;
+  const projectName = props?.location?.state?.projectName;
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -70,6 +70,7 @@ const TableList: React.FC = (props: any) => {
         to={{
           pathname: '/overView',
           state: {projectId:projectId, expId: entity.id },
+          search: `?expId=${entity.id}?projectId=${projectId}`,
         }}
       >
         <Tag color="green">查看</Tag>
@@ -200,7 +201,7 @@ const TableList: React.FC = (props: any) => {
           if (result.success) {
             setPrepareData(result.data);
           }
-          const msg = await experimentList({ projectId, ...params });
+          const msg = await experimentList({projectId, ...params });
           setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
