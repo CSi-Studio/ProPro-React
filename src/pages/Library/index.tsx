@@ -242,7 +242,7 @@ const TableList: React.FC = () => {
       dataIndex: 'Protein_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <span onClick={() => {}}>{entity?.statistic?.Protein_Count}</span>;
+        return <Tag>{entity?.statistic?.Protein_Count}</Tag>;
       },
     },
     {
@@ -251,15 +251,20 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render: (dom, entity) => {
         return (
-          <Link
-            to={{
-              pathname: `/peptide/list`,
-              state: { libraryName: entity.name },
-              search: `?libraryId=${entity.id}`,
-            }}
-          >
-            {entity?.statistic?.Peptide_Count}
-          </Link>
+          <>
+            <Tag color={entity?.statistic?.Peptide_Count == 0 ? 'error' : 'blue'}>
+              {entity?.statistic?.Peptide_Count}
+            </Tag>
+            <Link
+              to={{
+                pathname: `/peptide/list`,
+                state: { libraryName: entity.name },
+                search: `?libraryId=${entity.id}`,
+              }}
+            >
+              <Tag color="green">查看</Tag>
+            </Link>
+          </>
         );
       },
     },
@@ -268,7 +273,7 @@ const TableList: React.FC = () => {
       dataIndex: 'Fragment_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <span onClick={() => {}}>{entity?.statistic?.Fragment_Count}</span>;
+        return <Tag>{entity?.statistic?.Fragment_Count}</Tag>;
       },
     },
     // {
