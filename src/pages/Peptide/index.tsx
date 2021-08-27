@@ -1,4 +1,4 @@
-import { Form, message, Tooltip, Tag, Space, Table } from 'antd';
+import { Form, message, Tooltip, Tag, Space, Table, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -12,6 +12,7 @@ import DetailForm from './components/DetailForm';
 import type { predictFormValueType } from './components/PredictForm';
 import PredictForm from './components/PredictForm';
 import ContrastList from './components/ContrastList';
+import { Link } from 'umi';
 
 /**
  * 更新库
@@ -48,7 +49,7 @@ const handleRemove = async (currentRow: TableListItem | undefined) => {
     return false;
   }
 };
-
+const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
@@ -304,13 +305,21 @@ const TableList: React.FC = (props: any) => {
         headerTitle={
           props?.location?.state?.libraryName === undefined ? (
             <>
-              <a>靶库 </a> &nbsp;&nbsp;/&nbsp;&nbsp;
-              <a> 肽段列表</a>
+              <Text>实验列表</Text>
             </>
           ) : (
             <>
-              <>靶库 </> &nbsp;&nbsp;/&nbsp;&nbsp;
-              <a> {'标准库：' + props?.location?.state?.libraryName}</a>
+              <Link
+                to={{
+                  pathname: '/library/list',
+                }}
+              >
+                <Text type="secondary">项目列表</Text>
+              </Link>
+              &nbsp;&nbsp;/&nbsp;&nbsp;
+              <a>
+                <Text>项目名：{props?.location?.state?.libraryName}</Text>
+              </a>
             </>
           )
         }

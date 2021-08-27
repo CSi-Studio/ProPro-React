@@ -60,5 +60,5 @@ export default {
   'menu.peptide': 'Peptide',
   'menu.blockIndex': 'BlockIndex',
   'menu.task': 'Task',
-  'menu.ProteinClinic': 'ProteinClinic',
+  'menu.ProteinClinic': 'Clinic',
 };

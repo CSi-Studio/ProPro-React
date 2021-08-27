@@ -60,5 +60,5 @@ export default {
   'menu.peptide': '肽段',
   'menu.blockIndex': '索引',
   'menu.task': '任务',
-  'menu.ProteinClinic': '肽段诊所',
+  'menu.ProteinClinic': '诊所',
 };
