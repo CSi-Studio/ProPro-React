@@ -163,11 +163,6 @@ const TableList: React.FC = (props: any) => {
                 },
               ]}
             />,
-            // <Row>
-            //   {entity.fragments.map((item) => (
-            //     <Col span={6}>{item.cutInfo}</Col>
-            //   ))}
-            // </Row>,
           ],
         },
         {
