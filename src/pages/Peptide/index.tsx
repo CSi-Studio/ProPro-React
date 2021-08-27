@@ -120,6 +120,19 @@ const TableList: React.FC = (props: any) => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      title: 'Proteins',
+      dataIndex: 'proteins',
+      render: (dom, entity) => {
+        let pros = []
+        if (entity.proteins) {
+          entity.proteins.forEach(pro=>{
+            pros.push(<Tag key={pro}>{pro}</Tag>)
+          })
+        }
+        return <Space direction='vertical'>{pros}</Space>
+      },
+    },
+    {
       title: 'PeptideRef',
       dataIndex: 'peptideRef',
       render: (dom, entity) => {
@@ -128,7 +141,7 @@ const TableList: React.FC = (props: any) => {
             <Tag color="green">真:{entity.peptideRef}</Tag>
             <Tag color="red">伪:{entity.decoySequence}</Tag>
           </Space>
-        );
+        )
       },
     },
     {
@@ -179,7 +192,7 @@ const TableList: React.FC = (props: any) => {
               columns={[
                 {
                   dataIndex: 'mz',
-                },
+                }
               ]}
             />,
           ],

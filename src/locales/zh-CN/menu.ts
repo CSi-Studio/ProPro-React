@@ -61,4 +61,6 @@ export default {
   'menu.blockIndex': '索引',
   'menu.task': '任务',
   'menu.ProteinClinic': '肽段诊所',
+  'menu.overview': '概览',
+  'menu.IRT': 'IRT',
 };

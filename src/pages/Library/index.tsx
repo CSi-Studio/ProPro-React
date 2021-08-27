@@ -171,7 +171,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '标准库名称',
+      title: '库名称',
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
@@ -250,17 +250,15 @@ const TableList: React.FC = () => {
       dataIndex: 'Peptide_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return (
+        return <>
           <Link
             to={{
               pathname: `/peptide/list`,
               state: { libraryName: entity.name },
               search: `?libraryId=${entity.id}`,
-            }}
-          >
+            }}>
             {entity?.statistic?.Peptide_Count}
-          </Link>
-        );
+          </Link></>
       },
     },
     {
