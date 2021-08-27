@@ -65,17 +65,16 @@ const TableList: React.FC = (props: any) => {
       title: 'OverView',
       dataIndex: 'id',
       hideInSearch: true,
-      render: (dom, entity) => {
-        return (
-          <Link
-            to={{
-              pathname: '/overView',
-              state: { projectId: projectId, expId: entity.id },
-            }}
-          >
-            <Tag color="green">查看</Tag>
-          </Link>
-        );
+      render: (dom,entity) => {
+        return <Link
+        to={{
+          pathname: '/overView',
+          state: {projectId:projectId, expId: entity.id },
+          search: `?expId=${entity.id}?projectId=${projectId}`,
+        }}
+      >
+        <Tag color="green">查看</Tag>
+      </Link>
       },
     },
     {
@@ -166,6 +165,18 @@ const TableList: React.FC = (props: any) => {
   ];
   return (
     <>
+    
+        <Link
+          to={{
+            pathname: '/project/list',
+          
+          }}
+        >
+          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
+            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+            返回项目列表
+          </Tag>
+        </Link>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
@@ -202,7 +213,7 @@ const TableList: React.FC = (props: any) => {
           if (result.success) {
             setPrepareData(result.data);
           }
-          const msg = await experimentList({ projectId, ...params });
+          const msg = await experimentList({projectId, ...params });
           setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
