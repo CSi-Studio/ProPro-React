@@ -54,12 +54,12 @@ export default [
   },
   //overview
   {
-   key: 'overview',
-   name:'overview',
-   path: '/overview',
-   icon: 'smile',
-  component: './Overview',
-  hideInMenu: true,
+    key: 'overview',
+    name: 'overview',
+    path: '/overview',
+    icon: 'smile',
+    component: './Overview',
+    hideInMenu: true,
   },
   //肽段
   {
@@ -91,6 +91,19 @@ export default [
     path: '/task/list',
     icon: 'UnorderedListOutlined',
     component: './Task',
+  },
+  // 蛋白诊所界面
+  {
+    key: 'ProteinClinic',
+    name: 'ProteinClinic',
+    path: '/proteinclinic',
+    icon: 'UnorderedListOutlined',
+    component: './ProteinClinic',
+    layout: {
+      hideMenu: true,
+      hideNav: false,
+      hideFooter: true,
+    },
   },
   {
     component: './404',
