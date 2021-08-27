@@ -1,4 +1,4 @@
-import { Button, Form, message, Tag, Tooltip } from 'antd';
+import { Form, message, Tag, Tooltip } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { addList, proteinList } from './service';
 import type { TableListItem, TableListPagination } from './data';

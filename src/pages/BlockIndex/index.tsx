@@ -1,4 +1,4 @@
-import { Tag, Tooltip, Typography } from 'antd';
+import { Tooltip, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListDetail, TableListItem, TableListPagination } from './data';
@@ -7,7 +7,6 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
-import { LeftCircleFilled } from '@ant-design/icons';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
