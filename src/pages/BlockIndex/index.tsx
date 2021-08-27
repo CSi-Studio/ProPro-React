@@ -1,4 +1,4 @@
-import { Button, Tag, Tooltip } from 'antd';
+import { Tag, Tooltip, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListDetail, TableListItem, TableListPagination } from './data';
@@ -9,10 +9,12 @@ import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
 import { LeftCircleFilled } from '@ant-design/icons';
 
+const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   /** 全选 */
   // const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
 
+  const projectName = props?.location?.state.projectName;
   const [idRow, setRowId] = useState<any>();
   const [detaileRow, setDetailRow] = useState<TableListDetail>();
 
@@ -24,13 +26,13 @@ const TableList: React.FC = (props: any) => {
       title: 'level',
       dataIndex: 'level',
       search: false,
-      sorter:(a,b) =>(a.level < b.level ? -1:1)
+      sorter: (a, b) => (a.level < b.level ? -1 : 1),
     },
     {
       title: '文件开始位置',
       dataIndex: 'startPtr',
       search: false,
-      sorter:(a,b) =>(a.startPtr < b.startPtr ? -1:1)
+      sorter: (a, b) => (a.startPtr < b.startPtr ? -1 : 1),
     },
     {
       title: '文件结束位置',
@@ -44,7 +46,7 @@ const TableList: React.FC = (props: any) => {
         if (a.range?.start < b.range?.start) {
           return -1;
         }
-        if (a.range?.start> b.range?.start) {
+        if (a.range?.start > b.range?.start) {
           return 1;
         }
         return 0;
@@ -54,7 +56,7 @@ const TableList: React.FC = (props: any) => {
         if (entity.range) {
           return (
             <span>
-            {entity?.range?.start}~{entity?.range?.end}
+              {entity?.range?.start}~{entity?.range?.end}
             </span>
           );
         }
@@ -110,22 +112,39 @@ const TableList: React.FC = (props: any) => {
 
   return (
     <>
-      <div style={{ background: '#FFF' }}>
-        <Link
-          to={{
-            pathname: '/experiment/list',
-            search: `?projectId=${props?.location?.state?.projectId}`,
-          }}
-        >
-          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
-            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-            返回实验列表
-          </Tag>
-        </Link>
-      </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle={'实验名：' + props?.location?.state.expName}
+        headerTitle={
+          props?.location?.state?.expName === undefined ? (
+            <>
+              <Text type="secondary">索引列表</Text>
+            </>
+          ) : (
+            <>
+              <Link
+                to={{
+                  pathname: '/project/list',
+                }}
+              >
+                <Text type="secondary">项目列表</Text>
+              </Link>
+              &nbsp;&nbsp;/&nbsp;&nbsp;
+              <Link
+                to={{
+                  pathname: '/experiment/list',
+                  search: `?projectId=${props?.location?.state?.projectId}`,
+                  state: { projectName },
+                }}
+              >
+                <Text type="secondary">实验列表</Text>
+              </Link>
+              &nbsp;&nbsp;/&nbsp;&nbsp;
+              <a>
+                <Text>实验名：{props?.location?.state.expName}</Text>
+              </a>
+            </>
+          )
+        }
         actionRef={actionRef}
         rowKey="id"
         size="small"

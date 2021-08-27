@@ -1,4 +1,4 @@
-import { Tag, Tooltip, Form, Button, message } from 'antd';
+import { Tag, Tooltip, Form, Button, message, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList, analyze, prepare } from './service';
 import type { AnalyzeParams, PrepareAnalyzeVO, TableListItem, TableListPagination } from './data';
@@ -9,6 +9,7 @@ import DetailForm from './components/DetailForm';
 import AnalyzeForm from './components/AnalyzeForm';
 import { Link } from 'umi';
 
+const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   const [formAnalyze] = Form.useForm();
   /* 分析窗口变量 */
@@ -23,6 +24,7 @@ const TableList: React.FC = (props: any) => {
 
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
   const projectId = props?.location?.query.projectId;
+  const projectName = props?.location?.state.projectName;
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -89,8 +91,7 @@ const TableList: React.FC = (props: any) => {
                 to={{
                   pathname: '/blockIndex',
                   search: `?expId=${entity.id}`,
-
-                  state: { projectId, expName: entity.name },
+                  state: { projectId, projectName, expName: entity.name },
                 }}
               >
                 <Tag color="green">查看</Tag>
@@ -148,24 +149,28 @@ const TableList: React.FC = (props: any) => {
   ];
   return (
     <>
-      <div style={{ background: '#FFF' }}>
-        <Link
-          to={{
-            pathname: '/project/list',
-          }}
-        >
-          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
-            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-            返回项目列表
-          </Tag>
-        </Link>
-      </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
-          props?.location?.state?.projectName === undefined
-            ? '实验列表'
-            : '项目名称：' + props?.location?.state?.projectName
+          props?.location?.state?.projectName === undefined ? (
+            <>
+              <Text>实验列表</Text>
+            </>
+          ) : (
+            <>
+              <Link
+                to={{
+                  pathname: '/project/list',
+                }}
+              >
+                <Text type="secondary">项目列表</Text>
+              </Link>
+              &nbsp;&nbsp;/&nbsp;&nbsp;
+              <a>
+                <Text>项目名：{projectName}</Text>
+              </a>
+            </>
+          )
         }
         actionRef={actionRef}
         search={{ labelWidth: 'auto' }}
@@ -175,7 +180,6 @@ const TableList: React.FC = (props: any) => {
           pageSize: 50,
         }}
         tableAlertRender={false}
-        // request={experimentList}
         request={async (params) => {
           const result = await prepare(projectId);
           if (result.success) {

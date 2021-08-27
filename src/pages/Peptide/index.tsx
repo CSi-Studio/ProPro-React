@@ -343,7 +343,6 @@ const TableList: React.FC = (props: any) => {
                 if (selectedRows?.length > 0) {
                   if (selectedRows.length == 1) {
                     handlePredictModalVisible(true);
-                    // setSelectedRows([]);
                   } else {
                     message.warn('目前只支持单个肽段的预测');
                     setSelectedRows([]);
