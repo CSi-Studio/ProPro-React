@@ -15,12 +15,12 @@ const TableList: React.FC = (props: any) => {
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
-  const [currentRow, setCurrentRow] = useState<TableListItem[]>();
+  const [currentRow, setCurrentRow] = useState<TableListItem>();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
-  
+
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
   const projectId = props?.location?.query.projectId;
 
@@ -30,15 +30,25 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
+          <Tooltip title={'Id:' + entity.id} placement="topLeft">
+            <a
+              onClick={() => {
+                setCurrentRow(entity);
+                setShowDetail(true);
+              }}
+            >
+              {dom}
+            </a>
+          </Tooltip>
         );
+      },
+    },
+    {
+      title: 'ExpId',
+      dataIndex: 'id',
+      hideInTable: true,
+      render: (dom) => {
+        return <Tag>{dom}</Tag>;
       },
     },
     {
@@ -79,7 +89,7 @@ const TableList: React.FC = (props: any) => {
                 to={{
                   pathname: '/blockIndex',
                   search: `?expId=${entity.id}`,
-                  
+
                   state: { projectId, expName: entity.name },
                 }}
               >
@@ -138,19 +148,18 @@ const TableList: React.FC = (props: any) => {
   ];
   return (
     <>
-    <div style={{background:'#FFF'}}>
-      <Link 
+      <div style={{ background: '#FFF' }}>
+        <Link
           to={{
             pathname: '/project/list',
-          
           }}
         >
-          <Tag color="blue" style={{margin:'0 0 0 30px'}}>
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-              返回项目列表
+          <Tag color="blue" style={{ margin: '0 0 0 30px' }}>
+            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+            返回项目列表
           </Tag>
-         </Link>
-    </div>
+        </Link>
+      </div>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
@@ -163,7 +172,7 @@ const TableList: React.FC = (props: any) => {
         rowKey="id"
         size="small"
         pagination={{
-          pageSize:50
+          pageSize: 50,
         }}
         tableAlertRender={false}
         // request={experimentList}

@@ -92,6 +92,9 @@ export class IrtOption {
     private getIrtSeries(data: any[]) {
       const series = [];
       for (let i = 0; i < data.length; i += 1) {
+        if(data[i].irt == null || data[i].irt === undefined || data[i].irt.length === 0){
+          return null;
+        }
         let seriesItem = {
           type: "scatter",
           showSymbol: false,

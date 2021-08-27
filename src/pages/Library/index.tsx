@@ -173,10 +173,9 @@ const TableList: React.FC = () => {
     {
       title: '标准库名称',
       dataIndex: 'name',
-      copyable: true,
       render: (dom, entity) => {
         return (
-          <Tooltip title={dom} color="#eeeeee" placement="topLeft">
+          <Tooltip title={'Id:' + entity.id} placement="topLeft">
             <a
               onClick={() => {
                 setCurrentRow(entity);
@@ -187,6 +186,14 @@ const TableList: React.FC = () => {
             </a>
           </Tooltip>
         );
+      },
+    },
+    {
+      title: 'LibraryId',
+      dataIndex: 'id',
+      hideInTable: true,
+      render: (dom) => {
+        return <Tag>{dom}</Tag>;
       },
     },
     {
@@ -360,7 +367,7 @@ const TableList: React.FC = () => {
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle="靶列表"
+        headerTitle={<>靶库</>}
         actionRef={actionRef}
         rowKey="id"
         size="small"

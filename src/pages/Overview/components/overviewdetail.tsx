@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer } from 'antd';
+import { Drawer, Tag } from 'antd';
 import type { TableListItem } from '@/pages/Overview/data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
@@ -20,10 +20,35 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       title: '概览名',
       dataIndex: 'name',
     },
+
     {
       key: 'expName',
       title: '实验名',
       dataIndex: 'expName',
+    },
+    {
+      title: 'OverViewId',
+      dataIndex: 'id',
+      hideInTable: true,
+      render: (dom) => {
+        return <Tag>{dom}</Tag>;
+      },
+    },
+    {
+      title: 'ProjectId',
+      dataIndex: 'projectId',
+      hideInTable: true,
+      render: (dom) => {
+        return <Tag>{dom}</Tag>;
+      },
+    },
+    {
+      title: 'ExpId',
+      dataIndex: 'expId',
+      hideInTable: true,
+      render: (dom) => {
+        return <Tag>{dom}</Tag>;
+      },
     },
     {
       key: 'params',
