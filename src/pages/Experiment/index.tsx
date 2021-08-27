@@ -15,7 +15,7 @@ const TableList: React.FC = (props: any) => {
   /* 分析窗口变量 */
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
   /** 全选 */
-  const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -23,8 +23,8 @@ const TableList: React.FC = (props: any) => {
   const actionRef = useRef<ActionType>();
 
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
-  const projectId = props?.location?.query.projectId;
-  const projectName = props?.location?.state.projectName;
+  const projectId = props?.location?.query?.projectId;
+  const projectName = props?.location?.state?.projectName;
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -62,18 +62,21 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'OverView数目',
+      title: 'OverView',
       dataIndex: 'id',
       hideInSearch: true,
-      render: (dom,entity) => {
-        return <Link
-        to={{
-          pathname: '/overView',
-          state: {projectId:projectId, expId: entity.id },
-        }}
-      >
-        <Tag color="green">查看</Tag>
-      </Link>
+      render: (dom, entity) => {
+        return (
+          <Link
+            to={{
+              pathname: '/overView',
+              state: { projectId: projectId, expId: entity.id },
+              search: `?expId=${entity.id}?projectId=${projectId}`,
+            }}
+          >
+            <Tag color="green">查看</Tag>
+          </Link>
+        );
       },
     },
     {
@@ -142,10 +145,13 @@ const TableList: React.FC = (props: any) => {
             }}
             key="edit"
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
+              编辑
+            </Tag>
           </a>
         </Tooltip>,
-        <Tooltip title={'blockIndex'} key="blockIndex">
+        <Tooltip title={'索引'} key="blockIndex">
           <Link
             to={{
               pathname: '/blockIndex',
@@ -153,15 +159,33 @@ const TableList: React.FC = (props: any) => {
               state: { projectId, expName: entity.name },
             }}
           >
-            <Icon
-              style={{ verticalAlign: 'middle', fontSize: '20px' }}
-              icon="mdi:format-line-spacing"
-            />
+            <Tag color="blue">
+              <Icon
+                style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                icon="mdi:format-line-spacing"
+              />
+              索引
+            </Tag>
           </Link>
         </Tooltip>,
       ],
     },
   ];
+  /* 点击行选中相关 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
@@ -182,7 +206,7 @@ const TableList: React.FC = (props: any) => {
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
-                <Text>项目名：{projectName}</Text>
+                <Text>实验列表 所属项目：{projectName}</Text>
               </a>
             </>
           )
@@ -205,19 +229,23 @@ const TableList: React.FC = (props: any) => {
           return Promise.resolve(msg);
         }}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              if (selectedRows && selectedRows.length > 0) {
-                handleAnalyzeModalVisible(true);
-              }
-            }}
-          >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:playlist-plus" />
-            开始分析
-          </Button>,
-          <Button type="primary" key="primary">
+          <Tooltip title={'开始分析'} key="scan">
+            <a
+              onClick={() => {
+                if (selectedRows?.length > 0) {
+                  handleAnalyzeModalVisible(true);
+                } else {
+                  message.warn('请选择要分析的实验');
+                }
+              }}
+            >
+              <Tag color="blue">
+                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
+                开始分析
+              </Tag>
+            </a>
+          </Tooltip>,
+          <Tooltip title="查看IRT结果" key="IRT">
             {selectedRows && selectedRows.length > 0 ? (
               <Link
                 to={{
@@ -228,11 +256,10 @@ const TableList: React.FC = (props: any) => {
                   state: { projectId, expNum: selectedRows.length },
                 }}
               >
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:playlist-plus"
-                />
-                查看IRT
+                <Tag color="blue">
+                  <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:chart-line" />
+                  查看IRT
+                </Tag>
               </Link>
             ) : (
               <a
@@ -240,19 +267,28 @@ const TableList: React.FC = (props: any) => {
                   message.warn('至少选择一个实验 🔬');
                 }}
               >
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:playlist-plus"
-                />
-                查看IRT
+                <Tag color="blue">
+                  <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:chart-line" />
+                  查看IRT
+                </Tag>
               </a>
             )}
-          </Button>,
+          </Tooltip>,
         ]}
         columns={columns}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
         rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
+          selectedRowKeys: selectedRows?.map((item) => {
+            return item.id;
+          }),
+          onChange: (_, selectedRowKeys) => {
+            setSelectedRows(selectedRowKeys);
           },
         }}
       />

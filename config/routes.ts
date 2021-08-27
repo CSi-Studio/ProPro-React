@@ -67,6 +67,7 @@ export default [
     name: 'peptide',
     icon: 'smile',
     component: './Peptide',
+    hideInMenu: true,
   },
   // 方法库界面
   {

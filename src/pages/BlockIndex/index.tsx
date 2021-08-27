@@ -1,4 +1,4 @@
-import { Tag, Tooltip, Typography } from 'antd';
+import { Tooltip, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListDetail, TableListItem, TableListPagination } from './data';
@@ -7,7 +7,6 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
-import { LeftCircleFilled } from '@ant-design/icons';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
@@ -140,7 +139,7 @@ const TableList: React.FC = (props: any) => {
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
-                <Text>实验名：{props?.location?.state.expName}</Text>
+                <Text>索引列表 所属实验：{props?.location?.state.expName}</Text>
               </a>
             </>
           )

@@ -23,7 +23,6 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
-import { handle } from '@/components/Commons/CRUD';
 
 /**
  * 添加库
@@ -242,7 +241,7 @@ const TableList: React.FC = () => {
       dataIndex: 'Protein_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <span onClick={() => {}}>{entity?.statistic?.Protein_Count}</span>;
+        return <Tag>{entity?.statistic?.Protein_Count}</Tag>;
       },
     },
     {
@@ -250,15 +249,22 @@ const TableList: React.FC = () => {
       dataIndex: 'Peptide_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <>
-          <Link
-            to={{
-              pathname: `/peptide/list`,
-              state: { libraryName: entity.name },
-              search: `?libraryId=${entity.id}`,
-            }}>
-            {entity?.statistic?.Peptide_Count}
-          </Link></>
+        return (
+          <>
+            <Tag color={entity?.statistic?.Peptide_Count == 0 ? 'error' : 'blue'}>
+              {entity?.statistic?.Peptide_Count}
+            </Tag>
+            <Link
+              to={{
+                pathname: `/peptide/list`,
+                state: { libraryName: entity.name },
+                search: `?libraryId=${entity.id}`,
+              }}
+            >
+              <Tag color="green">查看</Tag>
+            </Link>
+          </>
+        )
       },
     },
     {
@@ -266,7 +272,7 @@ const TableList: React.FC = () => {
       dataIndex: 'Fragment_Count',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <span onClick={() => {}}>{entity?.statistic?.Fragment_Count}</span>;
+        return <Tag>{entity?.statistic?.Fragment_Count}</Tag>;
       },
     },
     // {

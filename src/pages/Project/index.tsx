@@ -136,13 +136,12 @@ const handleRmIrt = async (currentRow: TableListItem | undefined) => {
   }
 };
 
-   const data=await getDict()
-   console.log("data",data)
-   data.data.map((item:any,index:string)=>{
-      sessionStorage.setItem(item.name,JSON.stringify(item.item))
-   })
+const data = await getDict();
+console.log('data', data);
+data.data.map((item: any, index: string) => {
+  sessionStorage.setItem(item.name, JSON.stringify(item.item));
+});
 
-   
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -251,7 +250,13 @@ const TableList: React.FC = () => {
           <>
             {dom === 0 ? <Tag color="red">{dom}</Tag> : <Tag color="blue">{dom}</Tag>}
             {dom !== 0 ? (
-              <Link to={{ pathname: '/overview', search: `?projectId=${entity.id}` }}>
+              <Link
+                to={{
+                  pathname: '/overview',
+                  search: `?projectId=${entity.id}`,
+                  state: { projectName: entity.name },
+                }}
+              >
                 <Tag color="green">查看</Tag>
               </Link>
             ) : null}
@@ -319,7 +324,13 @@ const TableList: React.FC = () => {
         } else {
           return (
             <Tooltip title={dom}>
-              <Link to={{ pathname: '/method/list', search: `?id=${entity.methodId}` }}>
+              <Link
+                to={{
+                  pathname: '/method/list',
+                  search: `?id=${entity.methodId}`,
+                  state: { projectName: entity.name },
+                }}
+              >
                 <Tag color="blue">查看</Tag>
               </Link>
             </Tooltip>
@@ -402,7 +413,13 @@ const TableList: React.FC = () => {
             </a>
           </Tooltip> */}
           <Tooltip title={'开始分析'}>
-            <Link to={{ pathname: '/experiment/list', search: `?projectId=${record.id}` }}>
+            <Link
+              to={{
+                pathname: '/experiment/list',
+                search: `?projectId=${record.id}`,
+                state: { projectName: record.name },
+              }}
+            >
               <Tag color="blue">
                 <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:calculator" />
                 分析

@@ -1,4 +1,4 @@
-import { message, Tooltip, Form, Tag } from 'antd';
+import { message, Tooltip, Form, Tag, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { DomainCell, Domain, DomainUpdate } from './data';
 import type { Pagination } from '@/components/Commons/common';
@@ -9,6 +9,7 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import { update, add, list, removeList } from './service';
 import DeleteForm from './components/DeleteForm';
+import { Link } from 'umi';
 
 /**
  * 添加库
@@ -58,8 +59,8 @@ const handleRemove = async (selectedRows: any[]) => {
     return false;
   }
 };
-
-const TableList: React.FC = () => {
+const { Text } = Typography;
+const TableList: React.FC = (props: any) => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
@@ -152,7 +153,27 @@ const TableList: React.FC = () => {
     <>
       <ProTable<DomainCell, Pagination>
         scroll={{ x: 'max-content' }}
-        headerTitle="方法列表"
+        headerTitle={
+          props?.location?.state?.projectName === undefined ? (
+            <>
+              <Text>方法列表</Text>
+            </>
+          ) : (
+            <>
+              <Link
+                to={{
+                  pathname: '/project/list',
+                }}
+              >
+                <Text type="secondary">方法列表</Text>
+              </Link>
+              &nbsp;&nbsp;/&nbsp;&nbsp;
+              <a>
+                <Text>方法列表 所属项目：{props?.location?.state?.projectName}</Text>
+              </a>
+            </>
+          )
+        }
         search={{ labelWidth: 'auto' }}
         actionRef={actionRef}
         rowKey="id"
