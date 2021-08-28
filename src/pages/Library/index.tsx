@@ -23,7 +23,6 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
-import { handle } from '@/components/Commons/CRUD';
 
 /**
  * 添加库
@@ -171,7 +170,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '标准库名称',
+      title: '库名称',
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
@@ -265,7 +264,7 @@ const TableList: React.FC = () => {
               <Tag color="green">查看</Tag>
             </Link>
           </>
-        );
+        )
       },
     },
     {

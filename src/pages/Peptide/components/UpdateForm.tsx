@@ -36,20 +36,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       <ProForm.Group>
         <ProFormText initialValue={props.values.mz} width="sm" name="mz" label="荷质比（m/z）" />
         <ProFormText initialValue={props.values.rt} width="sm" name="rt" label="RT" />
-        <ProFormText
-          disabled
-          initialValue={props.values.proteinIdentifier}
-          width="sm"
-          name="protein"
-          label="蛋白质标识符"
-        />
-        <ProFormSelect
-          // initialValue={props.values.isUnique}
-          options={YesOrNo}
-          width="sm"
-          name="isUnique"
-          label="是否唯一"
-        />
       </ProForm.Group>
     </ModalForm>
   );

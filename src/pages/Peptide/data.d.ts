@@ -3,7 +3,7 @@ export type TableListItem = {
   libraryId: string;
   peptideRef: string;
   mz: number;
-  proteinIdentifier: string;
+  proteins: string[];
   isUnique: boolean;
   rt: number;
   sequence: string;
