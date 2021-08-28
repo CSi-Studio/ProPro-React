@@ -1,10 +1,12 @@
 import { Tag, Button } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
 import ReactECharts from 'echarts-for-react';
+import { experimentList } from '../Experiment/service';
 
-var dataAll = [
+const { CheckableTag } = Tag;
+let dataAll = [
   [
     [10.0, 8.04],
     [8.0, 6.95],
@@ -59,7 +61,7 @@ var dataAll = [
   ],
 ];
 
-var markLineOpt = {
+let markLineOpt = {
   animation: false,
   label: {
     formatter: 'y = 0.5 * x + 3',
@@ -146,8 +148,42 @@ const option = {
     },
   ],
 };
-const TableList: React.FC = () => {
-  const [tagState, setTagState] = useState<any>();
+const TableList: React.FC = (props: any) => {
+  const projectId = props?.location?.query?.projectId;
+  const [tags, setTags] = useState<any>([]);
+  const [selectedTags, setSelectedTags] = useState<any>([]);
+  useEffect(() => {
+    /* 实验列表 从Promise中拿值*/
+    const tagsData = async () => {
+      try {
+        const dataSource = await experimentList({ projectId });
+        setTags(
+          dataSource.data.map((item: any) => {
+            return item.name;
+          }),
+        );
+        setSelectedTags(
+          tags?.map((item: string) => {
+            return item;
+          }),
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    tagsData();
+  }, []);
+
+  const handleChange = (item: string, checked: boolean) => {
+    console.log(item);
+    console.log(checked);
+    const nextSelectedTags = checked
+      ? [...selectedTags, item]
+      : selectedTags.filter((t: string) => t !== item);
+    console.log(nextSelectedTags);
+    setSelectedTags(nextSelectedTags);
+    console.log(selectedTags);
+  };
   return (
     <PageContainer
       header={{
@@ -158,22 +194,6 @@ const TableList: React.FC = () => {
         ghost: true,
         tags: [<Tag color="blue">开发中...</Tag>],
         subTitle: '这是一个蛋白诊所，分析处理各种蛋白',
-        // breadcrumb: {
-        //   routes: [
-        //     {
-        //       path: '',
-        //       breadcrumbName: '一级页面',
-        //     },
-        //     {
-        //       path: '',
-        //       breadcrumbName: '二级页面',
-        //     },
-        //     {
-        //       path: '',
-        //       breadcrumbName: '当前页面',
-        //     },
-        //   ],
-        // },
         extra: [
           <Button key="3" type="primary">
             主要按钮
@@ -191,36 +211,21 @@ const TableList: React.FC = () => {
           key: 'info',
         },
       ]}
-      // tabProps={{
-      //   type: 'editable-card',
-      //   hideAdd: true,
-      //   onEdit: (e, action) => console.log(e, action),
-      // }}
-      // footer={[
-      //   <Button key="3">重置</Button>,
-      //   <Button key="2" type="primary">
-      //     提交
-      //   </Button>,
-      // ]}
     >
-      <ProCard
-        title="操作栏"
-        // style={{ backgroundColor: 'teal', height: 200 }}
-        direction="column"
-        // ghost
-        gutter={[0, 16]}
-      >
-        <a>
-          <Tag
-            onClick={() => {
-              setTagState(!tagState);
-            }}
-            color={tagState ? 'green' : 'blue'}
-          >
-            sdasdasdas
-          </Tag>
-        </a>
-        <ProCard gutter={16} ghost></ProCard>
+      <ProCard title="实验列表" direction="column" gutter={[0, 16]}>
+        {tags.length > 0 &&
+          tags?.map((item: string) => (
+            <CheckableTag
+              key={item}
+              checked={selectedTags?.indexOf(item) > -1}
+              onChange={(checked) => {
+                console.log(checked, item);
+                handleChange(item, checked);
+              }}
+            >
+              {item}
+            </CheckableTag>
+          ))}
       </ProCard>
       <ProCard
         title="参数"
@@ -231,12 +236,6 @@ const TableList: React.FC = () => {
       >
         <ProCard gutter={16} ghost />
       </ProCard>
-      <ProCard
-        style={{ backgroundColor: 'lightsalmon', height: 200 }}
-        direction="column"
-        ghost
-        gutter={[0, 16]}
-      ></ProCard>
       <ProCard direction="column" gutter={[0, 16]}>
         <ReactECharts
           option={option}

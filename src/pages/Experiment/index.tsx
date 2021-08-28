@@ -274,6 +274,39 @@ const TableList: React.FC = (props: any) => {
               </a>
             )}
           </Tooltip>,
+          <Tooltip title="蛋白诊所" key="IRT">
+            {selectedRows && selectedRows.length > 0 ? (
+              <Link
+                to={{
+                  pathname: '/proteinclinic',
+                  search: `?projectId=${projectId}`,
+                  // state: { projectId, expNum: selectedRows.length },
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:stethoscope"
+                  />
+                  蛋白诊所
+                </Tag>
+              </Link>
+            ) : (
+              <a
+                onClick={() => {
+                  message.warn('至少选择一个实验 🔬');
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:stethoscope"
+                  />
+                  蛋白诊所
+                </Tag>
+              </a>
+            )}
+          </Tooltip>,
         ]}
         columns={columns}
         onRow={(record, index) => {
