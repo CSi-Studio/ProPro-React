@@ -29,18 +29,18 @@ import { Link } from 'umi';
  * @param values
  */
 const handleAdd = async (values: addFormValueType) => {
-  const hide = message.loading('正在添加');
+  const hide = message.loading('正在添加')
   try {
-    await addList({ ...values });
-    hide();
-    message.success('添加成功');
-    return true;
+    await addList({ ...values })
+    hide()
+    message.success('添加成功')
+    return true
   } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
+    hide()
+    message.error('添加失败请重试！')
+    return false
   }
-};
+}
 
 // function handleAdd(value: any, callback: any, msgOne: string, msgTwo: string, msgThree: string) {
 //   handle(value, callback, msgOne, msgTwo, msgThree);
