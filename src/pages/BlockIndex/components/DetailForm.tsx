@@ -3,7 +3,7 @@ import { Button, Drawer, message, Slider, Space, Tag, Tooltip } from 'antd';
 import type { TableListDetail } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { blockIndexDetail, spectrumCharts } from '../service';
+import { blockIndexDetail, spectrumCharts, spectrumGauss } from '../service';
 import { parseInt } from 'lodash';
 import ChartsForm from './DetailChartsForm';
 
@@ -37,43 +37,52 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   // const onFinishFailed = (errorInfo: any) => {};
   const columns = [
     {
-      title: 'ID',
+      title: '项目ID',
       dataIndex: 'id',
     },
     {
-      title: '实验Id',
+      title: '实验ID',
       dataIndex: 'expId',
     },
     {
       title: '等级',
       dataIndex: 'level',
     },
-    {
-      title: 'startPtr',
-      dataIndex: 'startPtr',
-    },
-    {
-      title: 'endPtr',
-      dataIndex: 'endPtr',
-    },
-    {
-      title: 'range',
+    {title: 'mz范围',
       dataIndex: 'range',
       render: (dom: any, entity: any) => {
         if (entity.range) {
           return (
             <span>
-              start:{entity?.range?.start}
-              <br />
-              end:{entity?.range?.end}
-              <br />
-              mz:{entity?.range?.mz}
-              <br />
+              {entity?.range?.start} ~ {entity?.range?.end}
             </span>
           );
         }
         return false;
       },
+      // render: (dom: any, entity: any) => {
+      //   if (entity.range) {
+      //     return (
+      //       <span>
+      //         start:{entity?.range?.start}
+      //         <br />
+      //         end:{entity?.range?.end}
+      //         <br />
+      //         mz:{entity?.range?.mz}
+      //         <br />
+      //       </span>
+      //     );
+      //   }
+      //   return false;
+      // },
+    },
+    {
+      title: '开始位置',
+      dataIndex: 'startPtr',
+    },
+    {
+      title: '结束位置',
+      dataIndex: 'endPtr',
     },
     {
       title: 'rts',
@@ -122,11 +131,12 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
             {         
                 entity?.rts.map((item: any, index: any) => {          
                     return (             
-                    <Space direction={"horizontal"} size={1}>                  
-                      <Tag key={index}   onClick={async () => {
+                    <Space key={index} direction={"horizontal"} size={1}>                  
+                      <Tag onClick={async () => {
                         setShowCharts(true);
                         const hide = message.loading('正在加载');
-                        const msg = await spectrumCharts({ blockIndexId: entity.id, rt: item });
+                        // const msg = await spectrumCharts({ blockIndexId: entity.id, rt: item });
+                        const msg = await spectrumGauss({ blockIndexId: entity.id, rt: item, pointNum:5 });
                         hide();
                         setChartsData(msg.data);
                         setRtData(item);

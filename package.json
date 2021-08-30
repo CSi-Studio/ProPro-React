@@ -68,7 +68,8 @@
     "react-helmet-async": "^1.0.4",
     "react-json-view": "^1.21.3",
     "umi": "^3.5.0",
-    "umi-serve": "^1.9.10"
+    "umi-serve": "^1.9.10",
+    "yarn": "^1.22.11"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",
