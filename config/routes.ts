@@ -24,7 +24,7 @@ export default [
     name: 'IRT',
     icon: 'profile',
     path: '/irt/list',
-    component: './IRT',
+    component: './Irt',
     hideInMenu: true,
   },
   //BlockIndex界面

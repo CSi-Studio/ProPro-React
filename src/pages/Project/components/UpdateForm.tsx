@@ -84,7 +84,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
-          initialValue={props.values.anaLibId}
+          initialValue={props.values.anaLibName ? props.values.anaLibId : null}
           width="sm"
           name="anaLibId"
           label="标准库"
@@ -101,7 +101,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           }}
         />
         <ProFormSelect
-          initialValue={props.values.insLibId}
+          initialValue={props.values.insLibName ? props.values.insLibId : null}
           width="sm"
           name="insLibId"
           label="内标库"

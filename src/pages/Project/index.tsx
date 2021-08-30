@@ -662,7 +662,7 @@ const TableList: React.FC = () => {
       />
 
       {/* 列表详情 */}
-      <DetailForm
+      {/* <DetailForm
         showDetail={showDetail}
         currentRow={currentRow}
         columns={columns}
@@ -670,7 +670,7 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
-      />
+      /> */}
 
       {/* 编辑列表 */}
       <UpdateForm
