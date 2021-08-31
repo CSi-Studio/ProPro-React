@@ -183,6 +183,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           <ProFormSelect options={[]} tooltip="打分类型" name="scoreTypes" label="打分类型" />
           <h2>回归参数</h2>
           <ProFormDigit initialValue={0.01} name="fdr" label="fdr" placeholder="fdr" />
+          <ProFormSelect
+            initialValue="No"
+            options={YesOrNo}
+            tooltip="是否删除FDR不符合要求的结果"
+            name="removeUnmatched"
+            label="删除未鉴定结果"
+          />
         </Col>
       </Row>
     </ModalForm>

@@ -40,4 +40,18 @@ export async function spectrumCharts(params: { blockIndexId: string; rt: any }) 
   });
 }
 
+/** 获取BlockIndex GET /blockindex/spectrumGauss */
+export async function spectrumGauss(params: {
+  blockIndexId:string;
+  rt:any;
+  pointNum:number
+}) {
+  return request(`${url}/blockindex/spectrumGauss`, {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
 // blockIndex展示

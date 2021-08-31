@@ -240,6 +240,13 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             label="fdr"
             placeholder="fdr"
           />
+          <ProFormSelect
+            initialValue={props.values.classifier?.removeUnmatched}
+            options={YesOrNo}
+            tooltip="是否删除FDR不符合要求的结果"
+            name="removeUnmatched"
+            label="删除未鉴定结果"
+          />
         </Col>
       </Row>
     </ModalForm>
