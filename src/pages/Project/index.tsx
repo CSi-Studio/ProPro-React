@@ -424,7 +424,8 @@ const TableList: React.FC = () => {
                 分析
               </Tag>
             </Link>
-          </Tooltip>
+          </Tooltip>,
+          
         </Space>
       ),
     },
@@ -454,6 +455,38 @@ const TableList: React.FC = () => {
         rowKey="id"
         size="small"
         toolBarRender={() => [
+          <Tooltip title="蛋白诊所" key="clinic">
+            {selectedRows && selectedRows.length === 1 ? (
+              <Link
+                to={{
+                  pathname: '/proteinclinic',
+                  search: `?projectId=${selectedRows[0].id}`,
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:stethoscope"
+                  />
+                  蛋白诊所
+                </Tag>
+              </Link>
+            ) : (
+              <a
+                onClick={() => {
+                  message.warn('请选且只选择一个项目');
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:stethoscope"
+                  />
+                  蛋白诊所
+                </Tag>
+              </a>
+            )}
+          </Tooltip>,
           <Tooltip title={'新增'} key="add">
             <a>
               <Tag
