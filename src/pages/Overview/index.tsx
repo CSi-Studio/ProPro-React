@@ -8,7 +8,7 @@ import type { TableListItem, TableListPagination } from './data';
 
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
-import DetailForm from './components/Overviewdetail';
+import DetailForm from './components/overviewdetail';
 
 /**
  * 更新库
@@ -47,7 +47,7 @@ const TableList: React.FC = (props: any) => {
   const columns: ProColumns<TableListItem>[] = [
     {
       key: 'name',
-      title: 'overView名',
+      title: '概览名',
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
@@ -64,23 +64,20 @@ const TableList: React.FC = (props: any) => {
         );
       },
     },
-
     {
-      key: 'type',
-      title: '类型',
-      dataIndex: 'type',
-    },
-    {
-      key: 'createDate',
-      title: '生成时间',
-      dataIndex: 'createDate',
+      key: 'defaultOne',
+      title: '默认值',
+      dataIndex: 'defaultOne',
+      render:(text, entity)=>{
+        return text?<Tag color='green'>Yes</Tag>:<Tag color='red'>No</Tag>
+      }
     },
     {
       key: 'peakCount',
       title: '峰统计',
       dataIndex: 'statstic',
       render: (text, entity) => {
-        return <>{entity?.statistic?.TOTAL_PEAK_COUNT}</>;
+        return entity?.statistic?.TOTAL_PEAK_COUNT
       },
     },
     {
@@ -88,7 +85,7 @@ const TableList: React.FC = (props: any) => {
       title: '肽段统计',
       dataIndex: 'statstic',
       render: (text, entity) => {
-        return <>{entity?.statistic?.TOTAL_PEPTIDE_COUNT}</>;
+        return entity?.statistic?.TOTAL_PEPTIDE_COUNT
       },
     },
     {
@@ -232,7 +229,7 @@ const TableList: React.FC = (props: any) => {
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
           value.id = updateRow?.id as unknown as string;
-          var mapvalue = { id: value.id, tags: value.tags, note: value.note };
+          var mapvalue = { id: value.id, tags: value.tags, note: value.note, defaultOne: value.defaultOne};
           const success = await handleUpdate(mapvalue);
           if (success) {
             handleUpdateModalVisible(false);

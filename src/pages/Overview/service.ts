@@ -57,6 +57,7 @@ export async function updateList(params: {
   id:string,
   tags:any,
   note:string
+  defaultOne:boolean,
 }) {
   return request<TableListItem>(`${url}/overview/update`, {
     method: 'POST',

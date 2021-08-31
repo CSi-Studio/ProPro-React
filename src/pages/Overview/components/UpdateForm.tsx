@@ -1,11 +1,13 @@
 import React from 'react';
-import ProForm, { ProFormSelect, ProFormText, ModalForm } from '@ant-design/pro-form';
+import ProForm, { ProFormTextArea, ProFormSelect, ProFormText, ModalForm } from '@ant-design/pro-form';
+import { YesOrNo } from '@/components/Enums/Selects';
 
 export type updateFormValueType = {
   name?: string;
   id: string;
   tags?: any;
   note?: string;
+  defaultOne?:boolean;
 };
 
 export type UpdateFormProps = {
@@ -30,7 +32,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       }}
       onFinish={props.onSubmit}
     >
-      <ProForm.Group>
         <ProFormText
           rules={[
             {
@@ -40,7 +41,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           ]}
           disabled
           initialValue={props.values.name}
-          width="sm"
+          width="md"
           name="name"
           label="概览名"
           tooltip="概览名必须唯一"
@@ -52,8 +53,15 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           label="tags"
           mode="tags"
         />
-        <ProFormText initialValue={props.values.note} width="sm" name="note" label="标注" />
-      </ProForm.Group>
+         <ProFormSelect
+          initialValue={props.values.defaultOne}
+          width="md"
+          options={YesOrNo}
+          name="defaultOne"
+          label="是否为默认结果"
+        />
+        <ProFormTextArea initialValue={props.values.note} width="md" name="note" label="标注" />
+  
     </ModalForm>
   );
 };
