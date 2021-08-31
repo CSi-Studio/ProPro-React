@@ -12,7 +12,7 @@ export type UpdateFormProps = {
   currentRow: any;
   columns: any;
   onClose: () => void;
-  expNameRow:any;
+  expNameRow: any;
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
@@ -26,8 +26,8 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   const [maxRange, setMaxRange] = useState<any>();
   const [minRange, setMinRange] = useState<any>();
   const [detailValue, setDetailValue] = useState<any>([0, 0]);
-  var getRandomColor = function(){
-    return '#'+Math.floor(Math.random()*16777215).toString(16);
+  var getRandomColor = function () {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
   }
   // const onFinish = (values: any) => {
   //   setMaxRT(values.max);
@@ -48,7 +48,8 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       title: '等级',
       dataIndex: 'level',
     },
-    {title: 'mz范围',
+    {
+      title: 'mz范围',
       dataIndex: 'range',
       render: (dom: any, entity: any) => {
         if (entity.range) {
@@ -126,29 +127,29 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
                 />
               </span>
             </Space> */}
-           
-            <span style={{width:'800px'}}>
-            {         
-                entity?.rts.map((item: any, index: any) => {          
-                    return (             
-                    <Space key={index} direction={"horizontal"} size={1}>                  
+
+            <span style={{ width: '800px' }}>
+              {
+                entity?.rts.map((item: any, index: any) => {
+                  return (
+                    <Space key={index} direction={"horizontal"} size={1}>
                       <Tag onClick={async () => {
                         setShowCharts(true);
                         const hide = message.loading('正在加载');
                         // const msg = await spectrumCharts({ blockIndexId: entity.id, rt: item });
-                        const msg = await spectrumGauss({ blockIndexId: entity.id, rt: item, pointNum:5 });
+                        const msg = await spectrumGauss({ blockIndexId: entity.id, rt: item, pointNum: 5 });
                         hide();
                         setChartsData(msg.data);
                         setRtData(item);
                       }}>{item}
-                      </Tag>    
-                    </Space>                 
-                    );
+                      </Tag>
+                    </Space>
+                  );
                   return null;
                 })
-            }
+              }
             </span>
-  
+
           </>
         );
       },
