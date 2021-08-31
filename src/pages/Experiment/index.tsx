@@ -1,6 +1,6 @@
 import { Tag, Tooltip, Form, Button, message, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { experimentList, analyze, prepare } from './service';
+import { experimentList, analyze, prepare, updateList, generateAlias } from './service';
 import type { AnalyzeParams, PrepareAnalyzeVO, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
@@ -8,12 +8,34 @@ import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import AnalyzeForm from './components/AnalyzeForm';
 import { Link } from 'umi';
+import UpdateForm from './components/UpdateForm';
+
+/**
+ * 更新库
+ * @param values
+ */
+const handleUpdate = async (values: any) => {
+  const hide = message.loading('正在更新');
+  try {
+    await updateList({ ...values });
+    hide();
+    message.success('编辑成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('编辑失败，请重试!');
+    return false;
+  }
+};
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   const [formAnalyze] = Form.useForm();
+  const [formUpdate] = Form.useForm();
   /* 分析窗口变量 */
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
+  /* 编辑窗口变量 */
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
@@ -26,6 +48,30 @@ const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const projectName = props?.location?.state?.projectName;
 
+  /**
+   * 生成别名
+   * @param values
+   */
+  const handleAlias = async (values: any[]) => {
+    const hide = message.loading('正在生成');
+    const expIds = values.map((item) => {
+      return item;
+    });
+    console.log('expIds', expIds);
+    try {
+      await generateAlias({ expIds });
+      hide();
+      message.success('生成成功');
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+      return true;
+    } catch (error) {
+      hide();
+      message.error('生成失败，请重试!');
+      return false;
+    }
+  };
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '实验名',
@@ -43,6 +89,20 @@ const TableList: React.FC = (props: any) => {
             </a>
           </Tooltip>
         );
+      },
+    },
+    {
+      title: '实验别名',
+      dataIndex: 'alias',
+      render: (dom, entity) => {
+        if (entity.alias) {
+          return (
+            <Tooltip title={dom} placement="topLeft">
+              {dom}
+            </Tooltip>
+          );
+        }
+        return false;
       },
     },
     {
@@ -137,6 +197,21 @@ const TableList: React.FC = (props: any) => {
       fixed: 'right',
       hideInSearch: true,
       render: (dom, entity) => [
+        <Tooltip title={'编辑'} key="edit">
+          <a
+            onClick={() => {
+              formUpdate?.resetFields();
+              handleUpdateModalVisible(true);
+              setCurrentRow(entity);
+            }}
+            key="edit"
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
+              编辑
+            </Tag>
+          </a>
+        </Tooltip>,
         <Tooltip title={'详情'} key="detail">
           <a
             onClick={() => {
@@ -147,7 +222,7 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
-              编辑
+              详情
             </Tag>
           </a>
         </Tooltip>,
@@ -242,6 +317,28 @@ const TableList: React.FC = (props: any) => {
               <Tag color="blue">
                 <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
                 开始分析
+              </Tag>
+            </a>
+          </Tooltip>,
+          <Tooltip title={'实验一键生成别名'} key="scan">
+            <a
+              onClick={() => {
+                if (selectedRows?.length > 0) {
+                  let expIds: any[] = [];
+                  selectedRows.map((item) => {
+                    expIds.push(item.id);
+                  });
+                  console.log(expIds);
+
+                  handleAlias(expIds);
+                } else {
+                  message.warn('请选择要生成的实验');
+                }
+              }}
+            >
+              <Tag color="blue">
+                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
+                生成别名
               </Tag>
             </a>
           </Tooltip>,
@@ -358,6 +455,30 @@ const TableList: React.FC = (props: any) => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
+      />
+      {/* 编辑列表 */}
+      <UpdateForm
+        form={formUpdate}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
+        }}
+        onSubmit={async (value) => {
+          value.id = currentRow?.id as string;
+          console.log(value);
+
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={currentRow || {}}
       />
     </>
   );

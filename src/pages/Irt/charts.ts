@@ -20,7 +20,7 @@ export class IrtOption {
     gridHeight: number = 160,
     gridPaddingHeight: number = 80,
     totalPaddingHeight: number = 20,
-    gridPaddingWight: number = 6,
+    gridPaddingWight: number = 5,
     totalPaddingWidth: number = 5,
     titleHeight: number = 20,
     Width: number = 100,
@@ -83,7 +83,7 @@ export class IrtOption {
         text: data[i].name,
         textAlign: 'center',
         textStyle: {
-          fontSize: '12',
+          fontSize: '14',
           fontFamily: 'Times New Roman',
         },
         padding: 0,
@@ -111,6 +111,13 @@ export class IrtOption {
         scale: scaleTag,
         name: axisName,
         nameLocation: 'start',
+        axisLabel: {
+          show: true,
+          textStyle: {
+            fontFamily: 'Times New Roman',
+            fontWeight: 'normal',
+          },
+        },
         nameTextStyle: { padding: 10, fontSize: '12', fontFamily: 'Times New Roman' },
       });
     }
@@ -171,12 +178,18 @@ export class IrtOption {
       label: {
         formatter: formula,
         align: 'right',
+        fontFamily: 'Times New Roman',
       },
       lineStyle: {
         type: 'solid',
       },
       tooltip: {
         formatter: formula,
+        axisPointer: {
+          label: {
+            fontFamily: 'Times New Roman',
+          },
+        },
       },
       data: [
         [

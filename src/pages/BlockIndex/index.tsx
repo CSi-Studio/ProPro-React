@@ -10,9 +10,6 @@ import { Link } from 'umi';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
-  /** 全选 */
-  // const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
-
   const projectName = props?.location?.state.projectName;
   const [idRow, setRowId] = useState<any>();
   const [detaileRow, setDetailRow] = useState<TableListDetail>();

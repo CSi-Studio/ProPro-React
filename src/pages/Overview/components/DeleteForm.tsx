@@ -19,7 +19,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title="你确定要删除吗？"
+      title={'你确定要删除这' + props.selectedRows.length + '个方法吗？'}
       width={530}
       visible={props.deleteModalVisible}
       modalProps={{
@@ -32,7 +32,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
     >
       <Space direction="vertical" style={{ textAlign: 'center', width: '100%' }}>
         <div style={{ marginTop: '24px' }}>
-          请输入方法包名称
+          请输入
           <Tag
             style={{
               margin: ' 0 2px',
@@ -42,20 +42,20 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             }}
             color="red"
           >
-            {props?.selectedRows[0]?.name}
+            我确认删除
           </Tag>
-          以确认删除。
+          以确认
         </div>
         <ProFormText
           rules={[
             {
               required: true,
-              message: '请输入要删除的方法包名称',
+              message: '请输入我确认删除',
             },
           ]}
           width="sm"
           name="name"
-          placeholder="请输入要删除的方法包名称"
+          placeholder="请输入我确认删除"
         />
       </Space>
     </ModalForm>
