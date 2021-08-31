@@ -7,6 +7,7 @@ export type TableListItem = {
   airdIndexSize: number;
   vendorFileSize: number;
   irt: any;
+  alias?: string;
   createDate: string;
   windowRanges: any[];
 };
@@ -20,18 +21,18 @@ export type TableListPagination = {
 
 export type PrepareAnalyzeVO = {
   insLibList: Array;
-  anaLibList:Array;
-  methodList:Array;
-  insLibId:string
-  anaLibId:string
-  methodId:string
-  projectName:string
-}
+  anaLibList: Array;
+  methodList: Array;
+  insLibId: string;
+  anaLibId: string;
+  methodId: string;
+  projectName: string;
+};
 
 export type AnalyzeParams = {
-  projectId:string;
+  projectId: string;
   expIdList: Array<string>;
   methodId: string;
   anaLibId: string;
   insLibId: string;
-}
+};

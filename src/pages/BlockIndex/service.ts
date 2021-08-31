@@ -1,5 +1,4 @@
 import { request } from 'umi';
-import type { DictListItem, AddItem, AddItemDetail, deleteListItem, IdItem } from './data';
 import { url } from '@/utils/request';
 
 /** 获取BlockIndex详情 GET /blockindex/detail */
@@ -32,10 +31,7 @@ export async function blockIndexList(params: {
 }
 
 /** 获取BlockIndex GET /blockindex/spectrum */
-export async function spectrumCharts(params: {
-  blockIndexId:string;
-  rt:any
-}) {
+export async function spectrumCharts(params: { blockIndexId: string; rt: any }) {
   return request(`${url}/blockindex/spectrum`, {
     method: 'GET',
     params: {

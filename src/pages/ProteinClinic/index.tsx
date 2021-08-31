@@ -8,15 +8,16 @@ import { ProFormGroup, ProFormSelect } from '@ant-design/pro-form';
 import { irtList } from '../Irt/service';
 import { IrtOption } from '../Irt/charts';
 
+
 /* echarts 图参数 */
 // 每行grid的个数
-const gridNumberInRow = 4;
+const gridNumberInRow = 5;
 // 横坐标
 const xName = `LibTime`;
 // 纵坐标
 const yName = `RealTime/s`;
 // 单张高度（单位px）
-const gridHeight = 160;
+const gridHeight = 240;
 // 行间间隔高度（单位px）
 const gridPaddingHeight = 80;
 let Height = 0;
@@ -190,7 +191,6 @@ const TableList: React.FC = (props: any) => {
       const option = irt.getIrtOption();
       Height = Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight);
       setHandleOption(option);
-      console.log(option);
     };
     op();
     /* 实验列表 从Promise中拿值*/

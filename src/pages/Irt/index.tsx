@@ -32,8 +32,6 @@ const TableList: React.FC = (props: any) => {
       const option = irt.getIrtOption();
       Height = Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight);
       setHandleOption(option);
-      console.log(option);
-      
     };
     op();
   }, []);

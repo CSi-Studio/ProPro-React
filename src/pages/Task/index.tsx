@@ -140,6 +140,21 @@ const TableList: React.FC = () => {
       ],
     },
   ];
+  /* 点击行选中相关 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<TaskTableItem, Pagination>
@@ -179,6 +194,13 @@ const TableList: React.FC = () => {
           total: total,
         }}
         columns={columns}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
         rowSelection={{
           selectedRowKeys: selectedRows?.map((item) => {
             return item.id;
