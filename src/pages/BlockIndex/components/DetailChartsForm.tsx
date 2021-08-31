@@ -1,22 +1,38 @@
 import { ModalForm } from '@ant-design/pro-form';
 import { Switch } from 'antd';
 import ReactECharts from 'echarts-for-react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { spectrumGauss } from '../service';
 
 export type ChartsFormProps = {
-  showCharts: any;
-  chartsData: any;
+  showCharts: boolean;
+  blockIndexId: any;
   rtData: any;
   onCancel: () => void;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
 };
 
 const ChartsForm: React.FC<ChartsFormProps> = (props) => {
-  const xAxisData = props.chartsData?.x;
-  const yAxisData = props.chartsData?.y;
-  const yAxisData2 = props.chartsData?.z;
-  const rts = props.rtData;
+  const [xAxisData, setX] = useState<any>();
+  const [yAxisData, setY] = useState<any>();
+  const [yAxisData2, setY2] = useState<any>();
   const [gaussFit, setGaussFit] = useState(false);
+  const rts = props.rtData;
+  useEffect(() => {
+    if (props.blockIndexId) {
+      const getData = async () => {
+        try {
+          const msg = await spectrumGauss({ blockIndexId: props.blockIndexId, rt: props.rtData, pointNum: 5 });
+          setX(() => { return msg.data.x });
+          setY(() => { return msg.data.y });
+          setY2(() => { return msg.data.z });
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getData();
+    }
+  }, [props]);
   const original = {
     toolbox: {
       left: '90%',
@@ -87,9 +103,17 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
       }
     ]
   };
+
   function onChange(checked: boolean) {
-    setGaussFit(() => { return checked })
-    console.log(`show gaussion fit: ${checked}`);
+    setGaussFit(() => { return checked });
+  }
+  
+  useMemo(()=>{
+    setOption()
+  },[gaussFit])
+
+  function setOption() {
+    return gaussFit ? gaussion : original
   }
   return (
     <ModalForm
@@ -101,12 +125,12 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
           props.onCancel()
         }
       }}
-    // onFinish={
-    //   props.onSubmit
-    // }
+      onFinish={
+        props.onSubmit
+      }
     >
       <ReactECharts
-        option={gaussFit ? gaussion : original}
+        option={setOption()}
         key={gaussFit ? 0 : 1}
         style={{ height: 400 }}
       />
