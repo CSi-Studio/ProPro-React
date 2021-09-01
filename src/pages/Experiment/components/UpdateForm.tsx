@@ -18,7 +18,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title="更新实验列表"
+      title="更新实验信息"
       width={530}
       visible={props.updateModalVisible}
       modalProps={{
@@ -31,11 +31,11 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     >
       <ProForm.Group>
         <ProFormText
-          // initialValue={props?.values?.alias}
-          width="sm"
+          initialValue={props?.values?.alias}
+          width="md"
           name="alias"
-          label="实验别名"
-          placeholder="实验别名"
+          label="别名"
+          placeholder="别名"
         />
       </ProForm.Group>
     </ModalForm>

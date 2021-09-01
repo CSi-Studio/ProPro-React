@@ -1,4 +1,4 @@
-import { Tag, Button, Tabs, Select } from 'antd';
+import { Tag, Button, Tabs, Select, Form } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -47,6 +47,10 @@ const TableList: React.FC = (props: any) => {
     setSelectedTags(nextSelectedTags);
   };
 
+  const doAnalyze = () =>{
+
+  }
+
   const onProteinSelectChange = () =>{
 
   }
@@ -58,31 +62,33 @@ const TableList: React.FC = (props: any) => {
         title: '蛋白诊所',
         tags: <><Tag color="blue">{prepareData?.insLib?.name}</Tag><Tag color="blue">{prepareData?.anaLib?.name}</Tag><Tag color="blue">{prepareData?.method?.name}</Tag></>,
         subTitle: prepareData?.project?.name,
-        extra: [
-          <Select onChange={onProteinSelectChange} showSearch key="1" style={{width:400}}>
-            <OptGroup key="ins" label="内标库">
-              {prepareData?.insProteins?.map(protein=>
-                (<Option key={protein} value={protein}>{protein}</Option>)
-              )}
-            </OptGroup>
-            <OptGroup key="ana" label="标准库">
-              {prepareData?.anaProteins?.map(protein=>
-                (<Option key={protein} value={protein}>{protein}</Option>)
-              )}
-            </OptGroup>
-          </Select>,
-          <Button
-            key="2"
-            type="primary"
-            onClick={() => {
-              console.log(selectedTags);
-            }}
-          >
-            开始诊断
-          </Button>,
-        ],
-      }}
-    >
+        extra:<Form name="analyzeForm" layout="inline" onFinish={doAnalyze}>
+                <Form.Item name="protein" label="蛋白">
+                  <Select onChange={onProteinSelectChange} showSearch key="1" style={{width:400}}>
+                    <OptGroup key="ins" label="内标库">
+                      {prepareData?.insProteins?.map(protein=>
+                        (<Option key={protein} value={protein}>{protein}</Option>)
+                      )}
+                    </OptGroup>
+                    <OptGroup key="ana" label="标准库">
+                      {prepareData?.anaProteins?.map(protein=>
+                        (<Option key={protein} value={protein}>{protein}</Option>)
+                      )}
+                    </OptGroup>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="peptideRef" label="肽段">
+                  <Select style={{width:400}}>
+                    
+                  </Select>
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    开始诊断
+                  </Button>
+                </Form.Item>
+              </Form>
+      }}>
       <ProCard>
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
@@ -141,8 +147,8 @@ const TableList: React.FC = (props: any) => {
               </ProFormGroup>
             </ProCard>
           </TabPane>
-          <TabPane tab="Tab 3" key="3">
-            Content of Tab Pane 3
+          <TabPane tab="方法参数" key="2">
+            Content of Tab Pane 2
           </TabPane>
         </Tabs>
       </ProCard>

@@ -416,7 +416,6 @@ const TableList: React.FC = () => {
               </Tag>
             </Link>
           </Tooltip>
-          
         </Space>
       ),
     },
