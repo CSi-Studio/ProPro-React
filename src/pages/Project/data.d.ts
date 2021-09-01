@@ -9,6 +9,9 @@ export type TableListItem = {
   insLibId: string;
   anaLibId: string;
   methodId: string;
+  insLibName: string;
+  anaLibName: string;
+  methodName: string;
   tags: string[];
   description: string;
   createDate: string;

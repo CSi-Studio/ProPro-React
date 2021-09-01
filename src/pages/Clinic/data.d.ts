@@ -1,12 +1,11 @@
-export type TaskTableItem = {
-  id: string;
-  expIds: string[];
-  status: string;
-  name: string;
-  taskTemplate: string;
-  createDate: string;
-  lastModifiedDate: string;
-  logs: Log[];
-  totalCost: number;
-  features: null;
-};
+import { IdName, IdNameAlias } from "@/components/Commons/common";
+
+export type PrepareData = {
+  project: any
+  insLib: IdName
+  anaLib: IdName
+  method: IdName
+  insProteins: string[]
+  anaProteins: string[]
+  expList: array<IdNameAlias>
+}
