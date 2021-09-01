@@ -1,11 +1,11 @@
-import { Tag, Button, Tabs, Select, Form } from 'antd';
+import { Tag, Button, Tabs, Select, Form, Input, Space, Row, Col } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
 import ReactECharts from 'echarts-for-react';
 import { experimentList } from '../Experiment/service';
 import { ProFormGroup, ProFormSelect } from '@ant-design/pro-form';
-import { prepare } from './service';
+import { getPeptideRefs, prepare } from './service';
 import { PrepareData } from './data';
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -16,6 +16,7 @@ const TableList: React.FC = (props: any) => {
   const [tags, setTags] = useState<any>([]);
   const [selectedTags, setSelectedTags] = useState<any>([]);
   const [prepareData, setPrepareData] = useState<PrepareData>()
+  const [peptideRefs, setPeptideRefs] = useState<string[]>([])
   useEffect(() => {
     /* 准备数据 从Promise中拿值*/
     const init = async () => {
@@ -47,12 +48,18 @@ const TableList: React.FC = (props: any) => {
     setSelectedTags(nextSelectedTags);
   };
 
-  const doAnalyze = () =>{
-
+  const doAnalyze = (values:any) =>{
+      console.log(values)
   }
 
-  const onProteinSelectChange = () =>{
-
+  async function onProteinChange(value: string){
+    if(prepareData && prepareData.anaLib){
+      const result = await getPeptideRefs({
+        libraryId: prepareData?.anaLib?.id,
+        protein: value
+      })
+      setPeptideRefs(result.data)
+    }
   }
 
   return (
@@ -60,31 +67,30 @@ const TableList: React.FC = (props: any) => {
       header={{
         onBack: () => window.history.back(),
         title: '蛋白诊所',
-        tags: <><Tag color="blue">{prepareData?.insLib?.name}</Tag><Tag color="blue">{prepareData?.anaLib?.name}</Tag><Tag color="blue">{prepareData?.method?.name}</Tag></>,
-        subTitle: prepareData?.project?.name,
+        tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra:<Form name="analyzeForm" layout="inline" onFinish={doAnalyze}>
                 <Form.Item name="protein" label="蛋白">
-                  <Select onChange={onProteinSelectChange} showSearch key="1" style={{width:400}}>
-                    <OptGroup key="ins" label="内标库">
-                      {prepareData?.insProteins?.map(protein=>
-                        (<Option key={protein} value={protein}>{protein}</Option>)
-                      )}
-                    </OptGroup>
-                    <OptGroup key="ana" label="标准库">
-                      {prepareData?.anaProteins?.map(protein=>
-                        (<Option key={protein} value={protein}>{protein}</Option>)
-                      )}
-                    </OptGroup>
+                  <Select onChange={onProteinChange} showSearch key="1" style={{width:300}}>
+                    {prepareData?.anaProteins?.map(protein=>
+                      (<Option key={protein} value={protein}>{protein}</Option>)
+                    )}
                   </Select>
                 </Form.Item>
                 <Form.Item name="peptideRef" label="肽段">
-                  <Select style={{width:400}}>
-                    
+                  <Select  style={{width:300}}>
+                    {peptideRefs?.map(peptideRef=>
+                      (<Option key={peptideRef} value={peptideRef}>{peptideRef}</Option>)
+                    )}
                   </Select>
+                </Form.Item>
+                <Form.Item name="customPeptideRef" label="自定义肽段">
+                  <Input  style={{width:300}}>
+                    
+                  </Input>
                 </Form.Item>
                 <Form.Item>
                   <Button type="primary" htmlType="submit">
-                    开始诊断
+                    诊断
                   </Button>
                 </Form.Item>
               </Form>
@@ -92,63 +98,22 @@ const TableList: React.FC = (props: any) => {
       <ProCard>
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
-            <ProCard direction="column" gutter={[0, 16]}>
-              {tags.length > 0 &&
+            <Row>
+            {tags.length > 0 &&
                 tags?.map((item: string) => (
                   <CheckableTag
                     key={item}
                     checked={selectedTags?.indexOf(item) > -1}
                     onChange={(checked) => {
                       handleChange(item, checked);
-                    }}
-                  >
+                    }}>
                     {item}
                   </CheckableTag>
                 ))}
-            </ProCard>
-            <ProCard title="蛋白列表" gutter={[0, 16]}>
-              <ProFormGroup>
-                <ProFormSelect
-                  name="select"
-                  width={216}
-                  label="靶库"
-                  options={[
-                    { label: '全部', value: 'all' },
-                    { label: '未解决', value: 'open' },
-                    { label: '已解决', value: 'closed' },
-                    { label: '解决中', value: 'processing' },
-                  ]}
-                  fieldProps={{
-                    optionItemRender(item) {
-                      return item.label + ' - ' + item.value;
-                    },
-                  }}
-                  placeholder="Please select a country"
-                  rules={[{ required: true, message: 'Please select your country!' }]}
-                />
-                <ProFormSelect
-                  name="select"
-                  width={216}
-                  label="Select"
-                  options={[
-                    { label: '全部', value: 'all' },
-                    { label: '未解决', value: 'open' },
-                    { label: '已解决', value: 'closed' },
-                    { label: '解决中', value: 'processing' },
-                  ]}
-                  fieldProps={{
-                    optionItemRender(item) {
-                      return item.label + ' - ' + item.value;
-                    },
-                  }}
-                  placeholder="Please select a country"
-                  rules={[{ required: true, message: 'Please select your country!' }]}
-                />
-              </ProFormGroup>
-            </ProCard>
+            </Row>
           </TabPane>
           <TabPane tab="方法参数" key="2">
-            Content of Tab Pane 2
+             <Space><Tag color="blue">{prepareData?.insLib?.name}</Tag><Tag color="blue">{prepareData?.anaLib?.name}</Tag><Tag color="blue">{prepareData?.method?.name}</Tag></Space>
           </TabPane>
         </Tabs>
       </ProCard>
