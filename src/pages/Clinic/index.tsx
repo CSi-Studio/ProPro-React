@@ -1,39 +1,44 @@
-import { Tag, Button, Tabs } from 'antd';
+import { Tag, Button, Tabs, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
 import ReactECharts from 'echarts-for-react';
 import { experimentList } from '../Experiment/service';
 import { ProFormGroup, ProFormSelect } from '@ant-design/pro-form';
+import { prepare } from './service';
+import { PrepareData } from './data';
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
+const { Option, OptGroup } = Select;
 
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const [tags, setTags] = useState<any>([]);
   const [selectedTags, setSelectedTags] = useState<any>([]);
-  const [handleOption, setHandleOption] = useState({});
+  const [prepareData, setPrepareData] = useState<PrepareData>()
   useEffect(() => {
-    /* 实验列表 从Promise中拿值*/
-    const tagsData = async () => {
+    /* 准备数据 从Promise中拿值*/
+    const init = async () => {
       try {
-        const dataSource = await experimentList({ projectId });
+        const result = await prepare({ projectId })
+        setPrepareData(result.data)
+        const expList = result.data.expList
         setTags(
-          dataSource.data.map((item: any) => {
-            return item.name;
+          expList.map((item: any) => {
+            return item.alias?item.alias:item.name;
           }),
-        );
+        )
         setSelectedTags(
           tags?.map((item: string) => {
             return item;
           }),
-        );
+        )
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
-    };
-    tagsData();
-  }, []);
+    }
+    init()
+  }, [])
 
   const handleChange = (item: string, checked: boolean) => {
     const nextSelectedTags = checked
@@ -41,25 +46,39 @@ const TableList: React.FC = (props: any) => {
       : selectedTags.filter((t: string) => t !== item);
     setSelectedTags(nextSelectedTags);
   };
+
+  const onProteinSelectChange = () =>{
+
+  }
+
   return (
     <PageContainer
       header={{
-        onBack: () => {
-          window.history.back();
-        },
+        onBack: () => window.history.back(),
         title: '蛋白诊所',
-        ghost: true,
-        tags: [<Tag color="blue">开发中...</Tag>],
-        subTitle: '这是一个蛋白诊所，分析处理各种蛋白',
+        tags: <><Tag color="blue">{prepareData?.insLib?.name}</Tag><Tag color="blue">{prepareData?.anaLib?.name}</Tag><Tag color="blue">{prepareData?.method?.name}</Tag></>,
+        subTitle: prepareData?.project?.name,
         extra: [
+          <Select onChange={onProteinSelectChange} showSearch key="1" style={{width:400}}>
+            <OptGroup key="ins" label="内标库">
+              {prepareData?.insProteins?.map(protein=>
+                (<Option key={protein} value={protein}>{protein}</Option>)
+              )}
+            </OptGroup>
+            <OptGroup key="ana" label="标准库">
+              {prepareData?.anaProteins?.map(protein=>
+                (<Option key={protein} value={protein}>{protein}</Option>)
+              )}
+            </OptGroup>
+          </Select>,
           <Button
-            key="3"
+            key="2"
             type="primary"
             onClick={() => {
               console.log(selectedTags);
             }}
           >
-            主要按钮
+            开始诊断
           </Button>,
         ],
       }}

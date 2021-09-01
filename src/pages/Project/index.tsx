@@ -286,7 +286,7 @@ const TableList: React.FC = () => {
           return (
             <Tooltip title={dom}>
               <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.insLibId}` }}>
-                <Tag color="blue">查看</Tag>
+                <Tag color="blue">{entity.insLibName}</Tag>
               </Link>
             </Tooltip>
           );
@@ -305,7 +305,7 @@ const TableList: React.FC = () => {
           return (
             <Tooltip title={dom}>
               <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.anaLibId}` }}>
-                <Tag color="blue">查看</Tag>
+                <Tag color="blue">{entity.anaLibName}</Tag>
               </Link>
             </Tooltip>
           );
@@ -330,7 +330,7 @@ const TableList: React.FC = () => {
                   state: { projectName: entity.name },
                 }}
               >
-                <Tag color="blue">查看</Tag>
+                <Tag color="blue">{entity.methodName}</Tag>
               </Link>
             </Tooltip>
           );
@@ -402,15 +402,6 @@ const TableList: React.FC = () => {
               </Tag>
             </a>
           </Tooltip>
-          {/* <Tooltip title={'查看结果总览'}>
-            <a
-              onClick={() => {
-                message.success('我是查看结果总览');
-              }}
-            >
-              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-eye" />
-            </a>
-          </Tooltip> */}
           <Tooltip title={'开始分析'}>
             <Link
               to={{
@@ -424,7 +415,7 @@ const TableList: React.FC = () => {
                 分析
               </Tag>
             </Link>
-          </Tooltip>,
+          </Tooltip>
           
         </Space>
       ),
@@ -459,7 +450,7 @@ const TableList: React.FC = () => {
             {selectedRows && selectedRows.length === 1 ? (
               <Link
                 to={{
-                  pathname: '/proteinclinic',
+                  pathname: '/clinic',
                   search: `?projectId=${selectedRows[0].id}`,
                 }}
               >
