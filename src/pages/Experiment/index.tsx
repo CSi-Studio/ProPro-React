@@ -177,6 +177,7 @@ const TableList: React.FC = (props: any) => {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
+      width: '300px',
       hideInSearch: true,
       render: (dom, entity) => (
         <>
@@ -208,7 +209,7 @@ const TableList: React.FC = (props: any) => {
           <Link
             to={{
               pathname: '/overView',
-              state: { projectId: projectId, expId: entity.id },
+              state: { projectName, expName: entity.name, projectId },
               search: `?expId=${entity.id}?projectId=${projectId}`,
             }}
             key="overView"
