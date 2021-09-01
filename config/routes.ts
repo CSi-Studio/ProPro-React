@@ -97,9 +97,9 @@ export default [
   {
     key: 'ProteinClinic',
     name: 'ProteinClinic',
-    path: '/proteinclinic',
+    path: '/clinic',
     icon: 'UnorderedListOutlined',
-    component: './ProteinClinic',
+    component: './Clinic',
     layout: {
       hideMenu: true,
       hideNav: false,
