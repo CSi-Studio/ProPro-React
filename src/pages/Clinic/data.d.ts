@@ -8,4 +8,5 @@ export type PrepareData = {
   // insProteins: string[]
   anaProteins: string[]
   expList: array<IdNameAlias>
+  overviewMap: Map<string, any>
 }

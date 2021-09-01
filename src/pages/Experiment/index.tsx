@@ -208,29 +208,13 @@ const TableList: React.FC = (props: any) => {
           </a>
           <Link
             to={{
-              pathname: '/blockIndex',
-              search: `?expId=${entity.id}`,
-              state: { projectId, expName: entity.name },
-            }}
-            key="blockIndex"
-          >
-            <Tag color="blue">
-              <Icon
-                style={{ verticalAlign: '-4px', fontSize: '16px' }}
-                icon="mdi:format-line-spacing"
-              />
-              索引
-            </Tag>
-          </Link>
-          <Link
-            to={{
               pathname: '/overView',
               state: { projectName, expName: entity.name, projectId },
               search: `?expId=${entity.id}?projectId=${projectId}`,
             }}
             key="overView"
           >
-            <Tag color="green">分析概览</Tag>
+            <Tag color="green">概览</Tag>
           </Link>
         </>
       ),
