@@ -52,6 +52,8 @@ const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
+  const projectName = props?.location?.state?.projectName;
+  const expName = props?.location?.state?.expName;
 
   // /** 全选 */
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
@@ -201,7 +203,7 @@ const TableList: React.FC = (props: any) => {
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
-          props?.location?.state?.projectName === undefined ? (
+          projectName === undefined ? (
             <>
               <Text>概要列表</Text>
             </>
@@ -215,9 +217,27 @@ const TableList: React.FC = (props: any) => {
                 <Text type="secondary">项目列表</Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
-              <a>
-                <Text>概要列表 所属项目：{props?.location?.state?.projectName}</Text>
-              </a>
+              {expName === undefined ? (
+                <a>
+                  <Text>概要列表 所属项目：{projectName}</Text>
+                </a>
+              ) : (
+                <>
+                  <Link
+                    to={{
+                      pathname: '/experiment/list',
+                      state: { projectName, projectId },
+                      search: `?projectId=${props?.location?.state?.projectId}`,
+                    }}
+                  >
+                    <Text type="secondary">实验列表</Text>
+                  </Link>
+                  &nbsp;&nbsp;/&nbsp;&nbsp;
+                  <a>
+                    <Text>概要列表 所属实验：{expName}</Text>
+                  </a>
+                </>
+              )}
             </>
           )
         }
