@@ -29,18 +29,18 @@ import { Link } from 'umi';
  * @param values
  */
 const handleAdd = async (values: addFormValueType) => {
-  const hide = message.loading('正在添加')
+  const hide = message.loading('正在添加');
   try {
-    await addList({ ...values })
-    hide()
-    message.success('添加成功')
-    return true
+    await addList({ ...values });
+    hide();
+    message.success('添加成功');
+    return true;
   } catch (error) {
-    hide()
-    message.error('添加失败请重试！')
-    return false
+    hide();
+    message.error('添加失败请重试！');
+    return false;
   }
-}
+};
 
 // function handleAdd(value: any, callback: any, msgOne: string, msgTwo: string, msgThree: string) {
 //   handle(value, callback, msgOne, msgTwo, msgThree);
@@ -264,7 +264,7 @@ const TableList: React.FC = () => {
               <Tag color="green">查看</Tag>
             </Link>
           </>
-        )
+        );
       },
     },
     {
@@ -319,8 +319,8 @@ const TableList: React.FC = () => {
       fixed: 'right',
       width: '160px',
       hideInSearch: true,
-      render: (text, record) => [
-        <Tooltip title={'编辑'} key="edit">
+      render: (text, record) => (
+        <>
           <a
             onClick={() => {
               formUpdate?.resetFields();
@@ -334,8 +334,6 @@ const TableList: React.FC = () => {
               编辑
             </Tag>
           </a>
-        </Tooltip>,
-        <Tooltip title={'详情'} key="detail">
           <a
             onClick={() => {
               setCurrentRow(record);
@@ -348,8 +346,8 @@ const TableList: React.FC = () => {
               详情
             </Tag>
           </a>
-        </Tooltip>,
-      ],
+        </>
+      ),
     },
   ];
   /* 点击行选中相关 */
@@ -387,197 +385,183 @@ const TableList: React.FC = () => {
           };
         }}
         toolBarRender={() => [
-          <Tooltip title={'新增'} key="add">
-            <a>
-              <Tag
-                color="green"
-                onClick={() => {
-                  formCreate?.resetFields();
-                  handleModalVisible(true);
-                }}
-              >
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:playlist-plus"
-                />
-                新增
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip title={'克隆'} key="clone">
-            <a
-              onClick={() => {
-                formClone?.resetFields();
-                if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handleCloneModalVisible(true);
-                    setSelectedRows([]);
-                  } else {
-                    message.warn('目前只支持单个库的克隆');
-                    setSelectedRows([]);
-                  }
+          <a
+            key="add"
+            onClick={() => {
+              formCreate?.resetFields();
+              handleModalVisible(true);
+            }}
+          >
+            <Tag color="green">
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:playlist-plus"
+              />
+              新增
+            </Tag>
+          </a>,
+          <a
+            key="clone"
+            onClick={() => {
+              formClone?.resetFields();
+              if (selectedRows?.length > 0) {
+                if (selectedRows.length == 1) {
+                  handleCloneModalVisible(true);
+                  setSelectedRows([]);
                 } else {
-                  message.warn('请选择要克隆的库');
+                  message.warn('目前只支持单个库的克隆');
+                  setSelectedRows([]);
                 }
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-                克隆
-              </Tag>
-            </a>
-          </Tooltip>,
+              } else {
+                message.warn('请选择要克隆的库');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
+              克隆
+            </Tag>
+          </a>,
           <Dropdown
             key="generateDecoys"
             overlay={
               <Menu>
                 <Menu.Item key="1">
-                  <Tooltip placement="left" title={'Shuffle方法'} key="Shuffle">
-                    <a
-                      key="Shuffle"
-                      onClick={() => {
-                        if (selectedRows?.length > 0) {
-                          if (selectedRows.length == 1) {
-                            const values = {
-                              libraryId: selectedRows[0].id,
-                              generator: 'shuffle',
-                            };
-                            handleGenerate(values);
-                            setSelectedRows([]);
-                          }
-                          if (selectedRows.length > 1) {
-                            message.warn('目前只支持单个库的伪肽段生成');
-                            setSelectedRows([]);
-                          }
-                        } else {
-                          message.warn('请先选择一个库');
+                  <a
+                    key="Shuffle"
+                    onClick={() => {
+                      if (selectedRows?.length > 0) {
+                        if (selectedRows.length == 1) {
+                          const values = {
+                            libraryId: selectedRows[0].id,
+                            generator: 'shuffle',
+                          };
+                          handleGenerate(values);
+                          setSelectedRows([]);
                         }
-                      }}
-                    >
-                      <Tag>
-                        <Icon
-                          style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
-                          icon="mdi:alpha-s-circle"
-                        />
-                        Shuffle方法
-                      </Tag>
-                    </a>
-                  </Tooltip>
+                        if (selectedRows.length > 1) {
+                          message.warn('目前只支持单个库的伪肽段生成');
+                          setSelectedRows([]);
+                        }
+                      } else {
+                        message.warn('请先选择一个库');
+                      }
+                    }}
+                  >
+                    <Tag>
+                      <Icon
+                        style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
+                        icon="mdi:alpha-s-circle"
+                      />
+                      Shuffle方法
+                    </Tag>
+                  </a>
                 </Menu.Item>
                 <Menu.Item key="2">
-                  <Tooltip placement="left" title={'Nico方法'} key="Nico">
-                    <a
-                      key="Nico"
-                      onClick={() => {
-                        if (selectedRows?.length > 0) {
-                          if (selectedRows.length == 1) {
-                            const values = {
-                              libraryId: selectedRows[0].id,
-                              generator: 'nico',
-                            };
-                            handleGenerate(values);
-                            setSelectedRows([]);
-                          }
-                          if (selectedRows.length > 1) {
-                            message.warn('目前只支持单个库的伪肽段生成');
-                            setSelectedRows([]);
-                          }
-                        } else {
-                          message.warn('请先选择一个库');
+                  <a
+                    key="Nico"
+                    onClick={() => {
+                      if (selectedRows?.length > 0) {
+                        if (selectedRows.length == 1) {
+                          const values = {
+                            libraryId: selectedRows[0].id,
+                            generator: 'nico',
+                          };
+                          handleGenerate(values);
+                          setSelectedRows([]);
                         }
-                      }}
-                    >
-                      <Tag>
-                        <Icon
-                          style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
-                          icon="mdi:alpha-n-circle"
-                        />
-                        Nico方法
-                      </Tag>
-                    </a>
-                  </Tooltip>
+                        if (selectedRows.length > 1) {
+                          message.warn('目前只支持单个库的伪肽段生成');
+                          setSelectedRows([]);
+                        }
+                      } else {
+                        message.warn('请先选择一个库');
+                      }
+                    }}
+                  >
+                    <Tag>
+                      <Icon
+                        style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
+                        icon="mdi:alpha-n-circle"
+                      />
+                      Nico方法
+                    </Tag>
+                  </a>
                 </Menu.Item>
               </Menu>
             }
           >
-            <Tooltip title={'生成伪肽段'} key="generateDecoys">
-              <Tag color="blue">
-                <Icon
-                  style={{ verticalAlign: '-5px', fontSize: '18px', color: '#0D93F7' }}
-                  icon="mdi:alpha-p-box"
-                />
-                生成伪肽段
-              </Tag>
-            </Tooltip>
+            <Tag color="blue" key="generateDecoys">
+              <Icon
+                style={{ verticalAlign: '-5px', fontSize: '18px', color: '#0D93F7' }}
+                icon="mdi:alpha-p-box"
+              />
+              生成伪肽段
+            </Tag>
           </Dropdown>,
-          <Tooltip placement="top" title={'统计基本信息'} key="statistics">
-            <a
-              onClick={() => {
-                if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handleStatistic(selectedRows[0].id);
-                    setSelectedRows([]);
-                  } else {
-                    message.warn('目前只支持单个库的基本信息的统计');
-                    setSelectedRows([]);
-                  }
+          <a
+            key="statistics"
+            onClick={() => {
+              if (selectedRows?.length > 0) {
+                if (selectedRows.length == 1) {
+                  handleStatistic(selectedRows[0].id);
+                  setSelectedRows([]);
                 } else {
-                  message.warn('请选择要统计的库');
+                  message.warn('目前只支持单个库的基本信息的统计');
+                  setSelectedRows([]);
                 }
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-chart" />
-                统计基本信息
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip placement="top" title={'统计肽段重复率'} key="repeatCount">
-            <a
-              key="repeatCount"
-              onClick={() => {
-                if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handleRepeatCount(selectedRows[0].id);
-                    setSelectedRows([]);
-                  } else {
-                    message.warn('目前只支持单个库的肽段重复率的统计');
-                    setSelectedRows([]);
-                  }
+              } else {
+                message.warn('请选择要统计的库');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-chart" />
+              统计基本信息
+            </Tag>
+          </a>,
+          <a
+            key="repeatCount"
+            onClick={() => {
+              if (selectedRows?.length > 0) {
+                if (selectedRows.length == 1) {
+                  handleRepeatCount(selectedRows[0].id);
+                  setSelectedRows([]);
                 } else {
-                  message.warn('请选择要统计的库');
+                  message.warn('目前只支持单个库的肽段重复率的统计');
+                  setSelectedRows([]);
                 }
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-percent" />
-                统计肽段重复率
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip placement="top" title={'删除'} key="delete">
-            <a
-              key="delete"
-              onClick={async () => {
-                formDelete?.resetFields();
-                if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handleDeleteModalVisible(true);
-                  } else {
-                    message.warn('目前只支持单个库的删除');
-                    setSelectedRows([]);
-                  }
+              } else {
+                message.warn('请选择要统计的库');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-percent" />
+              统计肽段重复率
+            </Tag>
+          </a>,
+          <a
+            key="delete"
+            onClick={async () => {
+              formDelete?.resetFields();
+              if (selectedRows?.length > 0) {
+                if (selectedRows.length == 1) {
+                  handleDeleteModalVisible(true);
                 } else {
-                  message.warn('请选择要删除的库');
+                  message.warn('目前只支持单个库的删除');
+                  setSelectedRows([]);
                 }
-              }}
-            >
-              <Tag color="error">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-                删除
-              </Tag>
-            </a>
-          </Tooltip>,
+              } else {
+                message.warn('请选择要删除的库');
+              }
+            }}
+          >
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              删除
+            </Tag>
+          </a>,
         ]}
         request={libraryList}
         columns={columns}

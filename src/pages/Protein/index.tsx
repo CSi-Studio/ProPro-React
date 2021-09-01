@@ -189,23 +189,21 @@ const TableList: React.FC = (props: any) => {
           total: total,
         }}
         toolBarRender={() => [
-          <Tooltip title={'导入蛋白库'} key="add">
-            <a>
-              <Tag
-                color="green"
-                onClick={() => {
-                  formCreate?.resetFields();
-                  handleModalVisible(true);
-                }}
-              >
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:playlist-plus"
-                />
-                导入蛋白库
-              </Tag>
-            </a>
-          </Tooltip>,
+          <a key="add">
+            <Tag
+              color="green"
+              onClick={() => {
+                formCreate?.resetFields();
+                handleModalVisible(true);
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:playlist-plus"
+              />
+              导入蛋白库
+            </Tag>
+          </a>,
         ]}
         onRow={(record, index) => {
           return {

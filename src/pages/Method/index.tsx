@@ -130,8 +130,8 @@ const TableList: React.FC = (props: any) => {
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
-      render: (text, record) => [
-        <Tooltip title={'编辑'} key="edit">
+      render: (text, record) => (
+        <>
           <a
             onClick={() => {
               formUpdate?.resetFields();
@@ -145,8 +145,8 @@ const TableList: React.FC = (props: any) => {
               编辑
             </Tag>
           </a>
-        </Tooltip>,
-      ],
+        </>
+      ),
     },
   ];
   /* 点击行选中相关 */
@@ -195,46 +195,42 @@ const TableList: React.FC = (props: any) => {
         size="small"
         tableAlertRender={false}
         toolBarRender={() => [
-          <Tooltip title={'新增'} key="add">
-            <a>
-              <Tag
-                color="green"
-                onClick={() => {
-                  formCreate?.resetFields();
-                  handleModalVisible(true);
-                }}
-              >
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:playlist-plus"
-                />
-                新增
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip placement="top" title={'删除'} key="delete">
-            <a
-              key="delete"
-              onClick={async () => {
-                formDelete?.resetFields();
-                if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handleDeleteModalVisible(true);
-                  } else {
-                    message.warn('目前只支持单个库的删除');
-                    setSelectedRows([]);
-                  }
-                } else {
-                  message.warn('请选择要删除的库');
-                }
+          <a key="add">
+            <Tag
+              color="green"
+              onClick={() => {
+                formCreate?.resetFields();
+                handleModalVisible(true);
               }}
             >
-              <Tag color="error">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-                删除
-              </Tag>
-            </a>
-          </Tooltip>,
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:playlist-plus"
+              />
+              新增
+            </Tag>
+          </a>,
+          <a
+            key="delete"
+            onClick={async () => {
+              formDelete?.resetFields();
+              if (selectedRows?.length > 0) {
+                if (selectedRows.length == 1) {
+                  handleDeleteModalVisible(true);
+                } else {
+                  message.warn('目前只支持单个库的删除');
+                  setSelectedRows([]);
+                }
+              } else {
+                message.warn('请选择要删除的库');
+              }
+            }}
+          >
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              删除
+            </Tag>
+          </a>,
         ]}
         request={async (params) => {
           const msg = await list({ ...params });

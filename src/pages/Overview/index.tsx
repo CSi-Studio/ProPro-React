@@ -95,16 +95,16 @@ const TableList: React.FC = (props: any) => {
       key: 'defaultOne',
       title: '默认值',
       dataIndex: 'defaultOne',
-      render:(text, entity)=>{
-        return text?<Tag color='green'>Yes</Tag>:<Tag color='red'>No</Tag>
-      }
+      render: (text, entity) => {
+        return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
+      },
     },
     {
       key: 'peakCount',
       title: '峰统计',
       dataIndex: 'statstic',
       render: (text, entity) => {
-        return entity?.statistic?.TOTAL_PEAK_COUNT
+        return entity?.statistic?.TOTAL_PEAK_COUNT;
       },
     },
     {
@@ -112,7 +112,7 @@ const TableList: React.FC = (props: any) => {
       title: '肽段统计',
       dataIndex: 'statstic',
       render: (text, entity) => {
-        return entity?.statistic?.TOTAL_PEPTIDE_COUNT
+        return entity?.statistic?.TOTAL_PEPTIDE_COUNT;
       },
     },
     {
@@ -151,36 +151,32 @@ const TableList: React.FC = (props: any) => {
       hideInSearch: true,
       render: (text, record) => (
         <>
-          <Tooltip title={'编辑'}>
-            <a
-              onClick={() => {
-                formUpdate?.resetFields();
-                handleUpdateModalVisible(true);
-                setUpdateRow(record);
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
-                编辑
-              </Tag>
-            </a>
-          </Tooltip>
-          <Tooltip title={'编辑'}>
-            <a
-              onClick={() => {
-                setCurrentRow(record);
-                setShowDetail(true);
-              }}
-            >
-              <Tag color="blue">
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:file-document"
-                />
-                详情
-              </Tag>
-            </a>
-          </Tooltip>
+          <a
+            onClick={() => {
+              formUpdate?.resetFields();
+              handleUpdateModalVisible(true);
+              setUpdateRow(record);
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+              编辑
+            </Tag>
+          </a>
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            <Tag color="blue">
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:file-document"
+              />
+              详情
+            </Tag>
+          </a>
         </>
       ),
     },
@@ -230,24 +226,22 @@ const TableList: React.FC = (props: any) => {
         size="small"
         search={false}
         toolBarRender={() => [
-          <Tooltip placement="top" title={'删除'} key="delete">
-            <a
-              key="delete"
-              onClick={async () => {
-                formDelete?.resetFields();
-                if (selectedRows?.length > 0) {
-                  handleDeleteModalVisible(true);
-                } else {
-                  message.warn('请选择要删除的库，支持多选');
-                }
-              }}
-            >
-              <Tag color="error">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-                删除
-              </Tag>
-            </a>
-          </Tooltip>,
+          <a
+            key="delete"
+            onClick={async () => {
+              formDelete?.resetFields();
+              if (selectedRows?.length > 0) {
+                handleDeleteModalVisible(true);
+              } else {
+                message.warn('请选择要删除的库，支持多选');
+              }
+            }}
+          >
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              删除
+            </Tag>
+          </a>,
         ]}
         tableAlertRender={false}
         pagination={{
@@ -303,7 +297,12 @@ const TableList: React.FC = (props: any) => {
         onSubmit={async (value) => {
           // eslint-disable-next-line no-param-reassign
           value.id = updateRow?.id as unknown as string;
-          var mapvalue = { id: value.id, tags: value.tags, note: value.note, defaultOne: value.defaultOne};
+          var mapvalue = {
+            id: value.id,
+            tags: value.tags,
+            note: value.note,
+            defaultOne: value.defaultOne,
+          };
           const success = await handleUpdate(mapvalue);
           if (success) {
             handleUpdateModalVisible(false);

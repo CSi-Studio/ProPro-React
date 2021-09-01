@@ -365,58 +365,47 @@ const TableList: React.FC = () => {
       key: 'option',
       title: '操作',
       valueType: 'option',
-      copyable: true,
-      width: 100,
-      ellipsis: true,
       fixed: 'right',
+      width: '210px',
       hideInSearch: true,
       render: (text, record) => (
-        <Space>
-          <Tooltip title={'编辑'}>
-            <a
-              onClick={() => {
-                formUpdate?.resetFields();
-                handleUpdateModalVisible(true);
-                setCurrentRow(record);
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:file-edit" />
-                编辑
-              </Tag>
-            </a>
-          </Tooltip>
-          <Tooltip title={'详情'}>
-            <a
-              onClick={() => {
-                setCurrentRow(record);
-                setShowDetail(true);
-              }}
-            >
-              <Tag color="blue">
-                <Icon
-                  style={{ verticalAlign: '-5px', fontSize: '18px' }}
-                  icon="mdi:file-document"
-                />
-                详情
-              </Tag>
-            </a>
-          </Tooltip>
-          <Tooltip title={'开始分析'}>
-            <Link
-              to={{
-                pathname: '/experiment/list',
-                search: `?projectId=${record.id}`,
-                state: { projectName: record.name },
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:calculator" />
-                分析
-              </Tag>
-            </Link>
-          </Tooltip>
-        </Space>
+        <>
+          <a
+            onClick={() => {
+              formUpdate?.resetFields();
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:file-edit" />
+              编辑
+            </Tag>
+          </a>
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:file-document" />
+              详情
+            </Tag>
+          </a>
+          <Link
+            to={{
+              pathname: '/experiment/list',
+              search: `?projectId=${record.id}`,
+              state: { projectName: record.name },
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:calculator" />
+              分析
+            </Tag>
+          </Link>
+        </>
       ),
     },
   ];
@@ -445,9 +434,10 @@ const TableList: React.FC = () => {
         rowKey="id"
         size="small"
         toolBarRender={() => [
-          <Tooltip title="蛋白诊所" key="clinic">
+          <>
             {selectedRows && selectedRows.length === 1 ? (
               <Link
+                key="clinic"
                 to={{
                   pathname: '/clinic',
                   search: `?projectId=${selectedRows[0].id}`,
@@ -463,6 +453,7 @@ const TableList: React.FC = () => {
               </Link>
             ) : (
               <a
+                key="clinic"
                 onClick={() => {
                   message.warn('请选且只选择一个项目');
                 }}
@@ -476,9 +467,9 @@ const TableList: React.FC = () => {
                 </Tag>
               </a>
             )}
-          </Tooltip>,
-          <Tooltip title={'新增'} key="add">
-            <a>
+          </>,
+          <>
+            <a key="add">
               <Tag
                 color="green"
                 onClick={() => {
@@ -492,9 +483,10 @@ const TableList: React.FC = () => {
                 新增
               </Tag>
             </a>
-          </Tooltip>,
-          <Tooltip title={'扫描并更新'} key="scan">
+          </>,
+          <>
             <a
+              key="scan"
               onClick={() => {
                 if (selectedRows?.length > 0) {
                   if (selectedRows.length == 1) {
@@ -513,9 +505,10 @@ const TableList: React.FC = () => {
                 扫描并更新
               </Tag>
             </a>
-          </Tooltip>,
-          <Tooltip title={'导出'} key="export">
+          </>,
+          <>
             <a
+              key="export"
               onClick={() => {
                 if (selectedRows?.length > 0) {
                   if (selectedRows.length == 1) {
@@ -535,107 +528,96 @@ const TableList: React.FC = () => {
                 导出
               </Tag>
             </a>
-          </Tooltip>,
+          </>,
           <Dropdown
             key="delete"
             overlay={
               <Menu>
                 <Menu.Item key="1">
-                  <Tooltip placement="left" title={'删除分析结果'}>
-                    <a
-                      key="deleteRes"
-                      onClick={() => {
-                        if (selectedRows?.length > 0) {
-                          if (selectedRows.length == 1) {
-                            formDeleteRes?.resetFields();
-                            handleDelete1ModalVisible(true);
-                          }
-                          if (selectedRows.length > 1) {
-                            message.warn('目前只支持单个项目的删除');
-                            setSelectedRows([]);
-                          }
-                        } else {
-                          message.warn('请先选择一个项目');
+                  <a
+                    key="deleteRes"
+                    onClick={() => {
+                      if (selectedRows?.length > 0) {
+                        if (selectedRows.length == 1) {
+                          formDeleteRes?.resetFields();
+                          handleDelete1ModalVisible(true);
                         }
-                      }}
-                    >
-                      <Tag color="error">
-                        <Icon
-                          style={{ verticalAlign: '-5px', fontSize: '18px' }}
-                          icon="mdi:delete-sweep"
-                        />
-                        删除分析结果
-                      </Tag>
-                    </a>
-                  </Tooltip>
+                        if (selectedRows.length > 1) {
+                          message.warn('目前只支持单个项目的删除');
+                          setSelectedRows([]);
+                        }
+                      } else {
+                        message.warn('请先选择一个项目');
+                      }
+                    }}
+                  >
+                    <Tag color="error">
+                      <Icon
+                        style={{ verticalAlign: '-5px', fontSize: '18px' }}
+                        icon="mdi:delete-sweep"
+                      />
+                      删除分析结果
+                    </Tag>
+                  </a>
                 </Menu.Item>
                 <Menu.Item key="2">
-                  <Tooltip placement="left" title={'删除IRT'}>
-                    <a
-                      key="deleteIrt"
-                      onClick={() => {
-                        if (selectedRows?.length > 0) {
-                          if (selectedRows.length == 1) {
-                            formDeleteIrt?.resetFields();
-                            handleDelete2ModalVisible(true);
-                          }
-                          if (selectedRows.length > 1) {
-                            message.warn('目前只支持单个项目的删除');
-                            setSelectedRows([]);
-                          }
-                        } else {
-                          message.warn('请先选择一个项目');
+                  <a
+                    key="deleteIrt"
+                    onClick={() => {
+                      if (selectedRows?.length > 0) {
+                        if (selectedRows.length == 1) {
+                          formDeleteIrt?.resetFields();
+                          handleDelete2ModalVisible(true);
                         }
-                      }}
-                    >
-                      <Tag color="error">
-                        <Icon
-                          style={{ verticalAlign: '-5px', fontSize: '18px' }}
-                          icon="mdi:delete-sweep-outline"
-                        />
-                        删除IRT
-                      </Tag>
-                    </a>
-                  </Tooltip>
+                        if (selectedRows.length > 1) {
+                          message.warn('目前只支持单个项目的删除');
+                          setSelectedRows([]);
+                        }
+                      } else {
+                        message.warn('请先选择一个项目');
+                      }
+                    }}
+                  >
+                    <Tag color="error">
+                      <Icon
+                        style={{ verticalAlign: '-5px', fontSize: '18px' }}
+                        icon="mdi:delete-sweep-outline"
+                      />
+                      删除IRT
+                    </Tag>
+                  </a>
                 </Menu.Item>
                 <Menu.Item key="3">
-                  <Tooltip placement="left" title={'删除项目'}>
-                    <a
-                      key="deletePjc"
-                      onClick={() => {
-                        if (selectedRows?.length > 0) {
-                          if (selectedRows.length == 1) {
-                            formDelete?.resetFields();
-                            handleDeleteModalVisible(true);
-                          }
-                          if (selectedRows.length > 1) {
-                            message.warn('目前只支持单个项目的删除');
-                            setSelectedRows([]);
-                          }
-                        } else {
-                          message.warn('请先选择一个项目');
+                  <a
+                    key="deletePjc"
+                    onClick={() => {
+                      if (selectedRows?.length > 0) {
+                        if (selectedRows.length == 1) {
+                          formDelete?.resetFields();
+                          handleDeleteModalVisible(true);
                         }
-                      }}
-                    >
-                      <Tag color="error">
-                        <Icon
-                          style={{ verticalAlign: '-5px', fontSize: '18px' }}
-                          icon="mdi:delete"
-                        />
-                        删除项目
-                      </Tag>
-                    </a>
-                  </Tooltip>
+                        if (selectedRows.length > 1) {
+                          message.warn('目前只支持单个项目的删除');
+                          setSelectedRows([]);
+                        }
+                      } else {
+                        message.warn('请先选择一个项目');
+                      }
+                    }}
+                  >
+                    <Tag color="error">
+                      <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:delete" />
+                      删除项目
+                    </Tag>
+                  </a>
                 </Menu.Item>
               </Menu>
             }
           >
-            <Tooltip title={'删除'} key="delete">
-              <Tag color="error">
-                <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:delete" />
-                删除
-              </Tag>
-            </Tooltip>
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:delete" />
+              删除
+            </Tag>
           </Dropdown>,
         ]}
         tableAlertRender={false}

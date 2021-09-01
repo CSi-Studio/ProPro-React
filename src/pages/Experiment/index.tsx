@@ -178,8 +178,8 @@ const TableList: React.FC = (props: any) => {
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
-      render: (dom, entity) => [
-        <Tooltip title={'编辑'} key="edit">
+      render: (dom, entity) => (
+        <>
           <a
             onClick={() => {
               formUpdate?.resetFields();
@@ -193,8 +193,6 @@ const TableList: React.FC = (props: any) => {
               编辑
             </Tag>
           </a>
-        </Tooltip>,
-        <Tooltip title={'详情'} key="detail">
           <a
             onClick={() => {
               setCurrentRow(entity);
@@ -207,14 +205,13 @@ const TableList: React.FC = (props: any) => {
               详情
             </Tag>
           </a>
-        </Tooltip>,
-        <Tooltip title={'索引'} key="blockIndex">
           <Link
             to={{
               pathname: '/blockIndex',
               search: `?expId=${entity.id}`,
               state: { projectId, expName: entity.name },
             }}
+            key="blockIndex"
           >
             <Tag color="blue">
               <Icon
@@ -224,17 +221,18 @@ const TableList: React.FC = (props: any) => {
               索引
             </Tag>
           </Link>
-        </Tooltip>,
-        <Link
-        to={{
-          pathname: '/overView',
-          state: { projectId: projectId, expId: entity.id },
-          search: `?expId=${entity.id}?projectId=${projectId}`,
-        }}
-      >
-        <Tag color="green">分析概览</Tag>
-      </Link>
-      ],
+          <Link
+            to={{
+              pathname: '/overView',
+              state: { projectId: projectId, expId: entity.id },
+              search: `?expId=${entity.id}?projectId=${projectId}`,
+            }}
+            key="overView"
+          >
+            <Tag color="green">分析概览</Tag>
+          </Link>
+        </>
+      ),
     },
   ];
   /* 点击行选中相关 */
@@ -295,47 +293,46 @@ const TableList: React.FC = (props: any) => {
           return Promise.resolve(msg);
         }}
         toolBarRender={() => [
-          <Tooltip title={'开始分析'} key="scan">
-            <a
-              onClick={() => {
-                if (selectedRows?.length > 0) {
-                  handleAnalyzeModalVisible(true);
-                } else {
-                  message.warn('请选择要分析的实验');
-                }
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
-                开始分析
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip title={'实验一键生成别名'} key="scan">
-            <a
-              onClick={() => {
-                if (selectedRows?.length > 0) {
-                  let expIds: any[] = [];
-                  selectedRows.map((item) => {
-                    expIds.push(item.id);
-                  });
-                  console.log(expIds);
+          <a
+            onClick={() => {
+              if (selectedRows?.length > 0) {
+                handleAnalyzeModalVisible(true);
+              } else {
+                message.warn('请选择要分析的实验');
+              }
+            }}
+            key="scan"
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
+              开始分析
+            </Tag>
+          </a>,
+          <a
+            key="scan"
+            onClick={() => {
+              if (selectedRows?.length > 0) {
+                let expIds: any[] = [];
+                selectedRows.map((item) => {
+                  expIds.push(item.id);
+                });
+                console.log(expIds);
 
-                  handleAlias(expIds);
-                } else {
-                  message.warn('请选择要生成的实验');
-                }
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
-                生成别名
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip title="查看IRT结果" key="IRT">
+                handleAlias(expIds);
+              } else {
+                message.warn('请选择要生成的实验');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
+              生成别名
+            </Tag>
+          </a>,
+          <>
             {selectedRows && selectedRows.length > 0 ? (
               <Link
+                key="IRT"
                 to={{
                   pathname: '/irt/list',
                   search: `?expList=${selectedRows?.map((item) => {
@@ -354,6 +351,7 @@ const TableList: React.FC = (props: any) => {
                 onClick={() => {
                   message.warn('至少选择一个实验 🔬');
                 }}
+                key="IRT"
               >
                 <Tag color="blue">
                   <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:chart-line" />
@@ -361,7 +359,7 @@ const TableList: React.FC = (props: any) => {
                 </Tag>
               </a>
             )}
-          </Tooltip>,
+          </>,
         ]}
         columns={columns}
         onRow={(record, index) => {

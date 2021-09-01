@@ -1,6 +1,14 @@
 import { Button, message, Tooltip, Form, Tag } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { dictList, updateList, addList, addListItem, deleteItem, deleteDict, getDict } from './service';
+import {
+  dictList,
+  updateList,
+  addList,
+  addListItem,
+  deleteItem,
+  deleteDict,
+  getDict,
+} from './service';
 import type {
   TableListItem,
   TableListPagination,
@@ -56,13 +64,13 @@ const handleUpdate = async (values: any) => {
     await updateList(values);
     hide();
     message.success('编辑成功');
-    sessionStorage.clear()
-    const data=await getDict()
-    console.log("data",data)
-    data.data.map((item:any,index:string)=>{
-        sessionStorage.setItem(item.name,JSON.stringify(item.item))
-    })
-  
+    sessionStorage.clear();
+    const data = await getDict();
+    console.log('data', data);
+    data.data.map((item: any, index: string) => {
+      sessionStorage.setItem(item.name, JSON.stringify(item.item));
+    });
+
     return true;
   } catch (error) {
     hide();
@@ -78,12 +86,12 @@ const handleRemoveItem = async (values: any) => {
   try {
     await deleteItem(values);
     message.success('删除成功，即将刷新');
-    sessionStorage.clear()
-    const data=await getDict()
-    console.log("data",data)
-    data.data.map((item:any,index:string)=>{
-        sessionStorage.setItem(item.name,JSON.stringify(item.item))
-    })
+    sessionStorage.clear();
+    const data = await getDict();
+    console.log('data', data);
+    data.data.map((item: any, index: string) => {
+      sessionStorage.setItem(item.name, JSON.stringify(item.item));
+    });
     return true;
   } catch (error) {
     message.error('删除失败，请重试');
@@ -95,11 +103,11 @@ const handleRemove = async (values: any) => {
   try {
     await deleteDict(values);
     message.success('删除成功，即将刷新');
-    const data=await getDict()
-    console.log("data",data)
-    data.data.map((item:any,index:string)=>{
-        sessionStorage.setItem(item.name,JSON.stringify(item.item))
-    })
+    const data = await getDict();
+    console.log('data', data);
+    data.data.map((item: any, index: string) => {
+      sessionStorage.setItem(item.name, JSON.stringify(item.item));
+    });
     return true;
   } catch (error) {
     message.error('删除失败，请重试');
@@ -107,15 +115,15 @@ const handleRemove = async (values: any) => {
   }
 };
 
-const reFreshCache = async() => {
-  sessionStorage.clear()
-  const data=await getDict()
-    
-  data.data.map((item:any,index:string)=>{
-    sessionStorage.setItem(item.name,JSON.stringify(item.item))
-  })
-    console.log("data",sessionStorage.length)
-  message.info('刷新缓存成功')
+const reFreshCache = async () => {
+  sessionStorage.clear();
+  const data = await getDict();
+
+  data.data.map((item: any, index: string) => {
+    sessionStorage.setItem(item.name, JSON.stringify(item.item));
+  });
+  console.log('data', sessionStorage.length);
+  message.info('刷新缓存成功');
 };
 
 const TableList: React.FC = () => {
@@ -166,12 +174,10 @@ const TableList: React.FC = () => {
     {
       title: '操作',
       valueType: 'option',
-      copyable: true,
-      width: 100,
-      ellipsis: true,
       fixed: 'right',
-      render: (text, record) => [
-        <Tooltip title={'编辑'} key="edit">
+      width: '220px',
+      render: (text, record) => (
+        <>
           <a
             onClick={() => {
               form?.resetFields();
@@ -180,10 +186,11 @@ const TableList: React.FC = () => {
             }}
             key="edit"
           >
-            <EditFilled style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }} />
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
+              编辑
+            </Tag>
           </a>
-        </Tooltip>,
-        <Tooltip title={'新增'} key="add">
           <a
             onClick={() => {
               formCreateItem?.resetFields();
@@ -195,12 +202,14 @@ const TableList: React.FC = () => {
             }}
             key="add"
           >
-            <PlusCircleTwoTone
-              style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
-            />
+            <Tag color="green">
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:playlist-plus"
+              />
+              新增键
+            </Tag>
           </a>
-        </Tooltip>,
-        <Tooltip title={'刪除'} key="delete">
           <a
             onClick={() => {
               deleteDictForm?.resetFields();
@@ -212,12 +221,13 @@ const TableList: React.FC = () => {
             }}
             key="delete"
           >
-            <DeleteTwoTone
-              style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
-            />
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              删除
+            </Tag>
           </a>
-        </Tooltip>,
-      ],
+        </>
+      ),
     },
   ];
 
@@ -245,8 +255,8 @@ const TableList: React.FC = () => {
                   dataIndex: 'operation',
                   key: 'operation',
                   valueType: 'option',
-                  render: (text, record1) => [
-                    <Tooltip title={'编辑'} key="edit">
+                  render: (text, record1) => (
+                    <>
                       <a
                         onClick={() => {
                           formUpdate?.resetFields();
@@ -260,12 +270,14 @@ const TableList: React.FC = () => {
                         }}
                         key="edit"
                       >
-                        <EditFilled
-                          style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
-                        />
+                        <Tag color="blue">
+                          <Icon
+                            style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                            icon="mdi:file-edit"
+                          />
+                          编辑
+                        </Tag>
                       </a>
-                    </Tooltip>,
-                    <Tooltip title={'刪除'} key="deleteItem">
                       <a
                         onClick={() => {
                           deleteDictForm?.resetFields();
@@ -278,12 +290,16 @@ const TableList: React.FC = () => {
                         }}
                         key="deleteItem"
                       >
-                        <DeleteTwoTone
-                          style={{ verticalAlign: 'middle', fontSize: '15px', color: '#0D93F7' }}
-                        />
+                        <Tag color="error">
+                          <Icon
+                            style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                            icon="mdi:delete"
+                          />
+                          删除
+                        </Tag>
                       </a>
-                    </Tooltip>,
-                  ],
+                    </>
+                  ),
                 },
               ]}
               headerTitle={false}
@@ -297,24 +313,7 @@ const TableList: React.FC = () => {
           rowExpandable: (record) => record.name !== 'Not Expandable',
         }}
         toolBarRender={() => [
-          <Tooltip title={'刷新缓存'} key="add">
-          <a>
-            <Tag
-              color="green"
-              onClick={() => {
-                reFreshCache()
-              }}
-            >
-              <RedoOutlined 
-                style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                
-              />
-              刷新缓存
-            </Tag>
-          </a>
-        </Tooltip>,
-          <Tooltip title={'新增'} key="add">
-          <a>
+          <a key="add">
             <Tag
               color="green"
               onClick={() => {
@@ -326,11 +325,21 @@ const TableList: React.FC = () => {
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
                 icon="mdi:playlist-plus"
               />
-              新增
+              新增字典
             </Tag>
-          </a>
-        </Tooltip>,
-      
+          </a>,
+          <a
+            key="refresh"
+            color="green"
+            onClick={() => {
+              reFreshCache();
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:refresh-circle" />
+              刷新缓存
+            </Tag>
+          </a>,
         ]}
         request={async (params) => {
           const msg = await dictList({ ...params });

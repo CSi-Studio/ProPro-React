@@ -1,7 +1,7 @@
 import { Tag, Tooltip, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
-import type { TableListDetail, TableListItem, TableListPagination } from './data';
+import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
@@ -68,8 +68,8 @@ const TableList: React.FC = (props: any) => {
       width: 100,
       ellipsis: true,
       fixed: 'right',
-      render: (text, record) => [
-        <Tooltip title={'详情'} key="detail">
+      render: (text, record) => (
+        <>
           <a
             onClick={() => {
               setRowId(record.id);
@@ -85,8 +85,8 @@ const TableList: React.FC = (props: any) => {
               详情
             </Tag>
           </a>
-        </Tooltip>,
-      ],
+        </>
+      ),
     },
   ];
 

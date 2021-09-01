@@ -100,10 +100,11 @@ export default [
     path: '/clinic',
     icon: 'UnorderedListOutlined',
     component: './Clinic',
+    hideInMenu: true,
     layout: {
       hideMenu: true,
       hideNav: false,
-      hideFooter: true,
+      hideFooter: false,
     },
   },
   {
