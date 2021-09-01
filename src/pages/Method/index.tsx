@@ -82,6 +82,37 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'name',
     },
     {
+      title: '算法',
+      dataIndex: 'lda',
+      render: (dom, entity) => {
+        return <Tag>{entity.classifier.algorithm}</Tag>;
+      },
+    },
+    {
+      title: 'mzWindow',
+      dataIndex: 'mzWindow',
+      render: (dom, entity) => {
+        return <Tag>{entity.eic.mzWindow}</Tag>;
+      },
+    },
+    {
+      title: 'adaptiveMzWindow',
+      dataIndex: 'adaptiveMzWindow',
+      render: (dom, entity) => {
+        if (entity.eic.adaptiveMzWindow) {
+          return <Tag color="green">true</Tag>;
+        }
+        return <Tag color="orange">false</Tag>;
+      },
+    },
+    {
+      title: 'rtWindow',
+      dataIndex: 'rtWindow',
+      render: (dom, entity) => {
+        return <Tag>{entity.eic.rtWindow}</Tag>;
+      },
+    },
+    {
       title: '描述信息',
       dataIndex: 'description',
       hideInSearch: true,

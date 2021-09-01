@@ -97,16 +97,6 @@ const TableList: React.FC = (props: any) => {
       render: (dom, entity) => {
         return (
           <>
-            <a href={entity?.uniProtLink} target="_blank">
-              <Tag icon={<LinkOutlined />} color="blue">
-                UniProt
-              </Tag>
-            </a>
-            <a href={entity?.alphaFoldLink} target="_blank">
-              <Tag icon={<LinkOutlined />} color="blue">
-                alphaFold
-              </Tag>
-            </a>
             <Tag>{dom}</Tag>
           </>
         );
@@ -146,6 +136,27 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="geekblue">{dom}</Tag>
           </a>
+        );
+      },
+    },
+    {
+      title: '更多',
+      dataIndex: 'link',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        return (
+          <>
+            <a href={entity?.uniProtLink} target="_blank">
+              <Tag icon={<LinkOutlined />} color="blue">
+                UniProt
+              </Tag>
+            </a>
+            <a href={entity?.alphaFoldLink} target="_blank">
+              <Tag icon={<LinkOutlined />} color="blue">
+                alphaFold
+              </Tag>
+            </a>
+          </>
         );
       },
     },
