@@ -18,14 +18,25 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
   const [yAxisData2, setY2] = useState<any>();
   const [gaussFit, setGaussFit] = useState(false);
   const rts = props.rtData;
+
   useEffect(() => {
     if (props.blockIndexId) {
       const getData = async () => {
         try {
-          const msg = await spectrumGauss({ blockIndexId: props.blockIndexId, rt: props.rtData, pointNum: 5 });
-          setX(() => { return msg.data.x });
-          setY(() => { return msg.data.y });
-          setY2(() => { return msg.data.z });
+          const msg = await spectrumGauss({
+            blockIndexId: props.blockIndexId,
+            rt: props.rtData,
+            pointNum: 5,
+          });
+          setX(() => {
+            return msg.data.x;
+          });
+          setY(() => {
+            return msg.data.y;
+          });
+          setY2(() => {
+            return msg.data.z;
+          });
         } catch (err) {
           console.log(err);
         }
@@ -38,7 +49,7 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
       left: '90%',
       feature: {
         saveAsImage: {},
-      }
+      },
     },
     title: {
       text: 'RT时间: ' + rts,
@@ -55,20 +66,20 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
     series: {
       type: 'bar',
       data: yAxisData,
-    }
+    },
   };
   const gaussion = {
     toolbox: {
       left: '90%',
       feature: {
         saveAsImage: {},
-      }
+      },
     },
     title: {
       text: 'RT时间: ' + rts,
     },
     legend: {
-      data: ['Original', 'Gaussion', 'GaussionLine']
+      data: ['Original', 'Gaussion', 'GaussionLine'],
     },
     dataZoom: {
       type: 'inside',
@@ -98,22 +109,24 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
         showSymbol: false,
         lineStyle: {
           width: 1,
-          type: 'solid'
-        }
-      }
-    ]
+          type: 'solid',
+        },
+      },
+    ],
   };
 
   function onChange(checked: boolean) {
-    setGaussFit(() => { return checked });
+    setGaussFit(() => {
+      return checked;
+    });
   }
-  
-  useMemo(()=>{
-    setOption()
-  },[gaussFit])
+
+  useMemo(() => {
+    setOption();
+  }, [gaussFit]);
 
   function setOption() {
-    return gaussFit ? gaussion : original
+    return gaussFit ? gaussion : original;
   }
   return (
     <ModalForm
@@ -121,19 +134,13 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
       modalProps={{
         maskClosable: false,
         onCancel: () => {
-          setGaussFit(false)
-          props.onCancel()
-        }
+          setGaussFit(false);
+          props.onCancel();
+        },
       }}
-      onFinish={
-        props.onSubmit
-      }
+      onFinish={props.onSubmit}
     >
-      <ReactECharts
-        option={setOption()}
-        key={gaussFit ? 0 : 1}
-        style={{ height: 400 }}
-      />
+      <ReactECharts option={setOption()} key={gaussFit ? 0 : 1} style={{ height: 400 }} />
       <Switch onChange={onChange} />
       <text>{'  显示高斯平滑'}</text>
     </ModalForm>
