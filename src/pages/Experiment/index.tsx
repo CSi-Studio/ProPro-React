@@ -122,24 +122,6 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'OverView',
-      dataIndex: 'id',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        return (
-          <Link
-            to={{
-              pathname: '/overView',
-              state: { projectId: projectId, expId: entity.id },
-              search: `?expId=${entity.id}?projectId=${projectId}`,
-            }}
-          >
-            <Tag color="green">查看</Tag>
-          </Link>
-        );
-      },
-    },
-    {
       title: 'Aird : Vendor(MB)',
       dataIndex: 'fileSize',
       hideInSearch: true,
@@ -243,6 +225,15 @@ const TableList: React.FC = (props: any) => {
             </Tag>
           </Link>
         </Tooltip>,
+        <Link
+        to={{
+          pathname: '/overView',
+          state: { projectId: projectId, expId: entity.id },
+          search: `?expId=${entity.id}?projectId=${projectId}`,
+        }}
+      >
+        <Tag color="green">分析概览</Tag>
+      </Link>
       ],
     },
   ];
