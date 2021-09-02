@@ -38,7 +38,7 @@ const UpdateTableForm: React.FC<UpdateFormProps> =   (props) => {
       }}
       onFinish={props.onSubmit}
     >
-      <ProFormText disabled label="id值" name="id" initialValue={props.values?.id} />
+      <ProFormText disabled label="字典名" name="id" initialValue={props.values?.name} />
       {/* <ProFormText disabled label="key值" name="key" initialValue={props.values.key} />
       <ProFormTextArea label="value值" name="value" /> */}
       <ProFormTextArea label="desc" name="desc" initialValue={props.values?.desc} /> 
