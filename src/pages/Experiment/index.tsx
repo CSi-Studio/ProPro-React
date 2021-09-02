@@ -13,6 +13,7 @@ import ProteinSelectForm from './components/ProteinSelectForm';
 import ProteinFixedChartsForm from './components/ProteinFixedChartsForm';
 import UpdateForm from './components/UpdateForm';
 
+
 /**
  * 更新库
  * @param values
@@ -461,11 +462,11 @@ const TableList: React.FC = (props: any) => {
         setChartData(undefined)
         setProteinName(undefined)
     
-      }}
+      }}></ProteinFixedChartsForm>
      
       
       {/* 编辑列表 */}
-      <UpdateForm
+      < UpdateForm
         form={formUpdate}
         onCancel={() => {
           handleUpdateModalVisible(false);

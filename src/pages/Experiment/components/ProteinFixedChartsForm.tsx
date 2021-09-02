@@ -2,7 +2,7 @@ import { handle } from '@/components/Commons/CRUD';
 import { UploadOutlined } from '@ant-design/icons';
 import { ModalForm } from '@ant-design/pro-form';
 import { Button, Input, Modal, Space } from 'antd';
-import { dataTool } from 'echarts';
+import { color, dataTool } from 'echarts';
 import ReactECharts from 'echarts-for-react';
 import { random } from 'lodash';
 import React from 'react';
@@ -40,12 +40,14 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
     data?.count?.forEach(function (link:any){
       if(link.name===node.id && link.number>=disturbNumber ){
        node.itemStyle={
-         color:'purple'
+         color:'#FFF'
        },
        (node.label = {
         show: true,
         formatter:link.number+'',
-        position: 'inside'
+        position: 'inside',
+        color:'#000',
+        fontWeight :'bolder'
       })
       }
     })
@@ -55,7 +57,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
     if (link.value < rangeNumber && link.target.indexOf("-")!==-1 && link.source.indexOf("-")!=-1) {    
       data?.intensity?.forEach((intensity: any,index2:number)=>{
         if(intensity.source==link.source && intensity.target==link.target){
-          if(intensity.value<=setIntensityNumber){
+          if(intensity.value<=intenityNumber){
             console.log('进入')
             link.lineStyle = {
               color: '#E20618',
@@ -149,11 +151,12 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
     >
        <Space direction="horizontal">
         <Input
-          style={{ height: '30px', width: '60px' }}
+          style={{ height: '30px', width: '100px' }}
           defaultValue="10"
           onChange={(e) => setInputNumber(e.target.value)}
+          addonBefore="rt范围"
         />
-        <Button
+        {/* <Button
           style={{
             backgroundColor: '#0D93F7',
             color: 'white',
@@ -167,15 +170,17 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
           }}
         >
           Rt范围抓取
-        </Button>
+        </Button> */}
    
-     
+        
         <Input
-          style={{ height: '30px', width: '60px' }}
+          style={{ height: '30px', width: '120px' }}
           defaultValue="10"
           onChange={(e) => setDisturbInputNumber(e.target.value)}
-        />
-        <Button
+          addonBefore="干扰数目"
+          
+        ></Input>
+        {/* <Button
           style={{
             backgroundColor: '#0D93F7',
             color: 'white',
@@ -189,15 +194,16 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
           }}
         >
           干扰数目抓取
-        </Button>
+        </Button> */}
     
      
         <Input
-          style={{ height: '30px', width: '60px' }}
+          style={{ height: '30px', width: '100px' }}
           defaultValue="0.5"
           onChange={(e) => setIntensityInputNumber(e.target.value)}
+          addonBefore="强度"
         />
-        <Button
+        {/* <Button
           style={{
             backgroundColor: '#0D93F7',
             color: 'white',
@@ -211,8 +217,25 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
           }}
         >
           强度抓取
+        </Button> */}
+        <Button
+          style={{
+            backgroundColor: '#0D93F7',
+            color: 'white',
+            // marginBottom: '10px',
+            height: '31px',
+          }}
+          onClick={() => {
+            setIntensityNumber(intensityInputNumber)
+            setHandleOption(option)
+            setRangeNumber(inputNumber);
+            setDisturbNumber(disturbInputNumber)
+            setKeyNumber(new Date())
+          }}
+        >
+          提交
         </Button>
-      </Space>
+        </Space>
       <ReactECharts option={handleOption} key={keyNumber} style={{ height: 600 }} 
       ></ReactECharts>
     </Modal>
