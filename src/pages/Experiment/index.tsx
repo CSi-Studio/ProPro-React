@@ -41,7 +41,6 @@ const TableList: React.FC = (props: any) => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
 
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
@@ -177,7 +176,7 @@ const TableList: React.FC = (props: any) => {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
-      width: '300px',
+      width: '200px',
       hideInSearch: true,
       render: (dom, entity) => (
         <>
@@ -209,12 +208,18 @@ const TableList: React.FC = (props: any) => {
           <Link
             to={{
               pathname: '/overView',
-              state: { projectName, expName: entity.name, projectId },
-              search: `?expId=${entity.id}?projectId=${projectId}`,
+              state: { projectName, expName: entity.name },
+              search: `?expId=${entity.id}&projectId=${projectId}`,
             }}
             key="overView"
           >
-            <Tag color="green">概览</Tag>
+            <Tag color="green">
+              <Icon
+                style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                icon="mdi:format-list-bulleted-square"
+              />
+              概览
+            </Tag>
           </Link>
         </>
       ),
@@ -274,7 +279,6 @@ const TableList: React.FC = (props: any) => {
             setPrepareData(result.data);
           }
           const msg = await experimentList({ projectId, ...params });
-          setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
         toolBarRender={() => [

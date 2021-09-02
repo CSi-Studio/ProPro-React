@@ -72,6 +72,8 @@ const TableList: React.FC = (props: any) => {
   const [formBatch] = Form.useForm();
   const projectName = props?.location?.state?.projectName;
   const expName = props?.location?.state?.expName;
+  const projectId = props?.location?.query?.projectId;
+  const expId = props?.location?.query?.expId;
 
   // /** 全选 */
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
@@ -87,11 +89,6 @@ const TableList: React.FC = (props: any) => {
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   /** 批量修改窗口的弹窗 */
   const [batchModalVisible, handleBatchModalVisible] = useState<boolean>(false);
-
-  const projectId = props?.location?.query?.projectId;
-  const pjId = props?.location?.state?.projectId;
-  const expId = props?.location?.state?.expId;
-
   const columns: ProColumns<TableListItem>[] = [
     {
       key: 'name',
@@ -224,7 +221,7 @@ const TableList: React.FC = (props: any) => {
         headerTitle={
           projectName === undefined ? (
             <>
-              <Text>概要列表</Text>
+              <Text>概览列表</Text>
             </>
           ) : (
             <>
@@ -238,7 +235,7 @@ const TableList: React.FC = (props: any) => {
               &nbsp;&nbsp;/&nbsp;&nbsp;
               {expName === undefined ? (
                 <a>
-                  <Text>概要列表 所属项目：{projectName}</Text>
+                  <Text>概览列表 所属项目：{projectName}</Text>
                 </a>
               ) : (
                 <>
@@ -246,14 +243,14 @@ const TableList: React.FC = (props: any) => {
                     to={{
                       pathname: '/experiment/list',
                       state: { projectName, projectId },
-                      search: `?projectId=${props?.location?.state?.projectId}`,
+                      search: `?projectId=${projectId}`,
                     }}
                   >
                     <Text type="secondary">实验列表</Text>
                   </Link>
                   &nbsp;&nbsp;/&nbsp;&nbsp;
                   <a>
-                    <Text>概要列表 所属实验：{expName}</Text>
+                    <Text>概览列表 所属实验：{expName}</Text>
                   </a>
                 </>
               )}
@@ -272,7 +269,7 @@ const TableList: React.FC = (props: any) => {
               if (selectedRows?.length > 0) {
                 handleBatchModalVisible(true);
               } else {
-                message.warn('请选择要修改的概要，支持多选');
+                message.warn('请选择要修改的概览，支持多选');
               }
             }}
           >
@@ -288,7 +285,7 @@ const TableList: React.FC = (props: any) => {
               if (selectedRows?.length > 0) {
                 handleDeleteModalVisible(true);
               } else {
-                message.warn('请选择要删除的概要，支持多选');
+                message.warn('请选择要删除的概览，支持多选');
               }
             }}
           >
@@ -304,11 +301,11 @@ const TableList: React.FC = (props: any) => {
         }}
         request={async (params) => {
           if (projectId) {
-            const msg = await overviewList({ projectId: projectId, ...params });
+            const msg = await overviewList({ projectId, ...params });
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
           } else {
-            const msg = await overviewList2({ projectId: pjId, expId: expId, ...params });
+            const msg = await overviewList2({ projectId, expId: expId, ...params });
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
           }
