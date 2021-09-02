@@ -142,6 +142,9 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
         setDisturbNumber(10)
         setRangeNumber(10)
         setIntensityNumber(0.5)
+        setDisturbInputNumber(10)
+        setInputNumber(10)
+        setIntensityInputNumber(0.5)
         setHandleOption({})
         setKeyNumber(new Date())
       }}
