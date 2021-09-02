@@ -314,11 +314,7 @@ const TableList: React.FC = (props: any) => {
         }}
         request={async (params) => {
           if (projectId) {
-            const msg = await overviewList({ projectId, ...params });
-            setTotal(msg.totalNum);
-            return Promise.resolve(msg);
-          } else {
-            const msg = await overviewList2({ projectId, expId: expId, ...params });
+            const msg = await overviewList({ projectId, expId, ...params });
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
           }

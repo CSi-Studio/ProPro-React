@@ -10,6 +10,7 @@ export async function overviewList(params: {
   /** 页面的容量 */
   pageSize?: number;
   projectId?: string;
+  expId?: string;
 }) {
   return request(`${url}/overview/list`, {
     method: 'GET',
