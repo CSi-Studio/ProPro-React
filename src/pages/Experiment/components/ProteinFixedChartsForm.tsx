@@ -97,6 +97,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
       animationEasingUpdate: 'quinticInOut',
       series: [
         {
+          draggable:true,
           name: props?.proteinName,
           type: 'graph',
           layout: 'force',
@@ -201,10 +202,10 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
     
      
         <Input
-          style={{ height: '30px', width: '100px' }}
+          style={{ height: '30px', width: '120px' }}
           defaultValue="0.5"
           onChange={(e) => setIntensityInputNumber(e.target.value)}
-          addonBefore="强度"
+          addonBefore="强度倍率"
         />
         {/* <Button
           style={{

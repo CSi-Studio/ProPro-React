@@ -8,6 +8,7 @@ import {
   deleteItem,
   deleteDict,
   getDict,
+  updateDictTable,
 } from './service';
 import type {
   TableListItem,
@@ -26,6 +27,8 @@ import AddForm from './components/CreateForm';
 import AddFormItem from './components/CreateItem';
 import DeleteFormItem from './components/DeleteForm';
 import DeleteDictForm from './components/DeleteDict';
+import UpdateTableForm from './components/UpdateDictTable';
+import { handle } from '@/components/Commons/CRUD';
 
 const handleAdd = async (values: { name: string }) => {
   const hide = message.loading('正在添加');
@@ -129,6 +132,7 @@ const reFreshCache = async () => {
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
   const [formUpdate] = Form.useForm();
+  const [formUpdateTable] = Form.useForm();
   const [formCreate] = Form.useForm();
   const [formCreateItem] = Form.useForm();
   const [deleteForm] = Form.useForm();
@@ -142,11 +146,12 @@ const TableList: React.FC = () => {
   /** 更新窗口的弹窗 */
   const [addModalVisible, handleAddModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
+  const [updateTableVisible, handleUpdateTableVisible] = useState<boolean>(false);
   const [total, setTotal] = useState<any>();
   /** 库详情的抽屉 */
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [currentUpdate, setCurrentUpdate] = useState<updateListItem>();
+  const [currentUpdateTable, setCurrentUpdateTable] = useState<any>();
   const [currentDeleteItem, setCurrentDeleteItem] = useState<deleteListItem>();
   const [currentDelete, setCurrentDelete] = useState<IdItem>();
   const [currenId, setId] = useState<IdItem>();
@@ -172,6 +177,10 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '描述',
+      dataIndex: 'desc',
+    },
+    {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
@@ -180,9 +189,13 @@ const TableList: React.FC = () => {
         <>
           <a
             onClick={() => {
-              form?.resetFields();
-              handleUpdateModalVisible(true);
-              setCurrentRow(record);
+              // form?.resetFields();
+              // handleUpdateModalVisible(true);
+              // setCurrentRow(record);
+              formUpdateTable?.resetFields()
+              handleUpdateTableVisible(true)
+              setCurrentUpdateTable(record)
+              console.log("record",record)
             }}
             key="edit"
           >
@@ -470,6 +483,27 @@ const TableList: React.FC = () => {
         }}
         deleteDictModalVisible={deleteDictModalVisible}
         values={currentDelete}
+      />
+
+      <UpdateTableForm
+         updateModalVisible={updateTableVisible}
+         form={formUpdateTable}
+         onCancel={()=>{
+           handleUpdateTableVisible(false)
+           formUpdateTable?.resetFields
+         }}
+         onSubmit={async (value) => {
+     
+          const success = await updateDictTable({id:currentUpdateTable.id,desc:value?.desc});
+          if (success) {
+            handleUpdateTableVisible(false)
+            setCurrentUpdateTable(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+       values={currentUpdateTable}
       />
     </>
   );

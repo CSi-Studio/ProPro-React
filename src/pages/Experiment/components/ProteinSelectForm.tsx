@@ -40,12 +40,14 @@ const ProteinSelectForm: React.FC<UpdateFormProps> = (props) => {
     >
     <ProForm.Group>
         <ProFormSelect
+        initialValue={false}
         options={newData}
         name={"proteinName"}
         placeholder="请选择蛋白质名称"
         showSearch
         width={280}
         label="蛋白质名称"
+        allowClear={true}
         />
         <ProFormText
         width="sm" name={"range"} label="mz范围" placeholder="请输入mz范围" 
