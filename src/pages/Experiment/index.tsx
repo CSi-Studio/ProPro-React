@@ -1,6 +1,7 @@
 import { Tag, Tooltip, Form, Button, message, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { experimentList, analyze, prepare, updateList, generateAlias } from './service';
+import { experimentList, analyze, prepare, getPeptide, getProteins } from './service';
+import { updateList, generateAlias } from './service';
 import type { AnalyzeParams, PrepareAnalyzeVO, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
@@ -8,6 +9,8 @@ import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import AnalyzeForm from './components/AnalyzeForm';
 import { Link } from 'umi';
+import ProteinSelectForm from './components/ProteinSelectForm';
+import ProteinFixedChartsForm from './components/ProteinFixedChartsForm';
 import UpdateForm from './components/UpdateForm';
 
 /**
@@ -44,6 +47,19 @@ const TableList: React.FC = (props: any) => {
   const actionRef = useRef<ActionType>();
 
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
+ 
+  const [proteinList, setProteinList] = useState<any>();
+  const [showCharts,setShowCharts] = useState<boolean>(false);
+
+  const [chartsData,setChartData] = useState<any>(false);
+
+  const [proteinName,setProteinName] = useState<any>(false);
+
+  
+  /** 蛋白质选择界面 */
+  const [proteinSelectVisible,setProteinSelectVisible] = useState<boolean>(false);
+  /** 蛋白质修复图 */
+
   const projectId = props?.location?.query?.projectId;
   const projectName = props?.location?.state?.projectName;
 
@@ -221,9 +237,26 @@ const TableList: React.FC = (props: any) => {
               概览
             </Tag>
           </Link>
-        </>
-      ),
-    },
+        
+        <Tooltip title={'蛋白质干扰因素查看'} key="detail">
+        <a
+          onClick={async () => {
+            setProteinSelectVisible(true)
+            const msg=await getProteins({projectId:projectId})
+            setProteinList(msg.data)
+          }}
+          key="edit"
+        >
+          <Tag color="blue">
+            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
+            蛋白质干扰因素查看
+          </Tag>
+        </a>
+        </Tooltip>
+        
+     </>)
+    }
+   
   ];
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
@@ -401,6 +434,36 @@ const TableList: React.FC = (props: any) => {
           setShowDetail(false);
         }}
       />
+
+
+      <ProteinSelectForm
+      proteinSelectVisible={proteinSelectVisible}
+      values={proteinList}
+      onClose={() => {
+        setCurrentRow(undefined);
+        setProteinSelectVisible(false);
+      }}
+      onSubmit={async (value) => {
+        const msg = await getPeptide({projectId:projectId,proteinName:value.proteinName,range:value.range})
+        setShowCharts(true)
+        setChartData(msg.data)
+        setProteinName(value.proteinName)
+        console.log("value",msg.data)
+      }} 
+      />
+
+     <ProteinFixedChartsForm
+      showCharts={showCharts}
+      chartsData={chartsData}
+      proteinName={proteinName}
+      onCancel={() => {
+        setShowCharts(false)
+        setChartData(undefined)
+        setProteinName(undefined)
+    
+      }}
+     
+      
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}

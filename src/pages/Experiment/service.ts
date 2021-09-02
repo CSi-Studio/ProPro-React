@@ -57,3 +57,31 @@ export async function generateAlias(params: { expIds: any }) {
     },
   });
 }
+
+
+
+/** 获取库列表 GET /library/getPeptide */
+export async function getPeptide(params: {
+  projectId:any;
+  proteinName:string;
+  range:any
+}) {
+  return request(`${url}/library/getPeptide`, {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
+export async function getProteins(params: {
+  projectId:string;
+}) {
+  return request(`${url}/library/getProteins`, {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
