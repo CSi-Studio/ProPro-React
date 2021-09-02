@@ -239,21 +239,7 @@ const TableList: React.FC = (props: any) => {
             </Tag>
           </Link>
         
-        <Tooltip title={'蛋白质干扰因素查看'} key="detail">
-        <a
-          onClick={async () => {
-            setProteinSelectVisible(true)
-            const msg=await getProteins({projectId:projectId})
-            setProteinList(msg.data)
-          }}
-          key="edit"
-        >
-          <Tag color="blue">
-            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
-            蛋白质干扰因素查看
-          </Tag>
-        </a>
-        </Tooltip>
+        
         
      </>)
     }
@@ -316,6 +302,21 @@ const TableList: React.FC = (props: any) => {
           return Promise.resolve(msg);
         }}
         toolBarRender={() => [
+          <Tooltip title={'蛋白质干扰因素查看'} key="detail">
+        <a
+          onClick={async () => {
+            setProteinSelectVisible(true)
+            const msg=await getProteins({projectId:projectId})
+            setProteinList(msg.data)
+          }}
+          key="edit"
+        >
+          <Tag color="blue">
+            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
+            蛋白质干扰因素查看
+          </Tag>
+        </a>
+        </Tooltip>,
           <a
             onClick={() => {
               if (selectedRows?.length > 0) {
