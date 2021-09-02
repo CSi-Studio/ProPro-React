@@ -1,5 +1,5 @@
 import React from 'react';
-import ProForm, { ProFormTextArea, ProFormSelect, ProFormText, ModalForm } from '@ant-design/pro-form';
+import  { ProFormTextArea, ProFormSelect, ProFormText, ModalForm } from '@ant-design/pro-form';
 import { YesOrNo } from '@/components/Enums/Selects';
 
 export type updateFormValueType = {
