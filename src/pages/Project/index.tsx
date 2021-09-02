@@ -402,7 +402,7 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:calculator" />
-              分析
+              实验
             </Tag>
           </Link>
         </>

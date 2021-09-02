@@ -166,6 +166,7 @@ const TableList: React.FC = (props: any) => {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
+      width: '240px',
       hideInSearch: true,
       render: (text, record) => (
         <>
@@ -195,6 +196,18 @@ const TableList: React.FC = (props: any) => {
               详情
             </Tag>
           </a>
+          <Link
+            to={{
+              pathname: '/identify/list',
+              search: `?overView=${record.id}`,
+              // state: { projectName: record.name },
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:read" />
+              结果
+            </Tag>
+          </Link>
         </>
       ),
     },
