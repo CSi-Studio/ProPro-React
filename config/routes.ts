@@ -93,6 +93,14 @@ export default [
     icon: 'UnorderedListOutlined',
     component: './Task',
   },
+  // 任务界面
+  {
+    key: 'identify',
+    name: 'identify',
+    path: '/identify/list',
+    icon: 'UnorderedListOutlined',
+    component: './Identify',
+  },
   // 蛋白诊所界面
   {
     key: 'ProteinClinic',
