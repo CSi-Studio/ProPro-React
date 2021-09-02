@@ -9,6 +9,7 @@ import {
   generateDecoys,
   repeatCount,
   statistic,
+  getPeptide,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import type { addFormValueType } from './components/CreateForm';
@@ -23,6 +24,30 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
+import ProteinSelectForm, { selectFormValueType } from './components/ProteinSelectForm';
+import ProteinFixedChartsForm from './components/ProteinFixedChartsForm';
+
+
+
+/**
+ * 
+ * 
+ */
+//  const getPeptide = async (values: selectFormValueType) => {
+//   const hide = message.loading('正在获取');
+//   try {
+//     await getPeptide(values)
+//     hide();
+//     message.success('获取成功');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('获取失败，请重试！');
+//     return false;
+//   }
+// };
+
+
 
 /**
  * 添加库
@@ -148,6 +173,23 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
+/**
+ * 选择蛋白质
+ * 
+ */
+ const handleSelect = async (selectedRows: TableListItem[]) => {
+  try {
+    await removeList({
+      libraryIds: selectedRows[0].id,
+    });
+    message.success('删除成功，希望你不要后悔 🥳');
+    return true;
+  } catch (error) {
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -165,6 +207,14 @@ const TableList: React.FC = () => {
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  /** 蛋白质选择界面 */
+  const [proteinSelectVisible,setProteinSelectVisible] = useState<boolean>(false);
+  /** 蛋白质修复图 */
+  const [showCharts,setShowCharts] = useState<boolean>(false);
+
+  const [chartsData,setChartData] = useState<any>(false);
+
+  const [proteinName,setProteinName] = useState<any>(false);
   const [pageNo] = useState<any>(0);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
@@ -244,6 +294,26 @@ const TableList: React.FC = () => {
         return <Tag>{entity?.statistic?.Protein_Count}</Tag>;
       },
     },
+    // {
+    //   title: '蛋白质修复',
+    //   dataIndex: 'proteins',
+    //   hideInSearch: true,
+    //   render: (dom, record) => 
+    //   <Tooltip title={'编辑'} key="edit">
+    //     <a
+    //       onClick={() => {
+    //         setProteinSelectVisible(true);
+    //         setCurrentRow(record);
+    //       } }
+    //       key="edit"
+    //     >
+    //       <Tag color="blue">
+    //         <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
+    //         蛋白质选择
+    //       </Tag>
+    //     </a>
+    //   </Tooltip>,
+    // },
     {
       title: '肽段数目',
       dataIndex: 'Peptide_Count',
@@ -701,6 +771,38 @@ const TableList: React.FC = () => {
         }}
         cloneModalVisible={cloneModalVisible}
         values={selectedRows}
+      />
+
+
+      <ProteinSelectForm
+      proteinSelectVisible={proteinSelectVisible}
+      values={currentRow}
+      onClose={() => {
+        setCurrentRow(undefined);
+        setProteinSelectVisible(false);
+        
+      }}
+      onSubmit={async (value) => {
+        let a={libraryId:currentRow?.id,proteinName:value.proteinName}
+        const msg = await getPeptide({libraryId:a.libraryId,proteinName:a.proteinName,range:value.range})
+        setShowCharts(true)
+        setChartData(msg.data)
+        setProteinName(a.proteinName)
+       
+      }} 
+      />
+
+     <ProteinFixedChartsForm
+      showCharts={showCharts}
+      chartsData={chartsData}
+      proteinName={proteinName}
+      onCancel={() => {
+        setShowCharts(false)
+        setChartData(undefined)
+        setProteinName(undefined)
+      }}
+     
+      
       />
     </>
   );
