@@ -1,6 +1,7 @@
 import { Tag, Tooltip, Form, Button, message, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList, analyze, prepare, getPeptide, getProteins } from './service';
+import { updateList, generateAlias } from './service';
 import type { AnalyzeParams, PrepareAnalyzeVO, TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
@@ -10,19 +11,39 @@ import AnalyzeForm from './components/AnalyzeForm';
 import { Link } from 'umi';
 import ProteinSelectForm from './components/ProteinSelectForm';
 import ProteinFixedChartsForm from './components/ProteinFixedChartsForm';
+import UpdateForm from './components/UpdateForm';
+
+/**
+ * 更新库
+ * @param values
+ */
+const handleUpdate = async (values: any) => {
+  const hide = message.loading('正在更新');
+  try {
+    await updateList({ ...values });
+    hide();
+    message.success('编辑成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('编辑失败，请重试!');
+    return false;
+  }
+};
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   const [formAnalyze] = Form.useForm();
+  const [formUpdate] = Form.useForm();
   /* 分析窗口变量 */
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
+  /* 编辑窗口变量 */
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
-  const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
 
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
@@ -42,6 +63,30 @@ const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const projectName = props?.location?.state?.projectName;
 
+  /**
+   * 生成别名
+   * @param values
+   */
+  const handleAlias = async (values: any[]) => {
+    const hide = message.loading('正在生成');
+    const expIds = values.map((item) => {
+      return item;
+    });
+    console.log('expIds', expIds);
+    try {
+      await generateAlias({ expIds });
+      hide();
+      message.success('生成成功');
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+      return true;
+    } catch (error) {
+      hide();
+      message.error('生成失败，请重试!');
+      return false;
+    }
+  };
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '实验名',
@@ -62,6 +107,20 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      title: '实验别名',
+      dataIndex: 'alias',
+      render: (dom, entity) => {
+        if (entity.alias) {
+          return (
+            <Tooltip title={dom} placement="topLeft">
+              {dom}
+            </Tooltip>
+          );
+        }
+        return false;
+      },
+    },
+    {
       title: 'ExpId',
       dataIndex: 'id',
       hideInTable: true,
@@ -75,24 +134,6 @@ const TableList: React.FC = (props: any) => {
       hideInSearch: true,
       render: (dom) => {
         return <Tag color="green">{dom}</Tag>;
-      },
-    },
-    {
-      title: 'OverView',
-      dataIndex: 'id',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        return (
-          <Link
-            to={{
-              pathname: '/overView',
-              state: { projectId: projectId, expId: entity.id },
-              search: `?expId=${entity.id}?projectId=${projectId}`,
-            }}
-          >
-            <Tag color="green">查看</Tag>
-          </Link>
-        );
       },
     },
     {
@@ -151,9 +192,23 @@ const TableList: React.FC = (props: any) => {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
+      width: '200px',
       hideInSearch: true,
-      render: (dom, entity) => [
-        <Tooltip title={'详情'} key="detail">
+      render: (dom, entity) => (
+        <>
+          <a
+            onClick={() => {
+              formUpdate?.resetFields();
+              handleUpdateModalVisible(true);
+              setCurrentRow(entity);
+            }}
+            key="edit"
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
+              编辑
+            </Tag>
+          </a>
           <a
             onClick={() => {
               setCurrentRow(entity);
@@ -163,27 +218,26 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
-              编辑
+              详情
             </Tag>
           </a>
-        </Tooltip>,
-        <Tooltip title={'索引'} key="blockIndex">
           <Link
             to={{
-              pathname: '/blockIndex',
-              search: `?expId=${entity.id}`,
-              state: { projectId, expName: entity.name },
+              pathname: '/overView',
+              state: { projectName, expName: entity.name },
+              search: `?expId=${entity.id}&projectId=${projectId}`,
             }}
+            key="overView"
           >
-            <Tag color="blue">
+            <Tag color="green">
               <Icon
                 style={{ verticalAlign: '-4px', fontSize: '16px' }}
-                icon="mdi:format-line-spacing"
+                icon="mdi:format-list-bulleted-square"
               />
-              索引
+              概览
             </Tag>
           </Link>
-        </Tooltip>,
+        
         <Tooltip title={'蛋白质干扰因素查看'} key="detail">
         <a
           onClick={async () => {
@@ -198,9 +252,11 @@ const TableList: React.FC = (props: any) => {
             蛋白质干扰因素查看
           </Tag>
         </a>
-      </Tooltip>,
-      ],
-    },
+        </Tooltip>
+        
+     </>)
+    }
+   
   ];
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
@@ -256,29 +312,49 @@ const TableList: React.FC = (props: any) => {
             setPrepareData(result.data);
           }
           const msg = await experimentList({ projectId, ...params });
-          setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
         toolBarRender={() => [
-          <Tooltip title={'开始分析'} key="scan">
-            <a
-              onClick={() => {
-                if (selectedRows?.length > 0) {
-                  handleAnalyzeModalVisible(true);
-                } else {
-                  message.warn('请选择要分析的实验');
-                }
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
-                开始分析
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip title="查看IRT结果" key="IRT">
+          <a
+            onClick={() => {
+              if (selectedRows?.length > 0) {
+                handleAnalyzeModalVisible(true);
+              } else {
+                message.warn('请选择要分析的实验');
+              }
+            }}
+            key="scan"
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
+              开始分析
+            </Tag>
+          </a>,
+          <a
+            key="scan"
+            onClick={() => {
+              if (selectedRows?.length > 0) {
+                let expIds: any[] = [];
+                selectedRows.map((item) => {
+                  expIds.push(item.id);
+                });
+                console.log(expIds);
+
+                handleAlias(expIds);
+              } else {
+                message.warn('请选择要生成的实验');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
+              生成别名
+            </Tag>
+          </a>,
+          <>
             {selectedRows && selectedRows.length > 0 ? (
               <Link
+                key="IRT"
                 to={{
                   pathname: '/irt/list',
                   search: `?expList=${selectedRows?.map((item) => {
@@ -297,6 +373,7 @@ const TableList: React.FC = (props: any) => {
                 onClick={() => {
                   message.warn('至少选择一个实验 🔬');
                 }}
+                key="IRT"
               >
                 <Tag color="blue">
                   <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:chart-line" />
@@ -304,40 +381,7 @@ const TableList: React.FC = (props: any) => {
                 </Tag>
               </a>
             )}
-          </Tooltip>,
-          <Tooltip title="蛋白诊所" key="IRT">
-            {selectedRows && selectedRows.length > 0 ? (
-              <Link
-                to={{
-                  pathname: '/proteinclinic',
-                  search: `?projectId=${projectId}`,
-                  // state: { projectId, expNum: selectedRows.length },
-                }}
-              >
-                <Tag color="blue">
-                  <Icon
-                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
-                    icon="mdi:stethoscope"
-                  />
-                  蛋白诊所
-                </Tag>
-              </Link>
-            ) : (
-              <a
-                onClick={() => {
-                  message.warn('至少选择一个实验 🔬');
-                }}
-              >
-                <Tag color="blue">
-                  <Icon
-                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
-                    icon="mdi:stethoscope"
-                  />
-                  蛋白诊所
-                </Tag>
-              </a>
-            )}
-          </Tooltip>,
+          </>,
         ]}
         columns={columns}
         onRow={(record, index) => {
@@ -420,6 +464,29 @@ const TableList: React.FC = (props: any) => {
       }}
      
       
+      {/* 编辑列表 */}
+      <UpdateForm
+        form={formUpdate}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
+        }}
+        onSubmit={async (value) => {
+          value.id = currentRow?.id as string;
+          console.log(value);
+
+          const success = await handleUpdate(value);
+          if (success) {
+            handleUpdateModalVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={currentRow || {}}
       />
     </>
   );

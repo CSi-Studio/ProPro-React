@@ -6,7 +6,13 @@ import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import { Icon } from '@iconify/react';
-import { CheckCircleOutlined, CloseCircleOutlined, LinkOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  FieldNumberOutlined,
+  LinkOutlined,
+} from '@ant-design/icons';
+import Sequence from './components/Sequence';
 
 /**
  * 添加库
@@ -30,6 +36,8 @@ const TableList: React.FC = (props: any) => {
   const [total, setTotal] = useState<any>();
   const [formCreate] = Form.useForm();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [sequenceVisible, handleSequenceVisible] = useState<boolean>(false);
+  const [currentRow, handleCurrentRow] = useState<any>();
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -73,20 +81,7 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'names',
       hideInSearch: true,
       render: (dom) => {
-        return (
-          <Tooltip title={dom} placement="topLeft">
-            <div
-              style={{
-                width: '150px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {dom}
-            </div>
-          </Tooltip>
-        );
+        return <Tag>{dom}</Tag>;
       },
     },
 
@@ -97,42 +92,12 @@ const TableList: React.FC = (props: any) => {
       render: (dom, entity) => {
         return (
           <>
-            <a href={entity?.uniProtLink} target="_blank">
-              <Tag icon={<LinkOutlined />} color="blue">
-                UniProt
-              </Tag>
-            </a>
-            <a href={entity?.alphaFoldLink} target="_blank">
-              <Tag icon={<LinkOutlined />} color="blue">
-                alphaFold
-              </Tag>
-            </a>
             <Tag>{dom}</Tag>
           </>
         );
       },
     },
-    {
-      title: '序列号',
-      dataIndex: 'sequence',
-      hideInSearch: true,
-      render: (dom) => {
-        return (
-          <Tooltip title={dom} placement="topLeft">
-            <div
-              style={{
-                width: '300px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {dom}
-            </div>
-          </Tooltip>
-        );
-      },
-    },
+
     {
       title: '有机生物',
       dataIndex: 'organism',
@@ -148,6 +113,38 @@ const TableList: React.FC = (props: any) => {
           </a>
         );
       },
+    },
+    {
+      key: 'option',
+      title: '更多',
+      valueType: 'option',
+      fixed: 'right',
+      hideInSearch: true,
+      width: '300px',
+      render: (text, record) => (
+        <>
+          <a href={record?.uniProtLink} target="_blank">
+            <Tag icon={<LinkOutlined />} color="green">
+              UniProt
+            </Tag>
+          </a>
+          <a href={record?.alphaFoldLink} target="_blank">
+            <Tag icon={<LinkOutlined />} color="green">
+              alphaFold
+            </Tag>
+          </a>
+          <a
+            onClick={() => {
+              handleCurrentRow(record);
+              handleSequenceVisible(true);
+            }}
+          >
+            <Tag icon={<FieldNumberOutlined />} color="blue">
+              序列号
+            </Tag>
+          </a>
+        </>
+      ),
     },
   ];
 
@@ -189,23 +186,21 @@ const TableList: React.FC = (props: any) => {
           total: total,
         }}
         toolBarRender={() => [
-          <Tooltip title={'导入蛋白库'} key="add">
-            <a>
-              <Tag
-                color="green"
-                onClick={() => {
-                  formCreate?.resetFields();
-                  handleModalVisible(true);
-                }}
-              >
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:playlist-plus"
-                />
-                导入蛋白库
-              </Tag>
-            </a>
-          </Tooltip>,
+          <a key="add">
+            <Tag
+              color="green"
+              onClick={() => {
+                formCreate?.resetFields();
+                handleModalVisible(true);
+              }}
+            >
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:playlist-plus"
+              />
+              导入蛋白库
+            </Tag>
+          </a>,
         ]}
         onRow={(record, index) => {
           return {
@@ -240,6 +235,19 @@ const TableList: React.FC = (props: any) => {
           }
         }}
         createModalVisible={createModalVisible}
+      />
+      <Sequence
+        currentRow={currentRow}
+        onCancel={() => {
+          handleSequenceVisible(false);
+        }}
+        onSubmit={async () => {
+          handleSequenceVisible(false);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }}
+        sequenceVisible={sequenceVisible}
       />
     </>
   );

@@ -82,6 +82,37 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'name',
     },
     {
+      title: '算法',
+      dataIndex: 'lda',
+      render: (dom, entity) => {
+        return <Tag>{entity.classifier.algorithm}</Tag>;
+      },
+    },
+    {
+      title: 'mzWindow',
+      dataIndex: 'mzWindow',
+      render: (dom, entity) => {
+        return <Tag>{entity.eic.mzWindow}</Tag>;
+      },
+    },
+    {
+      title: 'adaptiveMzWindow',
+      dataIndex: 'adaptiveMzWindow',
+      render: (dom, entity) => {
+        if (entity.eic.adaptiveMzWindow) {
+          return <Tag color="green">true</Tag>;
+        }
+        return <Tag color="orange">false</Tag>;
+      },
+    },
+    {
+      title: 'rtWindow',
+      dataIndex: 'rtWindow',
+      render: (dom, entity) => {
+        return <Tag>{entity.eic.rtWindow}</Tag>;
+      },
+    },
+    {
       title: '描述信息',
       dataIndex: 'description',
       hideInSearch: true,
@@ -130,8 +161,8 @@ const TableList: React.FC = (props: any) => {
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
-      render: (text, record) => [
-        <Tooltip title={'编辑'} key="edit">
+      render: (text, record) => (
+        <>
           <a
             onClick={() => {
               formUpdate?.resetFields();
@@ -145,10 +176,25 @@ const TableList: React.FC = (props: any) => {
               编辑
             </Tag>
           </a>
-        </Tooltip>,
-      ],
+        </>
+      ),
     },
   ];
+  /* 点击行选中相关 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<DomainCell, Pagination>
@@ -180,46 +226,42 @@ const TableList: React.FC = (props: any) => {
         size="small"
         tableAlertRender={false}
         toolBarRender={() => [
-          <Tooltip title={'新增'} key="add">
-            <a>
-              <Tag
-                color="green"
-                onClick={() => {
-                  formCreate?.resetFields();
-                  handleModalVisible(true);
-                }}
-              >
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:playlist-plus"
-                />
-                新增
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip placement="top" title={'删除'} key="delete">
-            <a
-              key="delete"
-              onClick={async () => {
-                formDelete?.resetFields();
-                if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handleDeleteModalVisible(true);
-                  } else {
-                    message.warn('目前只支持单个库的删除');
-                    setSelectedRows([]);
-                  }
-                } else {
-                  message.warn('请选择要删除的库');
-                }
+          <a key="add">
+            <Tag
+              color="green"
+              onClick={() => {
+                formCreate?.resetFields();
+                handleModalVisible(true);
               }}
             >
-              <Tag color="error">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-                删除
-              </Tag>
-            </a>
-          </Tooltip>,
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:playlist-plus"
+              />
+              新增
+            </Tag>
+          </a>,
+          <a
+            key="delete"
+            onClick={async () => {
+              formDelete?.resetFields();
+              if (selectedRows?.length > 0) {
+                if (selectedRows.length == 1) {
+                  handleDeleteModalVisible(true);
+                } else {
+                  message.warn('目前只支持单个库的删除');
+                  setSelectedRows([]);
+                }
+              } else {
+                message.warn('请选择要删除的库');
+              }
+            }}
+          >
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              删除
+            </Tag>
+          </a>,
         ]}
         request={async (params) => {
           const msg = await list({ ...params });
@@ -230,6 +272,13 @@ const TableList: React.FC = (props: any) => {
           total: total,
         }}
         columns={columns}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
         rowSelection={{
           selectedRowKeys: selectedRows?.map((item) => {
             return item.id;

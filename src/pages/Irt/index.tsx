@@ -3,8 +3,6 @@ import { IrtOption } from './charts';
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
-import { Button, Tag } from 'antd';
-import { Link } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 
 // 每行grid的个数

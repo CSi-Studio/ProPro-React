@@ -122,24 +122,39 @@ const TableList: React.FC = () => {
       fixed: 'right',
       width: '100',
       hideInSearch: true,
-      render: (text, record) => [
-        <Tooltip title={'详情'} key="detail">
+      render: (text, record) => (
+        <>
           <a
             onClick={() => {
               setCurrentRow(record);
               setShowDetail(true);
             }}
-            key="edit"
+            key="detail"
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
               详情
             </Tag>
           </a>
-        </Tooltip>,
-      ],
+        </>
+      ),
     },
   ];
+  /* 点击行选中相关 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<TaskTableItem, Pagination>
@@ -151,24 +166,22 @@ const TableList: React.FC = () => {
         size="small"
         tableAlertRender={false}
         toolBarRender={() => [
-          <Tooltip placement="top" title={'删除'} key="delete">
-            <a
-              key="delete"
-              onClick={async () => {
-                formDelete?.resetFields();
-                if (selectedRows?.length > 0) {
-                  handleDeleteModalVisible(true);
-                } else {
-                  message.warn('请选择要删除的库，支持多选');
-                }
-              }}
-            >
-              <Tag color="error">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-                删除
-              </Tag>
-            </a>
-          </Tooltip>,
+          <a
+            key="delete"
+            onClick={async () => {
+              formDelete?.resetFields();
+              if (selectedRows?.length > 0) {
+                handleDeleteModalVisible(true);
+              } else {
+                message.warn('请选择要删除的库，支持多选');
+              }
+            }}
+          >
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              删除
+            </Tag>
+          </a>,
         ]}
         request={async (params) => {
           const msg = await list({ ...params });
@@ -179,6 +192,13 @@ const TableList: React.FC = () => {
           total: total,
         }}
         columns={columns}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
         rowSelection={{
           selectedRowKeys: selectedRows?.map((item) => {
             return item.id;

@@ -3,12 +3,13 @@ import { Form, message, Tag, Tooltip, Typography } from 'antd';
 import React, { useState, useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { overviewList, overviewList2, updateList } from './service';
+import { batchUpdate, overviewList, overviewList2, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
-
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
-import DetailForm from './components/Overviewdetail';
+import DetailForm from './components/OverviewDetail';
+import DeleteForm from './components/DeleteForm';
+import BatchUpdateForm from './components/BatchUpdateForm';
 
 /**
  * 更新库
@@ -27,27 +28,71 @@ const handleUpdate = async (values: any) => {
     return false;
   }
 };
+/**
+ * 批量修改
+ * @param values
+ */
+const handleBatchUpdate = async (values: any) => {
+  const hide = message.loading('正在更新');
+  try {
+    await batchUpdate({ ...values });
+    hide();
+    message.success('批量修改成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('批量修改失败，请重试!');
+    return false;
+  }
+};
+/**
+ * 删除库
+ * @param selectedRows
+ */
+const handleRemove = async (selectedRows: any[]) => {
+  const overviewIds = selectedRows.map((item) => {
+    return item.id;
+  });
+  try {
+    await removeList({
+      overviewIds,
+    });
+    message.success('删除成功，希望你不要后悔 🥳');
+    return true;
+  } catch (error) {
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
+
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   const [formUpdate] = Form.useForm();
+  const [formDelete] = Form.useForm();
+  const [formBatch] = Form.useForm();
+  const projectName = props?.location?.state?.projectName;
+  const expName = props?.location?.state?.expName;
+  const projectId = props?.location?.query?.projectId;
+  const expId = props?.location?.query?.expId;
+
+  // /** 全选 */
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [showLink, setShowLink] = useState<boolean>(false);
+  // const [showLink, setShowLink] = useState<boolean>(false);
   const [total, setTotal] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const [updateRow, setUpdateRow] = useState<TableListItem>();
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
-  const projectId = props?.location?.query?.projectId;
-  const pjId = props?.location?.state?.projectId;
-  const expId = props?.location?.state?.expId;
-
+  /** 删除窗口的弹窗 */
+  const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
+  /** 批量修改窗口的弹窗 */
+  const [batchModalVisible, handleBatchModalVisible] = useState<boolean>(false);
   const columns: ProColumns<TableListItem>[] = [
     {
       key: 'name',
-      title: 'overView名',
+      title: '概览名',
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
@@ -64,23 +109,20 @@ const TableList: React.FC = (props: any) => {
         );
       },
     },
-
     {
-      key: 'type',
-      title: '类型',
-      dataIndex: 'type',
-    },
-    {
-      key: 'createDate',
-      title: '生成时间',
-      dataIndex: 'createDate',
+      key: 'defaultOne',
+      title: '默认值',
+      dataIndex: 'defaultOne',
+      render: (text, entity) => {
+        return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
+      },
     },
     {
       key: 'peakCount',
       title: '峰统计',
       dataIndex: 'statstic',
       render: (text, entity) => {
-        return <>{entity?.statistic?.TOTAL_PEAK_COUNT}</>;
+        return entity?.statistic?.TOTAL_PEAK_COUNT;
       },
     },
     {
@@ -88,7 +130,7 @@ const TableList: React.FC = (props: any) => {
       title: '肽段统计',
       dataIndex: 'statstic',
       render: (text, entity) => {
-        return <>{entity?.statistic?.TOTAL_PEPTIDE_COUNT}</>;
+        return entity?.statistic?.TOTAL_PEPTIDE_COUNT;
       },
     },
     {
@@ -114,7 +156,7 @@ const TableList: React.FC = (props: any) => {
       hideInSearch: true,
       render: (dom, entity) => {
         if (entity.note) {
-          return <>{entity?.statistic?.TOTAL_PEPTIDE_COUNT}</>;
+          return <Tag>{dom}</Tag>;
         }
         return false;
       },
@@ -127,49 +169,59 @@ const TableList: React.FC = (props: any) => {
       hideInSearch: true,
       render: (text, record) => (
         <>
-          <Tooltip title={'编辑'}>
-            <a
-              onClick={() => {
-                formUpdate?.resetFields();
-                handleUpdateModalVisible(true);
-                setUpdateRow(record);
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
-                编辑
-              </Tag>
-            </a>
-          </Tooltip>
-          <Tooltip title={'编辑'}>
-            <a
-              onClick={() => {
-                setCurrentRow(record);
-                setShowDetail(true);
-              }}
-            >
-              <Tag color="blue">
-                <Icon
-                  style={{ verticalAlign: 'middle', fontSize: '20px' }}
-                  icon="mdi:file-document"
-                />
-                详情
-              </Tag>
-            </a>
-          </Tooltip>
+          <a
+            onClick={() => {
+              formUpdate?.resetFields();
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
+              编辑
+            </Tag>
+          </a>
+          <a
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            <Tag color="blue">
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:file-document"
+              />
+              详情
+            </Tag>
+          </a>
         </>
       ),
     },
   ];
-
+  /* 点击行选中相关 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
-          props?.location?.state?.projectName === undefined ? (
+          projectName === undefined ? (
             <>
-              <Text>概要列表</Text>
+              <Text>概览列表</Text>
             </>
           ) : (
             <>
@@ -181,9 +233,27 @@ const TableList: React.FC = (props: any) => {
                 <Text type="secondary">项目列表</Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
-              <a>
-                <Text>概要列表 所属项目：{props?.location?.state?.projectName}</Text>
-              </a>
+              {expName === undefined ? (
+                <a>
+                  <Text>概览列表 所属项目：{projectName}</Text>
+                </a>
+              ) : (
+                <>
+                  <Link
+                    to={{
+                      pathname: '/experiment/list',
+                      state: { projectName, projectId },
+                      search: `?projectId=${projectId}`,
+                    }}
+                  >
+                    <Text type="secondary">实验列表</Text>
+                  </Link>
+                  &nbsp;&nbsp;/&nbsp;&nbsp;
+                  <a>
+                    <Text>概览列表 所属实验：{expName}</Text>
+                  </a>
+                </>
+              )}
             </>
           )
         }
@@ -191,26 +261,72 @@ const TableList: React.FC = (props: any) => {
         rowKey="id"
         size="small"
         search={false}
-        toolBarRender={() => []}
+        toolBarRender={() => [
+          <a
+            key="batchEdit"
+            onClick={async () => {
+              formBatch?.resetFields();
+              if (selectedRows?.length > 0) {
+                handleBatchModalVisible(true);
+              } else {
+                message.warn('请选择要修改的概览，支持多选');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              批量修改
+            </Tag>
+          </a>,
+          <a
+            key="delete"
+            onClick={async () => {
+              formDelete?.resetFields();
+              if (selectedRows?.length > 0) {
+                handleDeleteModalVisible(true);
+              } else {
+                message.warn('请选择要删除的概览，支持多选');
+              }
+            }}
+          >
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              删除
+            </Tag>
+          </a>,
+        ]}
         tableAlertRender={false}
         pagination={{
           total: total,
         }}
         request={async (params) => {
           if (projectId) {
-            const msg = await overviewList({ projectId: projectId, ...params });
+            const msg = await overviewList({ projectId, ...params });
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
           } else {
-            const msg = await overviewList2({ projectId: pjId, expId: expId, ...params });
+            const msg = await overviewList2({ projectId, expId: expId, ...params });
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
           }
         }}
         columns={columns}
-        rowSelection={{}}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
+        rowSelection={{
+          selectedRowKeys: selectedRows?.map((item) => {
+            return item.id;
+          }),
+          onChange: (_, selectedRowKeys) => {
+            setSelectedRows(selectedRowKeys);
+          },
+        }}
       />
-
       {/* 列表详情 */}
       <DetailForm
         showDetail={showDetail}
@@ -226,25 +342,82 @@ const TableList: React.FC = (props: any) => {
         form={formUpdate}
         onCancel={() => {
           handleUpdateModalVisible(false);
-          setUpdateRow(undefined);
+          setCurrentRow(undefined);
           formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
-          value.id = updateRow?.id as unknown as string;
-          var mapvalue = { id: value.id, tags: value.tags, note: value.note };
+          value.id = currentRow?.id as unknown as string;
+          var mapvalue = {
+            id: value.id,
+            tags: value.tags,
+            note: value.note,
+            defaultOne: value.defaultOne,
+          };
           const success = await handleUpdate(mapvalue);
           if (success) {
             handleUpdateModalVisible(false);
-            setUpdateRow(undefined);
+            setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
         updateModalVisible={updateModalVisible}
-        values={updateRow || {}}
+        values={currentRow || {}}
       />
+      {/* 删除列表 */}
+      <DeleteForm
+        selectedRows={selectedRows}
+        form={formDelete}
+        onCancel={() => {
+          handleDeleteModalVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
+        }}
+        onSubmit={async (value) => {
+          if (value.name === '我确认删除') {
+            const success = await handleRemove(selectedRows);
+            if (success) {
+              handleDeleteModalVisible(false);
+              setSelectedRows([]);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          } else {
+            message.error('你没有删除的决心');
+          }
+        }}
+        deleteModalVisible={deleteModalVisible}
+      />
+      <BatchUpdateForm
+        form={formBatch}
+        onCancel={() => {
+          handleBatchModalVisible(false);
+          setSelectedRows([]);
+          formBatch?.resetFields();
+        }}
+        onSubmit={async (value) => {
+          var mapValue = {
+            ids: selectedRows.map((item) => {
+              return item.id;
+            }),
+            tags: value.tags,
+            note: value.note,
+            defaultOne: value.defaultOne,
+          };
+          const success = await handleBatchUpdate(mapValue);
+          if (success) {
+            handleBatchModalVisible(false);
+            setSelectedRows([]);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        batchModalVisible={batchModalVisible}
+        values={selectedRows.length}
+      ></BatchUpdateForm>
     </>
   );
 };

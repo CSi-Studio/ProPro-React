@@ -24,7 +24,7 @@ export default [
     name: 'IRT',
     icon: 'profile',
     path: '/irt/list',
-    component: './IRT',
+    component: './Irt',
     hideInMenu: true,
   },
   //BlockIndex界面
@@ -97,13 +97,14 @@ export default [
   {
     key: 'ProteinClinic',
     name: 'ProteinClinic',
-    path: '/proteinclinic',
+    path: '/clinic',
     icon: 'UnorderedListOutlined',
-    component: './ProteinClinic',
+    component: './Clinic',
+    hideInMenu: true,
     layout: {
       hideMenu: true,
       hideNav: false,
-      hideFooter: true,
+      hideFooter: false,
     },
   },
   {

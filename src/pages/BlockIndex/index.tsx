@@ -1,7 +1,7 @@
-import { Tooltip, Typography } from 'antd';
+import { Tag, Tooltip, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
-import type { TableListDetail, TableListItem, TableListPagination } from './data';
+import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
@@ -11,11 +11,9 @@ import { Link } from 'umi';
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
   /** 全选 */
-  // const [selectedRows, setSelectedRows] = useState<TableListItem[]>();
-
+  const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const projectName = props?.location?.state.projectName;
   const [idRow, setRowId] = useState<any>();
-  const [detaileRow, setDetailRow] = useState<TableListDetail>();
 
   const actionRef = useRef<ActionType>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -70,8 +68,8 @@ const TableList: React.FC = (props: any) => {
       width: 100,
       ellipsis: true,
       fixed: 'right',
-      render: (text, record) => [
-        <Tooltip title={'详情'} key="detail">
+      render: (text, record) => (
+        <>
           <a
             onClick={() => {
               setRowId(record.id);
@@ -79,10 +77,16 @@ const TableList: React.FC = (props: any) => {
             }}
             key="detail"
           >
-            <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-document" />
+            <Tag color="blue">
+              <Icon
+                style={{ verticalAlign: 'middle', fontSize: '20px' }}
+                icon="mdi:file-document"
+              />
+              详情
+            </Tag>
           </a>
-        </Tooltip>,
-      ],
+        </>
+      ),
     },
   ];
 
@@ -108,7 +112,21 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'endPtr',
     },
   ];
-
+  /* 点击行选中相关 */
+  const selectRow = (record: any) => {
+    const rowData = [...selectedRows];
+    if (rowData.length == 0) {
+      rowData.push(record);
+      setSelectedRows(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setSelectedRows(rowData);
+    }
+  };
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
@@ -156,7 +174,21 @@ const TableList: React.FC = (props: any) => {
         columns={columns}
         pagination={false}
         toolBarRender={() => []}
-        rowSelection={{}}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              selectRow(record);
+            },
+          };
+        }}
+        rowSelection={{
+          selectedRowKeys: selectedRows?.map((item) => {
+            return item.id;
+          }),
+          onChange: (_, selectedRowKeys) => {
+            setSelectedRows(selectedRowKeys);
+          },
+        }}
       />
 
       {/* 列表详情 */}
@@ -165,7 +197,6 @@ const TableList: React.FC = (props: any) => {
         currentRow={idRow}
         columns={columnsNew}
         onClose={() => {
-          setDetailRow(undefined);
           setShowDetail(false);
         }}
         expNameRow={props?.location?.state?.expName}

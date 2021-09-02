@@ -1,4 +1,4 @@
-import { Form, message, Tooltip, Tag, Space, Table, Typography } from 'antd';
+import { Form, message, Tooltip, Tag, Space, Table, Typography, Row, Col } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -124,13 +124,13 @@ const TableList: React.FC = (props: any) => {
       title: 'Proteins',
       dataIndex: 'proteins',
       render: (dom, entity) => {
-        let pros = []
+        let pros: any[] = [];
         if (entity.proteins) {
-          entity.proteins.forEach(pro=>{
-            pros.push(<Tag key={pro}>{pro}</Tag>)
-          })
+          entity.proteins.forEach((pro) => {
+            pros.push(<Tag key={pro}>{pro}</Tag>);
+          });
         }
-        return <Space direction='vertical'>{pros}</Space>
+        return <Space direction="vertical">{pros}</Space>;
       },
     },
     {
@@ -142,7 +142,7 @@ const TableList: React.FC = (props: any) => {
             <Tag color="green">真:{entity.peptideRef}</Tag>
             <Tag color="red">伪:{entity.decoySequence}</Tag>
           </Space>
-        )
+        );
       },
     },
     {
@@ -164,97 +164,162 @@ const TableList: React.FC = (props: any) => {
           title: 'CutInfo',
           dataIndex: 'cutInfo',
           hideInSearch: true,
-          render: (dom, entity) => [
-            <Table
-              showHeader={false}
-              bordered={false}
-              pagination={false}
-              size="small"
-              dataSource={entity.fragments}
-              columns={[
-                {
-                  dataIndex: 'cutInfo',
-                },
-              ]}
-            />,
-          ],
+          render: (dom, entity) =>
+            entity.fragments.map((item) => {
+              return (
+                <Row>
+                  <Col>{item.cutInfo}</Col>
+                </Row>
+              );
+            }),
         },
         {
           title: '碎片荷质比',
           dataIndex: 'mz',
           hideInSearch: true,
-          render: (dom, entity) => [
-            <Table
-              showHeader={false}
-              bordered={false}
-              pagination={false}
-              size="small"
-              dataSource={entity.fragments}
-              columns={[
-                {
-                  dataIndex: 'mz',
-                }
-              ]}
-            />,
-          ],
+          render: (dom, entity) =>
+            entity.fragments.map((item) => {
+              return (
+                <Row>
+                  <Col>{item.mz}</Col>
+                </Row>
+              );
+            }),
         },
         {
           title: '强度',
           dataIndex: 'intensity',
           hideInSearch: true,
-          render: (dom, entity) => [
-            <Table
-              showHeader={false}
-              bordered={false}
-              pagination={false}
-              size="small"
-              dataSource={entity.fragments}
-              columns={[
-                {
-                  dataIndex: 'intensity',
-                },
-              ]}
-            />,
-          ],
+          render: (dom, entity) =>
+            entity.fragments.map((item) => {
+              return (
+                <Row>
+                  <Col>{item.intensity}</Col>
+                </Row>
+              );
+            }),
         },
         {
           title: '带电量',
           dataIndex: 'charge',
           hideInSearch: true,
-          render: (dom, entity) => [
-            <Table
-              showHeader={false}
-              bordered={false}
-              pagination={false}
-              size="small"
-              dataSource={entity.fragments}
-              columns={[
-                {
-                  dataIndex: 'charge',
-                },
-              ]}
-            />,
-          ],
+          render: (dom, entity) =>
+            entity.fragments.map((item) => {
+              return (
+                <Row>
+                  <Col>{item.charge}</Col>
+                </Row>
+              );
+            }),
         },
         {
           title: 'Annotations',
           dataIndex: 'Annotations',
           hideInSearch: true,
-          render: (dom, entity) => [
-            <Table
-              showHeader={false}
-              bordered={false}
-              pagination={false}
-              size="small"
-              dataSource={entity.fragments}
-              columns={[
-                {
-                  dataIndex: 'annotations',
-                },
-              ]}
-            />,
-          ],
+          render: (dom, entity) =>
+            entity.fragments.map((item) => {
+              return (
+                <Row>
+                  <Col>{item.annotations}</Col>
+                </Row>
+              );
+            }),
         },
+        // {
+        //   title: 'CutInfo',
+        //   dataIndex: 'cutInfo',
+        //   hideInSearch: true,
+        //   render: (dom, entity) => [
+        //     <Table
+        //       showHeader={false}
+        //       bordered={false}
+        //       pagination={false}
+        //       size="small"
+        //       dataSource={entity.fragments}
+        //       columns={[
+        //         {
+        //           dataIndex: 'cutInfo',
+        //         },
+        //       ]}
+        //     />,
+        //   ],
+        // },
+        // {
+        //   title: '碎片荷质比',
+        //   dataIndex: 'mz',
+        //   hideInSearch: true,
+        //   render: (dom, entity) => [
+        //     <Table
+        //       showHeader={false}
+        //       bordered={false}
+        //       pagination={false}
+        //       size="small"
+        //       dataSource={entity.fragments}
+        //       columns={[
+        //         {
+        //           dataIndex: 'mz',
+        //         },
+        //       ]}
+        //     />,
+        //   ],
+        // },
+        // {
+        //   title: '强度',
+        //   dataIndex: 'intensity',
+        //   hideInSearch: true,
+        //   render: (dom, entity) => [
+        //     <Table
+        //       showHeader={false}
+        //       bordered={false}
+        //       pagination={false}
+        //       size="small"
+        //       dataSource={entity.fragments}
+        //       columns={[
+        //         {
+        //           dataIndex: 'intensity',
+        //         },
+        //       ]}
+        //     />,
+        //   ],
+        // },
+        // {
+        //   title: '带电量',
+        //   dataIndex: 'charge',
+        //   hideInSearch: true,
+        //   render: (dom, entity) => [
+        //     <Table
+        //       showHeader={false}
+        //       bordered={false}
+        //       pagination={false}
+        //       size="small"
+        //       dataSource={entity.fragments}
+        //       columns={[
+        //         {
+        //           dataIndex: 'charge',
+        //         },
+        //       ]}
+        //     />,
+        //   ],
+        // },
+        // {
+        //   title: 'Annotations',
+        //   dataIndex: 'Annotations',
+        //   hideInSearch: true,
+        //   render: (dom, entity) => [
+        //     <Table
+        //       showHeader={false}
+        //       bordered={false}
+        //       pagination={false}
+        //       size="small"
+        //       dataSource={entity.fragments}
+        //       columns={[
+        //         {
+        //           dataIndex: 'annotations',
+        //         },
+        //       ]}
+        //     />,
+        //   ],
+        // },
       ],
     },
     {
@@ -262,8 +327,8 @@ const TableList: React.FC = (props: any) => {
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
-      render: (text, record) => [
-        <Tooltip title={'编辑'} key="edit">
+      render: (text, record) => (
+        <>
           <a
             onClick={() => {
               formUpdate?.resetFields();
@@ -277,8 +342,6 @@ const TableList: React.FC = (props: any) => {
               编辑
             </Tag>
           </a>
-        </Tooltip>,
-        <Tooltip title={'详情'} key="detail">
           <a
             onClick={() => {
               setCurrentRow(record);
@@ -291,8 +354,8 @@ const TableList: React.FC = (props: any) => {
               详情
             </Tag>
           </a>
-        </Tooltip>,
-      ],
+        </>
+      ),
     },
   ];
   /* 行选择 */
@@ -358,51 +421,49 @@ const TableList: React.FC = (props: any) => {
           };
         }}
         toolBarRender={() => [
-          <Tooltip title={'预测肽段碎片'} key="predict">
-            <a
-              onClick={() => {
-                formPredict?.resetFields();
-                if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handlePredictModalVisible(true);
-                  } else {
-                    message.warn('目前只支持单个肽段的预测');
-                    setSelectedRows([]);
-                  }
+          <a
+            key="predict"
+            onClick={() => {
+              formPredict?.resetFields();
+              if (selectedRows?.length > 0) {
+                if (selectedRows.length == 1) {
+                  handlePredictModalVisible(true);
                 } else {
-                  message.warn('请选择一个的肽段');
+                  message.warn('目前只支持单个肽段的预测');
+                  setSelectedRows([]);
                 }
-              }}
-            >
-              <Tag color="blue">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:robot-dead" />
-                预测肽段碎片
-              </Tag>
-            </a>
-          </Tooltip>,
-          <Tooltip title={'删除'} key="delete">
-            <a
-              onClick={() => {
-                formDelete?.resetFields();
-                handleDeleteModalVisible(true);
-                if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
-                    handleDeleteModalVisible(true);
-                  } else {
-                    message.warn('目前只支持单个肽段的删除');
-                    setSelectedRows([]);
-                  }
+              } else {
+                message.warn('请选择一个的肽段');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:robot-dead" />
+              预测肽段碎片
+            </Tag>
+          </a>,
+          <a
+            key="delete"
+            onClick={() => {
+              formDelete?.resetFields();
+              handleDeleteModalVisible(true);
+              if (selectedRows?.length > 0) {
+                if (selectedRows.length == 1) {
+                  handleDeleteModalVisible(true);
                 } else {
-                  message.warn('请选择一个的肽段');
+                  message.warn('目前只支持单个肽段的删除');
+                  setSelectedRows([]);
                 }
-              }}
-            >
-              <Tag color="error">
-                <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-                删除
-              </Tag>
-            </a>
-          </Tooltip>,
+              } else {
+                message.warn('请选择一个的肽段');
+              }
+            }}
+          >
+            <Tag color="error">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              删除
+            </Tag>
+          </a>,
         ]}
         rowSelection={{
           selectedRowKeys: selectedRows?.map((item) => {

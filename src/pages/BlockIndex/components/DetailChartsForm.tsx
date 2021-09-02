@@ -1,66 +1,149 @@
 import { ModalForm } from '@ant-design/pro-form';
+import { Switch } from 'antd';
 import ReactECharts from 'echarts-for-react';
+import { useEffect, useMemo, useState } from 'react';
+import { spectrumGauss } from '../service';
 
 export type ChartsFormProps = {
-  showCharts: any;
-  chartsData: any;
-  onCancel: () => void;
+  showCharts: boolean;
+  blockIndexId: any;
   rtData: any;
-  onSubmit: () => void;
+  onCancel: () => void;
+  onSubmit: () => Promise<void>;
 };
 
 const ChartsForm: React.FC<ChartsFormProps> = (props) => {
-  const xAxisData = props.chartsData?.x;
-  const yAxisData = props.chartsData?.y;
+  const [xAxisData, setX] = useState<any>();
+  const [yAxisData, setY] = useState<any>();
+  const [yAxisData2, setY2] = useState<any>();
+  const [gaussFit, setGaussFit] = useState(false);
   const rts = props.rtData;
-  const option = {
+
+  useEffect(() => {
+    if (props.blockIndexId) {
+      const getData = async () => {
+        try {
+          const msg = await spectrumGauss({
+            blockIndexId: props.blockIndexId,
+            rt: props.rtData,
+            pointNum: 5,
+          });
+          setX(() => {
+            return msg.data.x;
+          });
+          setY(() => {
+            return msg.data.y;
+          });
+          setY2(() => {
+            return msg.data.z;
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getData();
+    }
+  }, [props]);
+  const original = {
     toolbox: {
-      left: 'middle',
-      show: true,
+      left: '90%',
       feature: {
         saveAsImage: {},
       },
     },
-    legend: {},
-    tooltip: {},
-    dataset: {
-      source: [],
-    },
-
     title: {
-      text: 'RT时间:' + rts,
+      text: 'RT时间: ' + rts,
     },
     dataZoom: {
       type: 'inside',
     },
     xAxis: {
+      name: 'mz',
       type: 'category',
       data: xAxisData,
     },
-    yAxis: {
-      type: 'value',
+    yAxis: {},
+    series: {
+      type: 'bar',
+      data: yAxisData,
     },
+  };
+  const gaussion = {
+    toolbox: {
+      left: '90%',
+      feature: {
+        saveAsImage: {},
+      },
+    },
+    title: {
+      text: 'RT时间: ' + rts,
+    },
+    legend: {
+      data: ['Original', 'Gaussion', 'GaussionLine'],
+    },
+    dataZoom: {
+      type: 'inside',
+    },
+    xAxis: {
+      name: 'mz',
+      type: 'category',
+      data: xAxisData,
+    },
+    yAxis: {},
     series: [
       {
+        name: 'Original',
         type: 'bar',
         data: yAxisData,
       },
+      {
+        name: 'Gaussion',
+        type: 'bar',
+        data: yAxisData2,
+      },
+      {
+        name: 'GaussionLine',
+        type: 'line',
+        data: yAxisData2,
+        smooth: 0.5,
+        showSymbol: false,
+        lineStyle: {
+          width: 1,
+          type: 'solid',
+        },
+      },
     ],
   };
+
+  function onChange(checked: boolean) {
+    setGaussFit(() => {
+      return checked;
+    });
+  }
+
+  useMemo(() => {
+    setOption();
+  }, [gaussFit]);
+
+  function setOption() {
+    return gaussFit ? gaussion : original;
+  }
   return (
     <ModalForm
       visible={props.showCharts}
       modalProps={{
         maskClosable: false,
         onCancel: () => {
+          setGaussFit(false);
           props.onCancel();
         },
       }}
       onFinish={props.onSubmit}
     >
-      <ReactECharts option={option} style={{ height: 400 }} />
+      <ReactECharts option={setOption()} key={gaussFit ? 0 : 1} style={{ height: 400 }} />
+      <Switch onChange={onChange} />
+      <text>{'  显示高斯平滑'}</text>
     </ModalForm>
   );
 };
-
 export default ChartsForm;

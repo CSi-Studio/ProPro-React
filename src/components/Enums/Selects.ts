@@ -28,8 +28,8 @@ export const SpModelType = [
 ];
 
 export const YesOrNo = [
-  { value: 'true', label: 'Yes' },
-  { value: 'false', label: 'No' },
+  { value: true, label: 'Yes' },
+  { value: false, label: 'No' },
 ];
 
 export const SmoothMethod = [

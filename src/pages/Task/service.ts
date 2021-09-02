@@ -22,7 +22,7 @@ export async function detail(params: any) {
   });
 }
 
-/** 删除库 GET library/remove  */
+/** 删除库 GET task/remove  */
 export async function removeList(params: { idList: any }) {
   return request(`${url}/task/remove`, {
     method: 'POST',
