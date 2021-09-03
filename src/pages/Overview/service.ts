@@ -2,7 +2,7 @@ import { request } from 'umi';
 import type { TableListItem } from './data';
 import { url } from '@/utils/request';
 
-/** 获取项目列表 GET /api/overview/list */
+/** 获取ov列表 GET /overview/list */
 export async function overviewList(params: {
   // query
   /** 当前的页码 */
@@ -19,23 +19,18 @@ export async function overviewList(params: {
     },
   });
 }
-
-export async function overviewList2(params: {
-  // query
-  /** 当前的页码 */
-  current?: number;
-  /** 页面的容量 */
-  pageSize?: number;
+/** 获取当前项目的实验列表 GET /experiment/listByProjectId*/
+export async function expList(params: {
   projectId?: string;
-  expId?: string;
 }) {
-  return request(`${url}/overview/list`, {
+  return request(`${url}/experiment/listByProjectId`, {
     method: 'GET',
     params: {
       ...params,
     },
   });
 }
+
 
 /** 获取overview详情 GET /overview/detail */
 export async function overviewDetail(params: { id?: string }) {

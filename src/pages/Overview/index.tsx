@@ -1,9 +1,9 @@
 import { Icon } from '@iconify/react';
 import { Form, message, Tag, Tooltip, Typography } from 'antd';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { batchUpdate, overviewList, overviewList2, removeList, updateList } from './service';
+import { batchUpdate, expList, overviewList, removeList, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
@@ -75,6 +75,27 @@ const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const expId = props?.location?.query?.expId;
 
+  const [data, setData] = useState<any>({});
+  useEffect(() => {
+    const init = async (projectId: string) => {
+      const b: Record<any, any> = {};
+      try {
+        const a = await expList({
+          projectId,
+        });
+        a?.data?.map((item: { name: string | number; id: any }) => {
+          b[item.id] = item.name;
+        }),
+          setData(b);
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
+      }
+    };
+    init(projectId);
+  }, []);
+
   // /** 全选 */
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   /** 库详情的抽屉 */
@@ -91,9 +112,10 @@ const TableList: React.FC = (props: any) => {
   const [batchModalVisible, handleBatchModalVisible] = useState<boolean>(false);
   const columns: ProColumns<TableListItem>[] = [
     {
-      key: 'name',
-      title: '概览名',
-      dataIndex: 'name',
+      key: 'expName',
+      title: '实验名',
+      dataIndex: 'expName',
+      hideInSearch: true,
       render: (dom, entity) => {
         return (
           <Tooltip title={'Id:' + entity.id} placement="topLeft">
@@ -110,9 +132,30 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      key: 'expId',
+      title: '实验名',
+      dataIndex: 'expId',
+      hideInTable: true,
+      renderFormItem: (_, { type, defaultRender, onChange, ...rest }, form) => {
+        return defaultRender(_);
+      },
+      valueEnum: {
+        ...data,
+      },
+    },
+    {
+      key: 'createDate',
+      title: '创建时间',
+      dataIndex: 'createDate',
+      valueType: 'dateTime',
+      hideInSearch: true,
+    },
+    {
       key: 'defaultOne',
       title: '默认值',
       dataIndex: 'defaultOne',
+      hideInSearch: true,
+
       render: (text, entity) => {
         return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
       },
@@ -121,6 +164,8 @@ const TableList: React.FC = (props: any) => {
       key: 'peakCount',
       title: '峰统计',
       dataIndex: 'statstic',
+      hideInSearch: true,
+
       render: (text, entity) => {
         return entity?.statistic?.TOTAL_PEAK_COUNT;
       },
@@ -129,6 +174,8 @@ const TableList: React.FC = (props: any) => {
       key: 'peptideCount',
       title: '肽段统计',
       dataIndex: 'statstic',
+      hideInSearch: true,
+
       render: (text, entity) => {
         return entity?.statistic?.TOTAL_PEPTIDE_COUNT;
       },
@@ -273,7 +320,7 @@ const TableList: React.FC = (props: any) => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={false}
+        search={expName === undefined ? { labelWidth: 'auto' } : false}
         toolBarRender={() => [
           <a
             key="batchEdit"

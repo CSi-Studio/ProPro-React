@@ -24,8 +24,7 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
-import ProteinSelectForm, { selectFormValueType } from './components/ProteinSelectForm';
-import ProteinFixedChartsForm from './components/ProteinFixedChartsForm';
+
 
 
 
@@ -173,23 +172,6 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
-/**
- * 选择蛋白质
- * 
- */
- const handleSelect = async (selectedRows: TableListItem[]) => {
-  try {
-    await removeList({
-      libraryIds: selectedRows[0].id,
-    });
-    message.success('删除成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -294,26 +276,6 @@ const TableList: React.FC = () => {
         return <Tag>{entity?.statistic?.Protein_Count}</Tag>;
       },
     },
-    // {
-    //   title: '蛋白质修复',
-    //   dataIndex: 'proteins',
-    //   hideInSearch: true,
-    //   render: (dom, record) => 
-    //   <Tooltip title={'编辑'} key="edit">
-    //     <a
-    //       onClick={() => {
-    //         setProteinSelectVisible(true);
-    //         setCurrentRow(record);
-    //       } }
-    //       key="edit"
-    //     >
-    //       <Tag color="blue">
-    //         <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
-    //         蛋白质选择
-    //       </Tag>
-    //     </a>
-    //   </Tooltip>,
-    // },
     {
       title: '肽段数目',
       dataIndex: 'Peptide_Count',
@@ -345,14 +307,6 @@ const TableList: React.FC = () => {
         return <Tag>{entity?.statistic?.Fragment_Count}</Tag>;
       },
     },
-    // {
-    //   title: '创建时间',
-    //   width: '150px',
-    //   dataIndex: 'createDate',
-    //   hideInSearch: true,
-    //   sorter: (a, b) => (a.createDate > b.createDate ? -1 : 1),
-    //   valueType: 'dateTime',
-    // },
     {
       title: '描述信息',
       dataIndex: 'description',
@@ -755,38 +709,6 @@ const TableList: React.FC = () => {
         }}
         cloneModalVisible={cloneModalVisible}
         values={selectedRows}
-      />
-
-
-      <ProteinSelectForm
-      proteinSelectVisible={proteinSelectVisible}
-      values={currentRow}
-      onClose={() => {
-        setCurrentRow(undefined);
-        setProteinSelectVisible(false);
-        
-      }}
-      onSubmit={async (value) => {
-        let a={libraryId:currentRow?.id,proteinName:value.proteinName}
-        const msg = await getPeptide({libraryId:a.libraryId,proteinName:a.proteinName,range:value.range})
-        setShowCharts(true)
-        setChartData(msg.data)
-        setProteinName(a.proteinName)
-       
-      }} 
-      />
-
-     <ProteinFixedChartsForm
-      showCharts={showCharts}
-      chartsData={chartsData}
-      proteinName={proteinName}
-      onCancel={() => {
-        setShowCharts(false)
-        setChartData(undefined)
-        setProteinName(undefined)
-      }}
-     
-      
       />
     </>
   );
