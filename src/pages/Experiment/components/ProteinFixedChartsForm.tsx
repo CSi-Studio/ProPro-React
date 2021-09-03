@@ -1,12 +1,6 @@
-import { handle } from '@/components/Commons/CRUD';
-import { UploadOutlined } from '@ant-design/icons';
-import { ModalForm } from '@ant-design/pro-form';
 import { Button, Input, Modal, Space } from 'antd';
-import { color, dataTool } from 'echarts';
 import ReactECharts from 'echarts-for-react';
-import { random } from 'lodash';
 import React from 'react';
-import { useEffect } from 'react';
 import { useState } from 'react';
 
 export type ChartsFormProps = {
@@ -22,56 +16,56 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
   const [handleOption, setHandleOption] = useState({});
   const [disturbNumber, setDisturbNumber] = useState<any>(10);
   const [disturbInputNumber, setDisturbInputNumber] = useState<any>(10);
-  const [intensityInputNumber,setIntensityInputNumber] = useState<any>(0.5);
-  const [intenityNumber,setIntensityNumber] =useState<any>(0.5);
-  const [keyNumber,setKeyNumber] =useState<any>("new date");
+  const [intensityInputNumber, setIntensityInputNumber] = useState<any>(0.5);
+  const [intenityNumber, setIntensityNumber] = useState<any>(0.5);
+  const [keyNumber, setKeyNumber] = useState<any>('new date');
   const data = props?.chartsData;
-   console.log("data",data)
+  console.log('data', data);
   data?.nodes?.forEach(function (node: any) {
     (node.label = {
       show: node.symbolSize > 22,
     }),
-    (node.tooltip = {
+      (node.tooltip = {
         formatter: 'peptide:{b} <br /> mz&rt:{c0}',
-    }),
-    (node.itemStyle = {
-        
-     }),
-    data?.count?.forEach(function (link:any){
-      if(link.name===node.id && link.number>=disturbNumber ){
-       node.itemStyle={
-         color:'#FFF'
-       },
-       (node.label = {
-        show: true,
-        formatter:link.number+'',
-        position: 'inside',
-        color:'#000',
-        fontWeight :'bolder'
-      })
-      }
-    })
+      }),
+      (node.itemStyle = {}),
+      data?.count?.forEach(function (link: any) {
+        if (link.name === node.id && link.number >= disturbNumber) {
+          (node.itemStyle = {
+            color: '#FFF',
+          }),
+            (node.label = {
+              show: true,
+              formatter: link.number + '',
+              position: 'inside',
+              color: '#000',
+              fontWeight: 'bolder',
+            });
+        }
+      });
   });
-  data?.links?.forEach((link: any,index:number)=> {
+  data?.links?.forEach((link: any, index: number) => {
     link.lineStyle = null;
-    if (link.value < rangeNumber && link.target.indexOf("-")!==-1 && link.source.indexOf("-")!=-1) {    
-      data?.intensity?.forEach((intensity: any,index2:number)=>{
-        if(intensity.source==link.source && intensity.target==link.target){
-          if(intensity.value<=intenityNumber){
-            console.log('进入')
+    if (
+      link.value < rangeNumber &&
+      link.target.indexOf('-') !== -1 &&
+      link.source.indexOf('-') != -1
+    ) {
+      data?.intensity?.forEach((intensity: any, index2: number) => {
+        if (intensity.source == link.source && intensity.target == link.target) {
+          if (intensity.value <= intenityNumber) {
+            console.log('进入');
             link.lineStyle = {
               color: '#E20618',
-              width:1.5
+              width: 1.5,
+            };
+          } else {
+            link.lineStyle = {
+              color: '#E2061857',
             };
           }
-          else{
-            link.lineStyle = {
-            color: '#E2061857',
-          };
-          }       
         }
-      }
-      )
+      });
     }
   });
   const getOption = () => {
@@ -82,9 +76,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
         top: 'bottom',
         left: 'right',
       },
-      tooltip: {
-
-      },
+      tooltip: {},
       legend: [
         {
           selectedMode: 'multiple',
@@ -97,7 +89,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
       animationEasingUpdate: 'quinticInOut',
       series: [
         {
-          draggable:true,
+          draggable: true,
           name: props?.proteinName,
           type: 'graph',
           layout: 'force',
@@ -128,32 +120,30 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
           },
         },
       ],
-    }
+    };
     return option;
   };
-  getOption()
+  getOption();
   const option = getOption();
-  console.log("option",option)
+  console.log('option', option);
 
   return (
     <Modal
       visible={props.showCharts}
       width={1200}
-      afterClose={()=>{
-        setDisturbNumber(10)
-        setRangeNumber(10)
-        setIntensityNumber(0.5)
-        setDisturbInputNumber(10)
-        setInputNumber(10)
-        setIntensityInputNumber(0.5)
-        setHandleOption({})
-        setKeyNumber(new Date())
+      afterClose={() => {
+        setDisturbNumber(10);
+        setRangeNumber(10);
+        setIntensityNumber(0.5);
+        setDisturbInputNumber(10);
+        setInputNumber(10);
+        setIntensityInputNumber(0.5);
+        setHandleOption({});
+        setKeyNumber(new Date());
       }}
       onCancel={props.onCancel}
-        
-    
     >
-       <Space direction="horizontal">
+      <Space direction="horizontal">
         <Input
           style={{ height: '30px', width: '100px' }}
           defaultValue="10"
@@ -175,14 +165,12 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
         >
           Rt范围抓取
         </Button> */}
-   
-        
+
         <Input
           style={{ height: '30px', width: '120px' }}
           defaultValue="10"
           onChange={(e) => setDisturbInputNumber(e.target.value)}
           addonBefore="干扰数目"
-          
         ></Input>
         {/* <Button
           style={{
@@ -199,8 +187,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
         >
           干扰数目抓取
         </Button> */}
-    
-     
+
         <Input
           style={{ height: '30px', width: '120px' }}
           defaultValue="0.5"
@@ -230,18 +217,17 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
             height: '31px',
           }}
           onClick={() => {
-            setIntensityNumber(intensityInputNumber)
-            setHandleOption(option)
+            setIntensityNumber(intensityInputNumber);
+            setHandleOption(option);
             setRangeNumber(inputNumber);
-            setDisturbNumber(disturbInputNumber)
-            setKeyNumber(new Date())
+            setDisturbNumber(disturbInputNumber);
+            setKeyNumber(new Date());
           }}
         >
           提交
         </Button>
-        </Space>
-      <ReactECharts option={handleOption} key={keyNumber} style={{ height: 600 }} 
-      ></ReactECharts>
+      </Space>
+      <ReactECharts option={handleOption} key={keyNumber} style={{ height: 600 }}></ReactECharts>
     </Modal>
   );
 };

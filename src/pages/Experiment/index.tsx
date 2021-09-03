@@ -1,4 +1,4 @@
-import { Tag, Tooltip, Form, Button, message, Typography } from 'antd';
+import { Tag, Tooltip, Form, message, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList, analyze, prepare, getPeptide, getProteins } from './service';
 import { updateList, generateAlias } from './service';
@@ -236,24 +236,6 @@ const TableList: React.FC = (props: any) => {
               概览
             </Tag>
           </Link>
-          {/* <Tooltip title={'蛋白质干扰因素查看'} key="detail">
-            <a
-              onClick={async () => {
-                setProteinSelectVisible(true);
-                const msg = await getProteins({ projectId: projectId });
-                setProteinList(msg.data);
-              }}
-              key="edit"
-            >
-              <Tag color="blue">
-                <Icon
-                  style={{ verticalAlign: '-4px', fontSize: '16px' }}
-                  icon="mdi:file-document"
-                />
-                蛋白质干扰因素查看
-              </Tag>
-            </a>
-          </Tooltip> */}
         </>
       ),
     },

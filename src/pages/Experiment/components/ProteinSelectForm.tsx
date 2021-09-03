@@ -1,17 +1,10 @@
 import React from 'react';
-import ProForm, {
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-  ModalForm,
-} from '@ant-design/pro-form';
-import { values } from 'lodash';
-import { Space } from 'antd';
+import ProForm, { ProFormSelect, ProFormText, ModalForm } from '@ant-design/pro-form';
 
 export type selectFormValueType = {
-  proteinName:string,
+  proteinName: string;
   LibraryId: string;
-  range:any
+  range: any;
 };
 
 export type UpdateFormProps = {
@@ -21,12 +14,11 @@ export type UpdateFormProps = {
   onSubmit: (values: selectFormValueType) => Promise<void>;
 };
 
-let newData:any[]=[]
+let newData: any[] = [];
 const ProteinSelectForm: React.FC<UpdateFormProps> = (props) => {
- 
-    props.values?.map((item:any,index:number)=>{
-        newData.push({value:item,label:item})
-    })
+  props.values?.map((item: any, index: number) => {
+    newData.push({ value: item, label: item });
+  });
   return (
     <ModalForm
       title="蛋白质选择界面"
@@ -34,32 +26,24 @@ const ProteinSelectForm: React.FC<UpdateFormProps> = (props) => {
       visible={props.proteinSelectVisible}
       modalProps={{
         maskClosable: false,
-        onCancel:props.onClose,
+        onCancel: props.onClose,
       }}
       onFinish={props.onSubmit}
     >
-    <ProForm.Group>
+      <ProForm.Group>
         <ProFormSelect
-        initialValue={false}
-        options={newData}
-        name={"proteinName"}
-        placeholder="请选择蛋白质名称"
-        showSearch
-        width={280}
-        label="蛋白质名称"
-        allowClear={true}
+          initialValue={false}
+          options={newData}
+          name={'proteinName'}
+          placeholder="请选择蛋白质名称"
+          showSearch
+          width={280}
+          label="蛋白质名称"
+          allowClear={true}
         />
-        <ProFormText
-        width="sm" name={"range"} label="mz范围" placeholder="请输入mz范围" 
-        />
-        
-        
-    </ProForm.Group>
-
+        <ProFormText width="sm" name={'range'} label="mz范围" placeholder="请输入mz范围" />
+      </ProForm.Group>
     </ModalForm>
-
-    
-     
   );
 };
 
