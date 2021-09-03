@@ -47,17 +47,16 @@ const TableList: React.FC = (props: any) => {
   const actionRef = useRef<ActionType>();
 
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
- 
+
   const [proteinList, setProteinList] = useState<any>();
-  const [showCharts,setShowCharts] = useState<boolean>(false);
+  const [showCharts, setShowCharts] = useState<boolean>(false);
 
-  const [chartsData,setChartData] = useState<any>(false);
+  const [chartsData, setChartData] = useState<any>(false);
 
-  const [proteinName,setProteinName] = useState<any>(false);
+  const [proteinName, setProteinName] = useState<any>(false);
 
-  
   /** 蛋白质选择界面 */
-  const [proteinSelectVisible,setProteinSelectVisible] = useState<boolean>(false);
+  const [proteinSelectVisible, setProteinSelectVisible] = useState<boolean>(false);
   /** 蛋白质修复图 */
 
   const projectId = props?.location?.query?.projectId;
@@ -237,26 +236,28 @@ const TableList: React.FC = (props: any) => {
               概览
             </Tag>
           </Link>
-        
-        <Tooltip title={'蛋白质干扰因素查看'} key="detail">
-        <a
-          onClick={async () => {
-            setProteinSelectVisible(true)
-            const msg=await getProteins({projectId:projectId})
-            setProteinList(msg.data)
-          }}
-          key="edit"
-        >
-          <Tag color="blue">
-            <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
-            蛋白质干扰因素查看
-          </Tag>
-        </a>
-        </Tooltip>
-        
-     </>)
-    }
-   
+
+          <Tooltip title={'蛋白质干扰因素查看'} key="detail">
+            <a
+              onClick={async () => {
+                setProteinSelectVisible(true);
+                const msg = await getProteins({ projectId: projectId });
+                setProteinList(msg.data);
+              }}
+              key="edit"
+            >
+              <Tag color="blue">
+                <Icon
+                  style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                  icon="mdi:file-document"
+                />
+                蛋白质干扰因素查看
+              </Tag>
+            </a>
+          </Tooltip>
+        </>
+      ),
+    },
   ];
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
@@ -435,35 +436,37 @@ const TableList: React.FC = (props: any) => {
         }}
       />
 
-
       <ProteinSelectForm
-      proteinSelectVisible={proteinSelectVisible}
-      values={proteinList}
-      onClose={() => {
-        setCurrentRow(undefined);
-        setProteinSelectVisible(false);
-      }}
-      onSubmit={async (value) => {
-        const msg = await getPeptide({projectId:projectId,proteinName:value.proteinName,range:value.range})
-        setShowCharts(true)
-        setChartData(msg.data)
-        setProteinName(value.proteinName)
-        console.log("value",msg.data)
-      }} 
+        proteinSelectVisible={proteinSelectVisible}
+        values={proteinList}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setProteinSelectVisible(false);
+        }}
+        onSubmit={async (value) => {
+          const msg = await getPeptide({
+            projectId: projectId,
+            proteinName: value.proteinName,
+            range: value.range,
+          });
+          setShowCharts(true);
+          setChartData(msg.data);
+          setProteinName(value.proteinName);
+          console.log('value', msg.data);
+        }}
       />
 
-     <ProteinFixedChartsForm
-      showCharts={showCharts}
-      chartsData={chartsData}
-      proteinName={proteinName}
-      onCancel={() => {
-        setShowCharts(false)
-        setChartData(undefined)
-        setProteinName(undefined)
-    
-      }}
-     
-      
+      <ProteinFixedChartsForm
+        showCharts={showCharts}
+        chartsData={chartsData}
+        proteinName={proteinName}
+        onCancel={() => {
+          setShowCharts(false);
+          setChartData(undefined);
+          setProteinName(undefined);
+        }}
+      />
+
       {/* 编辑列表 */}
       <UpdateForm
         form={formUpdate}
