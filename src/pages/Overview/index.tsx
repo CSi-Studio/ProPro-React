@@ -181,6 +181,16 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      key: 'matchedPeptideCount',
+      title: '已鉴定肽段',
+      dataIndex: 'statstic',
+      hideInSearch: true,
+
+      render: (text, entity) => {
+        return entity?.statistic?.MATCHED_PEPTIDE_COUNT;
+      },
+    },
+    {
       key: 'tags',
       title: '标签',
       dataIndex: 'tags',
