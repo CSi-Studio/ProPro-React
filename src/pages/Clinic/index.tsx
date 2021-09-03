@@ -49,15 +49,12 @@ const TableList: React.FC = (props: any) => {
   };
 
   async function doAnalyze(values: any) {
-    if (prepareData && prepareData.anaLib) {
-      const result = await getExpData({
-        projectId: projectId,
-        libraryId: prepareData?.anaLib?.id,
-        peptideRef: values.customPeptideRef?values.customPeptideRef: values.peptideRef,
-        expIds: selectedTags
-      });
-      console.log(result.data)
-    }
+    const result = await getExpData({
+      projectId: projectId,
+      peptideRef: values.customPeptideRef?values.customPeptideRef: values.peptideRef,
+      expIds: selectedTags
+    });
+    console.log(result.data)
   }
 
   async function onProteinChange(value: string) {
