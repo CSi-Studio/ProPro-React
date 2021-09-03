@@ -476,8 +476,6 @@ const TableList: React.FC = (props: any) => {
         }}
         onSubmit={async (value) => {
           value.id = currentRow?.id as string;
-          console.log(value);
-
           const success = await handleUpdate(value);
           if (success) {
             handleUpdateModalVisible(false);

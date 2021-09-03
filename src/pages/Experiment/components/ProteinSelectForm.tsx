@@ -22,7 +22,7 @@ const ProteinSelectForm: React.FC<UpdateFormProps> = (props) => {
   return (
     <ModalForm
       title="蛋白质选择界面"
-      width={800}
+      width={500}
       visible={props.proteinSelectVisible}
       modalProps={{
         maskClosable: false,
@@ -32,7 +32,6 @@ const ProteinSelectForm: React.FC<UpdateFormProps> = (props) => {
     >
       <ProForm.Group>
         <ProFormSelect
-          initialValue={false}
           options={newData}
           name={'proteinName'}
           placeholder="请选择蛋白质名称"
@@ -41,7 +40,7 @@ const ProteinSelectForm: React.FC<UpdateFormProps> = (props) => {
           label="蛋白质名称"
           allowClear={true}
         />
-        <ProFormText width="sm" name={'range'} label="mz范围" placeholder="请输入mz范围" />
+        <ProFormText width="xs" name={'range'} label="mz范围" placeholder="请输入mz范围" />
       </ProForm.Group>
     </ModalForm>
   );
