@@ -1,6 +1,7 @@
 import { List } from "echarts";
 
 export type TableListItem = {
+  desc:string
   key:string,
   value:string,
   id:string,

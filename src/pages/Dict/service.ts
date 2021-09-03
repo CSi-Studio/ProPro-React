@@ -87,3 +87,16 @@ export async function getDict() {
     method: 'GET',
   });
 }
+
+/** 更新desc POST /api/dict/updateDictTable */
+export async function updateDictTable(params: {
+  id:string,
+  desc:string
+}) {
+  return request(`${url}/dict/updateDictTable`, {
+    method: 'post',
+    params: {
+      ...params,
+    },
+  });
+}
