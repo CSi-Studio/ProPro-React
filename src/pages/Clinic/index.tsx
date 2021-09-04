@@ -1,10 +1,11 @@
-import { IdName } from '@/components/Commons/common';
+import type { IdName } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Badge, Button, Form, Input, Select, Space, Tabs, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { PrepareData } from './data';
+import type { PrepareData } from './data';
 import { getExpData, getPeptideRefs, prepare } from './service';
+
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
 const { Option, OptGroup } = Select;
@@ -16,12 +17,12 @@ const TableList: React.FC = (props: any) => {
   const [prepareData, setPrepareData] = useState<PrepareData>();
   const [peptideRefs, setPeptideRefs] = useState<string[]>([]);
   useEffect(() => {
-    /* 准备数据 从Promise中拿值*/
+    /* 准备数据 从Promise中拿值 */
     const init = async () => {
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data);
-        const expList = result.data.expList;
+        const {expList} = result.data;
         const expTags = expList.map((item: any) => {
           return {
             id: item.id,
@@ -50,7 +51,7 @@ const TableList: React.FC = (props: any) => {
 
   async function doAnalyze(values: any) {
     const result = await getExpData({
-      projectId: projectId,
+      projectId,
       peptideRef: values.customPeptideRef?values.customPeptideRef: values.peptideRef,
       expIds: selectedTags
     });

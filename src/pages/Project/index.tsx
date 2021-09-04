@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
-import { Form, message, Tag, Tooltip, Space, Dropdown, Menu } from 'antd';
-import React, { useState, useRef } from 'react';
+import { Form, message, Tag, Tooltip, Dropdown, Menu } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {
@@ -136,11 +136,6 @@ const handleRmIrt = async (currentRow: TableListItem | undefined) => {
   }
 };
 
-const data = await getDict();
-data.data.map((item: any, index: string) => {
-  sessionStorage.setItem(item.name, JSON.stringify(item.item));
-});
-
 const TableList: React.FC = () => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -164,10 +159,26 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   /** 分页相关 */
   const [total, setTotal] = useState<any>();
-
   const actionRef = useRef<ActionType>();
   /** 当选当前行  */
   const [currentRow, setCurrentRow] = useState<TableListItem>();
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const result = await getDict();
+        result.data.map((item: any) => {
+          sessionStorage.setItem(item.name, JSON.stringify(item.item));
+          return true;
+        });
+        return true;
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    };
+    init();
+  }, []);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -176,7 +187,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       render: (dom, record) => {
         return (
-          <Tooltip title={'Id:' + record.id} placement="topLeft">
+          <Tooltip title={`Id:${record.id}`} placement="topLeft">
             <a
               onClick={() => {
                 setCurrentRow(record);
@@ -280,17 +291,16 @@ const TableList: React.FC = () => {
       dataIndex: 'insLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if (dom === '-') {
+        if (!entity.insLibName) {
           return <Tag color="red">未设置</Tag>;
-        } else {
-          return (
-            <Tooltip title={dom}>
-              <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.insLibId}` }}>
-                <Tag color="blue">{entity.insLibName}</Tag>
-              </Link>
-            </Tooltip>
-          );
         }
+        return (
+          <Tooltip title={dom}>
+            <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.insLibId}` }}>
+              <Tag color="blue">{entity.insLibName}</Tag>
+            </Link>
+          </Tooltip>
+        );
       },
     },
     {
@@ -299,17 +309,16 @@ const TableList: React.FC = () => {
       dataIndex: 'anaLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if (dom === '-') {
+        if (!entity.insLibName) {
           return <Tag color="red">未设置</Tag>;
-        } else {
-          return (
-            <Tooltip title={dom}>
-              <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.anaLibId}` }}>
-                <Tag color="blue">{entity.anaLibName}</Tag>
-              </Link>
-            </Tooltip>
-          );
         }
+        return (
+          <Tooltip title={dom}>
+            <Link to={{ pathname: '/peptide/list', search: `?libraryId=${entity.anaLibId}` }}>
+              <Tag color="blue">{entity.anaLibName}</Tag>
+            </Link>
+          </Tooltip>
+        );
       },
     },
     {
@@ -318,23 +327,22 @@ const TableList: React.FC = () => {
       dataIndex: 'methodName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if (dom === '-') {
+        if (!entity.methodName) {
           return <Tag color="red">未设置</Tag>;
-        } else {
-          return (
-            <Tooltip title={dom}>
-              <Link
-                to={{
-                  pathname: '/method/list',
-                  search: `?id=${entity.methodId}`,
-                  state: { projectName: entity.name },
-                }}
-              >
-                <Tag color="blue">{entity.methodName}</Tag>
-              </Link>
-            </Tooltip>
-          );
         }
+        return (
+          <Tooltip title={dom}>
+            <Link
+              to={{
+                pathname: '/method/list',
+                search: `?id=${entity.methodId}`,
+                state: { projectName: entity.name },
+              }}
+            >
+              <Tag color="blue">{entity.methodName}</Tag>
+            </Link>
+          </Tooltip>
+        );
       },
     },
     {
@@ -344,7 +352,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render: (text, entity) => {
         if (entity.tags && entity.tags.length !== 0) {
-          let tagsDom: any[] = [];
+          const tagsDom: any[] = [];
           entity.tags.forEach((tag) => {
             tagsDom.push([<Tag key={tag}>{tag}</Tag>]);
           });
@@ -622,7 +630,7 @@ const TableList: React.FC = () => {
         ]}
         tableAlertRender={false}
         pagination={{
-          total: total,
+          total,
         }}
         request={async (params) => {
           const msg = await projectList({ ...params });
@@ -686,6 +694,7 @@ const TableList: React.FC = () => {
           formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
+          // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as unknown as string;
           const success = await handleUpdate(value);
           if (success) {
