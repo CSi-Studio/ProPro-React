@@ -63,4 +63,5 @@ export default {
   'menu.ProteinClinic': '诊所',
   'menu.overview': '概览',
   'menu.IRT': 'IRT',
+  'menu.identify': '鉴定',
 };

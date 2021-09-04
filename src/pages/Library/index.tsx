@@ -189,14 +189,7 @@ const TableList: React.FC = () => {
   const [cloneModalVisible, handleCloneModalVisible] = useState<boolean>(false);
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  /** 蛋白质选择界面 */
-  const [proteinSelectVisible,setProteinSelectVisible] = useState<boolean>(false);
-  /** 蛋白质修复图 */
-  const [showCharts,setShowCharts] = useState<boolean>(false);
 
-  const [chartsData,setChartData] = useState<any>(false);
-
-  const [proteinName,setProteinName] = useState<any>(false);
   const [pageNo] = useState<any>(0);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
@@ -206,7 +199,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
-          <Tooltip title={'Id:' + entity.id} placement="topLeft">
+          <Tooltip title={`Id:${entity.id}`} placement="topLeft">
             <a
               onClick={() => {
                 setCurrentRow(entity);
@@ -363,7 +356,7 @@ const TableList: React.FC = () => {
               setCurrentRow(record);
               setShowDetail(true);
             }}
-            key="edit"
+            key="details"
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />

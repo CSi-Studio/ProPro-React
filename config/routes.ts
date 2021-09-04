@@ -93,7 +93,7 @@ export default [
     icon: 'UnorderedListOutlined',
     component: './Task',
   },
-  // 任务界面
+  // 鉴定结果界面
   {
     key: 'identify',
     name: 'identify',
