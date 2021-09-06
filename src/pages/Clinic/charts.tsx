@@ -90,10 +90,8 @@ export class IrtOption {
     const grids: any = [];
     for (let i = 0; i < data.length; i += 1) {
       const item: any = {
-        // filterMode: 'none',
         type: 'inside',
         xAxisIndex: i,
-        yAxisIndex: i,
       };
       grids.push(item);
     }
