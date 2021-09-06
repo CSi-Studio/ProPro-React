@@ -92,7 +92,7 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
-          <Tooltip title={'Id:' + entity.id} placement="topLeft">
+          <Tooltip title={`Id:${  entity.id}`} placement="topLeft">
             <a
               onClick={() => {
                 setCurrentRow(entity);
@@ -142,7 +142,7 @@ const TableList: React.FC = (props: any) => {
       render: (dom, entity) => {
         const airdSize = (entity.airdSize + entity.airdIndexSize) / 1024 / 1024;
         const vendorSize = entity.vendorFileSize / 1024 / 1024;
-        const deltaRatio = (((vendorSize - airdSize) / vendorSize) * 100).toFixed(1) + '%';
+        const deltaRatio = `${(((vendorSize - airdSize) / vendorSize) * 100).toFixed(1)  }%`;
 
         return (
           <>
@@ -182,9 +182,8 @@ const TableList: React.FC = (props: any) => {
       render: (dom, entity) => {
         if (entity.irt) {
           return <Tag color="green">{entity.irt.si.formula}</Tag>;
-        } else {
-          return <Tag color="red">未分析</Tag>;
         }
+        return <Tag color="red">未分析</Tag>;
       },
     },
     {
@@ -213,7 +212,7 @@ const TableList: React.FC = (props: any) => {
               setCurrentRow(entity);
               setShowDetail(true);
             }}
-            key="edit"
+            key="details"
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
@@ -301,7 +300,7 @@ const TableList: React.FC = (props: any) => {
             <a
               onClick={async () => {
                 setProteinSelectVisible(true);
-                const msg = await getProteins({ projectId: projectId });
+                const msg = await getProteins({ projectId });
                 setProteinList(msg.data);
               }}
               key="edit"
@@ -334,12 +333,10 @@ const TableList: React.FC = (props: any) => {
             key="scan"
             onClick={() => {
               if (selectedRows?.length > 0) {
-                let expIds: any[] = [];
+                const expIds: any[] = [];
                 selectedRows.map((item) => {
-                  expIds.push(item.id);
+                  return expIds.push(item.id);
                 });
-                console.log(expIds);
-
                 handleAlias(expIds);
               } else {
                 message.warn('请选择要生成的实验');
@@ -384,7 +381,7 @@ const TableList: React.FC = (props: any) => {
           </>,
         ]}
         columns={columns}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);
@@ -420,7 +417,7 @@ const TableList: React.FC = (props: any) => {
             }
           }}
           analyzeModalVisible={analyzeModalVisible}
-          values={{ expNum: selectedRows.length, prepareData: prepareData }}
+          values={{ expNum: selectedRows.length, prepareData }}
         />
       ) : null}
 
@@ -444,14 +441,13 @@ const TableList: React.FC = (props: any) => {
         }}
         onSubmit={async (value) => {
           const msg = await getPeptide({
-            projectId: projectId,
+            projectId,
             proteinName: value.proteinName,
             range: value.range,
           });
           setShowCharts(true);
           setChartData(msg.data);
           setProteinName(value.proteinName);
-          console.log('value', msg.data);
         }}
       />
 

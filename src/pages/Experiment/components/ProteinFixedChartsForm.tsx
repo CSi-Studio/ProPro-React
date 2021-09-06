@@ -21,8 +21,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
   const [keyNumber, setKeyNumber] = useState<any>('new date');
   const data = props?.chartsData;
   useEffect(() => {
-    console.log(inputNumber, disturbInputNumber, intensityInputNumber);
-    data?.nodes?.forEach(function (node: any) {
+    data?.nodes?.forEach((node: any) => {
       (node.label = {
         show: node.symbolSize > 22,
       }),
@@ -30,14 +29,14 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
           formatter: 'peptide:{b} <br /> mz&rt:{c0}',
         }),
         (node.itemStyle = {}),
-        data?.count?.forEach(function (link: any) {
+        data?.count?.forEach((link: any) => {
           if (link.name === node.id && link.number >= disturbNumber) {
             (node.itemStyle = {
               color: '#FFF',
             }),
               (node.label = {
                 show: true,
-                formatter: link.number + '',
+                formatter: `${link.number}`,
                 position: 'inside',
                 color: '#000',
                 fontWeight: 'bolder',
@@ -45,14 +44,14 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
           }
         });
     });
-    data?.links?.forEach((link: any, index: number) => {
+    data?.links?.forEach((link: any) => {
       link.lineStyle = null;
       if (
         link.value < rangeNumber &&
         link.target.indexOf('-') !== -1 &&
         link.source.indexOf('-') != -1
       ) {
-        data?.intensity?.forEach((intensity: any, index2: number) => {
+        data?.intensity?.forEach((intensity: any) => {
           if (intensity.source == link.source && intensity.target == link.target) {
             if (intensity.value <= intensityNumber) {
               link.lineStyle = {
@@ -68,12 +67,9 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
         });
       }
     });
-    console.log(data);
-
     setIntensityNumber(intensityInputNumber);
     setRangeNumber(inputNumber);
     setDisturbNumber(disturbInputNumber);
-
     const getOption = () => {
       const option = {
         title: {
@@ -85,7 +81,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
         legend: [
           {
             selectedMode: 'multiple',
-            data: data?.categories?.map(function (a: any) {
+            data: data?.categories?.map((a: any) => {
               return a.name;
             }),
             top: '5%',
@@ -142,8 +138,16 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
       return option;
     };
     setOptions(getOption());
-    // console.log('123');
-  }, [props, inputNumber, disturbInputNumber, intensityInputNumber]);
+  }, [
+    props,
+    inputNumber,
+    disturbInputNumber,
+    intensityInputNumber,
+    data,
+    disturbNumber,
+    rangeNumber,
+    intensityNumber,
+  ]);
 
   return (
     <Modal
@@ -158,7 +162,6 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
         setInputNumber(10);
         setIntensityInputNumber(0.5);
         setOptions({});
-        // setKeyNumber(new Date());
       }}
       onCancel={props.onCancel}
     >
@@ -177,7 +180,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
           defaultValue="10"
           onChange={(e) => setDisturbInputNumber(e.target.value)}
           addonBefore="干扰数目"
-        ></Input>
+        />
         <Input
           style={{ width: '140px' }}
           defaultValue="0.5"
@@ -208,7 +211,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
         key={keyNumber}
         option={options}
         style={{ height: 600 }}
-      ></ReactECharts>
+      />
     </Modal>
   );
 };

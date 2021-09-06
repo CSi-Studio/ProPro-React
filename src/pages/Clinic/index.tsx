@@ -1,28 +1,46 @@
 import type { IdName } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Badge, Button, Form, Input, Select, Space, Tabs, Tag } from 'antd';
+import { Badge, Button, Empty, Form, Input, message, Select, Space, Tabs, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
+import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare } from './service';
+import { IrtOption } from './charts';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
 const { Option, OptGroup } = Select;
 
+// 每行grid的个数
+const gridNumberInRow = 3;
+// 横坐标
+const xName = `rt`;
+// 纵坐标
+const yName = `int`;
+// 单张高度（单位px）
+const gridHeight = 160;
+// 行间间隔高度（单位px）
+const gridPaddingHeight = 80;
+let Height = 0;
+
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const [tags, setTags] = useState<IdName[]>([]);
   const [selectedTags, setSelectedTags] = useState<any>([]);
+  const [handleOption, setHandleOption] = useState<any>();
+  const [handleSubmit, setHandleSubmit] = useState<any>(false);
   const [prepareData, setPrepareData] = useState<PrepareData>();
   const [peptideRefs, setPeptideRefs] = useState<string[]>([]);
+  // 表单提交的useState
+  const [handlePeptideRef, setHandlePeptideRef] = useState<any>();
   useEffect(() => {
     /* 准备数据 从Promise中拿值 */
     const init = async () => {
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data);
-        const {expList} = result.data;
+        const { expList } = result.data;
         const expTags = expList.map((item: any) => {
           return {
             id: item.id,
@@ -30,8 +48,9 @@ const TableList: React.FC = (props: any) => {
           };
         });
         setTags(expTags);
+        return true;
       } catch (err) {
-        console.log(err);
+        return false;
       }
     };
     init();
@@ -39,8 +58,54 @@ const TableList: React.FC = (props: any) => {
       tags?.map((item: any) => {
         return item.id;
       }),
-    )
+    );
   }, []);
+
+  useEffect(() => {
+    async function doAnalyze() {
+      if (selectedTags.length === 0) {
+        message.warn('请至少选择一个实验');
+        return false;
+      }
+      const result = await getExpData({
+        projectId,
+        peptideRef: handlePeptideRef,
+        expIds: selectedTags,
+      });
+
+      const irt = new IrtOption(
+        result.data,
+        gridNumberInRow,
+        xName,
+        yName,
+        gridHeight,
+        gridPaddingHeight,
+      );
+      const option = irt.getIrtOption();
+      Height = Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight);
+      console.log('result-----', result);
+      console.log('option-----', option);
+
+      setHandleOption(option);
+
+      // const arr: { data: any[]; type: string }[] = [];
+      // result.data.map((item: any) => {
+      //   const obj = { data: [], type: '' };
+      //   Object.keys(item.intMap).forEach((key) => {
+      //     obj.data = item.intMap[key];
+      //     obj.type = 'line';
+      //     arr.push(obj);
+      //   });
+      //   return arr;
+      // });
+      // console.log('arr', arr);
+      // console.log(result.data[0].rtArray);
+      // setHandleOption(setOption(result.data[0].rtArray, arr[0]));
+      return true;
+    }
+    doAnalyze();
+  }, [handleSubmit]);
+  // }, []);
 
   const handleChange = (item: string, checked: boolean) => {
     const nextSelectedTags = checked
@@ -49,13 +114,20 @@ const TableList: React.FC = (props: any) => {
     setSelectedTags(nextSelectedTags);
   };
 
-  async function doAnalyze(values: any) {
+  async function doSubmit(values: any) {
+    if (selectedTags.length === 0) {
+      message.warn('请至少选择一个实验');
+      return false;
+    }
     const result = await getExpData({
       projectId,
-      peptideRef: values.customPeptideRef?values.customPeptideRef: values.peptideRef,
-      expIds: selectedTags
+      peptideRef: values.customPeptideRef ? values.customPeptideRef : values.peptideRef,
+      expIds: selectedTags,
     });
-    console.log(result.data)
+    setHandlePeptideRef(values.customPeptideRef ? values.customPeptideRef : values.peptideRef);
+    // console.log('result', result);
+    setHandleSubmit(!handleSubmit);
+    return true;
   }
 
   async function onProteinChange(value: string) {
@@ -73,8 +145,8 @@ const TableList: React.FC = (props: any) => {
       tags?.map((item: any) => {
         return item.id;
       }),
-    )
-  }
+    );
+  };
 
   const selectReverse = () => {
     const reverse = tags.map((item) => item.id).filter((id) => !selectedTags.includes(id));
@@ -88,7 +160,7 @@ const TableList: React.FC = (props: any) => {
         title: '蛋白诊所',
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
-          <Form name="analyzeForm" layout="inline" onFinish={doAnalyze}>
+          <Form name="analyzeForm" layout="inline" onFinish={doSubmit}>
             <Form.Item name="protein" label="蛋白">
               <Select onChange={onProteinChange} showSearch key="1" style={{ width: 300 }}>
                 {prepareData?.anaProteins?.map((protein) => (
@@ -135,12 +207,16 @@ const TableList: React.FC = (props: any) => {
                     size="small"
                     count={prepareData?.overviewMap[item.id]?.length}
                     offset={[-5, 0]}
+                    key={item.id}
                   >
                     <CheckableTag
-                      key={item.id}
                       checked={selectedTags?.indexOf(item.id) > -1}
                       onChange={(checked) => {
                         handleChange(item.id, checked);
+                        if (handleOption) {
+                          setHandleSubmit(!handleSubmit);
+                        }
+                        console.log(handleOption);
                       }}
                     >
                       {item.name}
@@ -160,14 +236,19 @@ const TableList: React.FC = (props: any) => {
       </ProCard>
 
       <ProCard direction="column" gutter={[0, 16]}>
-        {/* <ReactECharts
-          option={handleOption}
-          style={{ width: `100%`, height: Height }}
-          lazyUpdate={true}
-        /> */}
+        {selectedTags.length > 0 && handleOption !== undefined ? (
+          <ReactECharts
+            option={handleOption}
+            notMerge={true}
+            lazyUpdate={true}
+            style={{ width: `100%`, height: Height }}
+          />
+        ) : (
+          <Empty />
+        )}
       </ProCard>
     </PageContainer>
-  )
-}
+  );
+};
 
-export default TableList
+export default TableList;
