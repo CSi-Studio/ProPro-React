@@ -61,8 +61,18 @@ export default [
     component: './Overview',
     hideInMenu: true,
   },
+  //data
+  {
+    key: 'data',
+    name: 'data',
+    path: '/data/list',
+    icon: 'smile',
+    component: './Data',
+    hideInMenu: true,
+  },
   //肽段
   {
+    key: 'peptide',
     path: '/peptide/list',
     name: 'peptide',
     icon: 'smile',
@@ -92,14 +102,6 @@ export default [
     path: '/task/list',
     icon: 'UnorderedListOutlined',
     component: './Task',
-  },
-  // 鉴定结果界面
-  {
-    key: 'identify',
-    name: 'identify',
-    path: '/identify/list',
-    icon: 'UnorderedListOutlined',
-    component: './Identify',
   },
   // 蛋白诊所界面
   {

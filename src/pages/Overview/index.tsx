@@ -303,9 +303,9 @@ const TableList: React.FC = (props: any) => {
           </a>
           <Link
             to={{
-              pathname: '/identify/list',
-              search: `?overView=${record.id}`,
-              // state: { projectName: record.name },
+              pathname: '/data/list',
+              search: `?overviewId=${record.id}`,
+              state: { overviewName: record.name },
             }}
           >
             <Tag color="blue">

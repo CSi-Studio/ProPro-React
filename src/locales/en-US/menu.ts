@@ -61,5 +61,5 @@ export default {
   'menu.blockIndex': 'BlockIndex',
   'menu.task': 'Task',
   'menu.ProteinClinic': 'Clinic',
-  'menu.identify': 'Identify',
+  'menu.data': 'Data',
 };
