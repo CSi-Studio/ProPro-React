@@ -1,7 +1,7 @@
 import type { IdName } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Badge, Button, Empty, Form, Input, message, Select, Space, Tabs, Tag } from 'antd';
+import { Badge, Button, Empty, Form, Input, message, Select, Space, Tabs, Tag, Checkbox, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
 import ReactECharts from 'echarts-for-react';
@@ -32,6 +32,7 @@ const TableList: React.FC = (props: any) => {
   const [handleSubmit, setHandleSubmit] = useState<any>(false);
   const [prepareData, setPrepareData] = useState<PrepareData>();
   const [peptideRefs, setPeptideRefs] = useState<string[]>([]);
+  const [onlyDefault, setOnlyDefault] = useState<boolean>(true);
   // 表单提交的useState
   const [handlePeptideRef, setHandlePeptideRef] = useState<any>();
   useEffect(() => {
@@ -63,14 +64,15 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     async function doAnalyze() {
-      if (selectedTags.length === 0) {
-        message.warn('请至少选择一个实验');
-        return false;
+      if(!checkParams()){
+        return false
       }
+
       const result = await getExpData({
         projectId,
         peptideRef: handlePeptideRef,
         expIds: selectedTags,
+        onlyDefault
       });
       console.log(result);
       console.log(tags);
@@ -100,12 +102,24 @@ const TableList: React.FC = (props: any) => {
     setSelectedTags(nextSelectedTags);
   };
 
-  async function doSubmit(values: any) {
+  const checkParams = () =>{
     if (selectedTags.length === 0) {
       message.warn('请至少选择一个实验');
       return false;
     }
-    setHandlePeptideRef(values.customPeptideRef ? values.customPeptideRef : values.peptideRef);
+    return true
+  }
+  async function doSubmit(values: any) {
+    if(!checkParams()){
+      return false
+    }
+    const peptideRef = values.customPeptideRef ? values.customPeptideRef : values.peptideRef
+    if(peptideRef === undefined || peptideRef === ''){
+      message.warn("请选择一个PeptideRef")
+      return false
+    }
+    setHandlePeptideRef(peptideRef);
+    // console.log('result', result);
     setHandleSubmit(!handleSubmit);
     return true;
   }
@@ -175,6 +189,10 @@ const TableList: React.FC = (props: any) => {
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
             <Space>
+              <Tooltip title="仅选择实验默认的overview"><Checkbox checked={onlyDefault} onChange={(e)=>{
+                setOnlyDefault(e.target.checked)
+              }}>仅默认</Checkbox></Tooltip>
+            
               <Button size="small" onClick={() => selectAll()}>
                 全选
               </Button>
