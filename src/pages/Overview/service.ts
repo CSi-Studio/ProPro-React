@@ -80,3 +80,13 @@ export async function removeList(params: { overviewIds: any }) {
     },
   });
 }
+
+/** 重新统计 GET /overview/statistic  */
+export async function statistic(params: { idList: any }) {
+  return request(`${url}/overview/statistic`, {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}

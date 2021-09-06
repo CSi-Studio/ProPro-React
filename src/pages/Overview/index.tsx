@@ -3,7 +3,7 @@ import { Form, message, Tag, Tooltip, Typography } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { batchUpdate, expList, overviewList, removeList, updateList } from './service';
+import { batchUpdate, expList, overviewList, removeList, updateList, statistic } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
@@ -45,6 +45,25 @@ const handleBatchUpdate = async (values: any) => {
     return false;
   }
 };
+
+/**
+ * 批量修改
+ * @param values
+ */
+ const handleStatistic = async (values: any) => {
+  const hide = message.loading('正在统计');
+  try {
+    await statistic({ ...values });
+    hide();
+    message.success('批量统计成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('批量统计失败!');
+    return false;
+  }
+};
+
 /**
  * 删除库
  * @param selectedRows
@@ -172,7 +191,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'peptideCount',
-      title: '肽段统计',
+      title: '搜索肽段',
       dataIndex: 'statstic',
       hideInSearch: true,
 
@@ -181,13 +200,42 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'matchedPeptideCount',
-      title: '已鉴定肽段',
+      key: 'uniquePeptides',
+      title: '唯一肽段',
       dataIndex: 'statstic',
       hideInSearch: true,
 
       render: (text, entity) => {
-        return entity?.statistic?.MATCHED_PEPTIDE_COUNT;
+        return entity?.statistic?.MATCHED_UNIQUE_PEPTIDE_COUNT;
+      },
+    },
+    {
+      key: 'matchedUniqueProteinCount',
+      title: '全部肽段',
+      dataIndex: 'statstic',
+      hideInSearch: true,
+
+      render: (text, entity) => {
+        return entity?.statistic?.MATCHED_TOTAL_PEPTIDE_COUNT;
+      },
+    },
+    {
+      key: 'matcheTotalProteinCount',
+      title: '唯一蛋白',
+      dataIndex: 'statstic',
+      hideInSearch: true,
+
+      render: (text, entity) => {
+        return entity?.statistic?.MATCHED_UNIQUE_PROTEIN_COUNT;
+      },
+    },
+    {
+      key: 'matcheTotalProteinCount',
+      title: '全部蛋白',
+      dataIndex: 'statstic',
+      hideInSearch: true,
+      render: (text, entity) => {
+        return entity?.statistic?.MATCHED_TOTAL_PROTEIN_COUNT;
       },
     },
     {
@@ -332,6 +380,29 @@ const TableList: React.FC = (props: any) => {
         size="small"
         search={expName === undefined ? { labelWidth: 'auto' } : false}
         toolBarRender={() => [
+          <a
+            key="batchRestatistic"
+            onClick={async () => {
+              if (selectedRows?.length > 0) {
+                let idList =  selectedRows.map((item) => {
+                  return item.id;
+                })
+                let result = await handleStatistic({idList:idList})
+                if(result){
+                  if (actionRef.current) {
+                    actionRef.current.reload();
+                  }
+                }
+              } else {
+                message.warn('请选择要修改的概览，支持多选');
+              }
+            }}
+          >
+            <Tag color="green">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              重新统计蛋白数
+            </Tag>
+          </a>,
           <a
             key="batchEdit"
             onClick={async () => {
