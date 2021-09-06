@@ -421,7 +421,7 @@ const TableList: React.FC = () => {
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
     const rowData = [...selectedRows];
-    if (rowData.length == 0) {
+    if (rowData.length === 0) {
       rowData.push(record);
       setSelectedRows(rowData);
     } else {
@@ -497,7 +497,7 @@ const TableList: React.FC = () => {
               key="scan"
               onClick={() => {
                 if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
+                  if (selectedRows.length === 1) {
                     handleScan({ projectId: selectedRows[0].id });
                   } else {
                     message.warn('目前只支持单个项目的扫描');
@@ -519,7 +519,7 @@ const TableList: React.FC = () => {
               key="export"
               onClick={() => {
                 if (selectedRows?.length > 0) {
-                  if (selectedRows.length == 1) {
+                  if (selectedRows.length === 1) {
                     message.success('我是导出');
                     // handleScan({ projectId: selectedRows[0].id });
                   } else {
@@ -546,7 +546,7 @@ const TableList: React.FC = () => {
                     key="deleteRes"
                     onClick={() => {
                       if (selectedRows?.length > 0) {
-                        if (selectedRows.length == 1) {
+                        if (selectedRows.length === 1) {
                           formDeleteRes?.resetFields();
                           handleDelete1ModalVisible(true);
                         }
@@ -573,7 +573,7 @@ const TableList: React.FC = () => {
                     key="deleteIrt"
                     onClick={() => {
                       if (selectedRows?.length > 0) {
-                        if (selectedRows.length == 1) {
+                        if (selectedRows.length === 1) {
                           formDeleteIrt?.resetFields();
                           handleDelete2ModalVisible(true);
                         }
@@ -600,7 +600,7 @@ const TableList: React.FC = () => {
                     key="deletePjc"
                     onClick={() => {
                       if (selectedRows?.length > 0) {
-                        if (selectedRows.length == 1) {
+                        if (selectedRows.length === 1) {
                           formDelete?.resetFields();
                           handleDeleteModalVisible(true);
                         }
@@ -638,7 +638,7 @@ const TableList: React.FC = () => {
           return Promise.resolve(msg);
         }}
         columns={columns}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);
@@ -745,7 +745,7 @@ const TableList: React.FC = () => {
           formDeleteRes?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name == '我要删除分析结果') {
+          if (value.name === '我要删除分析结果') {
             const success = await handleRmRes(selectedRows[0]);
             if (success) {
               handleDelete1ModalVisible(false);

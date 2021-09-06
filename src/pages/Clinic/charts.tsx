@@ -46,13 +46,24 @@ export class IrtOption {
     const gridNumber = this.data.length;
     return {
       title: this.getIrtTitle(this.data),
+      dataZoom: this.getDataZoom(this.data),
       grid: this.getIrtGrids(gridNumber),
       tooltip: {
-        formatter: `${this.xName} , ${this.yName}<br>{c}`,
+        trigger: 'axis',
       },
       xAxis: this.getIrtAxis(gridNumber, true, this.xName),
       yAxis: this.getIrtAxis(gridNumber, false, this.yName),
       series: this.getIrtSeries(this.data),
+      color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272'],
+      toolbox: {
+        feature: {
+          dataZoom: {
+            yAxisIndex: 'none',
+          },
+          restore: {},
+          saveAsImage: {},
+        },
+      },
     };
   }
 
@@ -75,15 +86,29 @@ export class IrtOption {
     }
     return grids;
   }
+  private getDataZoom(data: any) {
+    const grids: any = [];
+    for (let i = 0; i < data.length; i += 1) {
+      const item: any = {
+        // filterMode: 'none',
+        type: 'inside',
+        xAxisIndex: i,
+        yAxisIndex: i,
+      };
+      grids.push(item);
+    }
+    return grids;
+  }
 
   private getIrtTitle(data: any) {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
       const item = {
-        // text: data[i].peptideRef,
-        textAlign: 'left',
+        text: data[i].peptideRef,
+        textAlign: 'center',
         textStyle: {
-          fontSize: '14',
+          fontSize: '12',
+          fontWeight: 'normal',
           fontFamily: 'Times New Roman',
         },
         padding: 0,
@@ -110,22 +135,26 @@ export class IrtOption {
         gridIndex: i,
         scale: scaleTag,
         name: axisName,
+        // color: ['#5470c6'],
         nameLocation: 'start',
         axisLabel: {
           show: true,
-          textStyle: {
-            fontFamily: 'Times New Roman',
-            fontWeight: 'normal',
-          },
+          fontFamily: 'Times New Roman',
+          fontWeight: 'normal',
         },
-        nameTextStyle: { padding: 10, fontSize: '12', fontFamily: 'Times New Roman' },
+        nameTextStyle: {
+          padding: 10,
+          fontSize: '16',
+          fontWeight: 'bold',
+          fontFamily: 'Times New Roman',
+        },
       });
     }
     return Axis;
   }
 
   private getIrtSeries(data: any[]) {
-    const series = [];
+    const series: Record<any, any>[] = [];
     for (let i = 0; i < data.length; i += 1) {
       if (
         data[i].rtArray == null ||
@@ -134,48 +163,16 @@ export class IrtOption {
       ) {
         return null;
       }
-      const seriesItem: Record<any, any> = {
-        type: 'line',
-        showSymbol: false,
-        xAxisIndex: i,
-        yAxisIndex: i,
-        // data: [],
-        // markLine: this.getMarkLine(
-        //   data[i].irt.selected.y,
-        //   data[i].irt.si.slope,
-        //   data[i].irt.si.intercept,
-        //   data[i].irt.si.formula,
-        // ),
-      };
       Object.keys(data[i].intMap).forEach((key) => {
-        let seriesItem = {
+        const seriesItem = {
           type: 'line',
           showSymbol: false,
           xAxisIndex: i,
           yAxisIndex: i,
           data: this.getSeriesData(data[i].rtArray, data[i].intMap[key]),
-          // data: [],
-          // markLine: this.getMarkLine(
-          //   data[i].irt.selected.y,
-          //   data[i].irt.si.slope,
-          //   data[i].irt.si.intercept,
-          //   data[i].irt.si.formula,
-          // ),
         };
         series.push(seriesItem);
       });
-      console.log(seriesItem.data);
-
-      // seriesItem = {
-      //   type: 'line',
-      //   showSymbol: false,
-      //   xAxisIndex: i,
-      //   yAxisIndex: i,
-      //   color: '#f00',
-      //   data: this.getSeriesData(data[i].rtArray, data[i].intMap),
-      //   // markLine: null,
-      // };
-      // series.push(seriesItem);
     }
     return series;
   }

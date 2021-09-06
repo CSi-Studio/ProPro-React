@@ -19,7 +19,7 @@ const xName = `rt`;
 // 纵坐标
 const yName = `int`;
 // 单张高度（单位px）
-const gridHeight = 160;
+const gridHeight = 200;
 // 行间间隔高度（单位px）
 const gridPaddingHeight = 80;
 let Height = 0;
@@ -72,6 +72,8 @@ const TableList: React.FC = (props: any) => {
         peptideRef: handlePeptideRef,
         expIds: selectedTags,
       });
+      console.log(result);
+      console.log(tags);
 
       const irt = new IrtOption(
         result.data,
@@ -83,29 +85,13 @@ const TableList: React.FC = (props: any) => {
       );
       const option = irt.getIrtOption();
       Height = Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight);
-      console.log('result-----', result);
-      console.log('option-----', option);
+      console.log('option---', option);
 
       setHandleOption(option);
-
-      // const arr: { data: any[]; type: string }[] = [];
-      // result.data.map((item: any) => {
-      //   const obj = { data: [], type: '' };
-      //   Object.keys(item.intMap).forEach((key) => {
-      //     obj.data = item.intMap[key];
-      //     obj.type = 'line';
-      //     arr.push(obj);
-      //   });
-      //   return arr;
-      // });
-      // console.log('arr', arr);
-      // console.log(result.data[0].rtArray);
-      // setHandleOption(setOption(result.data[0].rtArray, arr[0]));
       return true;
     }
     doAnalyze();
   }, [handleSubmit]);
-  // }, []);
 
   const handleChange = (item: string, checked: boolean) => {
     const nextSelectedTags = checked
@@ -119,13 +105,7 @@ const TableList: React.FC = (props: any) => {
       message.warn('请至少选择一个实验');
       return false;
     }
-    const result = await getExpData({
-      projectId,
-      peptideRef: values.customPeptideRef ? values.customPeptideRef : values.peptideRef,
-      expIds: selectedTags,
-    });
     setHandlePeptideRef(values.customPeptideRef ? values.customPeptideRef : values.peptideRef);
-    // console.log('result', result);
     setHandleSubmit(!handleSubmit);
     return true;
   }
@@ -216,7 +196,6 @@ const TableList: React.FC = (props: any) => {
                         if (handleOption) {
                           setHandleSubmit(!handleSubmit);
                         }
-                        console.log(handleOption);
                       }}
                     >
                       {item.name}
@@ -241,10 +220,10 @@ const TableList: React.FC = (props: any) => {
             option={handleOption}
             notMerge={true}
             lazyUpdate={true}
-            style={{ width: `100%`, height: Height }}
+            style={{ width: '100%', height: Height }}
           />
         ) : (
-          <Empty />
+          <Empty description="请先选择实验" style={{ width: '100%', height: '75vh' }} />
         )}
       </ProCard>
     </PageContainer>
