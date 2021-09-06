@@ -1,5 +1,4 @@
 import { request } from 'umi';
-import type { Pagination } from '@/components/Commons/common';
 import { url } from '@/utils/request';
 
 /** 准备做蛋白诊断的相关数据 GET /clinic/prepare */
@@ -13,7 +12,7 @@ export async function prepare(params: any) {
 }
 
 /** 根据蛋白获取对应库下的所有相关肽段 */
-export async function getPeptideRefs(params: {libraryId: string, protein: string}) {
+export async function getPeptideRefs(params: { libraryId: string; protein: string }) {
   return request(`${url}/peptide/getPeptideRefs`, {
     method: 'GET',
     params: {
