@@ -22,7 +22,7 @@ export class IrtOption {
     totalPaddingHeight: number = 80,
     gridPaddingWight: number = 4,
     totalPaddingWidth: number = 2.4,
-    titleHeight: number = 40,
+    titleHeight: number = 50,
     Width: number = 100,
   ) {
     this.data = data;
@@ -147,13 +147,31 @@ export class IrtOption {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
       const item = {
+        // todo 带优化 嵌套三元表达式
         text: data[i].name,
-        subtext: `fdr:${data[i].fdr}`,
+        subtext: `fdr:${data[i].fdr}\n${
+          data[i].status === 0
+            ? '尚未鉴定'
+            : data[i].status === 1
+            ? '鉴定成功'
+            : data[i].status === 2
+            ? '鉴定失败'
+            : '未满足鉴定条件,没有足够的肽段碎片'
+        }
+        `,
         height: '200px',
         textAlign: 'center',
         textStyle: {
           color: '#000',
           fontSize: '14',
+          fontWeight: 'normal',
+          fontFamily: 'Times New Roman',
+          // textBorderColor: 'tomato',
+          // textBorderWidth: '2',
+        },
+        subtextStyle: {
+          color: '#000',
+          fontSize: '12',
           fontWeight: 'normal',
           fontFamily: 'Times New Roman',
           // textBorderColor: 'tomato',
@@ -232,7 +250,7 @@ export class IrtOption {
           show: true,
           fontFamily: 'Times New Roman',
           fontWeight: 'normal',
-          formatter: function (params: number) {
+          formatter(params: number) {
             return params > 10000 ? params.toExponential(1) : params;
           },
         },
