@@ -5,7 +5,7 @@ export type TableListItem = {
   fdr: number;
   qValue: number;
   decoy: boolean;
-  libRt: number;
+  irt: number;
   realRt: number;
   status: number;
   sum: number;

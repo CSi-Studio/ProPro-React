@@ -4,20 +4,14 @@ import { dataList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
-import { Icon } from '@iconify/react';
 import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
   FieldNumberOutlined,
-  LinkOutlined,
 } from '@ant-design/icons';
-import { enumStringBody } from '@babel/types';
 
 const TableList: React.FC = (props: any) => {
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const [total, setTotal] = useState<any>();
-  const [formCreate] = Form.useForm();
   const [currentRow, handleCurrentRow] = useState<any>();
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
@@ -32,6 +26,17 @@ const TableList: React.FC = (props: any) => {
           });
         }
         return <Space direction="vertical">{pros}</Space>;
+      },
+    },
+    {
+      title: 'Decoy',
+      dataIndex: 'decoy',
+      render: (dom, entity) => {
+        if(entity.decoy){
+          return <Tag color='red'>伪</Tag>;
+        }else{
+          return <Tag color='green'>真</Tag>;
+        }
       },
     },
     {
@@ -67,39 +72,58 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'RealRt/LibRt',
+      title: 'RealRt/LibRt/ΔT',
       dataIndex: 'realRt',
       hideInSearch: true,
       render: (dom, entity)=>{
-         return (entity.realRt?entity.realRt.toFixed(3):"NaN") +":" + (entity.libRt?entity.libRt.toFixed(3):"NaN")
+        let tags = [];
+
+        if(entity.realRt){
+          tags.push(<Tag key="1" color="green">{entity.realRt.toFixed(0)}</Tag>)
+        }else{
+          tags.push(<Tag key="1" color="red">NaN</Tag>)
+        }
+        
+        if(entity.irt){
+          tags.push(<Tag key="2" color="green">{entity.irt.toFixed(0)}</Tag>)
+        }else{
+          tags.push(<Tag key="2" color="red">NaN</Tag>)
+        }
+        if(entity.realRt && entity.irt){
+          tags.push(<Tag key="3" color="blue">{Math.abs(entity.realRt - entity.irt).toFixed(1)}</Tag>)
+        }
+        return <>{tags}</>;
       }
     },
     {
       title: 'Sum',
       dataIndex: 'sum',
-      hideInSearch: true
-    },
-    {
-      key: 'option',
-      title: '更多',
-      valueType: 'option',
-      fixed: 'right',
       hideInSearch: true,
-      width: '300px',
-      render: (text, record) => (
-        <>
-          <a
-            onClick={() => {
-              handleCurrentRow(record);
-            }}
-          >
-            <Tag icon={<FieldNumberOutlined />} color="blue">
-              序列号
-            </Tag>
-          </a>
-        </>
-      ),
+      render: (dom, entity) =>{
+        return <Tag color="purple">{entity.sum}</Tag>
+      }
     },
+    // {
+    //   key: 'option',
+    //   title: '更多',
+    //   valueType: 'option',
+    //   fixed: 'right',
+    //   hideInSearch: true,
+    //   width: '300px',
+    //   render: (text, record) => (
+    //     <>
+    //       <a
+    //         onClick={() => {
+    //           handleCurrentRow(record);
+    //         }}
+    //       >
+    //         <Tag icon={<FieldNumberOutlined />} color="blue">
+    //           序列号
+    //         </Tag>
+    //       </a>
+    //     </>
+    //   ),
+    // },
   ];
 
   /* 点击行选中相关 */
@@ -120,6 +144,7 @@ const TableList: React.FC = (props: any) => {
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
+        bordered={true}
         scroll={{ x: 'max-content' }}
         size="small"
         headerTitle={
