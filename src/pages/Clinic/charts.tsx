@@ -85,10 +85,10 @@ export class IrtOption {
         icon: 'none',
         itemGap: 0,
         itemWidth: 5,
-        inactiveColor: 'tomato',
+        // inactiveColor: 'tomato',
         textStyle: {
           fontSize: '14',
-          color: '#ffffff',
+          color: '#fff',
           // fontWeight: 'bold',
           padding: 5,
           borderRadius: 5,
@@ -152,6 +152,7 @@ export class IrtOption {
         height: '200px',
         textAlign: 'center',
         textStyle: {
+          color: '#000',
           fontSize: '14',
           fontWeight: 'normal',
           fontFamily: 'Times New Roman',
@@ -199,11 +200,13 @@ export class IrtOption {
         nameLocation: 'end',
         // scale: true,
         axisLabel: {
+          color: '#000',
           show: true,
           fontFamily: 'Times New Roman',
           fontWeight: 'normal',
         },
         nameTextStyle: {
+          color: '#000',
           fontSize: '16',
           fontWeight: 'bold',
           fontFamily: 'Times New Roman',
@@ -225,6 +228,7 @@ export class IrtOption {
         nameLocation: 'end',
         // scale: true,
         axisLabel: {
+          color: '#000',
           show: true,
           fontFamily: 'Times New Roman',
           fontWeight: 'normal',
@@ -233,6 +237,7 @@ export class IrtOption {
           },
         },
         nameTextStyle: {
+          color: '#000',
           fontSize: '16',
           fontWeight: 'bold',
           fontFamily: 'Times New Roman',
