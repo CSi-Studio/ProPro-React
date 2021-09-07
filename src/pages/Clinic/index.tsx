@@ -1,7 +1,20 @@
 import type { IdName } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Badge, Button, Empty, Form, Input, message, Select, Space, Tabs, Tag, Checkbox, Tooltip } from 'antd';
+import {
+  Badge,
+  Button,
+  Empty,
+  Form,
+  Input,
+  message,
+  Select,
+  Space,
+  Tabs,
+  Tag,
+  Checkbox,
+  Tooltip,
+} from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
 import ReactECharts from 'echarts-for-react';
@@ -10,33 +23,27 @@ import { IrtOption } from './charts';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
-const { Option, OptGroup } = Select;
+const { Option } = Select;
 
-// 每行grid的个数
-const gridNumberInRow = 3;
-// 横坐标
-const xName = `rt`;
-// 纵坐标
-const yName = `int`;
-// 单张高度（单位px）
-const gridHeight = 200;
-// 行间间隔高度（单位px）
-const gridPaddingHeight = 80;
+const gridNumberInRow = 3; // 每行grid的个数
+const xName = `rt`; // 横坐标
+const yName = `int`; // 纵坐标
+const gridHeight = 200; // 单张高度（单位px）
+const gridPaddingHeight = 80; // 行间间隔高度（单位px）
 let Height = 0;
 
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
-  const [tags, setTags] = useState<IdName[]>([]);
-  const [selectedTags, setSelectedTags] = useState<any>([]);
-  const [handleOption, setHandleOption] = useState<any>();
-  const [handleSubmit, setHandleSubmit] = useState<any>(false);
-  const [prepareData, setPrepareData] = useState<PrepareData>();
-  const [peptideRefs, setPeptideRefs] = useState<string[]>([]);
-  const [onlyDefault, setOnlyDefault] = useState<boolean>(true);
-  // 表单提交的useState
-  const [handlePeptideRef, setHandlePeptideRef] = useState<any>();
+  const [exps, setExps] = useState<IdName[]>([]); // 渲染 tags
+  const [selectedTags, setSelectedTags] = useState<any>([]); // 选中 tags
+  const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
+  const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
+  const [prepareData, setPrepareData] = useState<PrepareData>(); // 项目名 蛋白下拉菜单渲染
+  const [peptideData, setPeptideData] = useState<string[]>([]); // 肽段下拉菜单渲染
+  const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认ov
+  const [peptideRef, setPeptideRef] = useState<any>(); // 表单提交的peptideRef,对应后端接口
   useEffect(() => {
-    /* 准备数据 从Promise中拿值 */
+    /* 准备数据 */
     const init = async () => {
       try {
         const result = await prepare({ projectId });
@@ -48,53 +55,67 @@ const TableList: React.FC = (props: any) => {
             name: item.alias ? item.alias : item.name,
           };
         });
-        setTags(expTags);
+        setExps(expTags);
+        setSelectedTags(
+          expTags?.map((item: any) => {
+            return item.id;
+          }),
+        );
         return true;
       } catch (err) {
         return false;
       }
     };
     init();
-    setSelectedTags(
-      tags?.map((item: any) => {
-        return item.id;
-      }),
-    );
   }, []);
 
   useEffect(() => {
+    /* 诊断数据 */
     async function doAnalyze() {
-      if(!checkParams()){
-        return false
+      if (selectedTags.length === 0) {
+        return false;
       }
-
-      const result = await getExpData({
-        projectId,
-        peptideRef: handlePeptideRef,
-        expIds: selectedTags,
-        onlyDefault
-      });
-      console.log(result);
-      console.log(tags);
-
-      const irt = new IrtOption(
-        result.data,
-        gridNumberInRow,
-        xName,
-        yName,
-        gridHeight,
-        gridPaddingHeight,
-      );
-      const option = irt.getIrtOption();
-      Height = Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight);
-      console.log('option---', option);
-
-      setHandleOption(option);
-      return true;
+      const hide = message.loading('正在诊断，请稍后');
+      try {
+        const result = await getExpData({
+          projectId,
+          peptideRef,
+          expIds: selectedTags,
+          onlyDefault,
+        });
+        result.data.map((item: any) => {
+          exps?.forEach((_item: any) => {
+            if (item.expId === _item.id) {
+              item.name = _item.name;
+            }
+          });
+          return true;
+        });
+        const irt = new IrtOption(
+          result.data,
+          gridNumberInRow,
+          xName,
+          yName,
+          gridHeight,
+          gridPaddingHeight,
+        );
+        const option = irt.getIrtOption();
+        Height = Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight)+50;
+        setHandleOption(option);
+        hide();
+        message.success('生成诊断数据成功');
+        return true;
+      } catch (error) {
+        hide();
+        message.error('生成诊断数据失败，请重试!');
+        return false;
+      }
     }
     doAnalyze();
   }, [handleSubmit]);
+  console.log('handleOption', handleOption);
 
+  // 点击选择 tags
   const handleChange = (item: string, checked: boolean) => {
     const nextSelectedTags = checked
       ? [...selectedTags, item]
@@ -102,48 +123,53 @@ const TableList: React.FC = (props: any) => {
     setSelectedTags(nextSelectedTags);
   };
 
-  const checkParams = () =>{
+  // 诊断前判断
+  const checkParams = () => {
     if (selectedTags.length === 0) {
       message.warn('请至少选择一个实验');
       return false;
     }
-    return true
-  }
+    return true;
+  };
+
+  // 诊断Form 提交
   async function doSubmit(values: any) {
-    if(!checkParams()){
-      return false
+    if (!checkParams()) {
+      return false;
     }
-    const peptideRef = values.customPeptideRef ? values.customPeptideRef : values.peptideRef
-    if(peptideRef === undefined || peptideRef === ''){
-      message.warn("请选择一个PeptideRef")
-      return false
+    const submitData = values.customPeptideRef ? values.customPeptideRef : values.peptideRef;
+    if (!values.peptideRef) {
+      message.warn('请选择一个PeptideRef');
+      return false;
     }
-    setHandlePeptideRef(peptideRef);
-    // console.log('result', result);
+    setPeptideRef(submitData);
     setHandleSubmit(!handleSubmit);
     return true;
   }
 
+  // 获取蛋白列表
   async function onProteinChange(value: string) {
     if (prepareData && prepareData.anaLib) {
       const result = await getPeptideRefs({
         libraryId: prepareData?.anaLib?.id,
         protein: value,
       });
-      setPeptideRefs(result.data);
+      setPeptideData(result.data);
     }
   }
 
+  // 全选
   const selectAll = () => {
     setSelectedTags(
-      tags?.map((item: any) => {
+      exps?.map((item: any) => {
         return item.id;
       }),
     );
   };
 
+  // 反选
   const selectReverse = () => {
-    const reverse = tags.map((item) => item.id).filter((id) => !selectedTags.includes(id));
+    const reverse = exps.map((item) => item.id).filter((id) => !selectedTags.includes(id));
     setSelectedTags(reverse);
   };
 
@@ -166,9 +192,9 @@ const TableList: React.FC = (props: any) => {
             </Form.Item>
             <Form.Item name="peptideRef" label="肽段">
               <Select style={{ width: 300 }}>
-                {peptideRefs?.map((peptideRef) => (
-                  <Option key={peptideRef} value={peptideRef}>
-                    {peptideRef}
+                {peptideData?.map((item) => (
+                  <Option key={item} value={item}>
+                    {item}
                   </Option>
                 ))}
               </Select>
@@ -185,22 +211,33 @@ const TableList: React.FC = (props: any) => {
         ),
       }}
     >
-      <ProCard>
+      <ProCard
+        style={{
+          padding: '0 18px',
+        }}
+      >
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
             <Space>
-              <Tooltip title="仅选择实验默认的overview"><Checkbox checked={onlyDefault} onChange={(e)=>{
-                setOnlyDefault(e.target.checked)
-              }}>仅默认</Checkbox></Tooltip>
-            
+              <Tooltip title="仅选择实验默认的overview">
+                <Checkbox
+                  checked={onlyDefault}
+                  onChange={(e) => {
+                    setOnlyDefault(e.target.checked);
+                  }}
+                >
+                  仅默认
+                </Checkbox>
+              </Tooltip>
+
               <Button size="small" onClick={() => selectAll()}>
                 全选
               </Button>
               <Button size="small" onClick={selectReverse}>
                 反选
               </Button>
-              {tags.length > 0 &&
-                tags?.map((item: IdName) => (
+              {exps.length > 0 &&
+                exps?.map((item: IdName) => (
                   <Badge
                     size="small"
                     count={prepareData?.overviewMap[item.id]?.length}
@@ -231,8 +268,7 @@ const TableList: React.FC = (props: any) => {
           </TabPane>
         </Tabs>
       </ProCard>
-
-      <ProCard direction="column" gutter={[0, 16]}>
+      <ProCard style={{ padding: '6px 5px 6px 10px' }}>
         {selectedTags.length > 0 && handleOption !== undefined ? (
           <ReactECharts
             option={handleOption}
@@ -241,7 +277,11 @@ const TableList: React.FC = (props: any) => {
             style={{ width: '100%', height: Height }}
           />
         ) : (
-          <Empty description="请先选择实验" style={{ width: '100%', height: '75vh' }} />
+          <Empty
+            description="请先选择实验"
+            style={{ padding: '10px', color: '#B0B8C1' }}
+            imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+          />
         )}
       </ProCard>
     </PageContainer>

@@ -1,4 +1,4 @@
-import { IdName, IdNameAlias } from "@/components/Commons/common";
+import type { IdName, IdNameAlias } from "@/components/Commons/common";
 
 export type PrepareData = {
   project: any

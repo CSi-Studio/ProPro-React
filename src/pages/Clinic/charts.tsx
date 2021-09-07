@@ -17,12 +17,12 @@ export class IrtOption {
     gridNumInRow: number = 3,
     xName: string = ``,
     yName: string = ``,
-    gridHeight: number = 160,
+    gridHeight: number = 200,
     gridPaddingHeight: number = 80,
-    totalPaddingHeight: number = 20,
-    gridPaddingWight: number = 5,
-    totalPaddingWidth: number = 5,
-    titleHeight: number = 20,
+    totalPaddingHeight: number = 80,
+    gridPaddingWight: number = 4,
+    totalPaddingWidth: number = 2,
+    titleHeight: number = 40,
     Width: number = 100,
   ) {
     this.data = data;
@@ -51,10 +51,23 @@ export class IrtOption {
       tooltip: {
         trigger: 'axis',
       },
-      xAxis: this.getIrtAxis(gridNumber, true, this.xName),
-      yAxis: this.getIrtAxis(gridNumber, false, this.yName),
+      xAxis: this.getIrtxAxis(gridNumber, this.xName, this.data),
+      yAxis: this.getIrtyAxis(gridNumber, this.yName),
       series: this.getIrtSeries(this.data),
-      color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272'],
+      color: [
+        '#1890ff',
+        'lightsalmon',
+        '#3CB371',
+        'orange',
+        '#9370D8',
+        'tomato',
+        '#71d8d2',
+        '#FFa246',
+        '#6C97D7',
+        '#F4B397',
+        '#395165',
+        '#F2DF5D',
+      ],
       toolbox: {
         feature: {
           dataZoom: {
@@ -62,6 +75,37 @@ export class IrtOption {
           },
           restore: {},
           saveAsImage: {},
+        },
+      },
+      legend: {
+        right: '8%',
+        width: '700px',
+        type: 'scroll',
+        icon: 'none',
+        itemGap: 0,
+        itemWidth: 5,
+        inactiveColor: 'tomato',
+        textStyle: {
+          fontSize: '14',
+          color: '#ffffff',
+          // fontWeight: 'bold',
+          padding: 5,
+          borderRadius: 5,
+          fontFamily: 'Times New Roman',
+          backgroundColor: [
+            '#1890ff',
+            'lightsalmon',
+            '#3CB371',
+            'orange',
+            '#9370D8',
+            'tomato',
+            '#71d8d2',
+            '#FFa246',
+            '#6C97D7',
+            '#F4B397',
+            '#395165',
+            '#F2DF5D',
+          ],
         },
       },
     };
@@ -102,12 +146,16 @@ export class IrtOption {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
       const item = {
-        text: data[i].peptideRef,
+        text: data[i].name,
+        subtext: '???发生甚么事了',
+        height: '200px',
         textAlign: 'center',
         textStyle: {
-          fontSize: '12',
+          fontSize: '14',
           fontWeight: 'normal',
           fontFamily: 'Times New Roman',
+          // textBorderColor: 'tomato',
+          // textBorderWidth: '2',
         },
         padding: 0,
         left: `${
@@ -126,25 +174,66 @@ export class IrtOption {
     return titles;
   }
 
-  private getIrtAxis(count: number, scaleTag: boolean, axisName: string) {
+  private getIrtxAxis(count: number, axisName: string, data: any) {
     const Axis = [];
+    const min = Math.floor(
+      Math.min(
+        ...data?.map((item: { rtArray: any }) => {
+          return Math.min(...item.rtArray);
+        }),
+      ),
+    );
+    const max = Math.ceil(
+      Math.max(
+        ...data?.map((item: { rtArray: any }) => {
+          return Math.max(...item.rtArray);
+        }),
+      ),
+    );
     for (let i = 0; i < count; i += 1) {
       Axis.push({
         gridIndex: i,
-        scale: scaleTag,
         name: axisName,
         // color: ['#5470c6'],
-        nameLocation: 'start',
+        nameLocation: 'end',
+        // scale: true,
         axisLabel: {
           show: true,
           fontFamily: 'Times New Roman',
           fontWeight: 'normal',
         },
         nameTextStyle: {
-          padding: 10,
           fontSize: '16',
           fontWeight: 'bold',
           fontFamily: 'Times New Roman',
+          align: 'left',
+        },
+        min,
+        max,
+      });
+    }
+    return Axis;
+  }
+  private getIrtyAxis(count: number, axisName: string) {
+    const Axis = [];
+
+    for (let i = 0; i < count; i += 1) {
+      Axis.push({
+        gridIndex: i,
+        name: axisName,
+        // color: ['#5470c6'],
+        nameLocation: 'end',
+        // scale: true,
+        axisLabel: {
+          show: true,
+          fontFamily: 'Times New Roman',
+          fontWeight: 'normal',
+        },
+        nameTextStyle: {
+          fontSize: '16',
+          fontWeight: 'bold',
+          fontFamily: 'Times New Roman',
+          align: 'left',
         },
       });
     }
@@ -152,7 +241,13 @@ export class IrtOption {
   }
 
   private getIrtSeries(data: any[]) {
+    console.log('data----', data);
     const series: Record<any, any>[] = [];
+    const cutInfo: string[] = [];
+    Object.keys(data[0].cutInfoMap).forEach((key) => {
+      cutInfo.push(key);
+    });
+
     for (let i = 0; i < data.length; i += 1) {
       if (
         data[i].rtArray == null ||
@@ -161,12 +256,16 @@ export class IrtOption {
       ) {
         return null;
       }
-      Object.keys(data[i].intMap).forEach((key) => {
+      Object.keys(data[i].intMap).forEach((key, index) => {
         const seriesItem = {
           type: 'line',
           showSymbol: false,
           xAxisIndex: i,
           yAxisIndex: i,
+          name: cutInfo[index],
+          lineStyle: {
+            width: 1,
+          },
           data: this.getSeriesData(data[i].rtArray, data[i].intMap[key]),
         };
         series.push(seriesItem);
@@ -184,42 +283,42 @@ export class IrtOption {
     return result;
   }
 
-  private getMarkLine(data: number[], slope: number, intercept: number, formula: string) {
-    if (data.length === 0) {
-      return null;
-    }
-    const markLineOpt = {
-      animation: false,
-      silent: true,
-      label: {
-        formatter: formula,
-        align: 'right',
-        fontFamily: 'Times New Roman',
-      },
-      lineStyle: {
-        type: 'solid',
-      },
-      tooltip: {
-        formatter: formula,
-        axisPointer: {
-          label: {
-            fontFamily: 'Times New Roman',
-          },
-        },
-      },
-      data: [
-        [
-          {
-            coord: [Math.min(...data) * slope + intercept, Math.min(...data)],
-            symbol: 'none',
-          },
-          {
-            coord: [Math.max(...data) * slope + intercept, Math.max(...data)],
-            symbol: 'none',
-          },
-        ],
-      ],
-    };
-    return markLineOpt;
-  }
+  // private getMarkLine(data: number[], slope: number, intercept: number, formula: string) {
+  //   if (data.length === 0) {
+  //     return null;
+  //   }
+  //   const markLineOpt = {
+  //     animation: false,
+  //     silent: true,
+  //     label: {
+  //       formatter: formula,
+  //       align: 'right',
+  //       fontFamily: 'Times New Roman',
+  //     },
+  //     lineStyle: {
+  //       type: 'solid',
+  //     },
+  //     tooltip: {
+  //       formatter: formula,
+  //       axisPointer: {
+  //         label: {
+  //           fontFamily: 'Times New Roman',
+  //         },
+  //       },
+  //     },
+  //     data: [
+  //       [
+  //         {
+  //           coord: [Math.min(...data) * slope + intercept, Math.min(...data)],
+  //           symbol: 'none',
+  //         },
+  //         {
+  //           coord: [Math.max(...data) * slope + intercept, Math.max(...data)],
+  //           symbol: 'none',
+  //         },
+  //       ],
+  //     ],
+  //   };
+  //   return markLineOpt;
+  // }
 }

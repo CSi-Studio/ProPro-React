@@ -9,7 +9,7 @@ import {
   generateDecoys,
   repeatCount,
   statistic,
-  getPeptide,
+  // getPeptide,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import type { addFormValueType } from './components/CreateForm';
@@ -24,9 +24,6 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
-
-
-
 
 /**
  * 
@@ -46,8 +43,6 @@ import { Link } from 'umi';
 //   }
 // };
 
-
-
 /**
  * 添加库
  * @param values
@@ -66,9 +61,6 @@ const handleAdd = async (values: addFormValueType) => {
   }
 };
 
-// function handleAdd(value: any, callback: any, msgOne: string, msgTwo: string, msgThree: string) {
-//   handle(value, callback, msgOne, msgTwo, msgThree);
-// }
 /**
  * 克隆库
  * @param values
@@ -276,7 +268,7 @@ const TableList: React.FC = () => {
       render: (dom, entity) => {
         return (
           <>
-            <Tag color={entity?.statistic?.Peptide_Count == 0 ? 'error' : 'blue'}>
+            <Tag color={entity?.statistic?.Peptide_Count === 0 ? 'error' : 'blue'}>
               {entity?.statistic?.Peptide_Count}
             </Tag>
             <Link
@@ -370,7 +362,7 @@ const TableList: React.FC = () => {
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
     const rowData = [...selectedRows];
-    if (rowData.length == 0) {
+    if (rowData.length === 0) {
       rowData.push(record);
       setSelectedRows(rowData);
     } else {
@@ -394,7 +386,7 @@ const TableList: React.FC = () => {
         pagination={{
           current: pageNo,
         }}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);
@@ -422,7 +414,7 @@ const TableList: React.FC = () => {
             onClick={() => {
               formClone?.resetFields();
               if (selectedRows?.length > 0) {
-                if (selectedRows.length == 1) {
+                if (selectedRows.length === 1) {
                   handleCloneModalVisible(true);
                   setSelectedRows([]);
                 } else {
@@ -448,7 +440,7 @@ const TableList: React.FC = () => {
                     key="Shuffle"
                     onClick={() => {
                       if (selectedRows?.length > 0) {
-                        if (selectedRows.length == 1) {
+                        if (selectedRows.length === 1) {
                           const values = {
                             libraryId: selectedRows[0].id,
                             generator: 'shuffle',
@@ -479,7 +471,7 @@ const TableList: React.FC = () => {
                     key="Nico"
                     onClick={() => {
                       if (selectedRows?.length > 0) {
-                        if (selectedRows.length == 1) {
+                        if (selectedRows.length === 1) {
                           const values = {
                             libraryId: selectedRows[0].id,
                             generator: 'nico',
@@ -520,7 +512,7 @@ const TableList: React.FC = () => {
             key="statistics"
             onClick={() => {
               if (selectedRows?.length > 0) {
-                if (selectedRows.length == 1) {
+                if (selectedRows.length === 1) {
                   handleStatistic(selectedRows[0].id);
                   setSelectedRows([]);
                 } else {
@@ -541,7 +533,7 @@ const TableList: React.FC = () => {
             key="repeatCount"
             onClick={() => {
               if (selectedRows?.length > 0) {
-                if (selectedRows.length == 1) {
+                if (selectedRows.length === 1) {
                   handleRepeatCount(selectedRows[0].id);
                   setSelectedRows([]);
                 } else {
@@ -563,7 +555,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
               formDelete?.resetFields();
               if (selectedRows?.length > 0) {
-                if (selectedRows.length == 1) {
+                if (selectedRows.length === 1) {
                   handleDeleteModalVisible(true);
                 } else {
                   message.warn('目前只支持单个库的删除');

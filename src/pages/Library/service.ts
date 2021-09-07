@@ -1,6 +1,6 @@
 import { request } from 'umi';
 import type { TableListItem } from './data';
-import {url} from '@/utils/request'
+import { url } from '@/utils/request';
 
 /** 获取库列表 GET /library/list */
 export async function libraryList(params: {
@@ -96,16 +96,12 @@ export async function repeatCount(libraryId: string) {
   });
 }
 
-/** 获取库列表 GET /library/getPeptide */
-export async function getPeptide(params: {
-  libraryId:any;
-  proteinName:string;
-  range:any
-}) {
-  return request(`${url}/library/getPeptide`, {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
+// /** 获取库列表 GET /library/getPeptide */
+// export async function getPeptide(params: { libraryId: any; proteinName: string; range: any }) {
+//   return request(`${url}/library/getPeptide`, {
+//     method: 'GET',
+//     params: {
+//       ...params,
+//     },
+//   });
+// }
