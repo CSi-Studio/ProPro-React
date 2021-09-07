@@ -21,7 +21,7 @@ export class IrtOption {
     gridPaddingHeight: number = 80,
     totalPaddingHeight: number = 80,
     gridPaddingWight: number = 4,
-    totalPaddingWidth: number = 2,
+    totalPaddingWidth: number = 2.4,
     titleHeight: number = 40,
     Width: number = 100,
   ) {
@@ -77,6 +77,7 @@ export class IrtOption {
           saveAsImage: {},
         },
       },
+      animation: false,
       legend: {
         right: '8%',
         width: '700px',
@@ -147,7 +148,7 @@ export class IrtOption {
     for (let i = 0; i < data.length; i += 1) {
       const item = {
         text: data[i].name,
-        subtext: '???发生甚么事了',
+        subtext: `fdr:${data[i].fdr}`,
         height: '200px',
         textAlign: 'center',
         textStyle: {
@@ -175,7 +176,7 @@ export class IrtOption {
   }
 
   private getIrtxAxis(count: number, axisName: string, data: any) {
-    const Axis = [];
+    const xAxis = [];
     const min = Math.floor(
       Math.min(
         ...data?.map((item: { rtArray: any }) => {
@@ -191,7 +192,7 @@ export class IrtOption {
       ),
     );
     for (let i = 0; i < count; i += 1) {
-      Axis.push({
+      xAxis.push({
         gridIndex: i,
         name: axisName,
         // color: ['#5470c6'],
@@ -212,13 +213,12 @@ export class IrtOption {
         max,
       });
     }
-    return Axis;
+    return xAxis;
   }
   private getIrtyAxis(count: number, axisName: string) {
-    const Axis = [];
-
+    const yAxis: any[] = [];
     for (let i = 0; i < count; i += 1) {
-      Axis.push({
+      yAxis.push({
         gridIndex: i,
         name: axisName,
         // color: ['#5470c6'],
@@ -228,6 +228,9 @@ export class IrtOption {
           show: true,
           fontFamily: 'Times New Roman',
           fontWeight: 'normal',
+          formatter: function (params: number) {
+            return params > 10000 ? params.toExponential(1) : params;
+          },
         },
         nameTextStyle: {
           fontSize: '16',
@@ -237,7 +240,7 @@ export class IrtOption {
         },
       });
     }
-    return Axis;
+    return yAxis;
   }
 
   private getIrtSeries(data: any[]) {
