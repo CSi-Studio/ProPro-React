@@ -149,7 +149,7 @@ export class IrtOption {
       const item = {
         // todo 带优化 嵌套三元表达式
         text: data[i].name,
-        subtext: `fdr:${data[i].fdr}\n${
+        subtext: `fdr:${data[i].fdr?.toFixed(4)}\n${
           data[i].status === 0
             ? '尚未鉴定'
             : data[i].status === 1
