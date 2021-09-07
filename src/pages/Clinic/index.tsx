@@ -26,8 +26,8 @@ const { CheckableTag } = Tag;
 const { Option } = Select;
 
 const gridNumberInRow = 3; // 每行grid的个数
-const xName = `rt`; // 横坐标
-const yName = `int`; // 纵坐标
+const xName = `rt/s`; // 横坐标
+const yName = `int/s`; // 纵坐标
 const gridHeight = 200; // 单张高度（单位px）
 const gridPaddingHeight = 80; // 行间间隔高度（单位px）
 let Height = 0;
