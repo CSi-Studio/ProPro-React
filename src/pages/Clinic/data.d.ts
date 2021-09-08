@@ -4,7 +4,7 @@ export type PrepareData = {
   project: any
   insLib: IdName
   anaLib: IdName
-  method: IdName
+  method: any
   // insProteins: string[]
   anaProteins: string[]
   expList: array<IdNameAlias>

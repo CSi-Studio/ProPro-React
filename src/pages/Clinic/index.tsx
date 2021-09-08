@@ -212,11 +212,7 @@ const TableList: React.FC = (props: any) => {
         ),
       }}
     >
-      <ProCard
-        style={{
-          padding: '0 18px',
-        }}
-      >
+      <ProCard style={{ padding: '0 18px'}}>
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
             <Space>

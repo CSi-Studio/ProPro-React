@@ -284,7 +284,7 @@ const TableList: React.FC = (props: any) => {
         rowKey="id"
         size="small"
         pagination={{
-          pageSize: 50,
+          pageSize: 100,
         }}
         tableAlertRender={false}
         request={async (params) => {
