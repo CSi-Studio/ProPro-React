@@ -362,7 +362,8 @@ export class IrtOption {
               width: 1,
             },
           },
-          markLine: this.getMarkLine(data[i].scoreList),
+          markLine: this.getMarkLine(data[i]),
+          areaStyle: {},
         };
         series.push(seriesItem);
       });
@@ -380,10 +381,9 @@ export class IrtOption {
   }
 
   private getMarkLine(data: any) {
-    if (!data) {
+    if (!data.scoreList) {
       return null;
     }
-
     const markLineOpt = {
       symbol: ['none', 'none'],
       animation: false,
@@ -409,11 +409,22 @@ export class IrtOption {
       label: { show: false },
       data: [],
     };
-    data.forEach((item: any) => {
-      const rtData = item.rtRangeFeature.split(';');
-      console.log('xAxis---', rtData);
-      markLineOpt.data.push({ xAxis: rtData[0] });
-      markLineOpt.data.push({ xAxis: rtData[1] });
+    data.scoreList.forEach((item: any, index: any) => {
+      if (index === data.selectIndex) {
+        const rtData = item.rtRangeFeature.split(';');
+        markLineOpt.data.push({
+          xAxis: rtData[0],
+          lineStyle: { color: '#FF1D00', type: 'dashed', width: 1 },
+        });
+        markLineOpt.data.push({
+          xAxis: rtData[1],
+          lineStyle: { color: '#FF1D00', type: 'dashed', width: 1 },
+        });
+      } else {
+        const rtData = item.rtRangeFeature.split(';');
+        markLineOpt.data.push({ xAxis: rtData[0] });
+        markLineOpt.data.push({ xAxis: rtData[1] });
+      }
     });
 
     return markLineOpt;
