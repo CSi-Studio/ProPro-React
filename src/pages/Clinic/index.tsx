@@ -236,18 +236,19 @@ const TableList: React.FC = (props: any) => {
                   反选
                 </Button>
               </Col>
-              <Col span={24}>
+              <Col span={24} style={{marginTop:5}}>
                 {exps.length > 0 &&
                   exps?.map((item: IdName) => (
                     <Badge
+                      style={{marginTop:5}}
                       size="small"
                       count={prepareData?.overviewMap[item.id]?.length}
                       offset={[-5, 0]}
                       key={item.id}
                     >
-                      <Tooltip title={item.id}>
+                      <Tooltip style={{marginTop:5}} title={item.id}>
                         <CheckableTag
-                          style={{marginTop:5}}
+                          style={{marginTop:5, marginLeft:5}}
                           checked={selectedTags?.indexOf(item.id) > -1}
                           onChange={(checked) => {
                             handleChange(item.id, checked);
