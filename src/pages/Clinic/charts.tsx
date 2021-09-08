@@ -154,7 +154,6 @@ export class IrtOption {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
       const item = {
-        // todo 带优化 嵌套三元表达式
         text: data[i].name,
         height: '200px',
         textAlign: 'center',
@@ -164,9 +163,8 @@ export class IrtOption {
           fontWeight: 'normal',
           fontFamily: 'Times New Roman,STSong',
         },
-        
+
         subtext: [
-          `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr}` : ``}}`,
           `{status|${
             data[i].status === 0
               ? '尚未鉴定'
@@ -174,19 +172,22 @@ export class IrtOption {
               ? '鉴定成功'
               : data[i].status === 2
               ? '鉴定失败'
-              : '未满足鉴定条件,没有足够的肽段碎片'
+              : data[i].status === 3
+              ? '条件不足'
+              : '缺少峰组'
           }}`,
+          `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr.toFixed(4)}` : ``}}`,
           `{sum|${data[i].sum ? `sum: ${data[i].sum}` : ``}}`,
-        ].join('  '),
+        ].join(' '),
         subtextStyle: {
           rich: {
             fdr: {
-              color: `${data[i].fdr ? '#389e0d' : ''}`,
+              color: `${data[i].fdr ? '#1890ff' : ''}`,
               fontSize: '12',
               fontWeight: 'normal',
               fontFamily: 'Times New Roman,STSong',
-              backgroundColor: `${data[i].fdr ? '#f6ffed' : ''}`,
-              borderColor: `${data[i].fdr ? '#b7eb8f' : ''}`,
+              backgroundColor: `${data[i].fdr ? '#e6f7ff' : ''}`,
+              borderColor: `${data[i].fdr ? '#91d5ff' : ''}`,
               borderWidth: 1,
               borderRadius: 2,
               padding: [3, 3],
@@ -227,12 +228,12 @@ export class IrtOption {
               padding: [3, 3],
             },
             sum: {
-              color: `${data[i].sum ? '#389e0d' : ''}`,
+              color: `${data[i].fdr ? '#1890ff' : ''}`,
               fontSize: '12',
               fontWeight: 'normal',
               fontFamily: 'Times New Roman,STSong',
-              backgroundColor: `${data[i].sum ? '#f6ffed' : ''}`,
-              borderColor: `${data[i].sum ? '#b7eb8f' : ''}`,
+              backgroundColor: `${data[i].fdr ? '#e6f7ff' : ''}`,
+              borderColor: `${data[i].fdr ? '#91d5ff' : ''}`,
               borderWidth: 1,
               borderRadius: 2,
               padding: [3, 3],
@@ -276,9 +277,10 @@ export class IrtOption {
       xAxis.push({
         gridIndex: i,
         name: axisName,
-        // color: ['#5470c6'],
+        splitLine: {
+          show: false,
+        },
         nameLocation: 'end',
-        // scale: true,
         axisLabel: {
           color: '#000',
           show: true,
@@ -304,9 +306,10 @@ export class IrtOption {
       yAxis.push({
         gridIndex: i,
         name: axisName,
-        // color: ['#5470c6'],
+        splitLine: {
+          show: false,
+        },
         nameLocation: 'end',
-        // scale: true,
         axisLabel: {
           color: '#000',
           show: true,
@@ -354,6 +357,11 @@ export class IrtOption {
             width: 1,
           },
           data: this.getSeriesData(data[i].rtArray, data[i].intMap[key]),
+          emphasis: {
+            lineStyle: {
+              width: 1,
+            },
+          },
           markLine: this.getMarkLine(data[i].scoreList),
         };
         series.push(seriesItem);
@@ -378,17 +386,17 @@ export class IrtOption {
 
     const markLineOpt = {
       symbol: ['none', 'none'],
-      // label: { show: false },
       animation: false,
-      silent: true,
-      label: {
-        // formatter: formula,
-        align: 'right',
-        fontFamily: 'Times New Roman,STSong',
-      },
       lineStyle: {
         type: 'dashed',
-        color: '#000'
+        color: '#777',
+      },
+      emphasis: {
+        lineStyle: {
+          type: 'solid',
+          color: 'tomato',
+          width: 2,
+        },
       },
       tooltip: {
         // formatter: formula,
@@ -398,13 +406,12 @@ export class IrtOption {
           },
         },
       },
+      label: { show: false },
       data: [],
     };
     data.forEach((item: any) => {
       const rtData = item.rtRangeFeature.split(';');
-      // console.log('item----', item.rtRangeFeature);
-      console.log('rtData---', rtData);
-
+      console.log('xAxis---', rtData);
       markLineOpt.data.push({ xAxis: rtData[0] });
       markLineOpt.data.push({ xAxis: rtData[1] });
     });
