@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 export class IrtOption {
   private data: any[]; // 点数据数组
   private gridNumInRow: number; // 每行grid数量
@@ -15,11 +16,11 @@ export class IrtOption {
   constructor(
     data: any[],
     gridNumInRow: number = 3,
-    xName: string = ``,
-    yName: string = ``,
+    xName: string = '',
+    yName: string = '',
     gridHeight: number = 200,
     gridPaddingHeight: number = 80,
-    totalPaddingHeight: number = 80,
+    totalPaddingHeight: number = 90,
     gridPaddingWight: number = 4,
     totalPaddingWidth: number = 2.4,
     titleHeight: number = 50,
@@ -50,6 +51,12 @@ export class IrtOption {
       grid: this.getIrtGrids(gridNumber),
       tooltip: {
         trigger: 'axis',
+        textStyle: {
+          color: '#000',
+          fontSize: '14',
+          fontWeight: 'normal',
+          fontFamily: 'Times New Roman,STSong',
+        },
       },
       xAxis: this.getIrtxAxis(gridNumber, this.xName, this.data),
       yAxis: this.getIrtyAxis(gridNumber, this.yName),
@@ -92,7 +99,7 @@ export class IrtOption {
           // fontWeight: 'bold',
           padding: 5,
           borderRadius: 5,
-          fontFamily: 'Times New Roman',
+          fontFamily: 'Times New Roman,STSong',
           backgroundColor: [
             '#1890ff',
             'lightsalmon',
@@ -149,33 +156,87 @@ export class IrtOption {
       const item = {
         // todo 带优化 嵌套三元表达式
         text: data[i].name,
-        subtext: `fdr:${data[i].fdr}\n${
-          data[i].status === 0
-            ? '尚未鉴定'
-            : data[i].status === 1
-            ? '鉴定成功'
-            : data[i].status === 2
-            ? '鉴定失败'
-            : '未满足鉴定条件,没有足够的肽段碎片'
-        }
-        `,
         height: '200px',
         textAlign: 'center',
         textStyle: {
           color: '#000',
           fontSize: '14',
           fontWeight: 'normal',
-          fontFamily: 'Times New Roman',
-          // textBorderColor: 'tomato',
-          // textBorderWidth: '2',
+          fontFamily: 'Times New Roman,STSong',
         },
+        subtext: [
+          `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr}` : ``}}`,
+          `{status|${
+            data[i].status === 0
+              ? '尚未鉴定'
+              : data[i].status === 1
+              ? '鉴定成功'
+              : data[i].status === 2
+              ? '鉴定失败'
+              : '未满足鉴定条件,没有足够的肽段碎片'
+          }}`,
+          `{sum|${data[i].sum ? `sum: ${data[i].sum}` : ``}}`,
+        ].join('  '),
         subtextStyle: {
-          color: '#000',
-          fontSize: '12',
-          fontWeight: 'normal',
-          fontFamily: 'Times New Roman',
-          // textBorderColor: 'tomato',
-          // textBorderWidth: '2',
+          rich: {
+            fdr: {
+              color: `${data[i].fdr ? '#389e0d' : ''}`,
+              fontSize: '12',
+              fontWeight: 'normal',
+              fontFamily: 'Times New Roman,STSong',
+              backgroundColor: `${data[i].fdr ? '#f6ffed' : ''}`,
+              borderColor: `${data[i].fdr ? '#b7eb8f' : ''}`,
+              borderWidth: 1,
+              borderRadius: 2,
+              padding: [3, 3],
+            },
+            status: {
+              color: `${
+                data[i].status === 0
+                  ? '#000000d9'
+                  : data[i].status === 1
+                  ? '#389e0d'
+                  : data[i].status === 2
+                  ? '#ff4d4f'
+                  : '#fb8c00'
+              }`,
+              fontSize: '12',
+              fontWeight: 'normal',
+              fontFamily: 'Times New Roman,STSong',
+              backgroundColor: `${
+                data[i].status === 0
+                  ? '#eee'
+                  : data[i].status === 1
+                  ? '#f6ffed'
+                  : data[i].status === 2
+                  ? '#fff2f0'
+                  : '#fffbe6'
+              }`,
+              borderColor: `${
+                data[i].status === 0
+                  ? '#777'
+                  : data[i].status === 1
+                  ? '#b7eb8f'
+                  : data[i].status === 2
+                  ? '#ffccc7'
+                  : '#ffe58f'
+              }`,
+              borderWidth: 1,
+              borderRadius: 2,
+              padding: [3, 3],
+            },
+            sum: {
+              color: `${data[i].sum ? '#389e0d' : ''}`,
+              fontSize: '12',
+              fontWeight: 'normal',
+              fontFamily: 'Times New Roman,STSong',
+              backgroundColor: `${data[i].sum ? '#f6ffed' : ''}`,
+              borderColor: `${data[i].sum ? '#b7eb8f' : ''}`,
+              borderWidth: 1,
+              borderRadius: 2,
+              padding: [3, 3],
+            },
+          },
         },
         padding: 0,
         left: `${
@@ -220,14 +281,14 @@ export class IrtOption {
         axisLabel: {
           color: '#000',
           show: true,
-          fontFamily: 'Times New Roman',
+          fontFamily: 'Times New Roman,STSong',
           fontWeight: 'normal',
         },
         nameTextStyle: {
           color: '#000',
           fontSize: '16',
           fontWeight: 'bold',
-          fontFamily: 'Times New Roman',
+          fontFamily: 'Times New Roman,STSong',
           align: 'left',
         },
         min,
@@ -248,7 +309,7 @@ export class IrtOption {
         axisLabel: {
           color: '#000',
           show: true,
-          fontFamily: 'Times New Roman',
+          fontFamily: 'Times New Roman,STSong',
           fontWeight: 'normal',
           formatter(params: number) {
             return params > 10000 ? params.toExponential(1) : params;
@@ -258,7 +319,7 @@ export class IrtOption {
           color: '#000',
           fontSize: '16',
           fontWeight: 'bold',
-          fontFamily: 'Times New Roman',
+          fontFamily: 'Times New Roman,STSong',
           align: 'left',
         },
       });
@@ -273,7 +334,6 @@ export class IrtOption {
     Object.keys(data[0].cutInfoMap).forEach((key) => {
       cutInfo.push(key);
     });
-
     for (let i = 0; i < data.length; i += 1) {
       if (
         data[i].rtArray == null ||
@@ -293,6 +353,7 @@ export class IrtOption {
             width: 1,
           },
           data: this.getSeriesData(data[i].rtArray, data[i].intMap[key]),
+          markLine: this.getMarkLine(data[i].scoreList),
         };
         series.push(seriesItem);
       });
@@ -309,42 +370,44 @@ export class IrtOption {
     return result;
   }
 
-  // private getMarkLine(data: number[], slope: number, intercept: number, formula: string) {
-  //   if (data.length === 0) {
-  //     return null;
-  //   }
-  //   const markLineOpt = {
-  //     animation: false,
-  //     silent: true,
-  //     label: {
-  //       formatter: formula,
-  //       align: 'right',
-  //       fontFamily: 'Times New Roman',
-  //     },
-  //     lineStyle: {
-  //       type: 'solid',
-  //     },
-  //     tooltip: {
-  //       formatter: formula,
-  //       axisPointer: {
-  //         label: {
-  //           fontFamily: 'Times New Roman',
-  //         },
-  //       },
-  //     },
-  //     data: [
-  //       [
-  //         {
-  //           coord: [Math.min(...data) * slope + intercept, Math.min(...data)],
-  //           symbol: 'none',
-  //         },
-  //         {
-  //           coord: [Math.max(...data) * slope + intercept, Math.max(...data)],
-  //           symbol: 'none',
-  //         },
-  //       ],
-  //     ],
-  //   };
-  //   return markLineOpt;
-  // }
+  private getMarkLine(data: any) {
+    if (!data) {
+      return null;
+    }
+
+    const markLineOpt = {
+      symbol: ['none', 'none'],
+      // label: { show: false },
+      animation: false,
+      silent: true,
+      label: {
+        // formatter: formula,
+        align: 'right',
+        fontFamily: 'Times New Roman,STSong',
+      },
+      lineStyle: {
+        type: 'dashed',
+        color: '#000'
+      },
+      tooltip: {
+        // formatter: formula,
+        axisPointer: {
+          label: {
+            fontFamily: 'Times New Roman,STSong',
+          },
+        },
+      },
+      data: [],
+    };
+    data.forEach((item: any) => {
+      const rtData = item.rtRangeFeature.split(';');
+      // console.log('item----', item.rtRangeFeature);
+      console.log('rtData---', rtData);
+
+      markLineOpt.data.push({ xAxis: rtData[0] });
+      markLineOpt.data.push({ xAxis: rtData[1] });
+    });
+
+    return markLineOpt;
+  }
 }

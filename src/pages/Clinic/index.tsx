@@ -100,7 +100,8 @@ const TableList: React.FC = (props: any) => {
           gridPaddingHeight,
         );
         const option = irt.getIrtOption();
-        Height = Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight)+50;
+        Height =
+          Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
         setHandleOption(option);
         hide();
         message.success('生成诊断数据成功');
@@ -244,17 +245,19 @@ const TableList: React.FC = (props: any) => {
                     offset={[-5, 0]}
                     key={item.id}
                   >
-                    <CheckableTag
-                      checked={selectedTags?.indexOf(item.id) > -1}
-                      onChange={(checked) => {
-                        handleChange(item.id, checked);
-                        if (handleOption) {
-                          setHandleSubmit(!handleSubmit);
-                        }
-                      }}
-                    >
-                      {item.name}
-                    </CheckableTag>
+                    <Tooltip title={item.id}>
+                      <CheckableTag
+                        checked={selectedTags?.indexOf(item.id) > -1}
+                        onChange={(checked) => {
+                          handleChange(item.id, checked);
+                          if (handleOption) {
+                            setHandleSubmit(!handleSubmit);
+                          }
+                        }}
+                      >
+                        {item.name}
+                      </CheckableTag>
+                    </Tooltip>
                   </Badge>
                 ))}
             </Space>
