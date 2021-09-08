@@ -14,6 +14,8 @@ import {
   Tag,
   Checkbox,
   Tooltip,
+  Row,
+  Col,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
@@ -212,62 +214,73 @@ const TableList: React.FC = (props: any) => {
         ),
       }}
     >
-      <ProCard
-        style={{
-          padding: '0 18px',
-        }}
-      >
+      <ProCard style={{ padding: '0 18px'}}>
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
-            <Space>
-              <Tooltip title="仅选择实验默认的overview">
-                <Checkbox
-                  checked={onlyDefault}
-                  onChange={(e) => {
-                    setOnlyDefault(e.target.checked);
-                  }}
-                >
-                  仅默认
-                </Checkbox>
-              </Tooltip>
-
-              <Button size="small" onClick={() => selectAll()}>
-                全选
-              </Button>
-              <Button size="small" onClick={selectReverse}>
-                反选
-              </Button>
-              {exps.length > 0 &&
-                exps?.map((item: IdName) => (
-                  <Badge
-                    size="small"
-                    count={prepareData?.overviewMap[item.id]?.length}
-                    offset={[-5, 0]}
-                    key={item.id}
+            <Row>
+              <Col span={24}>
+                <Tooltip title="仅选择实验默认的overview">
+                  <Checkbox
+                    checked={onlyDefault}
+                    onChange={(e) => {
+                      setOnlyDefault(e.target.checked);
+                    }}
                   >
-                    <Tooltip title={item.id}>
-                      <CheckableTag
-                        checked={selectedTags?.indexOf(item.id) > -1}
-                        onChange={(checked) => {
-                          handleChange(item.id, checked);
-                          if (handleOption) {
-                            setHandleSubmit(!handleSubmit);
-                          }
-                        }}
-                      >
-                        {item.name}
-                      </CheckableTag>
-                    </Tooltip>
-                  </Badge>
-                ))}
-            </Space>
+                    仅默认
+                  </Checkbox>
+                </Tooltip>
+                <Button size="small" onClick={() => selectAll()}>
+                  全选
+                </Button>
+                <Button  style={{marginLeft:5}} size="small" onClick={selectReverse}>
+                  反选
+                </Button>
+              </Col>
+              <Col span={24}>
+                {exps.length > 0 &&
+                  exps?.map((item: IdName) => (
+                    <Badge
+                      size="small"
+                      count={prepareData?.overviewMap[item.id]?.length}
+                      offset={[-5, 0]}
+                      key={item.id}
+                    >
+                      <Tooltip title={item.id}>
+                        <CheckableTag
+                          style={{marginTop:5}}
+                          checked={selectedTags?.indexOf(item.id) > -1}
+                          onChange={(checked) => {
+                            handleChange(item.id, checked);
+                            if (handleOption) {
+                              setHandleSubmit(!handleSubmit);
+                            }
+                          }}>
+                          {item.name}
+                        </CheckableTag>
+                      </Tooltip>
+                    </Badge>
+                  ))}
+              </Col>
+              </Row>
           </TabPane>
           <TabPane tab="方法参数" key="2">
-            <Space>
-              <Tag color="blue">{prepareData?.insLib?.name}</Tag>
-              <Tag color="blue">{prepareData?.anaLib?.name}</Tag>
-              <Tag color="blue">{prepareData?.method?.name}</Tag>
-            </Space>
+            <Row>
+              <Col span={24}>
+                <Space>
+                  <Tag color="blue">{prepareData?.insLib?.name}</Tag>
+                  <Tag color="blue">{prepareData?.anaLib?.name}</Tag>
+                  <Tag color="blue">{prepareData?.method?.name}</Tag>
+                </Space>
+              </Col>
+              <Col span={24}>
+                <>分数类型({prepareData?.method?.score?.scoreTypes?.length}种):   </>
+                {
+                  prepareData?.method?.score?.scoreTypes?.map(type=>{
+                     return <Tag style={{marginTop:5}} key={type} color="blue">{type}</Tag>
+                  })
+                }
+              </Col>
+            </Row>  
           </TabPane>
         </Tabs>
       </ProCard>

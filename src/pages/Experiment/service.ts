@@ -49,7 +49,7 @@ export async function updateList(params: { id: string; alias: string }) {
   });
 }
 /** 生成别名 POST /experiment/generateAlias */
-export async function generateAlias(params: { expIds: any }) {
+export async function generateAlias(params: { expIds: string[], projectId: string }) {
   return request(`${url}/experiment/generateAlias`, {
     method: 'POST',
     params: {

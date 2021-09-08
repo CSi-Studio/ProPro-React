@@ -24,7 +24,7 @@ export async function getPeptideRefs(params: { libraryId: string; protein: strin
 /** 根据肽段信息直接获取某实验下的EIC图像 GET data/getExpData  */
 export async function getExpData(params: any) {
   return request(`${url}/data/getExpData`, {
-    method: 'GET',
+    method: 'POST',
     params: {
       ...params,
     },
