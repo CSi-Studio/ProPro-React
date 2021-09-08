@@ -14,6 +14,8 @@ import {
   Tag,
   Checkbox,
   Tooltip,
+  Row,
+  Col,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
@@ -259,11 +261,25 @@ const TableList: React.FC = (props: any) => {
             </Space>
           </TabPane>
           <TabPane tab="方法参数" key="2">
-            <Space>
-              <Tag color="blue">{prepareData?.insLib?.name}</Tag>
-              <Tag color="blue">{prepareData?.anaLib?.name}</Tag>
-              <Tag color="blue">{prepareData?.method?.name}</Tag>
-            </Space>
+            <Row>
+              <Col span={24}>
+                <Space>
+                  <Tag color="blue">{prepareData?.insLib?.name}</Tag>
+                  <Tag color="blue">{prepareData?.anaLib?.name}</Tag>
+                  <Tag color="blue">{prepareData?.method?.name}</Tag>
+                </Space>
+              </Col>
+              <Col span={24}>
+                <>分数类型({prepareData?.method?.score?.scoreTypes?.length}种):   </>
+                {
+                  prepareData?.method?.score?.scoreTypes?.map(type=>{
+                     return <Tag style={{marginTop:5}} key={type} color="blue">{type}</Tag>
+                  })
+                }
+              </Col>
+            </Row>
+           
+            
           </TabPane>
         </Tabs>
       </ProCard>

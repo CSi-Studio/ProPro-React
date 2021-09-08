@@ -66,14 +66,11 @@ const TableList: React.FC = (props: any) => {
    * 生成别名
    * @param values
    */
-  const handleAlias = async (values: any[]) => {
+  const handleAlias = async (expIds: any[]) => {
     const hide = message.loading('正在生成');
-    const expIds = values.map((item) => {
-      return item;
-    });
     console.log('expIds', expIds);
     try {
-      await generateAlias({ expIds });
+      await generateAlias({ expIds:expIds, projectId: projectId });
       hide();
       message.success('生成成功');
       if (actionRef.current) {
@@ -332,15 +329,13 @@ const TableList: React.FC = (props: any) => {
           <a
             key="scan"
             onClick={() => {
+              const expIds: any[] = [];
               if (selectedRows?.length > 0) {
-                const expIds: any[] = [];
                 selectedRows.map((item) => {
                   return expIds.push(item.id);
                 });
-                handleAlias(expIds);
-              } else {
-                message.warn('请选择要生成的实验');
               }
+              handleAlias(expIds);
             }}
           >
             <Tag color="blue">
