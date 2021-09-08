@@ -164,6 +164,7 @@ export class IrtOption {
           fontWeight: 'normal',
           fontFamily: 'Times New Roman,STSong',
         },
+        
         subtext: [
           `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr}` : ``}}`,
           `{status|${
