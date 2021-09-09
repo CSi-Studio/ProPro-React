@@ -443,40 +443,6 @@ const TableList: React.FC = () => {
         size="small"
         toolBarRender={() => [
           <>
-            {selectedRows && selectedRows.length === 1 ? (
-              <Link
-                key="clinic"
-                to={{
-                  pathname: '/clinic',
-                  search: `?projectId=${selectedRows[0].id}`,
-                }}
-              >
-                <Tag color="blue">
-                  <Icon
-                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
-                    icon="mdi:stethoscope"
-                  />
-                  蛋白诊所
-                </Tag>
-              </Link>
-            ) : (
-              <a
-                key="clinic"
-                onClick={() => {
-                  message.warn('请选且只选择一个项目');
-                }}
-              >
-                <Tag color="blue">
-                  <Icon
-                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
-                    icon="mdi:stethoscope"
-                  />
-                  蛋白诊所
-                </Tag>
-              </a>
-            )}
-          </>,
-          <>
             <a key="add">
               <Tag
                 color="green"
@@ -513,6 +479,40 @@ const TableList: React.FC = () => {
                 扫描并更新
               </Tag>
             </a>
+          </>,
+          <>
+            {selectedRows && selectedRows.length === 1 ? (
+              <Link
+                key="clinic"
+                to={{
+                  pathname: '/clinic',
+                  search: `?projectId=${selectedRows[0].id}`,
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:stethoscope"
+                  />
+                  蛋白诊所
+                </Tag>
+              </Link>
+            ) : (
+              <a
+                key="clinic"
+                onClick={() => {
+                  message.warn('请选且只选择一个项目');
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:stethoscope"
+                  />
+                  蛋白诊所
+                </Tag>
+              </a>
+            )}
           </>,
           <>
             <a

@@ -24,7 +24,7 @@ export async function prepare(projectId: string) {
   return request(`${url}/analyze/prepare`, {
     method: 'GET',
     params: {
-      projectId: projectId,
+      projectId,
     },
   });
 }
@@ -49,7 +49,11 @@ export async function updateList(params: { id: string; alias: string }) {
   });
 }
 /** 生成别名 POST /experiment/generateAlias */
-export async function generateAlias(params: { expIds: string[], projectId: string }) {
+export async function generateAlias(params: {
+  expIds: string[];
+  prefix: string;
+  projectId: string;
+}) {
   return request(`${url}/experiment/generateAlias`, {
     method: 'POST',
     params: {
@@ -58,14 +62,8 @@ export async function generateAlias(params: { expIds: string[], projectId: strin
   });
 }
 
-
-
 /** 获取库列表 GET /library/getPeptide */
-export async function getPeptide(params: {
-  projectId:any;
-  proteinName:string;
-  range:any
-}) {
+export async function getPeptide(params: { projectId: any; proteinName: string; range: any }) {
   return request(`${url}/library/getPeptide`, {
     method: 'GET',
     params: {
@@ -74,9 +72,7 @@ export async function getPeptide(params: {
   });
 }
 
-export async function getProteins(params: {
-  projectId:string;
-}) {
+export async function getProteins(params: { projectId: string }) {
   return request(`${url}/library/getProteins`, {
     method: 'GET',
     params: {
@@ -84,4 +80,3 @@ export async function getProteins(params: {
     },
   });
 }
-

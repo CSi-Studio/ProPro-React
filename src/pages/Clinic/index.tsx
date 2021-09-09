@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import type { IdName } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -214,7 +215,7 @@ const TableList: React.FC = (props: any) => {
         ),
       }}
     >
-      <ProCard style={{ padding: '0 18px'}}>
+      <ProCard style={{ padding: '0 18px' }}>
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
             <Row>
@@ -232,37 +233,38 @@ const TableList: React.FC = (props: any) => {
                 <Button size="small" onClick={() => selectAll()}>
                   全选
                 </Button>
-                <Button  style={{marginLeft:5}} size="small" onClick={selectReverse}>
+                <Button style={{ marginLeft: 5 }} size="small" onClick={selectReverse}>
                   反选
                 </Button>
               </Col>
-              <Col span={24} style={{marginTop:5}}>
+              <Col span={24} style={{ marginTop: 5 }}>
                 {exps.length > 0 &&
                   exps?.map((item: IdName) => (
                     <Badge
-                      style={{marginTop:5}}
+                      style={{ marginTop: 5 }}
                       size="small"
                       count={prepareData?.overviewMap[item.id]?.length}
                       offset={[-5, 0]}
                       key={item.id}
                     >
-                      <Tooltip style={{marginTop:5}} title={item.id}>
+                      <Tooltip style={{ marginTop: 5 }} title={item.id}>
                         <CheckableTag
-                          style={{marginTop:5, marginLeft:5}}
+                          style={{ marginTop: 5, marginLeft: 5 }}
                           checked={selectedTags?.indexOf(item.id) > -1}
                           onChange={(checked) => {
                             handleChange(item.id, checked);
                             if (handleOption) {
                               setHandleSubmit(!handleSubmit);
                             }
-                          }}>
+                          }}
+                        >
                           {item.name}
                         </CheckableTag>
                       </Tooltip>
                     </Badge>
                   ))}
               </Col>
-              </Row>
+            </Row>
           </TabPane>
           <TabPane tab="方法参数" key="2">
             <Row>
@@ -274,14 +276,16 @@ const TableList: React.FC = (props: any) => {
                 </Space>
               </Col>
               <Col span={24}>
-                <>分数类型({prepareData?.method?.score?.scoreTypes?.length}种):   </>
-                {
-                  prepareData?.method?.score?.scoreTypes?.map(type=>{
-                     return <Tag style={{marginTop:5}} key={type} color="blue">{type}</Tag>
-                  })
-                }
+                <>分数类型({prepareData?.method?.score?.scoreTypes?.length}种): </>
+                {prepareData?.method?.score?.scoreTypes?.map((type: any) => {
+                  return (
+                    <Tag style={{ marginTop: 5 }} key={type} color="blue">
+                      {type}
+                    </Tag>
+                  );
+                })}
               </Col>
-            </Row>  
+            </Row>
           </TabPane>
         </Tabs>
       </ProCard>

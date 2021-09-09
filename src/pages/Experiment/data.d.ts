@@ -20,9 +20,9 @@ export type TableListPagination = {
 };
 
 export type PrepareAnalyzeVO = {
-  insLibList: Array;
-  anaLibList: Array;
-  methodList: Array;
+  insLibList: any[];
+  anaLibList: any[];
+  methodList: any[];
   insLibId: string;
   anaLibId: string;
   methodId: string;
@@ -31,8 +31,13 @@ export type PrepareAnalyzeVO = {
 
 export type AnalyzeParams = {
   projectId: string;
-  expIdList: Array<string>;
+  expIdList: string[];
   methodId: string;
   anaLibId: string;
   insLibId: string;
+};
+
+export type AliasParams = {
+  expIds: any[];
+  prefix: string;
 };

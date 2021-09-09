@@ -1,8 +1,15 @@
+/* eslint-disable no-param-reassign */
 import { Tag, Tooltip, Form, message, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList, analyze, prepare, getPeptide, getProteins } from './service';
 import { updateList, generateAlias } from './service';
-import type { AnalyzeParams, PrepareAnalyzeVO, TableListItem, TableListPagination } from './data';
+import type {
+  AliasParams,
+  AnalyzeParams,
+  PrepareAnalyzeVO,
+  TableListItem,
+  TableListPagination,
+} from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
@@ -12,6 +19,7 @@ import { Link } from 'umi';
 import ProteinSelectForm from './components/ProteinSelectForm';
 import ProteinFixedChartsForm from './components/ProteinFixedChartsForm';
 import UpdateForm from './components/UpdateForm';
+import AliasForm from './components/AliasForm';
 
 /**
  * 更新库
@@ -33,28 +41,26 @@ const handleUpdate = async (values: any) => {
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
+  const actionRef = useRef<ActionType>();
   const [formAnalyze] = Form.useForm();
   const [formUpdate] = Form.useForm();
+  const [formAlias] = Form.useForm();
   /* 分析窗口变量 */
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
   /* 编辑窗口变量 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /* 生成别名 */
+  const [aliasModalVisible, handleAliasModalVisible] = useState<boolean>(false);
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   /** 库详情的抽屉 */
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const actionRef = useRef<ActionType>();
-
   const [prepareData, setPrepareData] = useState<PrepareAnalyzeVO>();
-
   const [proteinList, setProteinList] = useState<any>();
   const [showCharts, setShowCharts] = useState<boolean>(false);
-
   const [chartsData, setChartData] = useState<any>(false);
-
   const [proteinName, setProteinName] = useState<any>(false);
-
   /** 蛋白质选择界面 */
   const [proteinSelectVisible, setProteinSelectVisible] = useState<boolean>(false);
   /** 蛋白质修复图 */
@@ -66,11 +72,10 @@ const TableList: React.FC = (props: any) => {
    * 生成别名
    * @param values
    */
-  const handleAlias = async (expIds: any[]) => {
+  const handleAlias = async (value: any) => {
     const hide = message.loading('正在生成');
-    console.log('expIds', expIds);
     try {
-      await generateAlias({ expIds:expIds, projectId: projectId });
+      await generateAlias({ expIds: value.expIds, prefix: value.prefix, projectId });
       hide();
       message.success('生成成功');
       if (actionRef.current) {
@@ -89,7 +94,7 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
-          <Tooltip title={`Id:${  entity.id}`} placement="topLeft">
+          <Tooltip title={`Id:${entity.id}`} placement="topLeft">
             <a
               onClick={() => {
                 setCurrentRow(entity);
@@ -139,7 +144,7 @@ const TableList: React.FC = (props: any) => {
       render: (dom, entity) => {
         const airdSize = (entity.airdSize + entity.airdIndexSize) / 1024 / 1024;
         const vendorSize = entity.vendorFileSize / 1024 / 1024;
-        const deltaRatio = `${(((vendorSize - airdSize) / vendorSize) * 100).toFixed(1)  }%`;
+        const deltaRatio = `${(((vendorSize - airdSize) / vendorSize) * 100).toFixed(1)}%`;
 
         return (
           <>
@@ -239,7 +244,7 @@ const TableList: React.FC = (props: any) => {
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
     const rowData = [...selectedRows];
-    if (rowData.length == 0) {
+    if (rowData.length === 0) {
       rowData.push(record);
       setSelectedRows(rowData);
     } else {
@@ -326,23 +331,41 @@ const TableList: React.FC = (props: any) => {
               开始分析
             </Tag>
           </a>,
-          <a
-            key="scan"
-            onClick={() => {
-              const expIds: any[] = [];
-              if (selectedRows?.length > 0) {
-                selectedRows.map((item) => {
-                  return expIds.push(item.id);
-                });
-              }
-              handleAlias(expIds);
-            }}
-          >
-            <Tag color="blue">
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
-              生成别名
-            </Tag>
-          </a>,
+          <>
+            {selectedRows && selectedRows.length > 0 ? (
+              <a
+                key="alias"
+                onClick={() => {
+                  if (selectedRows?.length > 0) {
+                    handleAliasModalVisible(true);
+                  }
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:drama-masks"
+                  />
+                  生成别名
+                </Tag>
+              </a>
+            ) : (
+              <a
+                onClick={() => {
+                  message.warn('至少选择一个实验 🔬');
+                }}
+                key="alias"
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:drama-masks"
+                  />
+                  生成别名
+                </Tag>
+              </a>
+            )}
+          </>,
           <>
             {selectedRows && selectedRows.length > 0 ? (
               <Link
@@ -478,6 +501,25 @@ const TableList: React.FC = (props: any) => {
         }}
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
+      />
+      {/* 生成别名 */}
+      <AliasForm
+        form={formAlias}
+        onCancel={() => {
+          handleAliasModalVisible(false);
+          formUpdate?.resetFields();
+        }}
+        onSubmit={async (values: AliasParams) => {
+          values.expIds = selectedRows.map((e) => e.id);
+          const success = await handleAlias(values);
+          if (success) {
+            handleAliasModalVisible(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        aliasModalVisible={aliasModalVisible}
       />
     </>
   );
