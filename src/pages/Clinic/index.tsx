@@ -169,12 +169,14 @@ const TableList: React.FC = (props: any) => {
         return item.id;
       }),
     );
+    setHandleSubmit(!handleSubmit);
   };
 
   // 反选
   const selectReverse = () => {
     const reverse = exps.map((item) => item.id).filter((id) => !selectedTags.includes(id));
     setSelectedTags(reverse);
+    setHandleSubmit(!handleSubmit);
   };
 
   return (
