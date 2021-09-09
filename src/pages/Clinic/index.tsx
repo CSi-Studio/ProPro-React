@@ -48,8 +48,7 @@ const TableList: React.FC = (props: any) => {
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
-  const [peptideRef, setPeptideRef] = useState<any>(); // 表单提交的peptideRef,对应后端接口
-  const [proteinMap, setProteinMap] = useState<any>(); // 表单提交的peptideRef,对应后端接口
+  const [peptideRef, setPeptideRef] = useState<string>(); // 当前选中的peptideRef
 
   useEffect(() => {
     /* 准备数据 */
@@ -126,16 +125,6 @@ const TableList: React.FC = (props: any) => {
     doAnalyze();
   }, [handleSubmit]);
   // console.log('handleOption', handleOption);
-
-  const onLoadData = ({ key, children }: any) =>
-    new Promise<void>(resolve => {
-      if (children) {
-        resolve()
-        return
-      }
-      setProteinMap(proteinMap)
-      resolve()
-  })
 
   // 点击选择 tags
   const handleChange = (item: string, checked: boolean) => {
@@ -237,7 +226,6 @@ const TableList: React.FC = (props: any) => {
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
             <Row>
-
               <Col span={4}>
                 <Row>
                   <Col span={24}>

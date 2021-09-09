@@ -5,7 +5,6 @@ export type PrepareData = {
   insLib: IdName
   anaLib: IdName
   method: any
-  // insProteins: string[]
   proteins: string[]
   expList: array<IdNameAlias>
   overviewMap: Map<string, any>
