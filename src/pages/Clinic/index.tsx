@@ -98,9 +98,9 @@ const TableList: React.FC = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if (prepareData?.proteins?.length > 0) {
+    if (prepareData) {
       onProteinChange(prepareData.proteins[0]);
-      setProteinRowKey(prepareData.proteins[0]);
+      setProteinRowKey(prepareData?.proteins[0]);
     }
     // 根据第一个蛋白获得肽段列表
   }, [prepareData]);
