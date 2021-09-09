@@ -251,7 +251,7 @@ const TableList: React.FC = (props: any) => {
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
           <Form name="analyzeForm" layout="inline" onFinish={doSubmit}>
-            {/* <Form.Item name="protein" label="蛋白">
+            <Form.Item name="protein" label="蛋白">
               <Select onChange={onProteinChange} showSearch key="1" style={{ width: 300 }}>
                 {prepareData?.proteins?.map((protein) => (
                   <Option key={protein} value={protein}>
@@ -276,7 +276,7 @@ const TableList: React.FC = (props: any) => {
               <Button type="primary" htmlType="submit">
                 诊断
               </Button>
-            </Form.Item> */}
+            </Form.Item>
           </Form>
         ),
       }}
