@@ -39,10 +39,11 @@ export class IrtOption {
     this.yName = yName;
   }
 
-  getWidth(): string {
-    return `${this.Width}`;
-  }
+  // getWidth(): string {
+  //   return `${this.Width}`;
+  // }
 
+  // 设置option
   getIrtOption(): any {
     const gridNumber = this.data.length;
     return {
@@ -63,7 +64,7 @@ export class IrtOption {
       series: this.getIrtSeries(this.data),
       color: [
         '#1890ff',
-        'lightsalmon',
+        'hotpink',
         '#3CB371',
         'orange',
         '#9370D8',
@@ -77,11 +78,17 @@ export class IrtOption {
       ],
       toolbox: {
         feature: {
-          dataZoom: {
-            yAxisIndex: 'none',
-          },
           restore: {},
+          dataView: {},
           saveAsImage: {},
+          myTool1: {
+            show: true,
+            title: '自定义扩展方法1',
+            icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+            onclick () {
+              alert('myToolHandler1');
+            },
+          },
         },
       },
       animation: false,
@@ -102,7 +109,7 @@ export class IrtOption {
           fontFamily: 'Times New Roman,STSong',
           backgroundColor: [
             '#1890ff',
-            'lightsalmon',
+            'hotpink',
             '#3CB371',
             'orange',
             '#9370D8',
@@ -119,6 +126,7 @@ export class IrtOption {
     };
   }
 
+  // 设置Grids布局
   private getIrtGrids(count: number) {
     const grids: any = [];
     for (let i: number = 0; i < count; i += 1) {
@@ -138,6 +146,7 @@ export class IrtOption {
     }
     return grids;
   }
+  // 设置缩放zoom
   private getDataZoom(data: any) {
     const grids: any = [];
     for (let i = 0; i < data.length; i += 1) {
@@ -149,7 +158,7 @@ export class IrtOption {
     }
     return grids;
   }
-
+  // 设置表头
   private getIrtTitle(data: any) {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
@@ -257,6 +266,7 @@ export class IrtOption {
     return titles;
   }
 
+  // 设置x轴
   private getIrtxAxis(count: number, axisName: string, data: any) {
     const xAxis = [];
     const min = Math.floor(
@@ -300,6 +310,7 @@ export class IrtOption {
     }
     return xAxis;
   }
+  // 设置y轴
   private getIrtyAxis(count: number, axisName: string) {
     const yAxis: any[] = [];
     for (let i = 0; i < count; i += 1) {
@@ -331,6 +342,7 @@ export class IrtOption {
     return yAxis;
   }
 
+  // 设置图表样式
   private getIrtSeries(data: any[]) {
     console.log('data----', data);
     const series: Record<any, any>[] = [];
@@ -363,14 +375,14 @@ export class IrtOption {
             },
           },
           markLine: this.getMarkLine(data[i]),
-          areaStyle: {},
+          areaStyle: { opacity:0},
         };
         series.push(seriesItem);
       });
     }
     return series;
   }
-
+  // 设置图表数据格式
   private getSeriesData(xdata: [], ydata: []) {
     const result: any[][] = [];
     const length = Math.min(xdata.length);
@@ -379,12 +391,12 @@ export class IrtOption {
     }
     return result;
   }
-
+  // 设置标注线
   private getMarkLine(data: any) {
     if (!data.scoreList) {
       return null;
     }
-    const markLineOpt = {
+    const markLineOpt: any = {
       symbol: ['none', 'none'],
       animation: false,
       lineStyle: {
