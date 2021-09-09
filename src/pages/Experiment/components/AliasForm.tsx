@@ -24,7 +24,13 @@ const AliasForm: React.FC<AliasFormProps> = (props) => {
       onFinish={props.onSubmit}
     >
       <ProForm.Group>
-        <ProFormText width="md" name="prefix" label="别名前缀" placeholder="别名前缀" />
+        <ProFormText
+          initialValue="exp"
+          width="md"
+          name="prefix"
+          label="别名前缀"
+          placeholder="别名前缀"
+        />
       </ProForm.Group>
     </ModalForm>
   );
