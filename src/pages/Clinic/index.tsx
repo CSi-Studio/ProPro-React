@@ -22,7 +22,7 @@ import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare } from './service';
-import { IrtOption } from './charts';
+import { IrtOption } from './xic';
 import ProTable from '@ant-design/pro-table';
 
 const { TabPane } = Tabs;
@@ -47,26 +47,25 @@ const TableList: React.FC = (props: any) => {
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
-  const [peptideRef, setPeptideRef] = useState<string>(); // 当前选中的peptideRef
+  const [peptideRef, setPeptideRef] = useState<any>(); // 当前选中的peptideRef
   const [loading, setLoading] = useState<boolean>(true); // loading
-  // Table选中的蛋白和肽段
-  const [proteinRow, setProteinRow] = useState<any>();
-  const [peptideRow, setPeptideRow] = useState<any>();
   // 初始化默认数据
-  const [defProtein, setDefProtein] = useState<any[]>();
-  const [defPeptide, setDefPeptide] = useState<any[]>();
+  const [defProtein, setDefProtein] = useState<any>();
+  // 选中行的ID
+  const [proteinRowKey, setProteinRowKey] = useState<any>();
+  const [peptideRowKey, setPeptideRowKey] = useState<any>();
 
   // 获取肽段列表
   async function onProteinChange(value: string) {
-    if (prepareData && prepareData.anaLib) {
-      const result = await getPeptideRefs({
-        libraryId: prepareData?.anaLib?.id,
-        protein: value,
-      });
-      setPeptideData(result.data);
-      console.log('result.data---', result.data);
-
-      return true;
+    if (value[0] !== undefined) {
+      if (prepareData && prepareData.anaLib) {
+        const result = await getPeptideRefs({
+          libraryId: prepareData?.anaLib?.id,
+          protein: value,
+        });
+        setPeptideData(result.data);
+        return true;
+      }
     }
     return false;
   }
@@ -84,19 +83,7 @@ const TableList: React.FC = (props: any) => {
             name: item.alias ? item.alias : item.name,
           };
         });
-        setDefProtein([result?.data?.proteins[0]]); // 默认第一个蛋白
-        await onProteinChange(result?.data?.proteins[0]); // 根据第一个蛋白获得肽段列表
-        console.log('result?.data?.proteins[0]---', result?.data?.proteins[0]);
-
-        // setPeptideRef(selectedRows[0].peptide);
-        // setHandleSubmit(!handleSubmit);
-        // console.log('peptideData----', peptideData);
-        console.log('peptideData[0]---', peptideData[0]);
-
-        setDefPeptide([peptideData[0]]);
-        setPeptideRef(peptideData[0]);
-        setHandleSubmit(!handleSubmit);
-
+        setDefProtein([result?.data?.proteins[0]]); // table默认选择第一个蛋白
         setExps(expTags); // 放实验列表
         setSelectedTags(
           expTags?.map((item: any) => {
@@ -111,6 +98,17 @@ const TableList: React.FC = (props: any) => {
     };
     init();
   }, []);
+
+  useEffect(() => {
+    if (defProtein !== undefined) {
+      onProteinChange(defProtein);
+    } // 根据第一个蛋白获得肽段列表
+  }, [defProtein]);
+
+  useEffect(() => {
+    setPeptideRef(peptideData[0]); // 取第一个肽段
+    setHandleSubmit(!handleSubmit); // 触发设置option
+  }, [peptideData[0]]);
 
   useEffect(() => {
     /* 诊断数据 */
@@ -160,7 +158,6 @@ const TableList: React.FC = (props: any) => {
     }
     doAnalyze();
   }, [handleSubmit]);
-  // console.log('handleOption', handleOption);
 
   // 点击选择 tags
   const handleChange = (item: string, checked: boolean) => {
@@ -213,33 +210,15 @@ const TableList: React.FC = (props: any) => {
 
   /* 蛋白点击行选中 */
   const selectProteinRow = (record: any) => {
-    const rowData = [proteinRow];
-    if (rowData.length === 0) {
-      rowData.push(record);
-      setProteinRow(rowData);
-    } else {
-      if (rowData.indexOf(record) >= 0) {
-        rowData.splice(rowData.indexOf(record), 1);
-      } else {
-        rowData.push(record);
-      }
-      setProteinRow(rowData);
+    if (record !== undefined) {
+      onProteinChange(record.protein);
     }
   };
 
   /* 肽段点击行选中 */
   const selectPeptideRow = (record: any) => {
-    const rowData = [peptideRow];
-    if (rowData.length === 0) {
-      rowData.push(record);
-      setPeptideRow(rowData);
-    } else {
-      if (rowData.indexOf(record) >= 0) {
-        rowData.splice(rowData.indexOf(record), 1);
-      } else {
-        rowData.push(record);
-      }
-      setPeptideRow(rowData);
+    if (record !== undefined) {
+      setPeptideRef(record.peptide);
     }
   };
 
@@ -289,7 +268,9 @@ const TableList: React.FC = (props: any) => {
                 <Row>
                   <Col span={24}>
                     <ProTable
-                      columns={[{ title: 'Protein', dataIndex: 'protein', key: 'protein' }]}
+                      columns={[
+                        { title: '蛋白', dataIndex: 'protein', key: 'protein', ellipsis: true },
+                      ]}
                       dataSource={prepareData?.proteins.map((protein) => {
                         return { key: protein, protein };
                       })}
@@ -298,55 +279,54 @@ const TableList: React.FC = (props: any) => {
                       scroll={{ y: 380 }}
                       toolBarRender={false}
                       tableAlertRender={false}
+                      rowClassName={(record) => {
+                        return record.key === proteinRowKey ? 'clinicTableBgc' : '';
+                      }}
                       onRow={(record) => {
                         return {
                           onClick: () => {
+                            setProteinRowKey(record.key);
                             selectProteinRow(record);
                           },
                         };
                       }}
-                      rowSelection={{
-                        type: 'radio',
-                        selectedRowKeys: defProtein,
-                        onChange: (selectedRowKeys, selectedRows) => {
-                          setDefProtein(selectedRowKeys);
-                          onProteinChange(selectedRows[0].protein);
-                        },
-                      }}
-                      // loading={loading}
+                      loading={loading}
                       style={{ height: 440 }}
-                      pagination={{ simple: true, defaultPageSize: 12 }}
+                      pagination={{
+                        size: 'small',
+                        showSizeChanger: false,
+                        showQuickJumper: false,
+                        pageSize: 12,
+                        showTotal: () => null,
+                        position: ['bottomCenter'],
+                      }}
                     />
                   </Col>
                   <Col span={24}>
                     <ProTable
-                      columns={[{ title: 'Peptide', dataIndex: 'peptide', key: 'peptide' }]}
+                      columns={[{ title: '肽段', dataIndex: 'peptide', key: 'peptide' }]}
                       dataSource={peptideData?.map((item) => {
                         return { key: item, peptide: item };
                       })}
                       size="small"
                       search={false}
-                      pagination={{ simple: true }}
                       scroll={{ y: 330 }}
                       toolBarRender={false}
                       tableAlertRender={false}
-                      // loading={!proteinRow}
+                      pagination={false}
+                      loading={!peptideData}
                       style={{ height: 363 }}
+                      rowClassName={(record) => {
+                        return record.key === peptideRowKey ? 'clinicTableBgc' : '';
+                      }}
                       onRow={(record) => {
                         return {
                           onClick: () => {
+                            setPeptideRowKey(record.key);
                             selectPeptideRow(record);
+                            setHandleSubmit(!handleSubmit);
                           },
                         };
-                      }}
-                      rowSelection={{
-                        type: 'radio',
-                        selectedRowKeys: defPeptide,
-                        onChange: (selectedRowKeys, selectedRows) => {
-                          setPeptideRef(selectedRows[0].peptide);
-                          setDefPeptide(selectedRowKeys);
-                          setHandleSubmit(!handleSubmit);
-                        },
                       }}
                     />
                   </Col>

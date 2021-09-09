@@ -48,7 +48,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       render: (text, record) => {
         return (
-          <Tooltip title={'Id:' + record.id} placement="topLeft">
+          <Tooltip title={`Id:${  record.id}`} placement="topLeft">
             <a
               onClick={() => {
                 setCurrentRow(record);
@@ -143,7 +143,7 @@ const TableList: React.FC = () => {
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
     const rowData = [...selectedRows];
-    if (rowData.length == 0) {
+    if (rowData.length === 0) {
       rowData.push(record);
       setSelectedRows(rowData);
     } else {
@@ -189,10 +189,10 @@ const TableList: React.FC = () => {
           return Promise.resolve(msg);
         }}
         pagination={{
-          total: total,
+          total,
         }}
         columns={columns}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);
