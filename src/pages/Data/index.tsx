@@ -4,9 +4,6 @@ import { dataList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
-import {
-  FieldNumberOutlined,
-} from '@ant-design/icons';
 
 const TableList: React.FC = (props: any) => {
   /** 全选 */
