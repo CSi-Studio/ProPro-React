@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import type { IdName } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -232,10 +233,11 @@ const TableList: React.FC = (props: any) => {
         ),
       }}
     >
-      <ProCard style={{ padding: '0 18px'}}>
+      <ProCard style={{ padding: '0 18px' }}>
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
             <Row>
+
               <Col span={4}>
                 <Row>
                   <Col span={24}>
@@ -352,14 +354,16 @@ const TableList: React.FC = (props: any) => {
                 </Space>
               </Col>
               <Col span={24}>
-                <>分数类型({prepareData?.method?.score?.scoreTypes?.length}种):   </>
-                {
-                  prepareData?.method?.score?.scoreTypes?.map(type=>{
-                     return <Tag style={{marginTop:5}} key={type} color="blue">{type}</Tag>
-                  })
-                }
+                <>分数类型({prepareData?.method?.score?.scoreTypes?.length}种): </>
+                {prepareData?.method?.score?.scoreTypes?.map((type: any) => {
+                  return (
+                    <Tag style={{ marginTop: 5 }} key={type} color="blue">
+                      {type}
+                    </Tag>
+                  );
+                })}
               </Col>
-            </Row>  
+            </Row>
           </TabPane>
           <TabPane tab="Irt结果" key="3">
             </TabPane>
