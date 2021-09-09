@@ -16,12 +16,14 @@ import {
   Tooltip,
   Row,
   Col,
+  Table
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare } from './service';
 import { IrtOption } from './charts';
+import ProTable from '@ant-design/pro-table';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -42,8 +44,12 @@ const TableList: React.FC = (props: any) => {
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 项目名 蛋白下拉菜单渲染
   const [peptideData, setPeptideData] = useState<string[]>([]); // 肽段下拉菜单渲染
-  const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认ov
+  const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
+  const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
+  const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
   const [peptideRef, setPeptideRef] = useState<any>(); // 表单提交的peptideRef,对应后端接口
+  const [proteinMap, setProteinMap] = useState<any>(); // 表单提交的peptideRef,对应后端接口
+
   useEffect(() => {
     /* 准备数据 */
     const init = async () => {
@@ -77,13 +83,15 @@ const TableList: React.FC = (props: any) => {
       if (selectedTags.length === 0) {
         return false;
       }
-      const hide = message.loading('正在诊断，请稍后');
+      const hide = message.loading('正在获取，请稍后');
       try {
         const result = await getExpData({
           projectId,
           peptideRef,
           expIds: selectedTags,
           onlyDefault,
+          smooth,
+          denoise,
         });
         result.data.map((item: any) => {
           exps?.forEach((_item: any) => {
@@ -106,17 +114,27 @@ const TableList: React.FC = (props: any) => {
           Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
         setHandleOption(option);
         hide();
-        message.success('生成诊断数据成功');
+        message.success('获取EIC Matrix数据成功');
         return true;
       } catch (error) {
         hide();
-        message.error('生成诊断数据失败，请重试!');
+        message.error('获取EIC Matrix失败，请重试!');
         return false;
       }
     }
     doAnalyze();
   }, [handleSubmit]);
-  console.log('handleOption', handleOption);
+  // console.log('handleOption', handleOption);
+
+  const onLoadData = ({ key, children }: any) =>
+    new Promise<void>(resolve => {
+      if (children) {
+        resolve()
+        return
+      }
+      setProteinMap(proteinMap)
+      resolve()
+  })
 
   // 点击选择 tags
   const handleChange = (item: string, checked: boolean) => {
@@ -186,7 +204,7 @@ const TableList: React.FC = (props: any) => {
           <Form name="analyzeForm" layout="inline" onFinish={doSubmit}>
             <Form.Item name="protein" label="蛋白">
               <Select onChange={onProteinChange} showSearch key="1" style={{ width: 300 }}>
-                {prepareData?.anaProteins?.map((protein) => (
+                {prepareData?.proteins?.map((protein) => (
                   <Option key={protein} value={protein}>
                     {protein}
                   </Option>
@@ -218,51 +236,111 @@ const TableList: React.FC = (props: any) => {
         <Tabs size="small" defaultActiveKey="1">
           <TabPane tab="实验列表" key="1">
             <Row>
-              <Col span={24}>
-                <Tooltip title="仅选择实验默认的overview">
-                  <Checkbox
-                    checked={onlyDefault}
-                    onChange={(e) => {
-                      setOnlyDefault(e.target.checked);
-                    }}
-                  >
-                    仅默认
-                  </Checkbox>
-                </Tooltip>
-                <Button size="small" onClick={() => selectAll()}>
-                  全选
-                </Button>
-                <Button  style={{marginLeft:5}} size="small" onClick={selectReverse}>
-                  反选
-                </Button>
+              <Col span={4}>
+                <Row>
+                  <Col span={24}>
+                    <ProTable
+                      columns={[{title: 'Protein',dataIndex: 'protein',key: 'protein'}]} 
+                      dataSource={prepareData?.proteins.map(protein=>{
+                        return {key:protein, protein:protein}
+                      })}
+                      size='small'
+                      search={false}
+                      pagination={false}
+                      scroll={{y:400}}
+                      toolBarRender={false}
+                    />
+                  </Col>
+                  <Col span={24}>
+                    <ProTable
+                      columns={[{title: 'Protein',dataIndex: 'protein',key: 'protein'}]} 
+                      dataSource={prepareData?.proteins.map(protein=>{
+                        return {key:protein, protein:protein}
+                      })}
+                      size='small'
+                      search={false}
+                      pagination={false}
+                      scroll={{y:400}}
+                      toolBarRender={false}/>
+                  </Col>
+                </Row>
               </Col>
-              <Col span={24} style={{marginTop:5}}>
-                {exps.length > 0 &&
-                  exps?.map((item: IdName) => (
-                    <Badge
-                      style={{marginTop:5}}
-                      size="small"
-                      count={prepareData?.overviewMap[item.id]?.length}
-                      offset={[-5, 0]}
-                      key={item.id}
-                    >
-                      <Tooltip style={{marginTop:5}} title={item.id}>
-                        <CheckableTag
-                          style={{marginTop:5, marginLeft:5}}
-                          checked={selectedTags?.indexOf(item.id) > -1}
-                          onChange={(checked) => {
-                            handleChange(item.id, checked);
-                            if (handleOption) {
-                              setHandleSubmit(!handleSubmit);
-                            }
-                          }}>
-                          {item.name}
-                        </CheckableTag>
-                      </Tooltip>
-                    </Badge>
-                  ))}
+              <Col span={20}>
+                <Row>
+                  <Col span={24}>
+                    <Tooltip title="仅选择实验默认的overview">
+                      <Checkbox
+                        checked={onlyDefault}
+                        onChange={(e) => {
+                          setOnlyDefault(e.target.checked);
+                        }}
+                      >
+                        仅默认
+                      </Checkbox>
+                    </Tooltip>
+                    <Checkbox
+                      checked={smooth}
+                      onChange={(e) => {
+                        setSmooth(e.target.checked);
+                      }}>
+                      数据平滑
+                    </Checkbox>
+                    <Checkbox
+                      checked={denoise}
+                      onChange={(e) => {
+                        setDenoise(e.target.checked);
+                      }}>
+                      数据降噪
+                    </Checkbox>
+                  </Col>
+                  <Col span={24} style={{marginTop:5}}>
+                    <Button style={{marginRight:5}} size="small" onClick={() => selectAll()}>
+                      全选
+                    </Button>
+                    <Button style={{marginRight:5}} size="small" onClick={selectReverse}>
+                      反选
+                    </Button>
+                    {exps.length > 0 &&
+                      exps?.map((item: IdName) => (
+                        <Badge
+                          style={{marginTop:5}}
+                          size="small"
+                          count={prepareData?.overviewMap[item.id]?.length}
+                          offset={[-5, 0]}
+                          key={item.id}>
+                          <Tooltip style={{marginTop:5}} title={item.id}>
+                            <CheckableTag
+                              style={{marginTop:5, marginLeft:5}}
+                              checked={selectedTags?.indexOf(item.id) > -1}
+                              onChange={(checked) => {
+                                handleChange(item.id, checked)
+                                if (handleOption) {
+                                  setHandleSubmit(!handleSubmit)
+                                }
+                              }}>
+                              {item.name}
+                            </CheckableTag>
+                          </Tooltip>
+                        </Badge>
+                      ))}
+                  </Col>
+                  <Col span={24}>
+                      {selectedTags.length > 0 && handleOption !== undefined ? 
+                          <ReactECharts
+                            option={handleOption}
+                            notMerge={true}
+                            lazyUpdate={true}
+                            style={{ width: '100%', height: Height }}
+                          />
+                         : <Empty
+                            description="请先选择实验"
+                            style={{ padding: '10px', color: '#B0B8C1' }}
+                            imageStyle={{ padding: '20px 0 0 0', height: '140px' }}/>
+                        }
+                  </Col>
+                </Row>
               </Col>
-              </Row>
+            </Row>
           </TabPane>
           <TabPane tab="方法参数" key="2">
             <Row>
@@ -283,24 +361,13 @@ const TableList: React.FC = (props: any) => {
               </Col>
             </Row>  
           </TabPane>
+          <TabPane tab="Irt结果" key="3">
+            </TabPane>
+          <TabPane tab="定量矩阵" key="4">
+            </TabPane>
         </Tabs>
       </ProCard>
-      <ProCard style={{ padding: '6px 5px 6px 10px' }}>
-        {selectedTags.length > 0 && handleOption !== undefined ? (
-          <ReactECharts
-            option={handleOption}
-            notMerge={true}
-            lazyUpdate={true}
-            style={{ width: '100%', height: Height }}
-          />
-        ) : (
-          <Empty
-            description="请先选择实验"
-            style={{ padding: '10px', color: '#B0B8C1' }}
-            imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
-          />
-        )}
-      </ProCard>
+      
     </PageContainer>
   );
 };
