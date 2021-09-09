@@ -49,8 +49,6 @@ const TableList: React.FC = (props: any) => {
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
   const [peptideRef, setPeptideRef] = useState<any>(); // 当前选中的peptideRef
   const [loading, setLoading] = useState<boolean>(true); // loading
-  // 初始化默认数据
-  const [defProtein, setDefProtein] = useState<any>();
   // 选中行的ID
   const [proteinRowKey, setProteinRowKey] = useState<any>();
   const [peptideRowKey, setPeptideRowKey] = useState<any>();
@@ -83,7 +81,7 @@ const TableList: React.FC = (props: any) => {
             name: item.alias ? item.alias : item.name,
           };
         });
-        setDefProtein([result?.data?.proteins[0]]); // table默认选择第一个蛋白
+        // setDefProtein([result?.data?.proteins[0]]); // table默认选择第一个蛋白
         setExps(expTags); // 放实验列表
         setSelectedTags(
           expTags?.map((item: any) => {
@@ -100,13 +98,16 @@ const TableList: React.FC = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if (defProtein !== undefined) {
-      onProteinChange(defProtein);
-    } // 根据第一个蛋白获得肽段列表
-  }, [defProtein]);
+    if (prepareData?.proteins?.length > 0) {
+      onProteinChange(prepareData.proteins[0]);
+      setProteinRowKey(prepareData.proteins[0]);
+    }
+    // 根据第一个蛋白获得肽段列表
+  }, [prepareData]);
 
   useEffect(() => {
     setPeptideRef(peptideData[0]); // 取第一个肽段
+    setPeptideRowKey(peptideData[0]);
     setHandleSubmit(!handleSubmit); // 触发设置option
   }, [peptideData[0]]);
 
