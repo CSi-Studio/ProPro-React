@@ -17,7 +17,6 @@ import {
   Tooltip,
   Row,
   Col,
-  Table
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
@@ -49,13 +48,35 @@ const TableList: React.FC = (props: any) => {
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
   const [peptideRef, setPeptideRef] = useState<string>(); // 当前选中的peptideRef
+  const [loading, setLoading] = useState<boolean>(true); // loading
+  // Table选中的蛋白和肽段
+  const [proteinRow, setProteinRow] = useState<any>();
+  const [peptideRow, setPeptideRow] = useState<any>();
+  // 初始化默认数据
+  const [defProtein, setDefProtein] = useState<any[]>();
+  const [defPeptide, setDefPeptide] = useState<any[]>();
+
+  // 获取肽段列表
+  async function onProteinChange(value: string) {
+    if (prepareData && prepareData.anaLib) {
+      const result = await getPeptideRefs({
+        libraryId: prepareData?.anaLib?.id,
+        protein: value,
+      });
+      setPeptideData(result.data);
+      console.log('result.data---', result.data);
+
+      return true;
+    }
+    return false;
+  }
 
   useEffect(() => {
     /* 准备数据 */
     const init = async () => {
       try {
         const result = await prepare({ projectId });
-        setPrepareData(result.data);
+        setPrepareData(result.data); // 放蛋白列表
         const { expList } = result.data;
         const expTags = expList.map((item: any) => {
           return {
@@ -63,12 +84,26 @@ const TableList: React.FC = (props: any) => {
             name: item.alias ? item.alias : item.name,
           };
         });
-        setExps(expTags);
+        setDefProtein([result?.data?.proteins[0]]); // 默认第一个蛋白
+        await onProteinChange(result?.data?.proteins[0]); // 根据第一个蛋白获得肽段列表
+        console.log('result?.data?.proteins[0]---', result?.data?.proteins[0]);
+
+        // setPeptideRef(selectedRows[0].peptide);
+        // setHandleSubmit(!handleSubmit);
+        // console.log('peptideData----', peptideData);
+        console.log('peptideData[0]---', peptideData[0]);
+
+        setDefPeptide([peptideData[0]]);
+        setPeptideRef(peptideData[0]);
+        setHandleSubmit(!handleSubmit);
+
+        setExps(expTags); // 放实验列表
         setSelectedTags(
           expTags?.map((item: any) => {
             return item.id;
           }),
         );
+        setLoading(false);
         return true;
       } catch (err) {
         return false;
@@ -93,6 +128,7 @@ const TableList: React.FC = (props: any) => {
           smooth,
           denoise,
         });
+        // 将实验 别名 给 getExpData接口得到的数据
         result.data.map((item: any) => {
           exps?.forEach((_item: any) => {
             if (item.expId === _item.id) {
@@ -158,17 +194,6 @@ const TableList: React.FC = (props: any) => {
     return true;
   }
 
-  // 获取蛋白列表
-  async function onProteinChange(value: string) {
-    if (prepareData && prepareData.anaLib) {
-      const result = await getPeptideRefs({
-        libraryId: prepareData?.anaLib?.id,
-        protein: value,
-      });
-      setPeptideData(result.data);
-    }
-  }
-
   // 全选
   const selectAll = () => {
     setSelectedTags(
@@ -186,6 +211,38 @@ const TableList: React.FC = (props: any) => {
     setHandleSubmit(!handleSubmit);
   };
 
+  /* 蛋白点击行选中 */
+  const selectProteinRow = (record: any) => {
+    const rowData = [proteinRow];
+    if (rowData.length === 0) {
+      rowData.push(record);
+      setProteinRow(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setProteinRow(rowData);
+    }
+  };
+
+  /* 肽段点击行选中 */
+  const selectPeptideRow = (record: any) => {
+    const rowData = [peptideRow];
+    if (rowData.length === 0) {
+      rowData.push(record);
+      setPeptideRow(rowData);
+    } else {
+      if (rowData.indexOf(record) >= 0) {
+        rowData.splice(rowData.indexOf(record), 1);
+      } else {
+        rowData.push(record);
+      }
+      setPeptideRow(rowData);
+    }
+  };
+
   return (
     <PageContainer
       header={{
@@ -194,7 +251,7 @@ const TableList: React.FC = (props: any) => {
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
           <Form name="analyzeForm" layout="inline" onFinish={doSubmit}>
-            <Form.Item name="protein" label="蛋白">
+            {/* <Form.Item name="protein" label="蛋白">
               <Select onChange={onProteinChange} showSearch key="1" style={{ width: 300 }}>
                 {prepareData?.proteins?.map((protein) => (
                   <Option key={protein} value={protein}>
@@ -219,7 +276,7 @@ const TableList: React.FC = (props: any) => {
               <Button type="primary" htmlType="submit">
                 诊断
               </Button>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         ),
       }}
@@ -232,28 +289,66 @@ const TableList: React.FC = (props: any) => {
                 <Row>
                   <Col span={24}>
                     <ProTable
-                      columns={[{title: 'Protein',dataIndex: 'protein',key: 'protein'}]} 
-                      dataSource={prepareData?.proteins.map(protein=>{
-                        return {key:protein, protein:protein}
+                      columns={[{ title: 'Protein', dataIndex: 'protein', key: 'protein' }]}
+                      dataSource={prepareData?.proteins.map((protein) => {
+                        return { key: protein, protein };
                       })}
-                      size='small'
+                      size="small"
                       search={false}
-                      pagination={false}
-                      scroll={{y:400}}
+                      scroll={{ y: 380 }}
                       toolBarRender={false}
+                      tableAlertRender={false}
+                      onRow={(record) => {
+                        return {
+                          onClick: () => {
+                            selectProteinRow(record);
+                          },
+                        };
+                      }}
+                      rowSelection={{
+                        type: 'radio',
+                        selectedRowKeys: defProtein,
+                        onChange: (selectedRowKeys, selectedRows) => {
+                          setDefProtein(selectedRowKeys);
+                          onProteinChange(selectedRows[0].protein);
+                        },
+                      }}
+                      // loading={loading}
+                      style={{ height: 440 }}
+                      pagination={{ simple: true, defaultPageSize: 12 }}
                     />
                   </Col>
                   <Col span={24}>
                     <ProTable
-                      columns={[{title: 'Protein',dataIndex: 'protein',key: 'protein'}]} 
-                      dataSource={prepareData?.proteins.map(protein=>{
-                        return {key:protein, protein:protein}
+                      columns={[{ title: 'Peptide', dataIndex: 'peptide', key: 'peptide' }]}
+                      dataSource={peptideData?.map((item) => {
+                        return { key: item, peptide: item };
                       })}
-                      size='small'
+                      size="small"
                       search={false}
-                      pagination={false}
-                      scroll={{y:400}}
-                      toolBarRender={false}/>
+                      pagination={{ simple: true }}
+                      scroll={{ y: 330 }}
+                      toolBarRender={false}
+                      tableAlertRender={false}
+                      // loading={!proteinRow}
+                      style={{ height: 363 }}
+                      onRow={(record) => {
+                        return {
+                          onClick: () => {
+                            selectPeptideRow(record);
+                          },
+                        };
+                      }}
+                      rowSelection={{
+                        type: 'radio',
+                        selectedRowKeys: defPeptide,
+                        onChange: (selectedRowKeys, selectedRows) => {
+                          setPeptideRef(selectedRows[0].peptide);
+                          setDefPeptide(selectedRowKeys);
+                          setHandleSubmit(!handleSubmit);
+                        },
+                      }}
+                    />
                   </Col>
                 </Row>
               </Col>
@@ -274,42 +369,46 @@ const TableList: React.FC = (props: any) => {
                       checked={smooth}
                       onChange={(e) => {
                         setSmooth(e.target.checked);
-                      }}>
+                      }}
+                    >
                       数据平滑
                     </Checkbox>
                     <Checkbox
                       checked={denoise}
                       onChange={(e) => {
                         setDenoise(e.target.checked);
-                      }}>
+                      }}
+                    >
                       数据降噪
                     </Checkbox>
                   </Col>
-                  <Col span={24} style={{marginTop:5}}>
-                    <Button style={{marginRight:5}} size="small" onClick={() => selectAll()}>
+                  <Col span={24} style={{ marginTop: 5 }}>
+                    <Button style={{ marginRight: 5 }} size="small" onClick={() => selectAll()}>
                       全选
                     </Button>
-                    <Button style={{marginRight:5}} size="small" onClick={selectReverse}>
+                    <Button style={{ marginRight: 5 }} size="small" onClick={selectReverse}>
                       反选
                     </Button>
                     {exps.length > 0 &&
                       exps?.map((item: IdName) => (
                         <Badge
-                          style={{marginTop:5}}
+                          style={{ marginTop: 5 }}
                           size="small"
                           count={prepareData?.overviewMap[item.id]?.length}
                           offset={[-5, 0]}
-                          key={item.id}>
-                          <Tooltip style={{marginTop:5}} title={item.id}>
+                          key={item.id}
+                        >
+                          <Tooltip style={{ marginTop: 5 }} title={item.id}>
                             <CheckableTag
-                              style={{marginTop:5, marginLeft:5}}
+                              style={{ marginTop: 5, marginLeft: 5 }}
                               checked={selectedTags?.indexOf(item.id) > -1}
                               onChange={(checked) => {
-                                handleChange(item.id, checked)
+                                handleChange(item.id, checked);
                                 if (handleOption) {
-                                  setHandleSubmit(!handleSubmit)
+                                  setHandleSubmit(!handleSubmit);
                                 }
-                              }}>
+                              }}
+                            >
                               {item.name}
                             </CheckableTag>
                           </Tooltip>
@@ -317,18 +416,20 @@ const TableList: React.FC = (props: any) => {
                       ))}
                   </Col>
                   <Col span={24}>
-                      {selectedTags.length > 0 && handleOption !== undefined ? 
-                          <ReactECharts
-                            option={handleOption}
-                            notMerge={true}
-                            lazyUpdate={true}
-                            style={{ width: '100%', height: Height }}
-                          />
-                         : <Empty
-                            description="请先选择实验"
-                            style={{ padding: '10px', color: '#B0B8C1' }}
-                            imageStyle={{ padding: '20px 0 0 0', height: '140px' }}/>
-                        }
+                    {selectedTags.length > 0 && handleOption !== undefined ? (
+                      <ReactECharts
+                        option={handleOption}
+                        notMerge={true}
+                        lazyUpdate={true}
+                        style={{ width: '100%', height: Height }}
+                      />
+                    ) : (
+                      <Empty
+                        description="请先选择实验"
+                        style={{ padding: '10px', color: '#B0B8C1' }}
+                        imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+                      />
+                    )}
                   </Col>
                 </Row>
               </Col>
@@ -355,13 +456,10 @@ const TableList: React.FC = (props: any) => {
               </Col>
             </Row>
           </TabPane>
-          <TabPane tab="Irt结果" key="3">
-            </TabPane>
-          <TabPane tab="定量矩阵" key="4">
-            </TabPane>
+          <TabPane tab="Irt结果" key="3" />
+          <TabPane tab="定量矩阵" key="4" />
         </Tabs>
       </ProCard>
-      
     </PageContainer>
   );
 };
