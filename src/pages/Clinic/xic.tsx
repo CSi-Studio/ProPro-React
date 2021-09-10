@@ -336,7 +336,6 @@ export class IrtOption {
 
   // 设置图表样式
   private getIrtSeries(data: any[]) {
-    console.log('data----', data);
     const series: Record<any, any>[] = [];
     const cutInfo: string[] = [];
     Object.keys(data[0].cutInfoMap).forEach((key) => {

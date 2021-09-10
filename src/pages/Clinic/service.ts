@@ -30,3 +30,13 @@ export async function getExpData(params: any) {
     },
   });
 }
+
+/** 根据肽段信息直接获取某实验下的EIC图像 GET data/getExpData  */
+export async function report(params: {expIds:string[]}) {
+  return request(`${url}/clinic/report`, {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
