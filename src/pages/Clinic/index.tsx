@@ -228,8 +228,6 @@ const TableList: React.FC = (props: any) => {
   /* table 搜索 */
   const handleSearch = (selectedKeys: any[], confirm: () => void, dataIndex: any) => {
     confirm();
-    console.log('handleselectedKeys:::', selectedKeys);
-
     setSearchText(selectedKeys[0]);
     setSearchedCol(dataIndex);
   };
@@ -240,7 +238,7 @@ const TableList: React.FC = (props: any) => {
   };
   let searchInput: any;
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
       <div style={{ padding: 8 }}>
         <Input
           ref={(node) => {
@@ -250,15 +248,8 @@ const TableList: React.FC = (props: any) => {
           value={selectedKeys[0]}
           onChange={(e) => {
             setSelectedKeys(e.target.value ? [e.target.value] : []);
-            // console.log('e:::', e);
-            // console.log('selectedKeys:::', selectedKeys);
-            // console.log('confirm:::', confirm);
-            // console.log('clearFilters:::', clearFilters);
           }}
           onPressEnter={() => {
-            console.log('selectedKeys:::', selectedKeys);
-            console.log('confirm:::', confirm);
-            console.log('dataIndex:::', dataIndex);
             handleSearch(selectedKeys, confirm, dataIndex);
           }}
           style={{ marginBottom: 8, display: 'block' }}
@@ -267,9 +258,6 @@ const TableList: React.FC = (props: any) => {
           <Button
             type="primary"
             onClick={() => {
-              console.log('selectedKeys:::', selectedKeys);
-              console.log('confirm:::', confirm);
-              console.log('clearFilters:::', clearFilters);
               handleSearch(selectedKeys, confirm, dataIndex);
             }}
             size="small"
@@ -304,13 +292,6 @@ const TableList: React.FC = (props: any) => {
           textToHighlight={text ? text.props.children : ''}
         />
       ) : (
-        // <Tag
-        //   onClick={() => {
-        //     console.log(text);
-        //   }}
-        // >
-        //   {text}
-        // </Tag>
         '暂无数据'
       ),
   });
@@ -518,8 +499,12 @@ const TableList: React.FC = (props: any) => {
             </Row>
           </TabPane>
           <TabPane tab="Irt结果" key="3" />
-          <TabPane tab="定量矩阵" key="4" >
-            <Button style={{ marginRight: 5 }} size="small" onClick={() => report({ expIds: selectedTags })}>
+          <TabPane tab="定量矩阵" key="4">
+            <Button
+              style={{ marginRight: 5 }}
+              size="small"
+              onClick={() => report({ expIds: selectedTags })}
+            >
               获取定量矩阵
             </Button>
           </TabPane>
