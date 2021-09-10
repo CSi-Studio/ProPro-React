@@ -17,6 +17,7 @@ import {
   Tooltip,
   Row,
   Col,
+  Spin,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
@@ -51,6 +52,8 @@ const TableList: React.FC = (props: any) => {
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
   const [peptideRef, setPeptideRef] = useState<any>(); // 当前选中的peptideRef
   const [loading, setLoading] = useState<boolean>(true); // loading
+  const [peptideLoading, setPeptideLoading] = useState<boolean>(true); // loading
+  const [chartsLoading, setChartsLoading] = useState<boolean>(true); // loading
   // 选中行的ID
   const [proteinRowKey, setProteinRowKey] = useState<any>();
   const [peptideRowKey, setPeptideRowKey] = useState<any>();
@@ -67,7 +70,7 @@ const TableList: React.FC = (props: any) => {
           protein: value,
         });
         setPeptideData(result.data);
-        return true;
+        setPeptideLoading(false);
       }
     }
     return false;
@@ -152,6 +155,8 @@ const TableList: React.FC = (props: any) => {
         Height =
           Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
         setHandleOption(option);
+        // setLoading(false);
+        setChartsLoading(false);
         // message.success('获取EIC Matrix数据成功');
         return true;
       } catch (error) {
@@ -349,10 +354,11 @@ const TableList: React.FC = (props: any) => {
                           onClick: () => {
                             setProteinRowKey(record.key);
                             selectProteinRow(record);
+                            setPeptideLoading(true);
                           },
                         };
                       }}
-                      loading={!prepareData}
+                      loading={loading}
                       style={{ height: 440 }}
                       pagination={{
                         size: 'small',
@@ -376,7 +382,7 @@ const TableList: React.FC = (props: any) => {
                       toolBarRender={false}
                       tableAlertRender={false}
                       pagination={false}
-                      loading={!peptideData}
+                      loading={peptideLoading}
                       style={{ height: 363 }}
                       rowClassName={(record) => {
                         return record.key === peptideRowKey ? 'clinicTableBgc' : '';
@@ -387,6 +393,7 @@ const TableList: React.FC = (props: any) => {
                             setPeptideRowKey(record.key);
                             selectPeptideRow(record);
                             setHandleSubmit(!handleSubmit);
+                            setChartsLoading(true);
                           },
                         };
                       }}
@@ -458,20 +465,22 @@ const TableList: React.FC = (props: any) => {
                       ))}
                   </Col>
                   <Col span={24}>
-                    {selectedTags.length > 0 && handleOption !== undefined ? (
-                      <ReactECharts
-                        option={handleOption}
-                        notMerge={true}
-                        lazyUpdate={true}
-                        style={{ width: '100%', height: Height }}
-                      />
-                    ) : (
-                      <Empty
-                        description="请先选择实验"
-                        style={{ padding: '10px', color: '#B0B8C1' }}
-                        imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
-                      />
-                    )}
+                    <Spin spinning={chartsLoading} >
+                      {selectedTags.length > 0 && handleOption !== undefined ? (
+                        <ReactECharts
+                          option={handleOption}
+                          notMerge={true}
+                          lazyUpdate={true}
+                          style={{ width: '100%', height: Height }}
+                        />
+                      ) : (
+                        <Empty
+                          description="请先选择实验"
+                          style={{ padding: '10px', color: '#B0B8C1' }}
+                          imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+                        />
+                      )}
+                    </Spin>
                   </Col>
                 </Row>
               </Col>
