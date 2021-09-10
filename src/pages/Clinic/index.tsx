@@ -21,7 +21,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import type { PrepareData } from './data';
 import ReactECharts from 'echarts-for-react';
-import { getExpData, getPeptideRefs, prepare } from './service';
+import { getExpData, getPeptideRefs, prepare, report } from './service';
 import { IrtOption } from './charts';
 import ProTable from '@ant-design/pro-table';
 
@@ -39,7 +39,7 @@ let Height = 0;
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const [exps, setExps] = useState<IdName[]>([]); // 渲染 tags
-  const [selectedTags, setSelectedTags] = useState<any>([]); // 选中 tags
+  const [selectedTags, setSelectedTags] = useState<any>([]); // 选中 tags,存放的真实值为expId列表
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 项目名 蛋白下拉菜单渲染
@@ -457,7 +457,11 @@ const TableList: React.FC = (props: any) => {
             </Row>
           </TabPane>
           <TabPane tab="Irt结果" key="3" />
-          <TabPane tab="定量矩阵" key="4" />
+          <TabPane tab="定量矩阵" key="4" >
+            <Button style={{ marginRight: 5 }} size="small" onClick={() => report({ expIds: selectedTags })}>
+              获取定量矩阵
+            </Button>
+          </TabPane>
         </Tabs>
       </ProCard>
     </PageContainer>
