@@ -374,13 +374,35 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                   <Col span={24}>
                     <ProTable
-                      columns={[{ title: '肽段', dataIndex: 'peptide', key: 'peptide' },{ title: '是否唯一', dataIndex: 'isUnique', key: 'isUnique' }]}
+                      columns={[
+                        {
+                          title: 'Unique',
+                          dataIndex: 'isUnique',
+                          key: 'isUnique',
+                          width: 75,
+                          render: (dom, entity) => {
+                            if (entity.isUnique) {
+                              return 'true';
+                            }
+                            return 'false';
+                          },
+                        },
+                        {
+                          title: '肽段',
+                          dataIndex: 'peptide',
+                          key: 'peptide',
+                        },
+                      ]}
                       dataSource={peptideList?.map((item) => {
-                        return { key: item.peptideRef, peptide: item.peptideRef, isUnique:item.isUnique };
+                        return {
+                          key: item.peptideRef,
+                          peptide: item.peptideRef,
+                          isUnique: item.isUnique,
+                        };
                       })}
                       size="small"
                       search={false}
-                      scroll={{ y: 330 }}
+                      scroll={{ y: 330, x: 'max-content' }}
                       toolBarRender={false}
                       tableAlertRender={false}
                       pagination={false}
@@ -467,7 +489,7 @@ const TableList: React.FC = (props: any) => {
                       ))}
                   </Col>
                   <Col span={24}>
-                    <Spin spinning={chartsLoading} >
+                    <Spin spinning={chartsLoading}>
                       {selectedTags.length > 0 && handleOption !== undefined ? (
                         <ReactECharts
                           option={handleOption}
