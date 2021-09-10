@@ -20,11 +20,11 @@ import {
   Spin,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-import type { PrepareData, Peptide, PeptideRow } from './data';
+import type { PrepareData, Peptide, PeptideRow, peptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare, report } from './service';
 import { IrtOption } from './xic';
-import ProTable from '@ant-design/pro-table';
+import ProTable, { ProColumns } from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 
@@ -143,10 +143,9 @@ const TableList: React.FC = (props: any) => {
     if (!checkParams()) {
       return false;
     }
-  
+
     let result = await report(selectedTags);
-    if(result){
-      
+    if (result) {
     }
     return true;
   }
@@ -214,8 +213,6 @@ const TableList: React.FC = (props: any) => {
     }
     return true;
   };
-
-  
 
   /* 全选 */
   const selectAll = () => {
@@ -319,6 +316,27 @@ const TableList: React.FC = (props: any) => {
       ),
   });
 
+  /* 肽段table columns */
+  const peptideColumn: ProColumns<peptideTableItem>[] = [
+    {
+      title: 'Unique',
+      dataIndex: 'isUnique',
+      key: 'isUnique',
+      width: 60,
+      render: (dom, entity) => {
+        if (entity.isUnique) {
+          return <Tag color="success">true</Tag>;
+        }
+        return <Tag color="error">false</Tag>;
+      },
+    },
+    {
+      title: '肽段',
+      dataIndex: 'peptide',
+      key: 'peptide',
+    },
+  ];
+
   return (
     <PageContainer
       header={{
@@ -390,25 +408,7 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                   <Col span={24}>
                     <ProTable
-                      columns={[
-                        {
-                          title: 'Unique',
-                          dataIndex: 'isUnique',
-                          key: 'isUnique',
-                          width: 75,
-                          render: (dom, entity) => {
-                            if (entity.isUnique) {
-                              return 'true';
-                            }
-                            return 'false';
-                          },
-                        },
-                        {
-                          title: '肽段',
-                          dataIndex: 'peptide',
-                          key: 'peptide',
-                        },
-                      ]}
+                      columns={peptideColumn}
                       dataSource={peptideList?.map((item) => {
                         return {
                           key: item.peptideRef,
@@ -552,11 +552,16 @@ const TableList: React.FC = (props: any) => {
             <Button
               style={{ marginRight: 5 }}
               size="small"
-              onClick={() => fetchSumMatrix({ expIds: selectedTags })}>
+              onClick={() => fetchSumMatrix({ expIds: selectedTags })}
+            >
               获取定量矩阵
             </Button>
             <ProTable
-              columns={[{ title: '蛋白', dataIndex: 'proteins', key: 'proteins' },{ title: '肽段', dataIndex: 'peptide', key: 'peptide' },{ title: '定量值', dataIndex: 'sum', key: 'sum' }]}
+              columns={[
+                { title: '蛋白', dataIndex: 'proteins', key: 'proteins' },
+                { title: '肽段', dataIndex: 'peptide', key: 'peptide' },
+                { title: '定量值', dataIndex: 'sum', key: 'sum' },
+              ]}
               dataSource={peptideRowList}
               size="small"
               search={false}
