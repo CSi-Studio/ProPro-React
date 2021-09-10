@@ -9,3 +9,8 @@ export type PrepareData = {
   expList: array<IdNameAlias>
   overviewMap: Map<string, any>
 }
+
+export type Peptide = {
+  peptideRef: string,
+  isUnique: boolean
+}
