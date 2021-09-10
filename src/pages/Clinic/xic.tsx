@@ -412,21 +412,30 @@ export class IrtOption {
       label: { show: false },
       data: [],
     };
+
     data.scoreList.forEach((item: any, index: any) => {
       if (index === data.selectIndex) {
-        const rtData = item.rtRangeFeature.split(';');
+        const rtRange = item.rtRangeFeature.split(';');
         markLineOpt.data.push({
-          xAxis: rtData[0],
+          xAxis: rtRange[0],
           lineStyle: { color: '#FF1D00', type: 'dashed', width: 1 },
         });
         markLineOpt.data.push({
-          xAxis: rtData[1],
+          xAxis: rtRange[1],
           lineStyle: { color: '#FF1D00', type: 'dashed', width: 1 },
+        });
+        markLineOpt.data.push({
+          xAxis: item.rt,
+          lineStyle: { color: '#7b68ee', type: 'dotted', dashOffset: 2, width: 1 },
         });
       } else {
-        const rtData = item.rtRangeFeature.split(';');
-        markLineOpt.data.push({ xAxis: rtData[0] });
-        markLineOpt.data.push({ xAxis: rtData[1] });
+        const rtRange = item.rtRangeFeature.split(';');
+        markLineOpt.data.push({ xAxis: rtRange[0] });
+        markLineOpt.data.push({ xAxis: rtRange[1] });
+        markLineOpt.data.push({
+          xAxis: item.rt,
+          lineStyle: { color: '#7b68ee', type: 'dotted', dashOffset: 2, width: 1 },
+        });
       }
     });
 
