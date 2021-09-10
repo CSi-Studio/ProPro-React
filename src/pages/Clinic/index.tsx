@@ -19,7 +19,7 @@ import {
   Col,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-import type { PrepareData } from './data';
+import type { PrepareData, Peptide } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare, report } from './service';
 import { IrtOption } from './xic';
@@ -45,7 +45,7 @@ const TableList: React.FC = (props: any) => {
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 项目名 蛋白下拉菜单渲染
-  const [peptideData, setPeptideData] = useState<string[]>([]); // 肽段下拉菜单渲染
+  const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段下拉菜单渲染
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
@@ -66,7 +66,7 @@ const TableList: React.FC = (props: any) => {
           libraryId: prepareData?.anaLib?.id,
           protein: value,
         });
-        setPeptideData(result.data);
+        setPeptideList(result.data);
         return true;
       }
     }
@@ -111,10 +111,10 @@ const TableList: React.FC = (props: any) => {
   }, [prepareData]);
 
   useEffect(() => {
-    setPeptideRef(peptideData[0]); // 取第一个肽段
-    setPeptideRowKey(peptideData[0]);
+    setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
+    setPeptideRowKey(peptideList[0]?.peptideRef);
     setHandleSubmit(!handleSubmit); // 触发设置option
-  }, [peptideData[0]]);
+  }, [peptideList[0]?.peptideRef]);
 
   useEffect(() => {
     /* 诊断数据 */
@@ -366,9 +366,9 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                   <Col span={24}>
                     <ProTable
-                      columns={[{ title: '肽段', dataIndex: 'peptide', key: 'peptide' }]}
-                      dataSource={peptideData?.map((item) => {
-                        return { key: item, peptide: item };
+                      columns={[{ title: '肽段', dataIndex: 'peptide', key: 'peptide' },{ title: '是否唯一', dataIndex: 'isUnique', key: 'isUnique' }]}
+                      dataSource={peptideList?.map((item) => {
+                        return { key: item.peptideRef, peptide: item.peptideRef, isUnique:item.isUnique };
                       })}
                       size="small"
                       search={false}
@@ -376,7 +376,7 @@ const TableList: React.FC = (props: any) => {
                       toolBarRender={false}
                       tableAlertRender={false}
                       pagination={false}
-                      loading={!peptideData}
+                      loading={!peptideList}
                       style={{ height: 363 }}
                       rowClassName={(record) => {
                         return record.key === peptideRowKey ? 'clinicTableBgc' : '';
@@ -507,7 +507,7 @@ const TableList: React.FC = (props: any) => {
             >
               获取定量矩阵
             </Button>
-            <ProTable
+            {/* <ProTable
               columns={[{ title: '定量矩阵', dataIndex: 'peptide', key: 'peptide' }]}
               dataSource={peptideData?.map((item) => {
                 return { key: item, peptide: item };
@@ -532,7 +532,7 @@ const TableList: React.FC = (props: any) => {
                   },
                 };
               }}
-            />
+            /> */}
           </TabPane>
         </Tabs>
       </ProCard>
