@@ -38,8 +38,8 @@ let Height = 0;
 
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
-  const [exps, setExps] = useState<IdName[]>([]); // 渲染 tags
-  const [selectedTags, setSelectedTags] = useState<any>([]); // 选中 tags,存放的真实值为expId列表
+  const [exps, setExps] = useState<IdName[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
+  const [selectedTags, setSelectedTags] = useState<any>([]); // 选中exp,存放的真实值为exp.id列表
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 项目名 蛋白下拉菜单渲染
@@ -442,6 +442,32 @@ const TableList: React.FC = (props: any) => {
             <Button style={{ marginRight: 5 }} size="small" onClick={() => report({ expIds: selectedTags })}>
               获取定量矩阵
             </Button>
+            <ProTable
+              columns={[{ title: '定量矩阵', dataIndex: 'peptide', key: 'peptide' }]}
+              dataSource={peptideData?.map((item) => {
+                return { key: item, peptide: item };
+              })}
+              size="small"
+              search={false}
+              scroll={{ y: 330 }}
+              toolBarRender={false}
+              tableAlertRender={false}
+              pagination={false}
+              loading={!peptideData}
+              style={{ height: 363 }}
+              rowClassName={(record) => {
+                return record.key === peptideRowKey ? 'clinicTableBgc' : '';
+              }}
+              onRow={(record) => {
+                return {
+                  onClick: () => {
+                    setPeptideRowKey(record.key);
+                    selectPeptideRow(record);
+                    setHandleSubmit(!handleSubmit);
+                  },
+                };
+              }}
+            />
           </TabPane>
         </Tabs>
       </ProCard>
