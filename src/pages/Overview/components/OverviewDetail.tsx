@@ -3,7 +3,7 @@ import { Drawer, Tag } from 'antd';
 import type { TableListItem } from '@/pages/Overview/data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { ProColumns } from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
 import ReactJson from 'react-json-view';
 
 export type UpdateFormProps = {

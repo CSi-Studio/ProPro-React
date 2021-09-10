@@ -24,6 +24,8 @@ import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare } from './service';
 import { IrtOption } from './xic';
 import ProTable from '@ant-design/pro-table';
+import { SearchOutlined } from '@ant-design/icons';
+import Highlighter from 'react-highlight-words';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -52,6 +54,9 @@ const TableList: React.FC = (props: any) => {
   // 选中行的ID
   const [proteinRowKey, setProteinRowKey] = useState<any>();
   const [peptideRowKey, setPeptideRowKey] = useState<any>();
+  /* table 搜索 */
+  const [searchText, setSearchText] = useState<any>();
+  const [searchedCol, setSearchedCol] = useState<any>('protein');
 
   // 获取肽段列表
   async function onProteinChange(value: string) {
@@ -117,7 +122,6 @@ const TableList: React.FC = (props: any) => {
       if (selectedTags.length === 0) {
         return false;
       }
-      const hide = message.loading('正在获取，请稍后');
       try {
         const result = await getExpData({
           projectId,
@@ -148,11 +152,9 @@ const TableList: React.FC = (props: any) => {
         Height =
           Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
         setHandleOption(option);
-        hide();
-        message.success('获取EIC Matrix数据成功');
+        // message.success('获取EIC Matrix数据成功');
         return true;
       } catch (error) {
-        hide();
         message.error('获取EIC Matrix失败，请重试!');
         return false;
       }
@@ -192,7 +194,7 @@ const TableList: React.FC = (props: any) => {
     return true;
   }
 
-  // 全选
+  /* 全选 */
   const selectAll = () => {
     setSelectedTags(
       exps?.map((item: any) => {
@@ -202,7 +204,7 @@ const TableList: React.FC = (props: any) => {
     setHandleSubmit(!handleSubmit);
   };
 
-  // 反选
+  /* 反选 */
   const selectReverse = () => {
     const reverse = exps.map((item) => item.id).filter((id) => !selectedTags.includes(id));
     setSelectedTags(reverse);
@@ -223,6 +225,96 @@ const TableList: React.FC = (props: any) => {
     }
   };
 
+  /* table 搜索 */
+  const handleSearch = (selectedKeys: any[], confirm: () => void, dataIndex: any) => {
+    confirm();
+    console.log('handleselectedKeys:::', selectedKeys);
+
+    setSearchText(selectedKeys[0]);
+    setSearchedCol(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
+  };
+  let searchInput: any;
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={(node) => {
+            searchInput = node;
+          }}
+          placeholder={`搜索肽段`}
+          value={selectedKeys[0]}
+          onChange={(e) => {
+            setSelectedKeys(e.target.value ? [e.target.value] : []);
+            // console.log('e:::', e);
+            // console.log('selectedKeys:::', selectedKeys);
+            // console.log('confirm:::', confirm);
+            // console.log('clearFilters:::', clearFilters);
+          }}
+          onPressEnter={() => {
+            console.log('selectedKeys:::', selectedKeys);
+            console.log('confirm:::', confirm);
+            console.log('dataIndex:::', dataIndex);
+            handleSearch(selectedKeys, confirm, dataIndex);
+          }}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => {
+              console.log('selectedKeys:::', selectedKeys);
+              console.log('confirm:::', confirm);
+              console.log('clearFilters:::', clearFilters);
+              handleSearch(selectedKeys, confirm, dataIndex);
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            搜索
+          </Button>
+          <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+            重置
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: any) => (
+      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value: any, record: any) =>
+      record[dataIndex]
+        ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+        : '',
+    onFilterDropdownVisibleChange: (visible: any) => {
+      if (visible) {
+        setTimeout(() => searchInput.select(), 100);
+      }
+    },
+    render: (text: any) =>
+      searchedCol === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.props.children : ''}
+        />
+      ) : (
+        // <Tag
+        //   onClick={() => {
+        //     console.log(text);
+        //   }}
+        // >
+        //   {text}
+        // </Tag>
+        '暂无数据'
+      ),
+  });
+
   return (
     <PageContainer
       header={{
@@ -231,24 +323,6 @@ const TableList: React.FC = (props: any) => {
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
           <Form name="analyzeForm" layout="inline" onFinish={doSubmit}>
-            <Form.Item name="protein" label="蛋白">
-              <Select onChange={onProteinChange} showSearch key="1" style={{ width: 300 }}>
-                {prepareData?.proteins?.map((protein) => (
-                  <Option key={protein} value={protein}>
-                    {protein}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item name="peptideRef" label="肽段">
-              <Select style={{ width: 300 }}>
-                {peptideData?.map((item) => (
-                  <Option key={item} value={item}>
-                    {item}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
             <Form.Item name="customPeptideRef" label="自定义肽段">
               <Input style={{ width: 300 }} />
             </Form.Item>
@@ -270,7 +344,13 @@ const TableList: React.FC = (props: any) => {
                   <Col span={24}>
                     <ProTable
                       columns={[
-                        { title: '蛋白', dataIndex: 'protein', key: 'protein', ellipsis: true },
+                        {
+                          title: '蛋白',
+                          dataIndex: 'protein',
+                          key: 'protein',
+                          ellipsis: true,
+                          ...getColumnSearchProps('protein'),
+                        },
                       ]}
                       dataSource={prepareData?.proteins.map((protein) => {
                         return { key: protein, protein };
@@ -291,7 +371,7 @@ const TableList: React.FC = (props: any) => {
                           },
                         };
                       }}
-                      loading={loading}
+                      loading={!prepareData}
                       style={{ height: 440 }}
                       pagination={{
                         size: 'small',
