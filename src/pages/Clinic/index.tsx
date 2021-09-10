@@ -20,7 +20,7 @@ import {
   Spin,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-import type { PrepareData, Peptide } from './data';
+import type { PrepareData, Peptide, PeptideRow } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare, report } from './service';
 import { IrtOption } from './xic';
@@ -47,6 +47,7 @@ const TableList: React.FC = (props: any) => {
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 项目名 蛋白下拉菜单渲染
   const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段下拉菜单渲染
+  const [peptideRowList, setPeptideRowList] = useState<PeptideRow[]>([]); // 肽段下拉菜单渲染
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
@@ -76,6 +77,78 @@ const TableList: React.FC = (props: any) => {
       }
     }
     return false;
+  }
+
+  async function doAnalyze() {
+    if (selectedTags.length === 0) {
+      return false;
+    }
+    try {
+      const result = await getExpData({
+        projectId,
+        peptideRef,
+        expIds: selectedTags,
+        onlyDefault,
+        smooth,
+        denoise,
+      });
+      // 将实验 别名 给 getExpData接口得到的数据
+      result.data.map((item: any) => {
+        exps?.forEach((_item: any) => {
+          if (item.expId === _item.id) {
+            item.name = _item.name;
+          }
+        });
+        return true;
+      });
+      const irt = new IrtOption(
+        result.data,
+        gridNumberInRow,
+        xName,
+        yName,
+        gridHeight,
+        gridPaddingHeight,
+      );
+      const option = irt.getIrtOption();
+      Height =
+        Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
+      setHandleOption(option);
+      // setLoading(false);
+      setChartsLoading(false);
+      // message.success('获取EIC Matrix数据成功');
+      return true;
+    } catch (error) {
+      message.error('获取EIC Matrix失败，请重试!');
+      return false;
+    }
+  }
+
+  // 诊断Form 提交
+  async function doSubmit(values: any) {
+    if (!checkParams()) {
+      return false;
+    }
+    const submitData = values.customPeptideRef ? values.customPeptideRef : values.peptideRef;
+    if (!values.peptideRef) {
+      message.warn('请选择一个PeptideRef');
+      return false;
+    }
+    setPeptideRef(submitData);
+    setHandleSubmit(!handleSubmit);
+    return true;
+  }
+
+  // 诊断Form 提交
+  async function fetchSumMatrix() {
+    if (!checkParams()) {
+      return false;
+    }
+  
+    let result = await report(selectedTags);
+    if(result){
+      
+    }
+    return true;
   }
 
   useEffect(() => {
@@ -122,50 +195,6 @@ const TableList: React.FC = (props: any) => {
   }, [peptideList[0]?.peptideRef]);
 
   useEffect(() => {
-    /* 诊断数据 */
-    async function doAnalyze() {
-      if (selectedTags.length === 0) {
-        return false;
-      }
-      try {
-        const result = await getExpData({
-          projectId,
-          peptideRef,
-          expIds: selectedTags,
-          onlyDefault,
-          smooth,
-          denoise,
-        });
-        // 将实验 别名 给 getExpData接口得到的数据
-        result.data.map((item: any) => {
-          exps?.forEach((_item: any) => {
-            if (item.expId === _item.id) {
-              item.name = _item.name;
-            }
-          });
-          return true;
-        });
-        const irt = new IrtOption(
-          result.data,
-          gridNumberInRow,
-          xName,
-          yName,
-          gridHeight,
-          gridPaddingHeight,
-        );
-        const option = irt.getIrtOption();
-        Height =
-          Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
-        setHandleOption(option);
-        // setLoading(false);
-        setChartsLoading(false);
-        // message.success('获取EIC Matrix数据成功');
-        return true;
-      } catch (error) {
-        message.error('获取EIC Matrix失败，请重试!');
-        return false;
-      }
-    }
     doAnalyze();
   }, [handleSubmit]);
 
@@ -186,20 +215,7 @@ const TableList: React.FC = (props: any) => {
     return true;
   };
 
-  // 诊断Form 提交
-  async function doSubmit(values: any) {
-    if (!checkParams()) {
-      return false;
-    }
-    const submitData = values.customPeptideRef ? values.customPeptideRef : values.peptideRef;
-    if (!values.peptideRef) {
-      message.warn('请选择一个PeptideRef');
-      return false;
-    }
-    setPeptideRef(submitData);
-    setHandleSubmit(!handleSubmit);
-    return true;
-  }
+  
 
   /* 全选 */
   const selectAll = () => {
@@ -514,36 +530,19 @@ const TableList: React.FC = (props: any) => {
             <Button
               style={{ marginRight: 5 }}
               size="small"
-              onClick={() => report({ expIds: selectedTags })}
-            >
+              onClick={() => fetchSumMatrix({ expIds: selectedTags })}>
               获取定量矩阵
             </Button>
-            {/* <ProTable
-              columns={[{ title: '定量矩阵', dataIndex: 'peptide', key: 'peptide' }]}
-              dataSource={peptideData?.map((item) => {
-                return { key: item, peptide: item };
-              })}
+            <ProTable
+              columns={[{ title: '蛋白', dataIndex: 'proteins', key: 'proteins' },{ title: '肽段', dataIndex: 'peptide', key: 'peptide' },{ title: '定量值', dataIndex: 'sum', key: 'sum' }]}
+              dataSource={peptideRowList}
               size="small"
               search={false}
-              scroll={{ y: 330 }}
               toolBarRender={false}
               tableAlertRender={false}
               pagination={false}
-              loading={!peptideData}
-              style={{ height: 363 }}
-              rowClassName={(record) => {
-                return record.key === peptideRowKey ? 'clinicTableBgc' : '';
-              }}
-              onRow={(record) => {
-                return {
-                  onClick: () => {
-                    setPeptideRowKey(record.key);
-                    selectPeptideRow(record);
-                    setHandleSubmit(!handleSubmit);
-                  },
-                };
-              }}
-            /> */}
+              loading={!peptideRowList}
+            />
           </TabPane>
         </Tabs>
       </ProCard>

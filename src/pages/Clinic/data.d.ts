@@ -14,3 +14,9 @@ export type Peptide = {
   peptideRef: string,
   isUnique: boolean
 }
+
+export type PeptideRow = {
+  proteins: string,
+  peptide: string,
+  dataList: string[]
+}
