@@ -20,19 +20,20 @@ import {
   Spin,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-import type { PrepareData, Peptide, PeptideRow, PeptideTableItem, PeptideRowTableItem } from './data';
+import type { PrepareData, Peptide, PeptideRow, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare, report } from './service';
 import { IrtOption } from './xic';
-import ProTable, { ProColumns } from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
-const { Option } = Select;
 
-const gridNumberInRow = 3; // 每行grid的个数
+/* echarts参数 */
+let gridNumberInRow = 3; // 每行grid的个数
 const xName = `rt/s`; // 横坐标
 const yName = `int/s`; // 纵坐标
 const gridHeight = 200; // 单张高度（单位px）
@@ -121,7 +122,6 @@ const TableList: React.FC = (props: any) => {
     exps.forEach(idName=>{
       idNameMap.set(idName.id, idName.name)
     })
-   // let idNameMap = exps.map(idName=>{idName.id, idName.name})
     selectedExpIds.forEach((id, index)=>{
       columns.push({
         title: idNameMap[id],
@@ -136,7 +136,7 @@ const TableList: React.FC = (props: any) => {
     return columns
   }
 
-  /****************  网络调用相关接口  *******************/
+  /****************  网络调用相关接口 start  *******************/
   async function doAnalyze() {
     if (selectedExpIds.length === 0) {
       return false;
@@ -168,12 +168,11 @@ const TableList: React.FC = (props: any) => {
         gridPaddingHeight,
       );
       const option = irt.getIrtOption();
+      gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
       setHandleOption(option);
-      // setLoading(false);
       setChartsLoading(false);
-      // message.success('获取EIC Matrix数据成功');
       return true;
     } catch (error) {
       message.error('获取EIC Matrix失败，请重试!');
@@ -201,7 +200,6 @@ const TableList: React.FC = (props: any) => {
     if (!checkParams()) {
       return false
     }
-
     let result = await report({expIds: selectedExpIds});
     if (result) {
       setPeptideRowList(result.data)
@@ -209,6 +207,7 @@ const TableList: React.FC = (props: any) => {
     return true
   }
 
+/****************  use effect start  *******************/
   useEffect(() => {
     /* 准备数据 */
     const init = async () => {
@@ -254,7 +253,7 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     doAnalyze();
-  }, [handleSubmit]);
+  }, [handleSubmit, gridNumberInRow]);
 
   // 点击选择 tags
   const handleExpTagChange = (item: string, checked: boolean) => {
@@ -367,9 +366,7 @@ const TableList: React.FC = (props: any) => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: any) => (
-      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-    ),
+    filterIcon: () => <SearchOutlined style={{ color: '#1890ff', fontSize: '14px' }} />,
     onFilter: (value: any, record: any) =>
       record[dataIndex]
         ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
@@ -413,7 +410,7 @@ const TableList: React.FC = (props: any) => {
       }}
     >
       <ProCard style={{ padding: '0 18px' }}>
-        <Tabs size="small" defaultActiveKey="1">
+        <Tabs size="small" defaultActiveKey="1" destroyInactiveTabPane={true}>
           <TabPane tab="实验列表" key="1">
             <Row>
               <Col span={4}>
@@ -619,7 +616,7 @@ const TableList: React.FC = (props: any) => {
               toolBarRender={false}
               tableAlertRender={false}
               pagination={false}
-              loading={!peptideRowList}
+              loading={!peptideList}
             />
           </TabPane>
         </Tabs>

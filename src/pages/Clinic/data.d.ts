@@ -25,6 +25,7 @@ export type PeptideTableItem = {
   key:string;
   isUnique: boolean;
   peptide: string;
+  key: string;
 };
 
 export type PeptideRowTableItem = {
