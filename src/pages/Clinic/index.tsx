@@ -186,14 +186,11 @@ const TableList: React.FC = (props: any) => {
   }
 
   // 获取定量定性矩阵
-  async function fetchSumMatrix() {
+  async function exportMatrix() {
     if (!checkParams()) {
       return false;
     }
-    const result = await report({ expIds: selectedExpIds });
-    if (result) {
-      setPeptideRowList(result.data);
-    }
+    await report({ expIds: selectedExpIds });
     return true;
   }
 
@@ -582,7 +579,7 @@ const TableList: React.FC = (props: any) => {
           </TabPane>
           <TabPane tab="Irt结果" key="3" />
           <TabPane tab="定量矩阵" key="4">
-            <Button style={{ marginRight: 5 }} size="small" onClick={() => fetchSumMatrix()}>
+            <Button style={{ marginRight: 5 }} size="small" onClick={() => exportMatrix()}>
               导出定性定量矩阵
             </Button>
           </TabPane>
