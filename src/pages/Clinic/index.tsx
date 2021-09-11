@@ -63,7 +63,7 @@ const TableList: React.FC = (props: any) => {
   const [searchText, setSearchText] = useState<any>();
   const [searchedCol, setSearchedCol] = useState<any>('protein');
 
-  const [proteinsIndex, setProteinsIndex] = useState(0);
+  const [proteinsIndex, setProteinsIndex] = useState<number>(0);
 
   const onMouseMove = useCallback(
     (e) => {
@@ -154,9 +154,10 @@ const TableList: React.FC = (props: any) => {
     });
     selectedExpIds.forEach((id, index) => {
       columns.push({
-        title: idNameMap[id],
+        title: idNameMap.get(id),
         dataIndex: id,
         key: id,
+        width:80,
         render: (dom: string, entity: any) => {
           return (
             <Tag
@@ -650,6 +651,7 @@ const TableList: React.FC = (props: any) => {
               columns={peptideRowColumn()}
               dataSource={peptideRowList}
               size="small"
+              key="peptide"
               search={false}
               toolBarRender={false}
               tableAlertRender={false}
