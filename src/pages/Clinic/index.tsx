@@ -9,7 +9,6 @@ import {
   Form,
   Input,
   message,
-  Select,
   Space,
   Tabs,
   Tag,
@@ -19,7 +18,7 @@ import {
   Col,
   Spin,
 } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, peptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare } from './service';
@@ -62,20 +61,54 @@ const TableList: React.FC = (props: any) => {
   const [searchText, setSearchText] = useState<any>();
   const [searchedCol, setSearchedCol] = useState<any>('protein');
 
-  // 获取肽段列表
-  async function onProteinChange(value: string) {
-    if (value[0] !== undefined) {
-      if (prepareData && prepareData.anaLib) {
-        const result = await getPeptideRefs({
-          libraryId: prepareData?.anaLib?.id,
-          protein: value,
-        });
-        // setPeptideData(result.data);
-        setPeptideList(result.data);
-        setPeptideLoading(false);
-        return true;
+  const [proteinsIndex, setProteinsIndex] = useState(0);
+  //  const [isTag, setTag] = useState(false);
+
+  const onMouseMove = useCallback(
+    (e) => {
+      if (proteinsIndex >= 0) {
+        if (e.keyCode === 38 && e.shiftKey) {
+          setPeptideLoading(true);
+          setProteinsIndex(proteinsIndex - 1);
+          setProteinRowKey(prepareData?.proteins[proteinsIndex]);
+          onProteinChange(prepareData?.proteins[proteinsIndex]);
+        }
+        if (e.keyCode === 40 && e.shiftKey) {
+          setPeptideLoading(true);
+          setProteinsIndex(proteinsIndex + 1);
+          setProteinRowKey(prepareData?.proteins[proteinsIndex]);
+          onProteinChange(prepareData?.proteins[proteinsIndex]);
+        }
+      } else {
+        setProteinsIndex(0);
       }
+    },
+    [proteinsIndex],
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', onMouseMove);
+    //  document.addEventListener('mouseup', onMouseUp);
+    return () => {
+      document.removeEventListener('keydown', onMouseMove);
+      //  document.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [onMouseMove]);
+
+  // 获取肽段列表
+  async function onProteinChange(value: any) {
+    // if (value[0] !== undefined) {
+    if (prepareData && prepareData.anaLib) {
+      const result = await getPeptideRefs({
+        libraryId: prepareData?.anaLib?.id,
+        protein: value,
+      });
+      // setPeptideData(result.data);
+      setPeptideList(result.data);
+      setPeptideLoading(false);
+      return true;
     }
+    // }
     return false;
   }
 
@@ -346,7 +379,7 @@ const TableList: React.FC = (props: any) => {
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                诊断
+                诊断 {proteinsIndex}
               </Button>
             </Form.Item>
           </Form>
@@ -384,6 +417,8 @@ const TableList: React.FC = (props: any) => {
                       onRow={(record) => {
                         return {
                           onClick: () => {
+                            console.log(record.key, record);
+
                             setProteinRowKey(record.key);
                             selectProteinRow(record);
                             setPeptideLoading(true);
