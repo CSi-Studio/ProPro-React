@@ -27,9 +27,3 @@ export type PeptideTableItem = {
   peptide: string;
   key: string;
 };
-
-export type PeptideRowTableItem = {
-  key:string;
-  proteins: boolean;
-  peptide: string;
-};
