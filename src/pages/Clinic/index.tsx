@@ -20,19 +20,20 @@ import {
   Spin,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-import type { PrepareData, Peptide, PeptideRow, peptideTableItem } from './data';
+import type { PrepareData, Peptide, peptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
-import { getExpData, getPeptideRefs, prepare, report } from './service';
+import { getExpData, getPeptideRefs, prepare } from './service';
 import { IrtOption } from './xic';
-import ProTable, { ProColumns } from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
-const { Option } = Select;
 
-const gridNumberInRow = 3; // 每行grid的个数
+/* echarts参数 */
+let gridNumberInRow = 3; // 每行grid的个数
 const xName = `rt/s`; // 横坐标
 const yName = `int/s`; // 纵坐标
 const gridHeight = 200; // 单张高度（单位px）
@@ -47,7 +48,6 @@ const TableList: React.FC = (props: any) => {
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 项目名 蛋白下拉菜单渲染
   const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段下拉菜单渲染
-  const [peptideRowList, setPeptideRowList] = useState<PeptideRow[]>([]); // 肽段下拉菜单渲染
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
@@ -110,18 +110,26 @@ const TableList: React.FC = (props: any) => {
         gridPaddingHeight,
       );
       const option = irt.getIrtOption();
+      gridNumberInRow = selectedTags.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
       setHandleOption(option);
-      // setLoading(false);
       setChartsLoading(false);
-      // message.success('获取EIC Matrix数据成功');
       return true;
     } catch (error) {
       message.error('获取EIC Matrix失败，请重试!');
       return false;
     }
   }
+
+  // 诊断前判断
+  const checkParams = () => {
+    if (selectedTags.length === 0) {
+      message.warn('请至少选择一个实验');
+      return false;
+    }
+    return true;
+  };
 
   // 诊断Form 提交
   async function doSubmit(values: any) {
@@ -143,10 +151,9 @@ const TableList: React.FC = (props: any) => {
     if (!checkParams()) {
       return false;
     }
-
-    let result = await report(selectedTags);
-    if (result) {
-    }
+    // let result = await report(selectedTags);
+    // if (result) {
+    // }
     return true;
   }
 
@@ -195,7 +202,7 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     doAnalyze();
-  }, [handleSubmit]);
+  }, [handleSubmit, gridNumberInRow]);
 
   // 点击选择 tags
   const handleChange = (item: string, checked: boolean) => {
@@ -203,15 +210,6 @@ const TableList: React.FC = (props: any) => {
       ? [...selectedTags, item]
       : selectedTags.filter((t: string) => t !== item);
     setSelectedTags(nextSelectedTags);
-  };
-
-  // 诊断前判断
-  const checkParams = () => {
-    if (selectedTags.length === 0) {
-      message.warn('请至少选择一个实验');
-      return false;
-    }
-    return true;
   };
 
   /* 全选 */
@@ -291,9 +289,7 @@ const TableList: React.FC = (props: any) => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: any) => (
-      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-    ),
+    filterIcon: () => <SearchOutlined style={{ color: '#1890ff', fontSize: '14px' }} />,
     onFilter: (value: any, record: any) =>
       record[dataIndex]
         ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
@@ -358,7 +354,7 @@ const TableList: React.FC = (props: any) => {
       }}
     >
       <ProCard style={{ padding: '0 18px' }}>
-        <Tabs size="small" defaultActiveKey="1">
+        <Tabs size="small" defaultActiveKey="1" destroyInactiveTabPane={true}>
           <TabPane tab="实验列表" key="1">
             <Row>
               <Col span={4}>
@@ -562,13 +558,13 @@ const TableList: React.FC = (props: any) => {
                 { title: '肽段', dataIndex: 'peptide', key: 'peptide' },
                 { title: '定量值', dataIndex: 'sum', key: 'sum' },
               ]}
-              dataSource={peptideRowList}
+              dataSource={peptideList}
               size="small"
               search={false}
               toolBarRender={false}
               tableAlertRender={false}
               pagination={false}
-              loading={!peptideRowList}
+              loading={!peptideList}
             />
           </TabPane>
         </Tabs>

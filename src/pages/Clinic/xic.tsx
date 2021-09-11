@@ -179,6 +179,7 @@ export class IrtOption {
           }}`,
           `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr.toFixed(4)}` : ``}}`,
           `{sum|${data[i].sum ? `sum: ${data[i].sum}` : ``}}`,
+          // `{rt|${data[i].rt ? `rt: ${data[i].rt}` : ``}}`,
         ].join(' '),
         subtextStyle: {
           rich: {
@@ -239,6 +240,17 @@ export class IrtOption {
               borderRadius: 2,
               padding: [3, 3],
             },
+            // rt: {
+            //   color: `${data[i].rt ? '#1890ff' : ''}`,
+            //   fontSize: '12',
+            //   fontWeight: 'normal',
+            //   fontFamily: 'Times New Roman,STSong',
+            //   backgroundColor: `${data[i].fdr ? '#e6f7ff' : ''}`,
+            //   borderColor: `${data[i].fdr ? '#91d5ff' : ''}`,
+            //   borderWidth: 1,
+            //   borderRadius: 2,
+            //   padding: [3, 3],
+            // },
           },
         },
         padding: 0,
