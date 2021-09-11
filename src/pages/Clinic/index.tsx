@@ -20,7 +20,7 @@ import {
   Spin,
 } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
-import type { PrepareData, Peptide, PeptideRow, PeptideTableItem } from './data';
+import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare, report } from './service';
 import { IrtOption } from './xic';
@@ -48,7 +48,6 @@ const TableList: React.FC = (props: any) => {
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 进入蛋白诊所的时候初始化的数据,包含实验列表,蛋白质列表
   const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段的Table行
-  const [peptideRowList, setPeptideRowList] = useState<PeptideRow[]>([]); // 定量矩阵的Table行
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
@@ -116,68 +115,7 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'peptide',
       key: 'peptide',
     },
-  ];
-
-  /* 肽段table columns */
-  const peptideRowColumn = () => {
-    const columns = [];
-    columns.push({
-      title: 'Uni',
-      dataIndex: 'unique',
-      key: 'unique',
-      width: 30,
-      render: (dom: string[], entity: any) => {
-        if (entity.proteins.length > 1) {
-          return <Tag color="green">T</Tag>;
-        }
-        return <Tag color="red">F</Tag>;
-      },
-    });
-    columns.push({
-      title: '蛋白',
-      dataIndex: 'proteins',
-      key: 'proteins',
-      width: 250,
-      render: (dom: string[], entity: any) => {
-        return <Tooltip title={entity.proteins.join(',')}>{entity.proteins[0]}</Tooltip>;
-      },
-    });
-    columns.push({
-      title: '肽段',
-      dataIndex: 'peptide',
-      key: 'peptide',
-      width: 200,
-    });
-    const idNameMap = new Map();
-    exps.forEach((idName) => {
-      idNameMap.set(idName.id, idName.name);
-    });
-    selectedExpIds.forEach((id, index) => {
-      columns.push({
-        title: idNameMap.get(id),
-        dataIndex: id,
-        key: id,
-        width:80,
-        render: (dom: string, entity: any) => {
-          return (
-            <Tag
-              color={
-                entity.statusList[index] === 1
-                  ? 'green'
-                  : entity.statusList[index] === 2
-                  ? 'red'
-                  : 'yellow'
-              }
-            >
-              {entity.sumList[index]}
-            </Tag>
-          );
-        },
-      });
-    });
-
-    return columns;
-  };
+  ]
 
   /** **************  网络调用相关接口 start  ****************** */
   async function doAnalyze() {
@@ -645,19 +583,8 @@ const TableList: React.FC = (props: any) => {
           <TabPane tab="Irt结果" key="3" />
           <TabPane tab="定量矩阵" key="4">
             <Button style={{ marginRight: 5 }} size="small" onClick={() => fetchSumMatrix()}>
-              获取定量矩阵
+              导出定性定量矩阵
             </Button>
-            <ProTable
-              columns={peptideRowColumn()}
-              dataSource={peptideRowList}
-              size="small"
-              key="peptide"
-              search={false}
-              toolBarRender={false}
-              tableAlertRender={false}
-              pagination={false}
-              loading={!peptideList}
-            />
           </TabPane>
         </Tabs>
       </ProCard>
