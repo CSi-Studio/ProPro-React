@@ -46,16 +46,7 @@ const TableList: React.FC = (props: any) => {
       render: (dom) => {
         return (
           <Tooltip title={dom} placement="topLeft">
-            {/* <div
-              style={{
-                width: '150px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            > */}
             {dom}
-            {/* </div> */}
           </Tooltip>
         );
       },

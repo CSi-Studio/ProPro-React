@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 import type { IdName } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
@@ -18,10 +19,10 @@ import {
   Col,
   Spin,
 } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
-import type { PrepareData, Peptide, peptideTableItem } from './data';
+import React, { useEffect, useState } from 'react';
+import type { PrepareData, Peptide, PeptideRow, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
-import { getExpData, getPeptideRefs, prepare } from './service';
+import { getExpData, getPeptideRefs, prepare, report } from './service';
 import { IrtOption } from './xic';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -42,11 +43,12 @@ let Height = 0;
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const [exps, setExps] = useState<IdName[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
-  const [selectedTags, setSelectedTags] = useState<any>([]); // 选中exp,存放的真实值为exp.id列表
+  const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
-  const [prepareData, setPrepareData] = useState<PrepareData>(); // 项目名 蛋白下拉菜单渲染
-  const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段下拉菜单渲染
+  const [prepareData, setPrepareData] = useState<PrepareData>(); // 进入蛋白诊所的时候初始化的数据,包含实验列表,蛋白质列表
+  const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段的Table行
+  const [peptideRowList, setPeptideRowList] = useState<PeptideRow[]>([]); // 定量矩阵的Table行
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
@@ -61,66 +63,98 @@ const TableList: React.FC = (props: any) => {
   const [searchText, setSearchText] = useState<any>();
   const [searchedCol, setSearchedCol] = useState<any>('protein');
 
-  const [proteinsIndex, setProteinsIndex] = useState(0);
-  //  const [isTag, setTag] = useState(false);
-
-  const onMouseMove = useCallback(
-    (e) => {
-      if (proteinsIndex >= 0) {
-        if (e.keyCode === 38 && e.shiftKey) {
-          setPeptideLoading(true);
-          setProteinsIndex(proteinsIndex - 1);
-          setProteinRowKey(prepareData?.proteins[proteinsIndex]);
-          onProteinChange(prepareData?.proteins[proteinsIndex]);
+  /** ******** Table Columns Definition ************* */
+  // 肽段列表 Column
+  const peptideColumn: ProColumns<PeptideTableItem>[] = [
+    {
+      title: 'Uni',
+      dataIndex: 'isUnique',
+      key: 'isUnique',
+      width: 25,
+      render: (dom, entity) => {
+        if (entity.isUnique) {
+          return <Tag color="success">T</Tag>;
         }
-        if (e.keyCode === 40 && e.shiftKey) {
-          setPeptideLoading(true);
-          setProteinsIndex(proteinsIndex + 1);
-          setProteinRowKey(prepareData?.proteins[proteinsIndex]);
-          onProteinChange(prepareData?.proteins[proteinsIndex]);
-        }
-      } else {
-        setProteinsIndex(0);
-      }
+        return <Tag color="error">F</Tag>;
+      },
     },
-    [proteinsIndex],
-  );
+    {
+      title: '肽段',
+      dataIndex: 'peptide',
+      key: 'peptide',
+    },
+  ];
 
-  useEffect(() => {
-    document.addEventListener('keydown', onMouseMove);
-    //  document.addEventListener('mouseup', onMouseUp);
-    return () => {
-      document.removeEventListener('keydown', onMouseMove);
-      //  document.removeEventListener('mouseup', onMouseUp);
-    };
-  }, [onMouseMove]);
-
-  // 获取肽段列表
-  async function onProteinChange(value: any) {
-    // if (value[0] !== undefined) {
-    if (prepareData && prepareData.anaLib) {
-      const result = await getPeptideRefs({
-        libraryId: prepareData?.anaLib?.id,
-        protein: value,
+  /* 肽段table columns */
+  const peptideRowColumn = () => {
+    const columns = [];
+    columns.push({
+      title: 'Uni',
+      dataIndex: 'unique',
+      key: 'unique',
+      width: 30,
+      render: (dom: string[], entity: any) => {
+        if (entity.proteins.length > 1) {
+          return <Tag color="green">T</Tag>;
+        }
+        return <Tag color="red">F</Tag>;
+      },
+    });
+    columns.push({
+      title: '蛋白',
+      dataIndex: 'proteins',
+      key: 'proteins',
+      width: 250,
+      render: (dom: string[], entity: any) => {
+        return <Tooltip title={entity.proteins.join(',')}>{entity.proteins[0]}</Tooltip>;
+      },
+    });
+    columns.push({
+      title: '肽段',
+      dataIndex: 'peptide',
+      key: 'peptide',
+      width: 200,
+    });
+    const idNameMap = new Map();
+    exps.forEach((idName) => {
+      idNameMap.set(idName.id, idName.name);
+    });
+    selectedExpIds.forEach((id, index) => {
+      columns.push({
+        title: idNameMap[id],
+        dataIndex: id,
+        key: id,
+        render: (dom: string, entity: any) => {
+          return (
+            <Tag
+              color={
+                entity.statusList[index] === 1
+                  ? 'green'
+                  : entity.statusList[index] === 2
+                  ? 'red'
+                  : 'yellow'
+              }
+            >
+              {entity.sumList[index]}
+            </Tag>
+          );
+        },
       });
-      // setPeptideData(result.data);
-      setPeptideList(result.data);
-      setPeptideLoading(false);
-      return true;
-    }
-    // }
-    return false;
-  }
+    });
 
+    return columns;
+  };
+
+  /** **************  网络调用相关接口 start  ****************** */
   async function doAnalyze() {
-    if (selectedTags.length === 0) {
+    if (selectedExpIds.length === 0) {
       return false;
     }
     try {
       const result = await getExpData({
         projectId,
         peptideRef,
-        expIds: selectedTags,
+        expIds: selectedExpIds,
         onlyDefault,
         smooth,
         denoise,
@@ -143,7 +177,7 @@ const TableList: React.FC = (props: any) => {
         gridPaddingHeight,
       );
       const option = irt.getIrtOption();
-      gridNumberInRow = selectedTags.length > 2 ? 3 : 2;
+      gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
       setHandleOption(option);
@@ -155,17 +189,17 @@ const TableList: React.FC = (props: any) => {
     }
   }
 
-  // 诊断前判断
+  // 网络请求前常规参数判断
   const checkParams = () => {
-    if (selectedTags.length === 0) {
+    if (selectedExpIds.length === 0) {
       message.warn('请至少选择一个实验');
       return false;
     }
     return true;
   };
 
-  // 诊断Form 提交
-  async function doSubmit(values: any) {
+  // 获取EIC图
+  async function fetchEicData(values: any) {
     if (!checkParams()) {
       return false;
     }
@@ -179,17 +213,19 @@ const TableList: React.FC = (props: any) => {
     return true;
   }
 
-  // 诊断Form 提交
+  // 获取定量定性矩阵
   async function fetchSumMatrix() {
     if (!checkParams()) {
       return false;
     }
-    // let result = await report(selectedTags);
-    // if (result) {
-    // }
+    const result = await report({ expIds: selectedExpIds });
+    if (result) {
+      setPeptideRowList(result.data);
+    }
     return true;
   }
 
+  /** **************  use effect start  ****************** */
   useEffect(() => {
     /* 准备数据 */
     const init = async () => {
@@ -205,7 +241,7 @@ const TableList: React.FC = (props: any) => {
         });
         // setDefProtein([result?.data?.proteins[0]]); // table默认选择第一个蛋白
         setExps(expTags); // 放实验列表
-        setSelectedTags(
+        setSelectedExpIds(
           expTags?.map((item: any) => {
             return item.id;
           }),
@@ -238,16 +274,16 @@ const TableList: React.FC = (props: any) => {
   }, [handleSubmit, gridNumberInRow]);
 
   // 点击选择 tags
-  const handleChange = (item: string, checked: boolean) => {
+  const handleExpTagChange = (item: string, checked: boolean) => {
     const nextSelectedTags = checked
-      ? [...selectedTags, item]
-      : selectedTags.filter((t: string) => t !== item);
-    setSelectedTags(nextSelectedTags);
+      ? [...selectedExpIds, item]
+      : selectedExpIds.filter((t: string) => t !== item);
+    setSelectedExpIds(nextSelectedTags);
   };
 
-  /* 全选 */
+  /* 全选所有实验Tag */
   const selectAll = () => {
-    setSelectedTags(
+    setSelectedExpIds(
       exps?.map((item: any) => {
         return item.id;
       }),
@@ -255,10 +291,10 @@ const TableList: React.FC = (props: any) => {
     setHandleSubmit(!handleSubmit);
   };
 
-  /* 反选 */
+  /* 反选当前选择的实验Tag */
   const selectReverse = () => {
-    const reverse = exps.map((item) => item.id).filter((id) => !selectedTags.includes(id));
-    setSelectedTags(reverse);
+    const reverse = exps.map((item) => item.id).filter((id) => !selectedExpIds.includes(id));
+    setSelectedExpIds(reverse);
     setHandleSubmit(!handleSubmit);
   };
 
@@ -282,6 +318,23 @@ const TableList: React.FC = (props: any) => {
     setSearchText(selectedKeys[0]);
     setSearchedCol(dataIndex);
   };
+
+  // Proteins Table切换所选项时触发的事件
+  async function onProteinChange(value: string) {
+    if (value[0] !== undefined) {
+      if (prepareData && prepareData.anaLib) {
+        const result = await getPeptideRefs({
+          libraryId: prepareData?.anaLib?.id,
+          protein: value,
+        });
+        // setPeptideData(result.data);
+        setPeptideList(result.data);
+        setPeptideLoading(false);
+        return true;
+      }
+    }
+    return false;
+  }
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
@@ -345,27 +398,6 @@ const TableList: React.FC = (props: any) => {
       ),
   });
 
-  /* 肽段table columns */
-  const peptideColumn: ProColumns<peptideTableItem>[] = [
-    {
-      title: 'Unique',
-      dataIndex: 'isUnique',
-      key: 'isUnique',
-      width: 60,
-      render: (dom, entity) => {
-        if (entity.isUnique) {
-          return <Tag color="success">true</Tag>;
-        }
-        return <Tag color="error">false</Tag>;
-      },
-    },
-    {
-      title: '肽段',
-      dataIndex: 'peptide',
-      key: 'peptide',
-    },
-  ];
-
   return (
     <PageContainer
       header={{
@@ -373,13 +405,13 @@ const TableList: React.FC = (props: any) => {
         title: '蛋白诊所',
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
-          <Form name="analyzeForm" layout="inline" onFinish={doSubmit}>
+          <Form name="analyzeForm" layout="inline" onFinish={fetchEicData}>
             <Form.Item name="customPeptideRef" label="自定义肽段">
               <Input style={{ width: 300 }} />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                诊断 {proteinsIndex}
+                诊断
               </Button>
             </Form.Item>
           </Form>
@@ -417,8 +449,6 @@ const TableList: React.FC = (props: any) => {
                       onRow={(record) => {
                         return {
                           onClick: () => {
-                            console.log(record.key, record);
-
                             setProteinRowKey(record.key);
                             selectProteinRow(record);
                             setPeptideLoading(true);
@@ -521,9 +551,9 @@ const TableList: React.FC = (props: any) => {
                           <Tooltip style={{ marginTop: 5 }} title={item.id}>
                             <CheckableTag
                               style={{ marginTop: 5, marginLeft: 5 }}
-                              checked={selectedTags?.indexOf(item.id) > -1}
+                              checked={selectedExpIds?.indexOf(item.id) > -1}
                               onChange={(checked) => {
-                                handleChange(item.id, checked);
+                                handleExpTagChange(item.id, checked);
                                 if (handleOption) {
                                   setHandleSubmit(!handleSubmit);
                                 }
@@ -537,7 +567,7 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>
-                      {selectedTags.length > 0 && handleOption !== undefined ? (
+                      {selectedExpIds.length > 0 && handleOption !== undefined ? (
                         <ReactECharts
                           option={handleOption}
                           notMerge={true}
@@ -580,20 +610,12 @@ const TableList: React.FC = (props: any) => {
           </TabPane>
           <TabPane tab="Irt结果" key="3" />
           <TabPane tab="定量矩阵" key="4">
-            <Button
-              style={{ marginRight: 5 }}
-              size="small"
-              onClick={() => fetchSumMatrix({ expIds: selectedTags })}
-            >
+            <Button style={{ marginRight: 5 }} size="small" onClick={() => fetchSumMatrix()}>
               获取定量矩阵
             </Button>
             <ProTable
-              columns={[
-                { title: '蛋白', dataIndex: 'proteins', key: 'proteins' },
-                { title: '肽段', dataIndex: 'peptide', key: 'peptide' },
-                { title: '定量值', dataIndex: 'sum', key: 'sum' },
-              ]}
-              dataSource={peptideList}
+              columns={peptideRowColumn()}
+              dataSource={peptideRowList}
               size="small"
               search={false}
               toolBarRender={false}
