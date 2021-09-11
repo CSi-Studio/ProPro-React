@@ -20,7 +20,15 @@ export type PeptideRow = {
   peptide: string;
   dataList: string[];
 };
-export type peptideTableItem = {
+
+export type PeptideTableItem = {
+  key:string;
   isUnique: boolean;
+  peptide: string;
+};
+
+export type PeptideRowTableItem = {
+  key:string;
+  proteins: boolean;
   peptide: string;
 };
