@@ -63,38 +63,9 @@ const TableList: React.FC = (props: any) => {
   const [searchText, setSearchText] = useState<any>();
   const [searchedCol, setSearchedCol] = useState<any>('protein');
 
-  const [proteinsIndex, setProteinsIndex] = useState(0);
-
-  const onMouseMove = useCallback(
-    (e) => {
-      if (proteinsIndex >= 0) {
-        if (e.keyCode === 38 && e.shiftKey) {
-          setPeptideLoading(true);
-          setProteinsIndex(proteinsIndex - 1);
-          setProteinRowKey(prepareData?.proteins[proteinsIndex]);
-          onProteinChange(prepareData?.proteins[proteinsIndex]);
-        }
-        if (e.keyCode === 40 && e.shiftKey) {
-          setPeptideLoading(true);
-          setProteinsIndex(proteinsIndex + 1);
-          setProteinRowKey(prepareData?.proteins[proteinsIndex]);
-          onProteinChange(prepareData?.proteins[proteinsIndex]);
-        }
-      } else {
-        setProteinsIndex(0);
-      }
-    },
-    [proteinsIndex],
-  );
-
-  useEffect(() => {
-    document.addEventListener('keydown', onMouseMove);
-    //  document.addEventListener('mouseup', onMouseUp);
-    return () => {
-      document.removeEventListener('keydown', onMouseMove);
-      //  document.removeEventListener('mouseup', onMouseUp);
-    };
-  }, [onMouseMove]);
+  const [proteinsIndex, setProteinsIndex] = useState<number>(0);
+  const [proteinPage, setProteinPage] = useState<number>(1);
+  const [peptidesIndex, setPeptidesIndex] = useState<number>(0);
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -331,17 +302,10 @@ const TableList: React.FC = (props: any) => {
     setHandleSubmit(!handleSubmit);
   };
 
-  /* 蛋白点击行选中 */
-  const selectProteinRow = (record: any) => {
-    if (record !== undefined) {
-      onProteinChange(record.protein);
-    }
-  };
-
   /* 肽段点击行选中 */
   const selectPeptideRow = (record: any) => {
     if (record !== undefined) {
-      setPeptideRef(record.peptide);
+      setPeptideRef(record);
     }
   };
 
@@ -351,28 +315,96 @@ const TableList: React.FC = (props: any) => {
     setSearchText(selectedKeys[0]);
     setSearchedCol(dataIndex);
   };
-
-  // Proteins Table切换所选项时触发的事件
-  async function onProteinChange(value: any) {
-    if (value[0] !== undefined) {
-      if (prepareData && prepareData.anaLib) {
-        const result = await getPeptideRefs({
-          libraryId: prepareData?.anaLib?.id,
-          protein: value,
-        });
-        // setPeptideData(result.data);
-        setPeptideList(result.data);
-        setPeptideLoading(false);
-        return true;
-      }
-    }
-    return false;
-  }
-
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');
   };
+
+  // Proteins Table切换所选项时触发的事件
+  async function onProteinChange(value: any) {
+    if (prepareData && prepareData.anaLib) {
+      const result = await getPeptideRefs({
+        libraryId: prepareData?.anaLib?.id,
+        protein: value,
+      });
+      setPeptideList(result.data);
+      setPeptideLoading(false);
+      return true;
+    }
+    return false;
+  }
+  /* 蛋白table键盘事件 */
+  const onProteinKey = useCallback(
+    (e) => {
+      if (e.keyCode === 38 && e.shiftKey) {
+        if (proteinsIndex % 12 === 0) {
+          setProteinPage(proteinPage - 1);
+        }
+        setProteinsIndex(proteinsIndex - 1);
+      }
+      if (e.keyCode === 40 && e.shiftKey) {
+        if ((proteinsIndex + 1) % 12 === 0) {
+          setProteinPage(proteinPage + 1);
+        }
+        setProteinsIndex(proteinsIndex + 1);
+      }
+    },
+    [proteinsIndex],
+  );
+
+  useEffect(() => {
+    if (prepareData) {
+      if (proteinPage < 1 || proteinPage >= Math.ceil(prepareData.proteins.length / 12)) {
+        setProteinPage(1);
+      }
+      if (proteinsIndex < 0 || proteinsIndex >= prepareData.proteins.length) {
+        setProteinsIndex(0);
+        setProteinPage(1);
+      } else {
+        onProteinChange(prepareData?.proteins[proteinsIndex]);
+        setProteinRowKey(prepareData?.proteins[proteinsIndex]);
+        setPeptideLoading(true);
+        setChartsLoading(true);
+      }
+    }
+
+    document.addEventListener('keydown', onProteinKey);
+    return () => {
+      document.removeEventListener('keydown', onProteinKey);
+    };
+  }, [onProteinKey]);
+
+  /* 肽段table键盘事件 */
+  const onPeptideKey = useCallback(
+    (e) => {
+      if (e.keyCode === 38) {
+        setPeptidesIndex(peptidesIndex - 1);
+      }
+      if (e.keyCode === 40) {
+        setPeptidesIndex(peptidesIndex + 1);
+      }
+    },
+    [peptidesIndex],
+  );
+
+  useEffect(() => {
+    const peptideArr = peptideList.map((item) => {
+      return item.peptideRef;
+    });
+    if (peptidesIndex < 0 || peptidesIndex >= peptideArr.length) {
+      setPeptidesIndex(0);
+    } else {
+      selectPeptideRow(peptideArr[peptidesIndex]);
+      setHandleSubmit(!handleSubmit);
+      setPeptideRowKey(peptideArr[peptidesIndex]);
+      setChartsLoading(true);
+    }
+    document.addEventListener('keydown', onPeptideKey);
+    return () => {
+      document.removeEventListener('keydown', onPeptideKey);
+    };
+  }, [onPeptideKey]);
+
   let searchInput: any;
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
@@ -444,7 +476,7 @@ const TableList: React.FC = (props: any) => {
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                诊断
+                诊断{peptidesIndex}
               </Button>
             </Form.Item>
           </Form>
@@ -482,15 +514,20 @@ const TableList: React.FC = (props: any) => {
                       onRow={(record) => {
                         return {
                           onClick: () => {
-                            setProteinRowKey(record.key);
-                            selectProteinRow(record);
                             setPeptideLoading(true);
+                            setChartsLoading(true);
+                            setProteinRowKey(record.key);
+                            onProteinChange(record.protein);
+                            if (prepareData) {
+                              setProteinsIndex(prepareData.proteins.indexOf(record.protein));
+                            }
                           },
                         };
                       }}
                       loading={loading}
                       style={{ height: 440 }}
                       pagination={{
+                        current: proteinPage,
                         size: 'small',
                         showSizeChanger: false,
                         showQuickJumper: false,
@@ -525,9 +562,12 @@ const TableList: React.FC = (props: any) => {
                         return {
                           onClick: () => {
                             setPeptideRowKey(record.key);
-                            selectPeptideRow(record);
+                            selectPeptideRow(record.peptide);
                             setHandleSubmit(!handleSubmit);
                             setChartsLoading(true);
+                            if (prepareData) {
+                              setPeptidesIndex(prepareData.proteins.indexOf(record.peptide));
+                            }
                           },
                         };
                       }}
