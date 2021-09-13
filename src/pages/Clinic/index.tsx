@@ -66,6 +66,7 @@ const TableList: React.FC = (props: any) => {
   const [proteinPage, setProteinPage] = useState<number>(1); // 蛋白table当前页数
   const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
+  const [predict, setPredict] = useState<boolean>(false); // 是否使用预测肽段,每一次使用以后都会重置为false
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -90,13 +91,24 @@ const TableList: React.FC = (props: any) => {
   ];
 
   /** **************  网络调用相关接口 start  ****************** */
-  async function doAnalyze() {
+  async function fetchEicDataList() {
     if (selectedExpIds.length === 0) {
       return false;
     }
+    let predictThisTime = predict;
+    if(predictThisTime){
+      setPredict(false)
+    }
+    if (!peptideRef) {
+      message.warn('请选择一个PeptideRef');
+      return false;
+    }
+
     try {
       const result = await getExpData({
         projectId,
+        libraryId:prepareData?.anaLib?.id,
+        predict: predictThisTime,
         peptideRef,
         expIds: selectedExpIds,
         onlyDefault,
@@ -131,30 +143,6 @@ const TableList: React.FC = (props: any) => {
       message.error('获取EIC Matrix失败，请重试!');
       return false;
     }
-  }
-
-  // 网络请求前常规参数判断
-  const checkParams = () => {
-    if (selectedExpIds.length === 0) {
-      message.warn('请至少选择一个实验');
-      return false;
-    }
-    return true;
-  };
-
-  // 获取EIC图
-  async function fetchEicData(values: any) {
-    if (!checkParams()) {
-      return false;
-    }
-    const submitData = values.customPeptideRef ? values.customPeptideRef : values.peptideRef;
-    if (!values.peptideRef) {
-      message.warn('请选择一个PeptideRef');
-      return false;
-    }
-    setPeptideRef(submitData);
-    setHandleSubmit(!handleSubmit);
-    return true;
   }
 
   /** **************  use effect start  ****************** */
@@ -202,11 +190,11 @@ const TableList: React.FC = (props: any) => {
   }, [peptideList[0]?.peptideRef]);
 
   useEffect(() => {
-    doAnalyze();
+    fetchEicDataList();
   }, [handleSubmit, gridNumberInRow]);
 
   useEffect(() => {
-    doAnalyze();
+    fetchEicDataList();
   }, [smooth, denoise]);
 
   // 点击选择 tags
@@ -415,16 +403,12 @@ const TableList: React.FC = (props: any) => {
         title: '蛋白诊所',
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
-          <Form name="analyzeForm" layout="inline" onFinish={fetchEicData}>
-            <Form.Item name="customPeptideRef" label="自定义肽段">
-              <Input style={{ width: 300 }} />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                诊断
+          <Space>
+              <Checkbox onChange={(event)=>setPredict(event.target.checked)} checked={predict}/>
+              <Button type="primary" htmlType="submit" onClick={fetchEicDataList}>
+                预测兄弟肽段
               </Button>
-            </Form.Item>
-          </Form>
+          </Space>
         ),
       }}
     >
@@ -642,7 +626,7 @@ const TableList: React.FC = (props: any) => {
                     <Tag style={{ marginTop: 5 }} key={type} color="blue">
                       {type}
                     </Tag>
-                  );
+                  )
                 })}
               </Col>
             </Row>
