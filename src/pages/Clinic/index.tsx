@@ -204,6 +204,10 @@ const TableList: React.FC = (props: any) => {
     doAnalyze();
   }, [handleSubmit, gridNumberInRow]);
 
+  useEffect(() => {
+    doAnalyze();
+  }, [smooth, denoise]);  
+
   // 点击选择 tags
   const handleExpTagChange = (item: string, checked: boolean) => {
     const nextSelectedTags = checked
