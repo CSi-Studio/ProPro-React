@@ -421,7 +421,7 @@ const TableList: React.FC = (props: any) => {
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                诊断{peptidesIndex}
+                诊断
               </Button>
             </Form.Item>
           </Form>
