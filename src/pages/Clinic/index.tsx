@@ -67,7 +67,6 @@ const TableList: React.FC = (props: any) => {
   const [proteinPage, setProteinPage] = useState<number>(1); // 蛋白table当前页数
   const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
-  const [predict, setPredict] = useState<boolean>(false); // 是否使用预测肽段,每一次使用以后都会重置为false
 
   /* 当前Tab */
   const [currentTab, setCurrentTab] = useState<string>('1');
@@ -94,24 +93,20 @@ const TableList: React.FC = (props: any) => {
   ];
 
   /** **************  网络调用相关接口 start  ****************** */
-  async function fetchEicDataList() {
+  async function fetchEicDataList(predict:boolean) {
     if (selectedExpIds.length === 0) {
       return false;
-    }
-    let predictThisTime = predict;
-    if(predictThisTime){
-      setPredict(false)
     }
     if (!peptideRef) {
       message.warn('请选择一个PeptideRef');
       return false;
     }
-
+    setChartsLoading(true);
     try {
       const result = await getExpData({
         projectId,
         libraryId:prepareData?.anaLib?.id,
-        predict: predictThisTime,
+        predict: predict,
         peptideRef,
         expIds: selectedExpIds,
         onlyDefault,
@@ -145,6 +140,7 @@ const TableList: React.FC = (props: any) => {
       return true;
     } catch (error) {
       message.error('获取EIC Matrix失败，请重试!');
+      setChartsLoading(false);
       return false;
     }
   }
@@ -193,11 +189,11 @@ const TableList: React.FC = (props: any) => {
   }, [peptideList[0]?.peptideRef]);
 
   useEffect(() => {
-    fetchEicDataList();
+    fetchEicDataList(false);
   }, [handleSubmit, gridNumberInRow]);
 
   useEffect(() => {
-    fetchEicDataList();
+    fetchEicDataList(false);
   }, [smooth, denoise]);
 
   // 点击选择 tags
@@ -237,11 +233,11 @@ const TableList: React.FC = (props: any) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedCol(dataIndex);
-  };
+  }
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');
-  };
+  }
 
   // Proteins Table切换所选项时触发的事件
   async function onProteinChange(value: any) {
@@ -417,8 +413,7 @@ const TableList: React.FC = (props: any) => {
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
           <Space>
-              <Checkbox onChange={(event)=>setPredict(event.target.checked)} checked={predict}/>
-              <Button type="primary" htmlType="submit" onClick={fetchEicDataList}>
+              <Button type="primary" htmlType="submit" onClick={()=>fetchEicDataList(true)}>
                 预测兄弟肽段
               </Button>
           </Space>
