@@ -62,10 +62,10 @@ const TableList: React.FC = (props: any) => {
   /* table 搜索 */
   const [searchText, setSearchText] = useState<any>();
   const [searchedCol, setSearchedCol] = useState<any>('protein');
-
-  const [proteinsIndex, setProteinsIndex] = useState<number>(0);
-  const [proteinPage, setProteinPage] = useState<number>(1);
-  const [peptidesIndex, setPeptidesIndex] = useState<number>(0);
+  /* 键盘事件 */
+  const [proteinsIndex, setProteinsIndex] = useState<number>(0); // 蛋白table当前选中
+  const [proteinPage, setProteinPage] = useState<number>(1); // 蛋白table当前页数
+  const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -128,7 +128,7 @@ const TableList: React.FC = (props: any) => {
         title: idNameMap.get(id),
         dataIndex: id,
         key: id,
-        width:80,
+        width: 80,
         render: (dom: string, entity: any) => {
           return (
             <Tag
@@ -261,11 +261,11 @@ const TableList: React.FC = (props: any) => {
   }, []);
 
   useEffect(() => {
+    // 根据第一个蛋白获得肽段列表
     if (prepareData) {
       onProteinChange(prepareData.proteins[0]);
       setProteinRowKey(prepareData?.proteins[0]);
     }
-    // 根据第一个蛋白获得肽段列表
   }, [prepareData]);
 
   useEffect(() => {
@@ -384,6 +384,9 @@ const TableList: React.FC = (props: any) => {
       if (e.keyCode === 40) {
         setPeptidesIndex(peptidesIndex + 1);
       }
+
+      document.getElementsByClassName('peptideTable')[0].scrollTop = 100;
+      console.log(document.getElementsByClassName('peptideTable'));
     },
     [peptidesIndex],
   );
@@ -401,8 +404,10 @@ const TableList: React.FC = (props: any) => {
       setChartsLoading(true);
     }
     document.addEventListener('keydown', onPeptideKey);
+    document.addEventListener('scroll', onPeptideKey);
     return () => {
       document.removeEventListener('keydown', onPeptideKey);
+      document.removeEventListener('scroll', onPeptideKey);
     };
   }, [onPeptideKey]);
 
@@ -534,7 +539,7 @@ const TableList: React.FC = (props: any) => {
                         showQuickJumper: false,
                         pageSize: 12,
                         showTotal: () => null,
-                        position: ['bottomCenter'],
+                        position: ['bottomRight'],
                       }}
                     />
                   </Col>
@@ -556,19 +561,21 @@ const TableList: React.FC = (props: any) => {
                       pagination={false}
                       loading={peptideLoading}
                       style={{ height: 363 }}
-                      rowClassName={(record) => {
+                      tableClassName="peptideTable"
+                      rowClassName={(record: any) => {
                         return record.key === peptideRowKey ? 'clinicTableBgc' : '';
                       }}
-                      onRow={(record) => {
+                      onRow={(record: any) => {
                         return {
                           onClick: () => {
                             setPeptideRowKey(record.key);
                             selectPeptideRow(record.peptide);
                             setHandleSubmit(!handleSubmit);
                             setChartsLoading(true);
-                            if (prepareData) {
-                              setPeptidesIndex(prepareData.proteins.indexOf(record.peptide));
-                            }
+                            const peptideArr = peptideList.map((item) => {
+                              return item.peptideRef;
+                            });
+                            setPeptidesIndex(peptideArr.indexOf(record.peptide));
                           },
                         };
                       }}

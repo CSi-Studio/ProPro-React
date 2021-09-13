@@ -79,7 +79,7 @@ const TableList: React.FC = () => {
       dataIndex: 'status',
       hideInSearch: true,
       render: (text, record) => {
-        if (record.status == 'SUCCESS') {
+        if (record.status === 'SUCCESS') {
           return (
             <Tag icon={<CheckCircleOutlined />} color="success">
               {text}
