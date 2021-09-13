@@ -142,11 +142,11 @@ const handleRmIrt = async (currentRow: TableListItem | undefined) => {
  * 导出项目
  * @param currentRow
  */
- const handleExport = async (projectId: string) => {
+const handleExport = async (projectId: string) => {
   if (!projectId) return true;
   const hide = message.loading('正在导出');
   try {
-    await report({ projectId: projectId });
+    await report({ projectId });
     hide();
     message.success('导出项目成功');
     return true;
@@ -194,11 +194,92 @@ const TableList: React.FC = () => {
         });
         return true;
       } catch (err) {
-        console.log(err);
         return false;
       }
     };
     init();
+
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    // const canvas = document.getElementById('canvas');
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const context = canvas.getContext('2d');
+    const maxConfettis = 150;
+    const particles: any = [];
+    const possibleColors = [
+      'DodgerBlue',
+      'OliveDrab',
+      'Gold',
+      'Pink',
+      'SlateBlue',
+      'LightBlue',
+      'Gold',
+      'Violet',
+      'PaleGreen',
+      'SteelBlue',
+      'SandyBrown',
+      'Chocolate',
+      'Crimson',
+    ];
+    function randomFromTo(from: number, to: number) {
+      return Math.floor(Math.random() * (to - from + 1) + from);
+    }
+    function confettiParticle() {
+      this.x = Math.random() * W; // x
+      this.y = Math.random() * H - H; // y
+      this.r = randomFromTo(11, 33); // radius
+      this.d = Math.random() * maxConfettis + 11;
+      this.color = possibleColors[Math.floor(Math.random() * possibleColors.length)];
+      this.tilt = Math.floor(Math.random() * 33) - 11;
+      this.tiltAngleIncremental = Math.random() * 0.07 + 0.05;
+      this.tiltAngle = 0;
+
+      this.draw = function () {
+        context.beginPath();
+        context.lineWidth = this.r / 2;
+        context.strokeStyle = this.color;
+        context.moveTo(this.x + this.tilt + this.r / 3, this.y);
+        context.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 5);
+        return context?.stroke();
+      };
+    }
+    function Draw() {
+      const results: any = [];
+      requestAnimationFrame(Draw);
+      context?.clearRect(0, 0, W, window.innerHeight);
+      for (let i = 0; i < maxConfettis; i++) {
+        results.push(particles[i].draw());
+      }
+      let particle: any = {};
+      for (let i = 0; i < maxConfettis; i++) {
+        particle = particles[i];
+        particle.tiltAngle += particle.tiltAngleIncremental;
+        particle.y += (Math.cos(particle.d) + 3 + particle.r / 2) / 2;
+        particle.tilt = Math.sin(particle.tiltAngle - i / 3) * 15;
+        if (particle.x > W + 30 || particle.x < -30 || particle.y > H) {
+          particle.x = Math.random() * W;
+          particle.y = -30;
+          particle.tilt = Math.floor(Math.random() * 10) - 20;
+        }
+      }
+      return results;
+    }
+    window.addEventListener(
+      'resize',
+      () => {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      },
+      false,
+    );
+    for (let i = 0; i < maxConfettis; i++) {
+      particles.push(new confettiParticle());
+    }
+    canvas.width = W;
+    canvas.height = H;
+    Draw();
   }, []);
 
   const columns: ProColumns<TableListItem>[] = [
@@ -454,8 +535,56 @@ const TableList: React.FC = () => {
       setSelectedRows(rowData);
     }
   };
+
   return (
     <>
+      <div
+        className="birthday"
+        style={{
+          position: 'absolute',
+          zIndex: 10000,
+          width: '100%',
+          display: 'block',
+        }}
+        onClick={() => {
+          document.getElementsByClassName('birthday')[0].style.display = 'none';
+        }}
+      >
+        <h1
+          style={{
+            // backgroundColor: '#eee',
+            height: '100%',
+            position: 'absolute',
+            paddingTop: '30vh',
+            width: '100%',
+            textAlign: 'center',
+            fontSize: '333%',
+            color: '#555',
+            // opacity: 0.1,
+          }}
+        >
+          妙善 生日快乐！🎂
+        </h1>
+        <br />
+        <span
+          style={{
+            position: 'absolute',
+            marginTop: '40vh',
+            width: '100%',
+            textAlign: 'center',
+            fontSize: '100%',
+            color: '#333',
+            opacity: 0.5,
+          }}
+        >
+          ——来自碳硅的小可爱们
+        </span>
+        <canvas
+          style={{ overflowY: 'hidden', overflowX: 'hidden', width: '100%', margin: 0 }}
+          id="canvas"
+        />
+      </div>
+
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle="项目列表"
