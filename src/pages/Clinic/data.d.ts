@@ -15,12 +15,6 @@ export type Peptide = {
   isUnique: boolean;
 };
 
-export type PeptideRow = {
-  proteins: string;
-  peptide: string;
-  dataList: string[];
-};
-
 export type PeptideTableItem = {
   key:string;
   isUnique: boolean;
