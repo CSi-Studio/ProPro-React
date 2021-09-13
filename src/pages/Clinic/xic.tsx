@@ -154,6 +154,18 @@ export class IrtOption {
   private getIrtTitle(data: any) {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
+      // rt赋值
+      let rt: any[] = [];
+      if (data[i].scoreList) {
+        rt = data[i].scoreList.map((j: any, index: any) => {
+          if (index === data[i].selectIndex) {
+            return j.rt.toFixed(4);
+          }
+          return false;
+        });
+        rt = rt.filter(Boolean);
+      }
+
       const item = {
         text: data[i].name,
         height: '200px',
@@ -179,15 +191,7 @@ export class IrtOption {
           }}`,
           `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr.toFixed(4)}` : `fdr: -`}}`,
           `{sum|${data[i].sum ? `sum: ${data[i].sum}` : `sum: -`}}`,
-          `{rt|${
-            data[i].scoreList !== null
-              ? `rt: ${data[i].scoreList.map((j: any, index: any) => {
-                  if (index === data[i].selectIndex) {
-                    return j.rt.toFixed(4);
-                  }
-                })}`
-              : `rt: -`
-          }}`,
+          `{rt|${data[i].scoreList !== null ? `rt: ${rt}` : `rt: -`}}`,
         ].join(' '),
         subtextStyle: {
           rich: {

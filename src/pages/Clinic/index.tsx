@@ -43,6 +43,7 @@ let Height = 0;
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const [exps, setExps] = useState<IdName[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
+  const [expData, setExpData] = useState<[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
@@ -68,6 +69,8 @@ const TableList: React.FC = (props: any) => {
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
   const [predict, setPredict] = useState<boolean>(false); // 是否使用预测肽段,每一次使用以后都会重置为false
 
+  /* 当前Tab */
+  const [currentTab, setCurrentTab] = useState<string>('1');
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
   const peptideColumn: ProColumns<PeptideTableItem>[] = [
@@ -124,6 +127,7 @@ const TableList: React.FC = (props: any) => {
         });
         return true;
       });
+      setExpData(result.data);
       const irt = new IrtOption(
         result.data,
         gridNumberInRow,
@@ -159,7 +163,6 @@ const TableList: React.FC = (props: any) => {
             name: item.alias ? item.alias : item.name,
           };
         });
-        // setDefProtein([result?.data?.proteins[0]]); // table默认选择第一个蛋白
         setExps(expTags); // 放实验列表
         setSelectedExpIds(
           expTags?.map((item: any) => {
@@ -253,6 +256,17 @@ const TableList: React.FC = (props: any) => {
     }
     return false;
   }
+
+  /* 打分结果 */
+  const scoresData: { name: any; scoreList: any }[] = [];
+  expData.forEach((item: any) => {
+    const data = {
+      name: item.name,
+      scoreList: item.scoreList,
+    };
+    scoresData.push(data);
+  });
+
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
     (e) => {
@@ -273,7 +287,7 @@ const TableList: React.FC = (props: any) => {
   );
 
   useEffect(() => {
-    if (prepareData) {
+    if (prepareData && currentTab === '1') {
       if (proteinPage < 1 || proteinPage > Math.ceil(prepareData.proteins.length / 12)) {
         setProteinPage(1);
       }
@@ -287,12 +301,11 @@ const TableList: React.FC = (props: any) => {
         setChartsLoading(true);
       }
     }
-
     document.addEventListener('keydown', onProteinKey);
     return () => {
       document.removeEventListener('keydown', onProteinKey);
     };
-  }, [onProteinKey]);
+  }, [onProteinKey, currentTab]);
 
   /* 肽段table键盘事件 */
   const onPeptideKey = useCallback(
@@ -309,34 +322,34 @@ const TableList: React.FC = (props: any) => {
         }
         setPeptidesIndex(peptidesIndex + 1);
       }
-
-      document.getElementsByClassName('peptideTable')[0].scrollTop = 100;
     },
     [peptidesIndex],
   );
 
   useEffect(() => {
-    const peptideArr = peptideList.map((item) => {
-      return item.peptideRef;
-    });
-    if (peptidePage < 1 || peptidePage > Math.ceil(peptideArr.length / 9)) {
-      setPeptidePage(1);
-    }
-    if (peptidesIndex < 0 || peptidesIndex >= peptideArr.length) {
-      setPeptidesIndex(0);
-      setPeptidePage(1);
-    } else {
-      selectPeptideRow(peptideArr[peptidesIndex]);
-      setHandleSubmit(!handleSubmit);
-      setPeptideRowKey(peptideArr[peptidesIndex]);
-      setChartsLoading(true);
+    if (currentTab === '1') {
+      const peptideArr = peptideList.map((item) => {
+        return item.peptideRef;
+      });
+      if (peptidePage < 1 || peptidePage > Math.ceil(peptideArr.length / 9)) {
+        setPeptidePage(1);
+      }
+      if (peptidesIndex < 0 || peptidesIndex >= peptideArr.length) {
+        setPeptidesIndex(0);
+        setPeptidePage(1);
+      } else {
+        selectPeptideRow(peptideArr[peptidesIndex]);
+        setHandleSubmit(!handleSubmit);
+        setPeptideRowKey(peptideArr[peptidesIndex]);
+        setChartsLoading(true);
+      }
     }
 
     document.addEventListener('keydown', onPeptideKey);
     return () => {
       document.removeEventListener('keydown', onPeptideKey);
     };
-  }, [onPeptideKey]);
+  }, [onPeptideKey, currentTab]);
 
   let searchInput: any;
   const getColumnSearchProps = (dataIndex: any) => ({
@@ -413,7 +426,16 @@ const TableList: React.FC = (props: any) => {
       }}
     >
       <ProCard style={{ padding: '0 18px' }}>
-        <Tabs size="small" defaultActiveKey="1" destroyInactiveTabPane={true}>
+        <Tabs
+          size="small"
+          defaultActiveKey="1"
+          destroyInactiveTabPane={true}
+          onChange={(activeKey) => {
+            console.log('activeKey', activeKey, typeof activeKey);
+            setCurrentTab(activeKey);
+            console.log('currentTab', currentTab, typeof currentTab);
+          }}
+        >
           <TabPane tab="实验列表" key="1">
             <Row>
               <Col span={4}>
@@ -632,6 +654,85 @@ const TableList: React.FC = (props: any) => {
             </Row>
           </TabPane>
           <TabPane tab="Irt结果" key="3" />
+          <TabPane tab="打分结果" key="4">
+            <Row gutter={16}>
+              {scoresData.map((item: any) => {
+                if (item.scoreList && item.scoreList[0].scores) {
+                  return (
+                    <Col className="gutter-row" span={8} key={item.name}>
+                      <ProTable
+                        title={() => {
+                          return item.name;
+                        }}
+                        style={{ height: 400 }}
+                        columns={[
+                          {
+                            title: 'index',
+                            dataIndex: 'index',
+                            key: 'index',
+                            width: 50,
+                          },
+                          {
+                            title: '打分结果',
+                            dataIndex: 'scores',
+                            key: 'scores',
+                          },
+                        ]}
+                        dataSource={item.scoreList[0].scores
+                          .filter(Boolean)
+                          .map((i: any, index: any) => {
+                            return { scores: i, index };
+                          })}
+                        size="small"
+                        search={false}
+                        scroll={{ x: 'max-content' }}
+                        toolBarRender={false}
+                        tableAlertRender={false}
+                        key={item.name}
+                        pagination={{
+                          hideOnSinglePage: true,
+                          size: 'small',
+                          showSizeChanger: false,
+                          showQuickJumper: false,
+                          pageSize: 10,
+                          showTotal: () => null,
+                          position: ['bottomRight'],
+                        }}
+                      />
+                    </Col>
+                  );
+                }
+                return (
+                  <Col className="gutter-row" span={8} key={item.name}>
+                    <ProTable
+                      title={() => {
+                        return item.name;
+                      }}
+                      style={{ height: 400 }}
+                      columns={[
+                        {
+                          title: 'index',
+                          dataIndex: 'index',
+                          key: 'index',
+                        },
+                        {
+                          title: '打分结果',
+                          dataIndex: 'scores',
+                          key: 'scores',
+                        },
+                      ]}
+                      size="small"
+                      search={false}
+                      scroll={{ x: 'max-content' }}
+                      toolBarRender={false}
+                      tableAlertRender={false}
+                    />
+                  </Col>
+                );
+              })}
+            </Row>
+            ;
+          </TabPane>
         </Tabs>
       </ProCard>
     </PageContainer>
