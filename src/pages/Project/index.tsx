@@ -10,6 +10,7 @@ import {
   removeIrt,
   removeList,
   removeRes,
+  report,
   updateList,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -59,6 +60,7 @@ const handleUpdate = async (values: updateFormValueType) => {
     return false;
   }
 };
+
 /**
  * 扫描库
  * @param values
@@ -132,6 +134,25 @@ const handleRmIrt = async (currentRow: TableListItem | undefined) => {
   } catch (error) {
     hide();
     message.error('删除失败，请重试');
+    return false;
+  }
+};
+
+/**
+ * 导出项目
+ * @param currentRow
+ */
+ const handleExport = async (projectId: string) => {
+  if (!projectId) return true;
+  const hide = message.loading('正在导出');
+  try {
+    await report({ projectId: projectId });
+    hide();
+    message.success('导出项目成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('导出项目失败，请重试');
     return false;
   }
 };
@@ -521,7 +542,7 @@ const TableList: React.FC = () => {
                 if (selectedRows?.length > 0) {
                   if (selectedRows.length === 1) {
                     message.success('我是导出');
-                    // handleScan({ projectId: selectedRows[0].id });
+                    handleExport(selectedRows[0].id);
                   } else {
                     message.warn('目前只支持单个项目的导出');
                     setSelectedRows([]);

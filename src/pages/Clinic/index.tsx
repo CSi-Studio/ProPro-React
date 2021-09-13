@@ -22,7 +22,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
-import { getExpData, getPeptideRefs, prepare, report } from './service';
+import { getExpData, getPeptideRefs, prepare } from './service';
 import { IrtOption } from './xic';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -153,15 +153,6 @@ const TableList: React.FC = (props: any) => {
     }
     setPeptideRef(submitData);
     setHandleSubmit(!handleSubmit);
-    return true;
-  }
-
-  // 获取定量定性矩阵
-  async function exportMatrix() {
-    if (!checkParams()) {
-      return false;
-    }
-    await report({ expIds: selectedExpIds });
     return true;
   }
 
@@ -618,11 +609,6 @@ const TableList: React.FC = (props: any) => {
             </Row>
           </TabPane>
           <TabPane tab="Irt结果" key="3" />
-          <TabPane tab="定量矩阵" key="4">
-            <Button style={{ marginRight: 5 }} size="small" onClick={() => exportMatrix()}>
-              导出定性定量矩阵
-            </Button>
-          </TabPane>
         </Tabs>
       </ProCard>
     </PageContainer>

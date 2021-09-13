@@ -86,3 +86,17 @@ export async function peptideScan(params: {
     },
   });
 }
+
+
+/** 导出项目报告 POST /project/report */
+export async function report(params: {
+  /** 选择的项目ID */
+  projectId?: string;
+}) {
+  return request(`${url}/excel/report`, {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
