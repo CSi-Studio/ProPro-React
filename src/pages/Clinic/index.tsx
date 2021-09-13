@@ -65,6 +65,7 @@ const TableList: React.FC = (props: any) => {
   const [proteinsIndex, setProteinsIndex] = useState<number>(0); // 蛋白table当前选中
   const [proteinPage, setProteinPage] = useState<number>(1); // 蛋白table当前页数
   const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中
+  const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -86,7 +87,7 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'peptide',
       key: 'peptide',
     },
-  ]
+  ];
 
   /** **************  网络调用相关接口 start  ****************** */
   async function doAnalyze() {
@@ -206,7 +207,7 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     doAnalyze();
-  }, [smooth, denoise]);  
+  }, [smooth, denoise]);
 
   // 点击选择 tags
   const handleExpTagChange = (item: string, checked: boolean) => {
@@ -285,7 +286,7 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     if (prepareData) {
-      if (proteinPage < 1 || proteinPage >= Math.ceil(prepareData.proteins.length / 12)) {
+      if (proteinPage < 1 || proteinPage > Math.ceil(prepareData.proteins.length / 12)) {
         setProteinPage(1);
       }
       if (proteinsIndex < 0 || proteinsIndex >= prepareData.proteins.length) {
@@ -309,14 +310,19 @@ const TableList: React.FC = (props: any) => {
   const onPeptideKey = useCallback(
     (e) => {
       if (e.keyCode === 38) {
+        if (peptidesIndex % 9 === 0) {
+          setPeptidePage(peptidePage - 1);
+        }
         setPeptidesIndex(peptidesIndex - 1);
       }
       if (e.keyCode === 40) {
+        if ((peptidesIndex + 1) % 9 === 0) {
+          setPeptidePage(peptidePage + 1);
+        }
         setPeptidesIndex(peptidesIndex + 1);
       }
 
       document.getElementsByClassName('peptideTable')[0].scrollTop = 100;
-      console.log(document.getElementsByClassName('peptideTable'));
     },
     [peptidesIndex],
   );
@@ -325,19 +331,22 @@ const TableList: React.FC = (props: any) => {
     const peptideArr = peptideList.map((item) => {
       return item.peptideRef;
     });
+    if (peptidePage < 1 || peptidePage > Math.ceil(peptideArr.length / 9)) {
+      setPeptidePage(1);
+    }
     if (peptidesIndex < 0 || peptidesIndex >= peptideArr.length) {
       setPeptidesIndex(0);
+      setPeptidePage(1);
     } else {
       selectPeptideRow(peptideArr[peptidesIndex]);
       setHandleSubmit(!handleSubmit);
       setPeptideRowKey(peptideArr[peptidesIndex]);
       setChartsLoading(true);
     }
+
     document.addEventListener('keydown', onPeptideKey);
-    document.addEventListener('scroll', onPeptideKey);
     return () => {
       document.removeEventListener('keydown', onPeptideKey);
-      document.removeEventListener('scroll', onPeptideKey);
     };
   }, [onPeptideKey]);
 
@@ -460,6 +469,11 @@ const TableList: React.FC = (props: any) => {
                           },
                         };
                       }}
+                      onChange={(page) => {
+                        if (page.current) {
+                          setProteinPage(page.current);
+                        }
+                      }}
                       loading={loading}
                       style={{ height: 440 }}
                       pagination={{
@@ -485,15 +499,29 @@ const TableList: React.FC = (props: any) => {
                       })}
                       size="small"
                       search={false}
-                      scroll={{ y: 330, x: 'max-content' }}
+                      scroll={{ y: 337, x: 'max-content' }}
                       toolBarRender={false}
                       tableAlertRender={false}
-                      pagination={false}
                       loading={peptideLoading}
                       style={{ height: 363 }}
                       tableClassName="peptideTable"
                       rowClassName={(record: any) => {
                         return record.key === peptideRowKey ? 'clinicTableBgc' : '';
+                      }}
+                      pagination={{
+                        hideOnSinglePage: true,
+                        current: peptidePage,
+                        size: 'small',
+                        showSizeChanger: false,
+                        showQuickJumper: false,
+                        pageSize: 9,
+                        showTotal: () => null,
+                        position: ['bottomRight'],
+                      }}
+                      onChange={(page) => {
+                        if (page.current) {
+                          setPeptidePage(page.current);
+                        }
                       }}
                       onRow={(record: any) => {
                         return {
