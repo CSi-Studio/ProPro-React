@@ -1,7 +1,7 @@
 import React from 'react';
 import { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
 import { Button } from 'antd';
-import { TableListItem } from '../data';
+import type { TableListItem } from '../data';
 import { YesOrNo } from '@/components/Enums/Selects';
 
 export type cloneFormValueType = {

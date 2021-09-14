@@ -28,6 +28,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
+import IrtCharts from './irt';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -93,7 +94,7 @@ const TableList: React.FC = (props: any) => {
   ];
 
   /** **************  网络调用相关接口 start  ****************** */
-  async function fetchEicDataList(predict:boolean) {
+  async function fetchEicDataList(predict: boolean) {
     if (selectedExpIds.length === 0) {
       return false;
     }
@@ -105,8 +106,8 @@ const TableList: React.FC = (props: any) => {
     try {
       const result = await getExpData({
         projectId,
-        libraryId:prepareData?.anaLib?.id,
-        predict: predict,
+        libraryId: prepareData?.anaLib?.id,
+        predict,
         peptideRef,
         expIds: selectedExpIds,
         onlyDefault,
@@ -233,11 +234,11 @@ const TableList: React.FC = (props: any) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedCol(dataIndex);
-  }
+  };
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');
-  }
+  };
 
   // Proteins Table切换所选项时触发的事件
   async function onProteinChange(value: any) {
@@ -254,14 +255,37 @@ const TableList: React.FC = (props: any) => {
   }
 
   /* 打分结果 */
-  const scoresData: { name: any; scoreList: any }[] = [];
-  expData.forEach((item: any) => {
-    const data = {
-      name: item.name,
-      scoreList: item.scoreList,
-    };
-    scoresData.push(data);
-  });
+  // console.log(expData);
+  // const scoreColumns: any = [
+  //   {
+  //     title: 'name',
+  //     dataIndex: 'name',
+  //     key: 'name',
+  //   },
+  // ];
+  // prepareData?.method?.score?.scoreTypes?.forEach((type: any, index: number) => {
+  //   const scoreColumn = expData.map((item: any) => ({
+  //     title: type,
+  //     dataIndex: type,
+  //     key: type,
+  //     render: () => {
+  //       return item.scoreList ? item.scoreList[index] : null;
+  //     },
+  //   }));
+  //   scoreColumns.push(scoreColumn);
+  // });
+  // console.log(scoreColumns);
+
+  // const scoresData: { name: any; scoreList: any }[] = [];
+  // expData.forEach((item: any) => {
+  //   const data = {
+  //     name: item.name,
+  //     expId: item.expId,
+  //     id: item.id,
+  //     scoreList: item.scoreList,
+  //   };
+  //   scoresData.push(data);
+  // });
 
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
@@ -413,9 +437,9 @@ const TableList: React.FC = (props: any) => {
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
           <Space>
-              <Button type="primary" htmlType="submit" onClick={()=>fetchEicDataList(true)}>
-                预测兄弟肽段
-              </Button>
+            <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true)}>
+              预测兄弟肽段
+            </Button>
           </Space>
         ),
       }}
@@ -426,12 +450,10 @@ const TableList: React.FC = (props: any) => {
           defaultActiveKey="1"
           destroyInactiveTabPane={true}
           onChange={(activeKey) => {
-            console.log('activeKey', activeKey, typeof activeKey);
             setCurrentTab(activeKey);
-            console.log('currentTab', currentTab, typeof currentTab);
           }}
         >
-          <TabPane tab="实验列表" key="1">
+          <TabPane tab="实验列表" key="exp">
             <Row>
               <Col span={4}>
                 <Row>
@@ -627,7 +649,7 @@ const TableList: React.FC = (props: any) => {
               </Col>
             </Row>
           </TabPane>
-          <TabPane tab="方法参数" key="2">
+          <TabPane tab="方法参数" key="method">
             <Row>
               <Col span={24}>
                 <Space>
@@ -643,88 +665,42 @@ const TableList: React.FC = (props: any) => {
                     <Tag style={{ marginTop: 5 }} key={type} color="blue">
                       {type}
                     </Tag>
-                  )
+                  );
                 })}
               </Col>
             </Row>
           </TabPane>
-          <TabPane tab="Irt结果" key="3" />
-          <TabPane tab="打分结果" key="4">
+          <TabPane tab="Irt结果" key="irt">
+            <IrtCharts values={selectedExpIds} />
+          </TabPane>
+          <TabPane tab="打分结果" key="scoreList">
             <Row gutter={16}>
-              {scoresData.map((item: any) => {
-                if (item.scoreList && item.scoreList[0].scores) {
-                  return (
-                    <Col className="gutter-row" span={8} key={item.name}>
-                      <ProTable
-                        title={() => {
-                          return item.name;
-                        }}
-                        style={{ height: 400 }}
-                        columns={[
-                          {
-                            title: 'index',
-                            dataIndex: 'index',
-                            key: 'index',
-                            width: 50,
-                          },
-                          {
-                            title: '打分结果',
-                            dataIndex: 'scores',
-                            key: 'scores',
-                          },
-                        ]}
-                        dataSource={item.scoreList[0].scores
-                          .filter(Boolean)
-                          .map((i: any, index: any) => {
-                            return { scores: i, index };
-                          })}
-                        size="small"
-                        search={false}
-                        scroll={{ x: 'max-content' }}
-                        toolBarRender={false}
-                        tableAlertRender={false}
-                        key={item.name}
-                        pagination={{
-                          hideOnSinglePage: true,
-                          size: 'small',
-                          showSizeChanger: false,
-                          showQuickJumper: false,
-                          pageSize: 10,
-                          showTotal: () => null,
-                          position: ['bottomRight'],
-                        }}
-                      />
-                    </Col>
-                  );
-                }
-                return (
-                  <Col className="gutter-row" span={8} key={item.name}>
-                    <ProTable
-                      title={() => {
-                        return item.name;
-                      }}
-                      style={{ height: 400 }}
-                      columns={[
-                        {
-                          title: 'index',
-                          dataIndex: 'index',
-                          key: 'index',
-                        },
-                        {
-                          title: '打分结果',
-                          dataIndex: 'scores',
-                          key: 'scores',
-                        },
-                      ]}
-                      size="small"
-                      search={false}
-                      scroll={{ x: 'max-content' }}
-                      toolBarRender={false}
-                      tableAlertRender={false}
-                    />
-                  </Col>
-                );
-              })}
+              <Col className="gutter-row" span={8}>
+                <ProTable
+                  title={() => {
+                    return <p>123</p>;
+                  }}
+                  style={{ height: 400 }}
+                  // columns={scoreColumns}
+                  dataSource={expData.map((i: any) => {
+                    return { key: i.id, name: i.name };
+                  })}
+                  size="small"
+                  search={false}
+                  scroll={{ x: 'max-content' }}
+                  toolBarRender={false}
+                  tableAlertRender={false}
+                  pagination={{
+                    hideOnSinglePage: true,
+                    size: 'small',
+                    showSizeChanger: false,
+                    showQuickJumper: false,
+                    pageSize: 10,
+                    showTotal: () => null,
+                    position: ['bottomRight'],
+                  }}
+                />
+              </Col>
             </Row>
             ;
           </TabPane>

@@ -1,9 +1,9 @@
-import { irtList } from './service';
-import { IrtOption } from './charts';
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
+import { irtList } from '../Irt/service';
+import { IrtOption } from '../Irt/charts';
 
 // 每行grid的个数
 const gridNumberInRow = 4;
@@ -16,12 +16,16 @@ const gridHeight = 160;
 // 行间间隔高度（单位px）
 const gridPaddingHeight = 80;
 let Height = 0;
-const IrtCharts: React.FC = (props: any) => {
+
+export type IrtChartsProps = {
+  values: any[];
+};
+
+const IrtCharts: React.FC<IrtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   useEffect(() => {
     const op = async () => {
-      const result = await irtList(props?.location?.query.expList);
-
+      const result = await irtList(props.values);
       const irt = new IrtOption(
         result.data,
         gridNumberInRow,
@@ -38,23 +42,15 @@ const IrtCharts: React.FC = (props: any) => {
   }, []);
 
   return (
-    <PageContainer
-      header={{
-        onBack: () => {
-          window.history.back();
-        },
-        title: <>{props?.location?.state?.expNum}个实验的IRT结果</>,
-        ghost: true,
-      }}
+    <ProCard
+    // title: <>{props.values.length}个实验的IRT结果</>,
     >
-      <ProCard>
-        <ReactECharts
-          option={handleOption}
-          style={{ width: `100%`, height: Height }}
-          lazyUpdate={true}
-        />
-      </ProCard>
-    </PageContainer>
+      <ReactECharts
+        option={handleOption}
+        style={{ width: `100%`, height: Height }}
+        lazyUpdate={true}
+      />
+    </ProCard>
   );
 };
 

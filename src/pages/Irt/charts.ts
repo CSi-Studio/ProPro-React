@@ -14,14 +14,14 @@ export class IrtOption {
   // constructor：构造函数，在实例化对象的时候执行
   constructor(
     data: any[],
-    gridNumInRow: number = 5,
+    gridNumInRow: number = 4,
     xName: string = ``,
     yName: string = ``,
     gridHeight: number = 160,
     gridPaddingHeight: number = 80,
-    totalPaddingHeight: number = 20,
+    totalPaddingHeight: number = 30,
     gridPaddingWight: number = 5,
-    totalPaddingWidth: number = 5,
+    totalPaddingWidth: number = 4.5,
     titleHeight: number = 20,
     Width: number = 100,
   ) {
@@ -84,6 +84,7 @@ export class IrtOption {
         textAlign: 'center',
         textStyle: {
           fontSize: '14',
+          color: '#000',
           fontFamily: 'Times New Roman',
         },
         padding: 0,
@@ -115,10 +116,16 @@ export class IrtOption {
           show: true,
           textStyle: {
             fontFamily: 'Times New Roman',
+            color: '#000',
             fontWeight: 'normal',
           },
         },
-        nameTextStyle: { padding: 10, fontSize: '12', fontFamily: 'Times New Roman' },
+        nameTextStyle: {
+          padding: 10,
+          color: '#000',
+          fontSize: '12',
+          fontFamily: 'Times New Roman',
+        },
       });
     }
     return Axis;
