@@ -381,7 +381,18 @@ const TableList: React.FC = () => {
         return false;
       },
     },
-
+    {
+      key: 'group',
+      title: 'Group',
+      dataIndex: 'group',
+      hideInSearch: true,
+      render: (text, entity) => {
+        if (entity.group) {
+          return <Tag>{entity.group}</Tag>;
+        }
+        return false;
+      },
+    },
     {
       key: 'createDate',
       title: '创建时间',
@@ -456,7 +467,7 @@ const TableList: React.FC = () => {
 
   return (
     <>
-     <ProTable<TableListItem, TableListPagination>
+      <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle="项目列表"
         actionRef={actionRef}

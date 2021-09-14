@@ -181,6 +181,7 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'Label',
       dataIndex: 'label',
+      hideInSearch: true,
       render: (dom, entity) => {
         if (entity?.label) {
           return <Tag color="blue">{dom}</Tag>;
@@ -191,6 +192,7 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'Tags',
       dataIndex: 'tags',
+      hideInSearch: true,
       render: (dom, entity) => {
         if (entity?.tags) {
           return (

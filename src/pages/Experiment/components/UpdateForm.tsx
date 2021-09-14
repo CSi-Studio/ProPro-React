@@ -47,7 +47,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       </ProForm.Group>
       <ProFormSelect
         initialValue={props?.values?.tags !== null ? props?.values?.tags : []}
-        width="sm"
+        width="md"
         name="tags"
         label="Tags"
         mode="tags"

@@ -13,6 +13,7 @@ export type TableListItem = {
   anaLibName: string;
   methodName: string;
   tags: string[];
+  group: string;
   description: string;
   createDate: string;
   lastModifiedDate: string;
