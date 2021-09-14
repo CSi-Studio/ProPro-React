@@ -254,38 +254,31 @@ const TableList: React.FC = (props: any) => {
     return false;
   }
 
-  /* 打分结果 */
-  // console.log(expData);
-  // const scoreColumns: any = [
-  //   {
-  //     title: 'name',
-  //     dataIndex: 'name',
-  //     key: 'name',
-  //   },
-  // ];
-  // prepareData?.method?.score?.scoreTypes?.forEach((type: any, index: number) => {
-  //   const scoreColumn = expData.map((item: any) => ({
-  //     title: type,
-  //     dataIndex: type,
-  //     key: type,
-  //     render: () => {
-  //       return item.scoreList ? item.scoreList[index] : null;
-  //     },
-  //   }));
-  //   scoreColumns.push(scoreColumn);
-  // });
-  // console.log(scoreColumns);
-
-  // const scoresData: { name: any; scoreList: any }[] = [];
-  // expData.forEach((item: any) => {
-  //   const data = {
-  //     name: item.name,
-  //     expId: item.expId,
-  //     id: item.id,
-  //     scoreList: item.scoreList,
-  //   };
-  //   scoresData.push(data);
-  // });
+  /* 打分结果Columns */
+  let scoreColumns: any = [
+    {
+      title: 'name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+  ];
+  if (prepareData) {
+    const scoreColumn = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
+      title: type,
+      dataIndex: type,
+      key: type,
+      width: 150,
+      render: (dom: any, entity: any) => {
+        return entity.scoreList ? (
+          entity.scoreList[0].scores[index] ? (
+            <Tag>{entity.scoreList[0].scores[index].toFixed(4)}</Tag>
+          ) : null
+        ) : null;
+      },
+    }));
+    scoreColumns.push(scoreColumn);
+  }
+  scoreColumns = [].concat(...scoreColumns);
 
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
@@ -674,35 +667,25 @@ const TableList: React.FC = (props: any) => {
             <IrtCharts values={selectedExpIds} />
           </TabPane>
           <TabPane tab="打分结果" key="scoreList">
-            <Row gutter={16}>
-              <Col className="gutter-row" span={8}>
-                <ProTable
-                  title={() => {
-                    return <p>123</p>;
-                  }}
-                  style={{ height: 400 }}
-                  // columns={scoreColumns}
-                  dataSource={expData.map((i: any) => {
-                    return { key: i.id, name: i.name };
-                  })}
-                  size="small"
-                  search={false}
-                  scroll={{ x: 'max-content' }}
-                  toolBarRender={false}
-                  tableAlertRender={false}
-                  pagination={{
-                    hideOnSinglePage: true,
-                    size: 'small',
-                    showSizeChanger: false,
-                    showQuickJumper: false,
-                    pageSize: 10,
-                    showTotal: () => null,
-                    position: ['bottomRight'],
-                  }}
-                />
-              </Col>
-            </Row>
-            ;
+            <ProTable
+              style={{ width: '100%' }}
+              columns={scoreColumns}
+              dataSource={expData}
+              size="small"
+              search={false}
+              scroll={{ x: 'max-content' }}
+              toolBarRender={false}
+              tableAlertRender={false}
+              pagination={{
+                hideOnSinglePage: true,
+                size: 'small',
+                // showSizeChanger: false,
+                // showQuickJumper: false,
+                // pageSize: 10,
+                // showTotal: () => null,
+                // position: ['bottomRight'],
+              }}
+            />
           </TabPane>
         </Tabs>
       </ProCard>
