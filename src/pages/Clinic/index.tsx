@@ -256,9 +256,12 @@ const TableList: React.FC = (props: any) => {
   /* 打分结果Columns */
   let scoreColumns: any = [
     {
-      title: 'name',
+      title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      render: (dom: any) => {
+        return <Tag color="blue">{dom}</Tag>;
+      },
     },
   ];
   if (prepareData) {
@@ -279,7 +282,7 @@ const TableList: React.FC = (props: any) => {
   }
   scoreColumns = [].concat(...scoreColumns);
 
-  /* scoreTypes 说明 */
+  /* scoreTypes  打分说明table数据 */
   let scoreExplain: any[] = [];
   if (prepareData) {
     const score = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
@@ -704,7 +707,10 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                 </Row>
               </TabPane>
-              <TabPane tab="方法参数" key="3">
+              <TabPane tab="定量结果" key="3">
+                123
+              </TabPane>
+              <TabPane tab="方法参数" key="4">
                 <Row>
                   <Col span={24}>
                     <Space>
@@ -725,7 +731,7 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                 </Row>
               </TabPane>
-              <TabPane tab="Irt结果" key="4">
+              <TabPane tab="Irt结果" key="5">
                 <IrtCharts values={selectedExpIds} />
               </TabPane>
             </Tabs>
