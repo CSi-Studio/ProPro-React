@@ -179,6 +179,36 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      title: 'Label',
+      dataIndex: 'label',
+      render: (dom, entity) => {
+        if (entity?.label) {
+          return <Tag color="blue">{dom}</Tag>;
+        }
+        return false;
+      },
+    },
+    {
+      title: 'Tags',
+      dataIndex: 'tags',
+      render: (dom, entity) => {
+        if (entity?.tags) {
+          return (
+            <>
+              {entity?.tags.map((item) => {
+                return (
+                  <Tag color="blue" key={item.toString()}>
+                    {item}
+                  </Tag>
+                );
+              })}
+            </>
+          );
+        }
+        return false;
+      },
+    },
+    {
       title: 'IRT校验结果',
       dataIndex: 'irt',
       render: (dom, entity) => {

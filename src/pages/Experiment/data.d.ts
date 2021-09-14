@@ -7,6 +7,8 @@ export type TableListItem = {
   airdIndexSize: number;
   vendorFileSize: number;
   irt: any;
+  label: string;
+  tags: any[];
   alias?: string;
   createDate: string;
   windowRanges: any[];
