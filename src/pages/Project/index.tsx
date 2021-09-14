@@ -202,6 +202,20 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      key: 'group',
+      title: 'Group',
+      dataIndex: 'group',
+      sorter: (a, b) => {
+        return a?.group > b?.group ? -1 : 1;
+      },
+      render: (text, entity) => {
+        if (entity.group) {
+          return <Tag>{entity.group}</Tag>;
+        }
+        return false;
+      },
+    },
+    {
       key: 'name',
       title: '项目名',
       dataIndex: 'name',
@@ -377,18 +391,6 @@ const TableList: React.FC = () => {
             tagsDom.push([<Tag key={tag}>{tag}</Tag>]);
           });
           return <>{tagsDom}</>;
-        }
-        return false;
-      },
-    },
-    {
-      key: 'group',
-      title: 'Group',
-      dataIndex: 'group',
-      hideInSearch: true,
-      render: (text, entity) => {
-        if (entity.group) {
-          return <Tag>{entity.group}</Tag>;
         }
         return false;
       },
@@ -660,17 +662,21 @@ const TableList: React.FC = () => {
             </Tag>
           </Dropdown>,
         ]}
+        search={{ span: 4 }}
         tableAlertRender={false}
         pagination={{
           total,
         }}
-        request={async (params) => {
+        request={async (params: {
+          current?: number | undefined;
+          pageSize?: number | undefined;
+        }) => {
           const msg = await projectList({ ...params });
           setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
         columns={columns}
-        onRow={(record) => {
+        onRow={(record: any) => {
           return {
             onClick: () => {
               selectRow(record);
@@ -681,7 +687,7 @@ const TableList: React.FC = () => {
           selectedRowKeys: selectedRows?.map((item) => {
             return item.id;
           }),
-          onChange: (_, selectedRowKeys) => {
+          onChange: (_, selectedRowKeys: any) => {
             setSelectedRows(selectedRowKeys);
           },
         }}

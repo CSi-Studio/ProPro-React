@@ -6,7 +6,6 @@ import ProForm, {
   ProFormTextArea,
 } from '@ant-design/pro-form';
 import { beforeAdd } from '../service';
-import { ProjectType } from '@/components/Enums/Selects';
 import PSelect from '@/components/PDictSelect/PDictSelect';
 
 export type addFormValueType = {
@@ -31,7 +30,6 @@ export type CreateFormProps = {
 
 const beforeAddData = await beforeAdd();
 const CreateForm: React.FC<CreateFormProps> = (props) => {
-  
   return (
     <ModalForm
       form={props.form}
@@ -71,15 +69,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           }}
         />
         <ProFormText width="sm" name="alias" label="项目别名" placeholder="请输入项目别名" />
-        {/* <ProFormSelect
-          initialValue="DIA"
-          options={ProjectType.type}
-          width="sm"
+        <PSelect
           name="type"
+          dictName="ProjectType"
           label="实验类型"
           placeholder="请输入实验类型"
-        /> */}
-        <PSelect name="type" dictName="ProjectType" label="实验类型" placeholder="请输入实验类型" initialValue="DIA" />
+          initialValue="DIA"
+        />
       </ProForm.Group>
       <ProForm.Group>
         <ProFormText
@@ -98,7 +94,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           label="负责人"
           placeholder="请输入负责人"
         />
-        <ProFormSelect width="md" name="tags" label="tags" mode="tags" />
+        <ProFormText width="sm" name="group" label="group" />
+        <ProFormSelect width="sm" name="tags" label="tags" mode="tags" />
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
