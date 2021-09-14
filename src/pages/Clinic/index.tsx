@@ -263,10 +263,10 @@ const TableList: React.FC = (props: any) => {
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
-      title: type,
-      dataIndex: type,
-      key: type,
-      width: 150,
+      title: index,
+      dataIndex: index,
+      key: index,
+      width: 70,
       render: (dom: any, entity: any) => {
         return entity.scoreList ? (
           entity.scoreList[0].scores[index] ? (
@@ -278,6 +278,16 @@ const TableList: React.FC = (props: any) => {
     scoreColumns.push(scoreColumn);
   }
   scoreColumns = [].concat(...scoreColumns);
+
+  /* scoreTypes 说明 */
+  let scoreExplain: any[] = [];
+  if (prepareData) {
+    const score = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
+      index,
+      type,
+    }));
+    scoreExplain = score;
+  }
 
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
@@ -299,7 +309,7 @@ const TableList: React.FC = (props: any) => {
   );
 
   useEffect(() => {
-    if (prepareData && currentTab === '1') {
+    if (prepareData && (currentTab === '1' || currentTab === '2')) {
       if (proteinPage < 1 || proteinPage > Math.ceil(prepareData.proteins.length / 12)) {
         setProteinPage(1);
       }
@@ -312,11 +322,12 @@ const TableList: React.FC = (props: any) => {
         setPeptideLoading(true);
         setChartsLoading(true);
       }
+      document.addEventListener('keydown', onProteinKey);
+      return () => {
+        document.removeEventListener('keydown', onProteinKey);
+      };
     }
-    document.addEventListener('keydown', onProteinKey);
-    return () => {
-      document.removeEventListener('keydown', onProteinKey);
-    };
+    return () => {};
   }, [onProteinKey, currentTab]);
 
   /* 肽段table键盘事件 */
@@ -339,7 +350,7 @@ const TableList: React.FC = (props: any) => {
   );
 
   useEffect(() => {
-    if (currentTab === '1') {
+    if (currentTab === '1' || currentTab === '2') {
       const peptideArr = peptideList.map((item) => {
         return item.peptideRef;
       });
@@ -355,12 +366,13 @@ const TableList: React.FC = (props: any) => {
         setPeptideRowKey(peptideArr[peptidesIndex]);
         setChartsLoading(true);
       }
-    }
 
-    document.addEventListener('keydown', onPeptideKey);
-    return () => {
-      document.removeEventListener('keydown', onPeptideKey);
-    };
+      document.addEventListener('keydown', onPeptideKey);
+      return () => {
+        document.removeEventListener('keydown', onPeptideKey);
+      };
+    }
+    return () => {};
   }, [onPeptideKey, currentTab]);
 
   let searchInput: any;
@@ -445,7 +457,7 @@ const TableList: React.FC = (props: any) => {
             setCurrentTab(activeKey);
           }}
         >
-          <TabPane tab="实验列表" key="exp">
+          <TabPane tab="实验列表" key="1">
             <Row>
               <Col span={4}>
                 <Row>
@@ -641,7 +653,171 @@ const TableList: React.FC = (props: any) => {
               </Col>
             </Row>
           </TabPane>
-          <TabPane tab="方法参数" key="method">
+          <TabPane tab="打分结果" key="2">
+            <Row>
+              <Col span={4}>
+                <Row>
+                  <Col span={24}>
+                    <ProTable
+                      columns={[
+                        {
+                          title: '蛋白',
+                          dataIndex: 'protein',
+                          key: 'protein',
+                          ellipsis: true,
+                          ...getColumnSearchProps('protein'),
+                        },
+                      ]}
+                      dataSource={prepareData?.proteins.map((protein) => {
+                        return { key: protein, protein };
+                      })}
+                      size="small"
+                      search={false}
+                      scroll={{ y: 380 }}
+                      toolBarRender={false}
+                      tableAlertRender={false}
+                      rowClassName={(record) => {
+                        return record.key === proteinRowKey ? 'clinicTableBgc' : '';
+                      }}
+                      onRow={(record) => {
+                        return {
+                          onClick: () => {
+                            setPeptideLoading(true);
+                            setChartsLoading(true);
+                            setProteinRowKey(record.key);
+                            onProteinChange(record.protein);
+                            if (prepareData) {
+                              setProteinsIndex(prepareData.proteins.indexOf(record.protein));
+                            }
+                          },
+                        };
+                      }}
+                      onChange={(page) => {
+                        if (page.current) {
+                          setProteinPage(page.current);
+                        }
+                      }}
+                      loading={loading}
+                      style={{ height: 440 }}
+                      pagination={{
+                        current: proteinPage,
+                        size: 'small',
+                        showSizeChanger: false,
+                        showQuickJumper: false,
+                        pageSize: 12,
+                        showTotal: () => null,
+                        position: ['bottomRight'],
+                      }}
+                    />
+                  </Col>
+                  <Col span={24}>
+                    <ProTable
+                      columns={peptideColumn}
+                      dataSource={peptideList?.map((item) => {
+                        return {
+                          key: item.peptideRef,
+                          peptide: item.peptideRef,
+                          isUnique: item.isUnique,
+                        };
+                      })}
+                      size="small"
+                      search={false}
+                      scroll={{ y: 337, x: 'max-content' }}
+                      toolBarRender={false}
+                      tableAlertRender={false}
+                      loading={peptideLoading}
+                      style={{ height: 363 }}
+                      tableClassName="peptideTable"
+                      rowClassName={(record: any) => {
+                        return record.key === peptideRowKey ? 'clinicTableBgc' : '';
+                      }}
+                      pagination={{
+                        hideOnSinglePage: true,
+                        current: peptidePage,
+                        size: 'small',
+                        showSizeChanger: false,
+                        showQuickJumper: false,
+                        pageSize: 9,
+                        showTotal: () => null,
+                        position: ['bottomRight'],
+                      }}
+                      onChange={(page) => {
+                        if (page.current) {
+                          setPeptidePage(page.current);
+                        }
+                      }}
+                      onRow={(record: any) => {
+                        return {
+                          onClick: () => {
+                            setPeptideRowKey(record.key);
+                            selectPeptideRow(record.peptide);
+                            setHandleSubmit(!handleSubmit);
+                            setChartsLoading(true);
+                            const peptideArr = peptideList.map((item) => {
+                              return item.peptideRef;
+                            });
+                            setPeptidesIndex(peptideArr.indexOf(record.peptide));
+                          },
+                        };
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={3.5}>
+                <ProTable
+                  columns={[
+                    {
+                      title: 'Index',
+                      dataIndex: 'index',
+                      key: 'index',
+                    },
+                    {
+                      title: '打分类别',
+                      dataIndex: 'type',
+                      key: 'type',
+                    },
+                  ]}
+                  dataSource={scoreExplain.map((item) => {
+                    return { index: item.index, type: item.type, key: item.type.toString() };
+                  })}
+                  rowKey={'id'}
+                  size="small"
+                  search={false}
+                  scroll={{ x: 'max-content' }}
+                  toolBarRender={false}
+                  tableAlertRender={false}
+                  pagination={{
+                    hideOnSinglePage: true,
+                    size: 'small',
+                    showSizeChanger: false,
+                    showQuickJumper: false,
+                    pageSize: 24,
+                    showTotal: () => null,
+                    position: ['bottomRight'],
+                  }}
+                />
+              </Col>
+              <Col span={16}>
+                <ProTable
+                  style={{ width: '100%' }}
+                  columns={scoreColumns}
+                  dataSource={expData}
+                  rowKey={'id'}
+                  size="small"
+                  search={false}
+                  scroll={{ x: 'max-content' }}
+                  toolBarRender={false}
+                  tableAlertRender={false}
+                  pagination={{
+                    hideOnSinglePage: true,
+                    size: 'small',
+                  }}
+                />
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tab="方法参数" key="3">
             <Row>
               <Col span={24}>
                 <Space>
@@ -662,29 +838,8 @@ const TableList: React.FC = (props: any) => {
               </Col>
             </Row>
           </TabPane>
-          <TabPane tab="Irt结果" key="irt">
+          <TabPane tab="Irt结果" key="4">
             <IrtCharts values={selectedExpIds} />
-          </TabPane>
-          <TabPane tab="打分结果" key="scoreList">
-            <ProTable
-              style={{ width: '100%' }}
-              columns={scoreColumns}
-              dataSource={expData}
-              size="small"
-              search={false}
-              scroll={{ x: 'max-content' }}
-              toolBarRender={false}
-              tableAlertRender={false}
-              pagination={{
-                hideOnSinglePage: true,
-                size: 'small',
-                // showSizeChanger: false,
-                // showQuickJumper: false,
-                // pageSize: 10,
-                // showTotal: () => null,
-                // position: ['bottomRight'],
-              }}
-            />
           </TabPane>
         </Tabs>
       </ProCard>
