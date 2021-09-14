@@ -40,7 +40,7 @@ export async function analyze(params: AnalyzeParams) {
 }
 
 /** 更新项目 POST /experiment/edit */
-export async function updateList(params: { id: string; alias: string }) {
+export async function updateList(params: { id: string; alias: string; label: string; tags: Set<string> }) {
   return request(`${url}/experiment/edit`, {
     method: 'POST',
     params: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import ProForm, { ProFormText, ModalForm } from '@ant-design/pro-form';
+import ProForm, { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
 
 export type updateFormValueType = {
   alias?: string;
@@ -32,12 +32,27 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       <ProForm.Group>
         <ProFormText
           initialValue={props?.values?.alias}
-          width="md"
+          width="sm"
           name="alias"
           label="别名"
           placeholder="别名"
         />
+        <ProFormText
+          initialValue={props?.values?.label}
+          width="sm"
+          name="label"
+          label="Label"
+          placeholder="Label"
+        />
       </ProForm.Group>
+      <ProFormSelect
+        initialValue={props.values.tags}
+        width="sm"
+        name="tags"
+        label="Tags"
+        mode="tags"
+        placeholder="Tags"
+      />
     </ModalForm>
   );
 };

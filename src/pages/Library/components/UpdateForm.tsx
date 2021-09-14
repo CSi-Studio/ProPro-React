@@ -57,7 +57,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       </ProForm.Group>
 
       <ProFormTextArea
-        initialValue={props.values.description == undefined ? '' : props.values.description}
+        initialValue={props.values.description === undefined ? '' : props.values.description}
         label="详情描述"
         name="description"
       />

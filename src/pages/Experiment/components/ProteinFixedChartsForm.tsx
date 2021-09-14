@@ -49,10 +49,10 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
       if (
         link.value < rangeNumber &&
         link.target.indexOf('-') !== -1 &&
-        link.source.indexOf('-') != -1
+        link.source.indexOf('-') !== -1
       ) {
         data?.intensity?.forEach((intensity: any) => {
-          if (intensity.source == link.source && intensity.target == link.target) {
+          if (intensity.source === link.source && intensity.target == link.target) {
             if (intensity.value <= intensityNumber) {
               link.lineStyle = {
                 color: '#E20618',
@@ -171,7 +171,6 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
           defaultValue="10"
           onChange={(e) => {
             setInputNumber(e.target.value);
-            console.log('我变了');
           }}
           addonBefore="rt范围"
         />

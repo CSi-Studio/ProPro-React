@@ -80,7 +80,7 @@ const TableList: React.FC = (props: any) => {
       title: '基因',
       dataIndex: 'gene',
       hideInSearch: true,
-      render: (dom, entity) => {
+      render: (dom) => {
         return (
           <>
             <Tag>{dom}</Tag>

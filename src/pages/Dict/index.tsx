@@ -1,4 +1,4 @@
-import { Button, message, Tooltip, Form, Tag } from 'antd';
+import { message, Form, Tag } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import {
   dictList,
@@ -17,7 +17,6 @@ import type {
   updateListItem,
   deleteListItem,
 } from './data';
-import { EditFilled, PlusCircleTwoTone, DeleteTwoTone, RedoOutlined } from '@ant-design/icons';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
@@ -28,7 +27,6 @@ import AddFormItem from './components/CreateItem';
 import DeleteFormItem from './components/DeleteForm';
 import DeleteDictForm from './components/DeleteDict';
 import UpdateTableForm from './components/UpdateDictTable';
-import { handle } from '@/components/Commons/CRUD';
 
 const handleAdd = async (values: { name: string }) => {
   const hide = message.loading('正在添加');
@@ -69,8 +67,7 @@ const handleUpdate = async (values: any) => {
     message.success('编辑成功');
     sessionStorage.clear();
     const data = await getDict();
-    console.log('data', data);
-    data.data.map((item: any, index: string) => {
+    data.data.forEach((item: any) => {
       sessionStorage.setItem(item.name, JSON.stringify(item.item));
     });
 
@@ -91,8 +88,7 @@ const handleRemoveItem = async (values: any) => {
     message.success('删除成功，即将刷新');
     sessionStorage.clear();
     const data = await getDict();
-    console.log('data', data);
-    data.data.map((item: any, index: string) => {
+    data.data.forEach((item: any) => {
       sessionStorage.setItem(item.name, JSON.stringify(item.item));
     });
     return true;
@@ -107,8 +103,7 @@ const handleRemove = async (values: any) => {
     await deleteDict(values);
     message.success('删除成功，即将刷新');
     const data = await getDict();
-    console.log('data', data);
-    data.data.map((item: any, index: string) => {
+    data.data.forEach((item: any) => {
       sessionStorage.setItem(item.name, JSON.stringify(item.item));
     });
     return true;
@@ -122,10 +117,9 @@ const reFreshCache = async () => {
   sessionStorage.clear();
   const data = await getDict();
 
-  data.data.map((item: any, index: string) => {
+  data.data.forEach((item: any) => {
     sessionStorage.setItem(item.name, JSON.stringify(item.item));
   });
-  console.log('data', sessionStorage.length);
   message.info('刷新缓存成功');
 };
 
@@ -189,13 +183,9 @@ const TableList: React.FC = () => {
         <>
           <a
             onClick={() => {
-              // form?.resetFields();
-              // handleUpdateModalVisible(true);
-              // setCurrentRow(record);
-              formUpdateTable?.resetFields()
-              handleUpdateTableVisible(true)
-              setCurrentUpdateTable(record)
-              console.log("record",record)
+              formUpdateTable?.resetFields();
+              handleUpdateTableVisible(true);
+              setCurrentUpdateTable(record);
             }}
             key="edit"
           >
@@ -208,7 +198,7 @@ const TableList: React.FC = () => {
             onClick={() => {
               formCreateItem?.resetFields();
               handleAddModalVisible(true);
-              let objItem = {
+              const objItem = {
                 id: record.id,
               };
               setId(objItem);
@@ -227,7 +217,7 @@ const TableList: React.FC = () => {
             onClick={() => {
               deleteDictForm?.resetFields();
               handleDeleteDictModalVisible(true);
-              let objId = {
+              const objId = {
                 id: record.id,
               };
               setCurrentDelete(objId);
@@ -255,7 +245,7 @@ const TableList: React.FC = () => {
         size="small"
         tableAlertRender={false}
         pagination={{
-          total: total,
+          total,
         }}
         expandable={{
           expandedRowRender: (record) => (
@@ -274,7 +264,7 @@ const TableList: React.FC = () => {
                         onClick={() => {
                           formUpdate?.resetFields();
                           handleUpdateModalVisible(true);
-                          let obj = {
+                          const obj = {
                             id: record.id,
                             key: record1.key,
                             value: record1.value,
@@ -295,7 +285,7 @@ const TableList: React.FC = () => {
                         onClick={() => {
                           deleteDictForm?.resetFields();
                           handleDeleteModalVisible(true);
-                          let odj = {
+                          const odj = {
                             id: record.id,
                             key: record1.key,
                           };
@@ -486,24 +476,23 @@ const TableList: React.FC = () => {
       />
 
       <UpdateTableForm
-         updateModalVisible={updateTableVisible}
-         form={formUpdateTable}
-         onCancel={()=>{
-           handleUpdateTableVisible(false)
-           formUpdateTable?.resetFields
-         }}
-         onSubmit={async (value) => {
-     
-          const success = await updateDictTable({id:currentUpdateTable.id,desc:value?.desc});
+        updateModalVisible={updateTableVisible}
+        form={formUpdateTable}
+        onCancel={() => {
+          handleUpdateTableVisible(false);
+          formUpdateTable?.resetFields;
+        }}
+        onSubmit={async (value) => {
+          const success = await updateDictTable({ id: currentUpdateTable.id, desc: value?.desc });
           if (success) {
-            handleUpdateTableVisible(false)
+            handleUpdateTableVisible(false);
             setCurrentUpdateTable(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
             }
           }
         }}
-       values={currentUpdateTable}
+        values={currentUpdateTable}
       />
     </>
   );

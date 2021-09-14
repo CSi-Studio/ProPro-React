@@ -31,7 +31,6 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
 
           return true;
         } catch (error) {
-          console.log(error);
           return false;
         }
       };
@@ -39,7 +38,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     }
   }, [props]);
   useEffect(() => {
-    let rtsData: any = [];
+    const rtsData: any = [];
     reqData?.rts?.forEach((item: number) => {
       const page = Math.floor(item / 500);
       if (!rtsData[page]) {
@@ -53,14 +52,14 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     {
       title: '项目ID',
       dataIndex: 'id',
-      render: (dom: any, entity: any) => {
+      render: (dom: any) => {
         return <Tag>{dom}</Tag>;
       },
     },
     {
       title: '实验ID',
       dataIndex: 'expId',
-      render: (dom: any, entity: any) => {
+      render: (dom: any) => {
         return <Tag>{dom}</Tag>;
       },
     },
@@ -90,74 +89,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       title: '结束位置',
       dataIndex: 'endPtr',
     },
-    // {
-    //   title: 'rts',
-    //   dataIndex: 'rts',
-    //   render: (dom: any, entity: any) => {
-    //     let rtsClass: any = [];
-    //     entity.rts.forEach((item: number) => {
-    //       const page = Math.floor(item / 500);
-    //       if (!rtsClass[page]) {
-    //         rtsClass[page] = [];
-    //       }
-    //       rtsClass[page].push(item);
-    //     });
-
-    //     return (
-    //       <Tabs type="card" tabBarGutter={1} tabPosition="left" defaultActiveKey="0">
-    //         {rtsClass.map((item: any, index: any) => {
-    //           return (
-    //             <TabPane tab={parseInt(item[0]) + '-' + parseInt(item.slice(-1))} key={index}>
-    //               {item.map((_item: any, _index: any) => {
-    //                 return (
-    //                   <Tag
-    //                     style={{ width: '75px', textAlign: 'center' }}
-    //                     onClick={() => {
-    //                       setBlockIndexId(entity.id);
-    //                       setRtData(_item);
-    //                       setShowCharts(true);
-    //                     }}
-    //                   >
-    //                     {_item}
-    //                   </Tag>
-    //                 );
-    //               })}
-    //             </TabPane>
-    //           );
-    //         })}
-    //       </Tabs>
-    //     );
-    //   },
-    // },
   ];
-
-  // useEffect(() => {
-  //   if (props.currentRow) {
-  //     const getData = async () => {
-  //       try {
-  //         const data = await blockIndexDetail({ id: props.currentRow });
-  //         setReqData(data.data);
-  //         return data;
-  //       } catch (error) {
-  //         console.log(error);
-  //         return false;
-  //       }
-  //     };
-  //     getData();
-  //     console.log(reqData);
-
-  //     let rtsData: any = [];
-  //     reqData?.rts?.forEach((item: number) => {
-  //       const page = Math.floor(item / 500);
-  //       if (!rtsData[page]) {
-  //         rtsData[page] = [];
-  //       }
-  //       rtsData[page].push(item);
-  //     });
-  //     setRtsClass(rtsData);
-  //     console.log(rtsData);
-  //   }
-  // }, [props.currentRow]);
 
   return (
     <Drawer width={900} visible={props.showDetail} onClose={props.onClose} closable={false}>
@@ -176,8 +108,8 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
         <Tabs type="card" tabBarGutter={1} tabPosition="left" defaultActiveKey="0">
           {rtsClass.map((item: any, index: any) => {
             return (
-              <TabPane tab={parseInt(item[0]) + '-' + parseInt(item.slice(-1))} key={index}>
-                {item.map((_item: any, _index: any) => {
+              <TabPane tab={`${parseInt(item[0], 10)}-${parseInt(item.slice(-1), 10)}`} key={index}>
+                {item.map((_item: any) => {
                   return (
                     <Tag
                       style={{ width: '75px', textAlign: 'center' }}

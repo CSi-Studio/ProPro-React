@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
-import { PageContainer } from '@ant-design/pro-layout';
 import { irtList } from '../Irt/service';
 import { IrtOption } from '../Irt/charts';
 

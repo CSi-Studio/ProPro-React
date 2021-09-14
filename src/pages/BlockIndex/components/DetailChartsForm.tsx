@@ -38,7 +38,7 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
             return msg.data.z;
           });
         } catch (err) {
-          console.log(err);
+          return false;
         }
       };
       getData();
@@ -52,7 +52,7 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
       },
     },
     title: {
-      text: 'RT时间: ' + rts,
+      text: `RT时间: ${rts}`,
     },
     dataZoom: {
       type: 'inside',
@@ -76,7 +76,7 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
       },
     },
     title: {
-      text: 'RT时间: ' + rts,
+      text: `RT时间: ${rts}`,
     },
     legend: {
       data: ['Original', 'Gaussion', 'GaussionLine'],
