@@ -199,45 +199,60 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   return (
     <Row>
       <Col span="3">
-        <Descriptions title="鉴定数" column={1}>
-          <Descriptions.Item label="A组">
+        <Descriptions title="肽段鉴定数(Unique)" column={2}>
+          <Descriptions.Item label="A:">
             <Tag color="blue">{ratioData?.identifyNumA}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="B组">
+          <Descriptions.Item label="缺失率">
+            <Tag color="red">{(ratioData?.missingRatioA*100).toFixed(2)+"%"}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="B:">
             <Tag color="blue">{ratioData?.identifyNumB}</Tag>
           </Descriptions.Item>
+          <Descriptions.Item label="缺失率">
+            <Tag color="red">{(ratioData?.missingRatioB*100).toFixed(2)+"%"}</Tag>
+          </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="yeast" column={1}>
-          <Descriptions.Item label="yeastAvg">
+        <Descriptions title="Hit比例(1:2:3)" column={1}>
+          <Descriptions.Item label="A">
+            <Tag color="red">{ratioData?.hit1A}</Tag>
+            <Tag color="blue">{ratioData?.hit2A}</Tag>
+            <Tag color="green">{ratioData?.hit3A}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="A.Ratio">
+            <Tag color="red">{(ratioData?.hit1A*100/ratioData?.identifyNumA).toFixed(2)+"%"}</Tag>
+            <Tag color="blue">{(ratioData?.hit2A*100/ratioData?.identifyNumA).toFixed(2)+"%"}</Tag>
+            <Tag color="green">{(ratioData?.hit3A*100/ratioData?.identifyNumA).toFixed(2)+"%"}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="B">
+            <Tag color="red">{ratioData?.hit1B}</Tag>
+            <Tag color="blue">{ratioData?.hit2B}</Tag>
+            <Tag color="green">{ratioData?.hit3B}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="B.Ratio">
+            <Tag color="red">{(ratioData?.hit1B*100/ratioData?.identifyNumB).toFixed(2)+"%"}</Tag>
+            <Tag color="blue">{(ratioData?.hit2B*100/ratioData?.identifyNumB).toFixed(2)+"%"}</Tag>
+            <Tag color="green">{(ratioData?.hit3B*100/ratioData?.identifyNumB).toFixed(2)+"%"}</Tag>
+          </Descriptions.Item>
+        </Descriptions>
+        <Descriptions title="Yeast(Avg:SD:CV)" column={1}>
+          <Descriptions.Item label="Stat:">
             <Tag color="blue">{ratioData?.yeastAvg.toFixed(4)}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="yeastCV">
             <Tag color="blue">{ratioData?.yeastCV.toFixed(4)}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="yeastSD">
             <Tag color="blue">{ratioData?.yeastSD.toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="human" column={1}>
-          <Descriptions.Item label="humanAvg">
+        <Descriptions title="Human(Avg:SD:CV)" column={1}>
+          <Descriptions.Item label="Stat:">
             <Tag color="blue">{ratioData?.humanAvg.toFixed(4)}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="humanCV">
             <Tag color="blue">{ratioData?.humanCV.toFixed(4)}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="humanSD">
             <Tag color="blue">{ratioData?.humanSD.toFixed(4)}</Tag>
           </Descriptions.Item>
-         
         </Descriptions>
-        <Descriptions title="ecoli" column={1}>
-          <Descriptions.Item label="ecoliAvg">
+        <Descriptions title="EColi(Avg:SD:CV)" column={1}>
+          <Descriptions.Item label="Stat:">
             <Tag color="blue">{ratioData?.ecoliAvg.toFixed(4)}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="ecoliCV">
             <Tag color="blue">{ratioData?.ecoliCV.toFixed(4)}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="ecoliSD">
             <Tag color="blue">{ratioData?.ecoliSD.toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
