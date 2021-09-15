@@ -198,7 +198,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
 
   return (
     <Row>
-      <Col span="3">
+      <Col span="5">
       <Descriptions title="蛋白鉴定数(Unique)" column={2}>
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyProteinNumA}</Tag>
@@ -212,13 +212,13 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="blue">{ratioData?.identifyNumA}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="缺失率">
-            <Tag color="red">{(ratioData?.missingRatioA*100).toFixed(2)+"%"}</Tag>
+            <Tag color="red">{`${(ratioData?.missingRatioA*100).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="B">
             <Tag color="blue">{ratioData?.identifyNumB}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="缺失率">
-            <Tag color="red">{(ratioData?.missingRatioB*100).toFixed(2)+"%"}</Tag>
+            <Tag color="red">{`${(ratioData?.missingRatioB*100).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="Hit比例(1:2:3)" column={1}>
@@ -228,9 +228,9 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="green">{ratioData?.hit3A}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="A.Ratio">
-            <Tag color="red">{(ratioData?.hit1A*100/ratioData?.identifyNumA).toFixed(2)+"%"}</Tag>
-            <Tag color="blue">{(ratioData?.hit2A*100/ratioData?.identifyNumA).toFixed(2)+"%"}</Tag>
-            <Tag color="green">{(ratioData?.hit3A*100/ratioData?.identifyNumA).toFixed(2)+"%"}</Tag>
+            <Tag color="red">{`${(ratioData?.hit1A*100/ratioData?.identifyNumA).toFixed(2)}%`}</Tag>
+            <Tag color="blue">{`${(ratioData?.hit2A*100/ratioData?.identifyNumA).toFixed(2)}%`}</Tag>
+            <Tag color="green">{`${(ratioData?.hit3A*100/ratioData?.identifyNumA).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="B">
             <Tag color="red">{ratioData?.hit1B}</Tag>
@@ -238,9 +238,9 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="green">{ratioData?.hit3B}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="B.Ratio">
-            <Tag color="red">{(ratioData?.hit1B*100/ratioData?.identifyNumB).toFixed(2)+"%"}</Tag>
-            <Tag color="blue">{(ratioData?.hit2B*100/ratioData?.identifyNumB).toFixed(2)+"%"}</Tag>
-            <Tag color="green">{(ratioData?.hit3B*100/ratioData?.identifyNumB).toFixed(2)+"%"}</Tag>
+            <Tag color="red">{`${(ratioData?.hit1B*100/ratioData?.identifyNumB).toFixed(2)}%`}</Tag>
+            <Tag color="blue">{`${(ratioData?.hit2B*100/ratioData?.identifyNumB).toFixed(2)}%`}</Tag>
+            <Tag color="green">{`${(ratioData?.hit3B*100/ratioData?.identifyNumB).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="Yeast(Avg:SD:CV)" column={1}>
@@ -265,7 +265,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           </Descriptions.Item>
         </Descriptions>
       </Col>
-      <Col span="21">
+      <Col span="19">
         <ReactECharts
           option={handleOption}
           style={{ width: `100%`, height: '700px' }}
