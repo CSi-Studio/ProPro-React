@@ -1,4 +1,4 @@
-import { Tag, Tooltip, Typography } from 'antd';
+import { Tag, Typography } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { blockIndexList } from './service';
 import type { TableListItem, TableListPagination } from './data';

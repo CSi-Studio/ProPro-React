@@ -21,10 +21,20 @@ export async function getPeptideRefs(params: { libraryId: string; protein: strin
   });
 }
 
-/** 根据肽段信息直接获取某实验下的EIC图像 GET data/getExpData  */
+/** 根据肽段信息直接获取某实验下的EIC图像 POST data/getExpData  */
 export async function getExpData(params: any) {
   return request(`${url}/data/getExpData`, {
     method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
+
+/** 根据项目ID直接获取该项目的定量结果散点图 GET /bench/peptideRatio  */
+export async function getPeptideRatio(params: { projectId: string }) {
+  return request(`${url}/bench/peptideRatio`, {
+    method: 'GET',
     params: {
       ...params,
     },

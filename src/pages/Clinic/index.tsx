@@ -22,12 +22,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRefs, prepare } from './service';
-import { IrtOption } from './xic';
+import { IrtOption } from './components/xic';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import IrtCharts from './irt';
+import IrtCharts from './components/Irt';
+import QtCharts from './components/Qt';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -261,6 +262,30 @@ const TableList: React.FC = (props: any) => {
       key: 'name',
       render: (dom: any) => {
         return <Tag color="blue">{dom}</Tag>;
+      },
+    },
+    {
+      title: '鉴定态',
+      dataIndex: 'status',
+      key: 'status',
+      render: (dom: any, entity: any) => {
+        switch (entity.status) {
+          case 0:
+            return <Tag color="blue">尚未鉴定</Tag>;
+            break;
+          case 1:
+            return <Tag color="success">鉴定成功</Tag>;
+            break;
+          case 2:
+            return <Tag color="error">鉴定失败</Tag>;
+            break;
+          case 3:
+            return <Tag color="warning">条件不足</Tag>;
+            break;
+          default:
+            return <Tag color="warning">缺少峰组</Tag>;
+            break;
+        }
       },
     },
   ];
@@ -708,13 +733,7 @@ const TableList: React.FC = (props: any) => {
                 </Row>
               </TabPane>
               <TabPane tab="定量结果" key="3">
-                <a
-                  onClick={() => {
-                    console.log('123');
-                  }}
-                >
-                  123
-                </a>
+                <QtCharts values={projectId} />
               </TabPane>
               <TabPane tab="方法参数" key="4">
                 <Row>

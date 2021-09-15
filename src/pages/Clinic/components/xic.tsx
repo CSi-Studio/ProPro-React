@@ -133,6 +133,10 @@ export class IrtOption {
         }px`,
         width: `${Math.floor(this.Width / this.gridNumInRow) - this.gridPaddingWight}%`,
         height: `${this.gridHeight}px`,
+        show: 'true',
+        // backgroundColor: '#FDF2F0',
+        // backgroundColor: '#F8FEEE',
+        backgroundColor: i > 3 ? 'rgba(215,236,184)' : 'rgba(251,229,154,0.5)',
       };
       grids.push(item);
     }
