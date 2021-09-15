@@ -39,10 +39,6 @@ export class IrtOption {
     this.yName = yName;
   }
 
-  // getWidth(): string {
-  //   return `${this.Width}`;
-  // }
-
   // 设置option
   getIrtOption(): any {
     const gridNumber = this.data.length;
@@ -91,11 +87,9 @@ export class IrtOption {
         icon: 'none',
         itemGap: 0,
         itemWidth: 5,
-        // inactiveColor: 'tomato',
         textStyle: {
           fontSize: '14',
           color: '#fff',
-          // fontWeight: 'bold',
           padding: 5,
           borderRadius: 5,
           fontFamily: 'Times New Roman,STSong',
