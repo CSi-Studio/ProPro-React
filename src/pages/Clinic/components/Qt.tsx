@@ -199,6 +199,14 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   return (
     <Row>
       <Col span="3">
+        <Descriptions title="鉴定数" column={1}>
+          <Descriptions.Item label="A组">
+            <Tag color="blue">{ratioData?.identifyNumA}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="B组">
+            <Tag color="blue">{ratioData?.identifyNumB}</Tag>
+          </Descriptions.Item>
+        </Descriptions>
         <Descriptions title="yeast" column={1}>
           <Descriptions.Item label="yeastAvg">
             <Tag color="blue">{ratioData?.yeastAvg.toFixed(4)}</Tag>
@@ -220,12 +228,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           <Descriptions.Item label="humanSD">
             <Tag color="blue">{ratioData?.humanSD.toFixed(4)}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="identifyNumA">
-            <Tag color="blue">{ratioData?.identifyNumA}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="identifyNumB">
-            <Tag color="blue">{ratioData?.identifyNumB}</Tag>
-          </Descriptions.Item>
+         
         </Descriptions>
         <Descriptions title="ecoli" column={1}>
           <Descriptions.Item label="ecoliAvg">
