@@ -45,7 +45,7 @@ export class IrtOption {
     return {
       title: this.getIrtTitle(this.data),
       dataZoom: this.getDataZoom(this.data),
-      grid: this.getIrtGrids(gridNumber),
+      grid: this.getIrtGrids(gridNumber, this.data),
       tooltip: {
         trigger: 'axis',
         textStyle: {
@@ -113,10 +113,11 @@ export class IrtOption {
   }
 
   // 设置Grids布局
-  private getIrtGrids(count: number) {
+  private getIrtGrids(count: number, data: any) {
     const grids: any = [];
+
     for (let i: number = 0; i < count; i += 1) {
-      const item: any = {
+      const j: any = {
         left: `${
           (i % this.gridNumInRow) * Math.floor(this.Width / this.gridNumInRow) +
           this.totalPaddingWidth
@@ -128,12 +129,21 @@ export class IrtOption {
         width: `${Math.floor(this.Width / this.gridNumInRow) - this.gridPaddingWight}%`,
         height: `${this.gridHeight}px`,
         show: 'true',
-        // backgroundColor: '#FDF2F0',
-        // backgroundColor: '#F8FEEE',
-        backgroundColor: i > 3 ? 'rgba(215,236,184)' : 'rgba(251,229,154,0.5)',
+        backgroundColor: `${
+          data[i].status === 0
+            ? '#000'
+            : data[i].status === 1
+            ? 'rgba(215,236,184)'
+            : data[i].status === 2
+            ? 'rgba(241,158,156,0.3)'
+            : data[i].status === 3
+            ? 'rgba(251,229,154,0.5)'
+            : 'rgba(251,229,154,0.5)'
+        }`,
       };
-      grids.push(item);
+      grids.push(j);
     }
+
     return grids;
   }
   // 设置缩放zoom
