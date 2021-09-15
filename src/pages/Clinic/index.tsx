@@ -271,8 +271,8 @@ const TableList: React.FC = (props: any) => {
       key: index,
       width: 70,
       render: (dom: any, entity: any) => {
-        return entity.scoreList ? (
-          entity.scoreList[0].scores[index] ? (
+        return entity.scoreList !== null ? (
+          entity.scoreList[0].scores[index] !== null ? (
             <Tag>{entity.scoreList[0].scores[index].toFixed(4)}</Tag>
           ) : null
         ) : null;
@@ -708,7 +708,13 @@ const TableList: React.FC = (props: any) => {
                 </Row>
               </TabPane>
               <TabPane tab="定量结果" key="3">
-                123
+                <a
+                  onClick={() => {
+                    console.log('123');
+                  }}
+                >
+                  123
+                </a>
               </TabPane>
               <TabPane tab="方法参数" key="4">
                 <Row>

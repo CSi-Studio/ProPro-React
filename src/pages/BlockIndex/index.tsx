@@ -173,8 +173,7 @@ const TableList: React.FC = (props: any) => {
         }}
         columns={columns}
         pagination={false}
-        toolBarRender={() => []}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);
