@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { getPeptideRatio } from '../service';
-import { Col, Descriptions, Empty, Row, Spin, Tag } from 'antd';
+import { Col, Descriptions, Row, Tag } from 'antd';
 
 export type QtChartsProps = {
-  values: any[];
+  values: any;
 };
 
 const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   const [ratioData, setRatioData] = useState<any>();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const op = async () => {
-      const result = await getPeptideRatio({ projectId: props.values });
+      const result = props.values.peptideRatioData;
       // const ecoliData: any[][] = [];
       const ecoliData = result.data.ecoli.map((data: { x: any; y: any }) => {
         return [data.x, data.y];
@@ -26,7 +24,6 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
         return [data.x, data.y];
       });
       setRatioData(result.data);
-      setLoading(false);
       const option = {
         xAxis: {
           splitLine: {
@@ -86,11 +83,6 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
         },
         legend: {
           right: '8%',
-          // width: '700px',
-          // type: 'scroll',
-          // icon: 'none',
-          // itemGap: 0,
-          // itemWidth: 5,
           align: 'left',
           textStyle: {
             fontSize: '14',
@@ -207,64 +199,52 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   return (
     <Row>
       <Col span="3">
-        <Spin spinning={loading}>
-          <Descriptions title="yeast" column={1}>
-            <Descriptions.Item label="yeastAvg">
-              <Tag color="blue">{ratioData?.yeastAvg.toFixed(4)}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="yeastCV">
-              <Tag color="blue">{ratioData?.yeastCV.toFixed(4)}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="yeastSD">
-              <Tag color="blue">{ratioData?.yeastSD.toFixed(4)}</Tag>
-            </Descriptions.Item>
-          </Descriptions>
-          <Descriptions title="human" column={1}>
-            <Descriptions.Item label="humanAvg">
-              <Tag color="blue">{ratioData?.humanAvg.toFixed(4)}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="humanCV">
-              <Tag color="blue">{ratioData?.humanCV.toFixed(4)}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="humanSD">
-              <Tag color="blue">{ratioData?.humanSD.toFixed(4)}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="identifyNumA">
-              <Tag color="blue">{ratioData?.identifyNumA}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="identifyNumB">
-              <Tag color="blue">{ratioData?.identifyNumB}</Tag>
-            </Descriptions.Item>
-          </Descriptions>
-          <Descriptions title="ecoli" column={1}>
-            <Descriptions.Item label="ecoliAvg">
-              <Tag color="blue">{ratioData?.ecoliAvg.toFixed(4)}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="ecoliCV">
-              <Tag color="blue">{ratioData?.ecoliCV.toFixed(4)}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="ecoliSD">
-              <Tag color="blue">{ratioData?.ecoliSD.toFixed(4)}</Tag>
-            </Descriptions.Item>
-          </Descriptions>
-        </Spin>
+        <Descriptions title="yeast" column={1}>
+          <Descriptions.Item label="yeastAvg">
+            <Tag color="blue">{ratioData?.yeastAvg.toFixed(4)}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="yeastCV">
+            <Tag color="blue">{ratioData?.yeastCV.toFixed(4)}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="yeastSD">
+            <Tag color="blue">{ratioData?.yeastSD.toFixed(4)}</Tag>
+          </Descriptions.Item>
+        </Descriptions>
+        <Descriptions title="human" column={1}>
+          <Descriptions.Item label="humanAvg">
+            <Tag color="blue">{ratioData?.humanAvg.toFixed(4)}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="humanCV">
+            <Tag color="blue">{ratioData?.humanCV.toFixed(4)}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="humanSD">
+            <Tag color="blue">{ratioData?.humanSD.toFixed(4)}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="identifyNumA">
+            <Tag color="blue">{ratioData?.identifyNumA}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="identifyNumB">
+            <Tag color="blue">{ratioData?.identifyNumB}</Tag>
+          </Descriptions.Item>
+        </Descriptions>
+        <Descriptions title="ecoli" column={1}>
+          <Descriptions.Item label="ecoliAvg">
+            <Tag color="blue">{ratioData?.ecoliAvg.toFixed(4)}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="ecoliCV">
+            <Tag color="blue">{ratioData?.ecoliCV.toFixed(4)}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="ecoliSD">
+            <Tag color="blue">{ratioData?.ecoliSD.toFixed(4)}</Tag>
+          </Descriptions.Item>
+        </Descriptions>
       </Col>
       <Col span="21">
-        <Spin spinning={loading}>
-          {!loading ? (
-            <ReactECharts
-              option={handleOption}
-              style={{ width: `100%`, height: '700px' }}
-              lazyUpdate={true}
-            />
-          ) : (
-            <Empty
-              description="正在加载中"
-              style={{ padding: '10px', color: '#B0B8C1' }}
-              imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
-            />
-          )}
-        </Spin>
+        <ReactECharts
+          option={handleOption}
+          style={{ width: `100%`, height: '700px' }}
+          lazyUpdate={true}
+        />
       </Col>
     </Row>
   );

@@ -21,7 +21,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
-import { getExpData, getPeptideRefs, prepare } from './service';
+import { getExpData, getPeptideRatio, getPeptideRefs, prepare } from './service';
 import { IrtOption } from './components/xic';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -46,6 +46,8 @@ const TableList: React.FC = (props: any) => {
   const [exps, setExps] = useState<IdName[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
   const [expData, setExpData] = useState<[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
+
+  const [peptideRatioData, setPeptideRatioData] = useState<any>(); // 存放分析结果的初始数据
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 进入蛋白诊所的时候初始化的数据,包含实验列表,蛋白质列表
@@ -167,6 +169,8 @@ const TableList: React.FC = (props: any) => {
           }),
         );
         setLoading(false);
+        const rationData = await getPeptideRatio({ projectId });
+        setPeptideRatioData(rationData);
         return true;
       } catch (err) {
         return false;
@@ -733,7 +737,17 @@ const TableList: React.FC = (props: any) => {
                 </Row>
               </TabPane>
               <TabPane tab="定量结果" key="3">
-                <QtCharts values={projectId} />
+                <Spin spinning={!peptideRatioData}>
+                  {peptideRatioData ? (
+                    <QtCharts values={{ peptideRatioData }} />
+                  ) : (
+                    <Empty
+                      description="正在加载中"
+                      style={{ padding: '10px', color: '#B0B8C1' }}
+                      imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+                    />
+                  )}
+                </Spin>
               </TabPane>
               <TabPane tab="方法参数" key="4">
                 <Row>
