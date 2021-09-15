@@ -199,14 +199,22 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   return (
     <Row>
       <Col span="3">
+      <Descriptions title="蛋白鉴定数(Unique)" column={2}>
+          <Descriptions.Item label="A">
+            <Tag color="blue">{ratioData?.identifyProteinNumA}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label="B">
+            <Tag color="blue">{ratioData?.identifyProteinNumB}</Tag>
+          </Descriptions.Item>
+        </Descriptions>
         <Descriptions title="肽段鉴定数(Unique)" column={2}>
-          <Descriptions.Item label="A:">
+          <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyNumA}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="缺失率">
             <Tag color="red">{(ratioData?.missingRatioA*100).toFixed(2)+"%"}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="B:">
+          <Descriptions.Item label="B">
             <Tag color="blue">{ratioData?.identifyNumB}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="缺失率">
@@ -236,21 +244,21 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="Yeast(Avg:SD:CV)" column={1}>
-          <Descriptions.Item label="Stat:">
+          <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.yeastAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.yeastCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.yeastSD.toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="Human(Avg:SD:CV)" column={1}>
-          <Descriptions.Item label="Stat:">
+          <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.humanAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.humanCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.humanSD.toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="EColi(Avg:SD:CV)" column={1}>
-          <Descriptions.Item label="Stat:">
+          <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.ecoliAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.ecoliCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.ecoliSD.toFixed(4)}</Tag>
