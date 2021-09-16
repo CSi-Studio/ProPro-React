@@ -80,7 +80,7 @@ export class IrtOption {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
       const item = {
-        text: data[i].name,
+        text: data[i].alias?data[i].alias:data[i].name,
         textAlign: 'center',
         textStyle: {
           fontSize: '14',

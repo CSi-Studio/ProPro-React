@@ -13,18 +13,24 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   useEffect(() => {
     const op = async () => {
       const result = props.values.peptideRatioData;
-      // const ecoliData: any[][] = [];
-      const ecoliData = result.data.ecoli.map((data: { x: any; y: any }) => {
-        return [data.x, data.y];
+      const ecoliData = result.data.ecoli.map((data: { peptide: string; x: any; y: any }) => {
+        return [data.x, data.y, data.peptide];
       });
-      const humanData = result.data.human.map((data: { x: any; y: any }) => {
-        return [data.x, data.y];
+      const humanData = result.data.human.map((data: { peptide: string; x: any; y: any }) => {
+        return [data.x, data.y, data.peptide];
       });
-      const yeastData = result.data.yeast.map((data: { x: any; y: any }) => {
-        return [data.x, data.y];
+      const yeastData = result.data.yeast.map((data: { peptide: string; x: any; y: any }) => {
+        return [data.x, data.y, data.peptide];
       });
       setRatioData(result.data);
       const option = {
+        grid: {
+          top: '3%',
+          left: '0',
+          right: '3%',
+          bottom: '0',
+          containLabel: true,
+        },
         xAxis: {
           splitLine: {
             show: false,
@@ -73,12 +79,23 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
         },
         dataZoom: { type: 'inside' },
         tooltip: {
-          trigger: 'axis',
+          backgroundColor: ['rgba(255,255,255,0.9)'],
+          axisPointer: {
+            type: 'cross',
+            snap: true,
+          },
           textStyle: {
             color: '#000',
             fontSize: '14',
             fontWeight: 'normal',
             fontFamily: 'Times New Roman,STSong',
+          },
+          formatter: (params: { seriesName: any; data: number[]; marker: any; }) => {
+            let res = params.seriesName;
+            res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
+              4,
+            )} &nbsp ${params.data[1]?.toFixed(4)}`;
+            return res;
           },
         },
         legend: {
@@ -111,16 +128,11 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
                   width: 3,
                 },
               },
-              tooltip: {
-                // formatter: formula,
-                axisPointer: {
-                  label: {
-                    fontFamily: 'Times New Roman,STSong',
-                  },
-                },
-              },
               label: { show: false },
               data: [{ yAxis: result.data.ecoliAvg, name: '平均线' }],
+              // tooltip: {
+              //   formatter: (params: any) => params,
+              // },
             },
           },
           {
@@ -142,14 +154,6 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
                   type: 'dashed',
                   color: 'gold',
                   width: 3,
-                },
-              },
-              tooltip: {
-                // formatter: formula,
-                axisPointer: {
-                  label: {
-                    fontFamily: 'Times New Roman,STSong',
-                  },
                 },
               },
               label: { show: false },
@@ -177,14 +181,6 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
                   width: 3,
                 },
               },
-              tooltip: {
-                // formatter: formula,
-                axisPointer: {
-                  label: {
-                    fontFamily: 'Times New Roman,STSong',
-                  },
-                },
-              },
               label: { show: false },
               data: [{ yAxis: result.data.yeastAvg, name: '平均线' }],
             },
@@ -199,7 +195,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   return (
     <Row>
       <Col span="5">
-      <Descriptions title="蛋白鉴定数(Unique)" column={2}>
+        <Descriptions title="蛋白鉴定数(Unique)" column={2}>
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyProteinNumA}</Tag>
           </Descriptions.Item>
@@ -212,13 +208,13 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="blue">{ratioData?.identifyNumA}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="缺失率">
-            <Tag color="red">{`${(ratioData?.missingRatioA*100).toFixed(2)}%`}</Tag>
+            <Tag color="red">{`${(ratioData?.missingRatioA * 100).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="B">
             <Tag color="blue">{ratioData?.identifyNumB}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="缺失率">
-            <Tag color="red">{`${(ratioData?.missingRatioB*100).toFixed(2)}%`}</Tag>
+            <Tag color="red">{`${(ratioData?.missingRatioB * 100).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="Hit比例(1:2:3)" column={1}>
@@ -228,9 +224,15 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="green">{ratioData?.hit3A}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="A.Ratio">
-            <Tag color="red">{`${(ratioData?.hit1A*100/ratioData?.identifyNumA).toFixed(2)}%`}</Tag>
-            <Tag color="blue">{`${(ratioData?.hit2A*100/ratioData?.identifyNumA).toFixed(2)}%`}</Tag>
-            <Tag color="green">{`${(ratioData?.hit3A*100/ratioData?.identifyNumA).toFixed(2)}%`}</Tag>
+            <Tag color="red">{`${((ratioData?.hit1A * 100) / ratioData?.identifyNumA).toFixed(
+              2,
+            )}%`}</Tag>
+            <Tag color="blue">{`${((ratioData?.hit2A * 100) / ratioData?.identifyNumA).toFixed(
+              2,
+            )}%`}</Tag>
+            <Tag color="green">{`${((ratioData?.hit3A * 100) / ratioData?.identifyNumA).toFixed(
+              2,
+            )}%`}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="B">
             <Tag color="red">{ratioData?.hit1B}</Tag>
@@ -238,9 +240,15 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="green">{ratioData?.hit3B}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="B.Ratio">
-            <Tag color="red">{`${(ratioData?.hit1B*100/ratioData?.identifyNumB).toFixed(2)}%`}</Tag>
-            <Tag color="blue">{`${(ratioData?.hit2B*100/ratioData?.identifyNumB).toFixed(2)}%`}</Tag>
-            <Tag color="green">{`${(ratioData?.hit3B*100/ratioData?.identifyNumB).toFixed(2)}%`}</Tag>
+            <Tag color="red">{`${((ratioData?.hit1B * 100) / ratioData?.identifyNumB).toFixed(
+              2,
+            )}%`}</Tag>
+            <Tag color="blue">{`${((ratioData?.hit2B * 100) / ratioData?.identifyNumB).toFixed(
+              2,
+            )}%`}</Tag>
+            <Tag color="green">{`${((ratioData?.hit3B * 100) / ratioData?.identifyNumB).toFixed(
+              2,
+            )}%`}</Tag>
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="Yeast(Avg:SD:CV)" column={1}>

@@ -46,7 +46,6 @@ const TableList: React.FC = (props: any) => {
   const [exps, setExps] = useState<IdName[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
   const [expData, setExpData] = useState<[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
-
   const [peptideRatioData, setPeptideRatioData] = useState<any>(); // 存放分析结果的初始数据
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
@@ -56,9 +55,9 @@ const TableList: React.FC = (props: any) => {
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
   const [peptideRef, setPeptideRef] = useState<any>(); // 当前选中的peptideRef
-  const [loading, setLoading] = useState<boolean>(true); // loading
-  const [peptideLoading, setPeptideLoading] = useState<boolean>(true); // loading
-  const [chartsLoading, setChartsLoading] = useState<boolean>(true); // loading
+  const [loading, setLoading] = useState<boolean>(true); // 蛋白table loading
+  const [peptideLoading, setPeptideLoading] = useState<boolean>(true); // 肽段table loading
+  const [chartsLoading, setChartsLoading] = useState<boolean>(true); // charts loading
   // 选中行的ID
   const [proteinRowKey, setProteinRowKey] = useState<any>();
   const [peptideRowKey, setPeptideRowKey] = useState<any>();
@@ -70,9 +69,9 @@ const TableList: React.FC = (props: any) => {
   const [proteinPage, setProteinPage] = useState<number>(1); // 蛋白table当前页数
   const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
-
   /* 当前Tab */
   const [currentTab, setCurrentTab] = useState<string>('1');
+
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
   const peptideColumn: ProColumns<PeptideTableItem>[] = [
@@ -117,13 +116,12 @@ const TableList: React.FC = (props: any) => {
         denoise,
       });
       // 将实验 别名 给 getExpData接口得到的数据
-      result.data.map((item: any) => {
+      result.data.forEach((item: any) => {
         exps?.forEach((_item: any) => {
           if (item.expId === _item.id) {
             item.name = _item.name;
           }
         });
-        return true;
       });
       setExpData(result.data);
       const irt = new IrtOption(
@@ -140,9 +138,11 @@ const TableList: React.FC = (props: any) => {
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
       setHandleOption(option);
       setChartsLoading(false);
+      setPeptideLoading(false);
       return true;
     } catch (error) {
       message.error('获取EIC Matrix失败，请重试!');
+      setPeptideLoading(false);
       setChartsLoading(false);
       return false;
     }
@@ -509,7 +509,6 @@ const TableList: React.FC = (props: any) => {
                     return {
                       onClick: () => {
                         setPeptideLoading(true);
-                        setChartsLoading(true);
                         setProteinRowKey(record.key);
                         onProteinChange(record.protein);
                         if (prepareData) {
@@ -771,7 +770,7 @@ const TableList: React.FC = (props: any) => {
                 </Row>
               </TabPane>
               <TabPane tab="Irt结果" key="5">
-                <IrtCharts values={selectedExpIds} />
+                <IrtCharts values={{ selectedExpIds, exps }} />
               </TabPane>
             </Tabs>
           </Col>

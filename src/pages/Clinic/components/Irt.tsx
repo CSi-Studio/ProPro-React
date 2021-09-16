@@ -5,7 +5,7 @@ import { irtList } from '../../Irt/service';
 import { IrtOption } from '../../Irt/charts';
 
 // 每行grid的个数
-const gridNumberInRow = 4;
+const gridNumberInRow = 3;
 // 横坐标
 const xName = `LibTime`;
 // 纵坐标
@@ -17,14 +17,25 @@ const gridPaddingHeight = 80;
 let Height = 0;
 
 export type IrtChartsProps = {
-  values: any[];
+  values: any;
 };
 
 const IrtCharts: React.FC<IrtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   useEffect(() => {
     const op = async () => {
-      const result = await irtList(props.values);
+      const result = await irtList(props.values.selectedExpIds);
+      result.data.forEach((value: { id: any; alias: any }) => {
+        props.values.exps.forEach((item: { id: any; name: any }) => {
+          if (item.id === value.id) {
+            value.alias = item.name;
+          }
+        });
+      });
+      result.data.sort((a: { alias: string }, b: { alias: string }) =>
+        a.alias > b.alias ? 1 : -1,
+      );
+
       const irt = new IrtOption(
         result.data,
         gridNumberInRow,
