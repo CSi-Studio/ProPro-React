@@ -26,9 +26,9 @@ const IrtCharts: React.FC<IrtChartsProps> = (props: any) => {
     const op = async () => {
       const result = await irtList(props.values.selectedExpIds);
       result.data.forEach((value: { id: any; alias: any }) => {
-        props.values.exps.forEach((item: { id: any; name: any }) => {
+        props.values.exps.forEach((item: { id: any; alias: any }) => {
           if (item.id === value.id) {
-            value.alias = item.name;
+            value.alias = item.alias;
           }
         });
       });

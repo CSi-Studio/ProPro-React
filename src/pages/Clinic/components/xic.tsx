@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-export class IrtOption {
+export class XicOption {
   private data: any[]; // 点数据数组
   private gridNumInRow: number; // 每行grid数量
   private gridHeight: number; // grid高度
@@ -40,12 +40,12 @@ export class IrtOption {
   }
 
   // 设置option
-  getIrtOption(): any {
+  getXicOption(): any {
     const gridNumber = this.data.length;
     return {
-      title: this.getIrtTitle(this.data),
+      title: this.getXicTitle(this.data),
       dataZoom: this.getDataZoom(this.data),
-      grid: this.getIrtGrids(gridNumber, this.data),
+      grid: this.getXicGrids(gridNumber, this.data),
       tooltip: {
         trigger: 'axis',
         textStyle: {
@@ -55,9 +55,9 @@ export class IrtOption {
           fontFamily: 'Times New Roman,STSong',
         },
       },
-      xAxis: this.getIrtxAxis(gridNumber, this.xName, this.data),
-      yAxis: this.getIrtyAxis(gridNumber, this.yName),
-      series: this.getIrtSeries(this.data),
+      xAxis: this.getXicxAxis(gridNumber, this.xName, this.data),
+      yAxis: this.getXicyAxis(gridNumber, this.yName),
+      series: this.getXicSeries(this.data),
       color: [
         '#1890ff',
         'hotpink',
@@ -113,7 +113,7 @@ export class IrtOption {
   }
 
   // 设置Grids布局
-  private getIrtGrids(count: number, data: any) {
+  private getXicGrids(count: number, data: any) {
     const grids: any = [];
 
     for (let i: number = 0; i < count; i += 1) {
@@ -159,7 +159,7 @@ export class IrtOption {
     return grids;
   }
   // 设置表头
-  private getIrtTitle(data: any) {
+  private getXicTitle(data: any) {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
       // rt赋值
@@ -175,7 +175,7 @@ export class IrtOption {
       }
 
       const item = {
-        text: data[i].name,
+        text: data[i].alias,
         height: '200px',
         textAlign: 'center',
         textStyle: {
@@ -291,7 +291,7 @@ export class IrtOption {
   }
 
   // 设置x轴
-  private getIrtxAxis(count: number, axisName: string, data: any) {
+  private getXicxAxis(count: number, axisName: string, data: any) {
     const xAxis = [];
     const min = Math.floor(
       Math.min(
@@ -335,7 +335,7 @@ export class IrtOption {
     return xAxis;
   }
   // 设置y轴
-  private getIrtyAxis(count: number, axisName: string) {
+  private getXicyAxis(count: number, axisName: string) {
     const yAxis: any[] = [];
     for (let i = 0; i < count; i += 1) {
       yAxis.push({
@@ -367,7 +367,7 @@ export class IrtOption {
   }
 
   // 设置图表样式
-  private getIrtSeries(data: any[]) {
+  private getXicSeries(data: any[]) {
     const series: Record<any, any>[] = [];
     const cutInfo: string[] = [];
     Object.keys(data[0].cutInfoMap).forEach((key) => {

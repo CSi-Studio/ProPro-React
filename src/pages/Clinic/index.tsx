@@ -22,7 +22,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRatio, getPeptideRefs, prepare } from './service';
-import { IrtOption } from './components/xic';
+import { XicOption } from './components/xic';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
@@ -119,12 +119,12 @@ const TableList: React.FC = (props: any) => {
       result.data.forEach((item: any) => {
         exps?.forEach((_item: any) => {
           if (item.expId === _item.id) {
-            item.name = _item.name;
+            item.alias = _item.alias;
           }
         });
       });
       setExpData(result.data);
-      const irt = new IrtOption(
+      const irt = new XicOption(
         result.data,
         gridNumberInRow,
         xName,
@@ -132,7 +132,7 @@ const TableList: React.FC = (props: any) => {
         gridHeight,
         gridPaddingHeight,
       );
-      const option = irt.getIrtOption();
+      const option = irt.getXicOption();
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
@@ -156,16 +156,9 @@ const TableList: React.FC = (props: any) => {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
         const { expList } = result.data;
-        const expTags = expList.map((item: any) => {
-          return {
-            id: item.id,
-            alias: item.alias ? item.alias : item.name,
-            name: item.name
-          };
-        });
-        setExps(expTags); // 放实验列表
+        setExps(expList); // 放实验列表
         setSelectedExpIds(
-          expTags?.map((item: any) => {
+          expList?.map((item: any) => {
             return item.id;
           }),
         );
@@ -262,9 +255,9 @@ const TableList: React.FC = (props: any) => {
   /* 打分结果Columns */
   let scoreColumns: any = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: '别名',
+      dataIndex: 'alias',
+      key: 'alias',
       render: (dom: any) => {
         return <Tag color="blue">{dom}</Tag>;
       },
@@ -648,11 +641,12 @@ const TableList: React.FC = (props: any) => {
                               style={{ marginTop: 5, marginLeft: 5 }}
                               checked={selectedExpIds?.indexOf(item.id) > -1}
                               onChange={(checked) => {
-                                handleExpTagChange(item.id, checked)
+                                handleExpTagChange(item.id, checked);
                                 if (handleOption) {
-                                  setHandleSubmit(!handleSubmit)
+                                  setHandleSubmit(!handleSubmit);
                                 }
-                              }}>
+                              }}
+                            >
                               {item.alias}
                             </CheckableTag>
                           </Tooltip>
