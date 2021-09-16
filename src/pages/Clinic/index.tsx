@@ -71,6 +71,8 @@ const TableList: React.FC = (props: any) => {
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
   /* 当前Tab */
   const [currentTab, setCurrentTab] = useState<string>('1');
+  /* 打分权重Column */
+  // const [weightsColumn, setWeightsColumn] = useState<any>({});
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -91,6 +93,14 @@ const TableList: React.FC = (props: any) => {
       title: '肽段',
       dataIndex: 'peptide',
       key: 'peptide',
+    },
+    {
+      title: 'Mz',
+      dataIndex: 'mz',
+      key: 'mz',
+      render: (dom, entity) => {
+        return <Tag>{entity.mz.toFixed(3)}</Tag>;
+      },
     },
   ];
 
@@ -289,14 +299,17 @@ const TableList: React.FC = (props: any) => {
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
-      title: index,
+      title: `${index}(sc:wg)`,
       dataIndex: index,
       key: index,
       width: 70,
       render: (dom: any, entity: any) => {
         return entity.scoreList !== null ? (
           entity.scoreList[0].scores[index] !== null ? (
-            <Tag>{entity.scoreList[0].scores[index].toFixed(4)}</Tag>
+            <>
+              <Tag color="blue">{entity.scoreList[0].scores[index].toFixed(4)}</Tag>
+              <Tag color="success">{entity.scoreList[0].weights[index].toFixed(4)}</Tag>
+            </>
           ) : null
         ) : null;
       },
@@ -305,14 +318,54 @@ const TableList: React.FC = (props: any) => {
   }
   scoreColumns = [].concat(...scoreColumns);
 
-  /* scoreTypes  打分说明table数据 */
   let scoreExplain: any[] = [];
   if (prepareData) {
-    const score = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
+    const scoreTypes = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
       index,
       type,
     }));
-    scoreExplain = score;
+    /* scoreTypes  打分说明table数据 */
+    scoreExplain = scoreTypes;
+    const score: any = expData;
+    score.forEach((item: any) => {
+      if (item.scoreList) {
+        item.scoreList[0].weights = [];
+      }
+      item.scoreTypes = scoreTypes.map((type: any) => {
+        return type.type;
+      });
+    });
+
+    /* 打分权重table数据 */
+    const weights = Object.keys(prepareData.overviewMap).map((item) => {
+      return prepareData.overviewMap[item][0].weights;
+    });
+    const a = weights.map((type) => {
+      return Object.keys(type).map((i) => {
+        return { [i]: type[i] };
+      });
+    });
+    a.map((item) => {
+      return item.push({ WeightedTotalScore: null });
+    });
+
+    Object.keys(a).forEach((item: any) => {
+      score[item]?.scoreTypes?.forEach((key: any) => {
+        // console.log(key);
+
+        a[item].forEach((type) => {
+          if (type[key] !== undefined && score[item].scoreList) {
+            // console.log(type.key);
+            score[item]?.scoreList[0].weights.push(type[key]);
+            // console.log(type[key]);
+          }
+        });
+        // Object.keys(a[item]).forEach((key) => {
+        // });
+        // console.log(a[item]);
+      });
+    });
+    // console.log(a);
   }
 
   /* 蛋白table键盘事件 */
@@ -536,6 +589,7 @@ const TableList: React.FC = (props: any) => {
                       key: item.peptideRef,
                       peptide: item.peptideRef,
                       isUnique: item.isUnique,
+                      mz: item.mz,
                     };
                   })}
                   size="small"

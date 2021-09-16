@@ -13,10 +13,12 @@ export type PrepareData = {
 export type Peptide = {
   peptideRef: string;
   isUnique: boolean;
+  mz: number;
 };
 
 export type PeptideTableItem = {
-  key:string;
+  mz: number;
+  key: string;
   isUnique: boolean;
   peptide: string;
   key: string;
