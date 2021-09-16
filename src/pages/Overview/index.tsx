@@ -180,6 +180,15 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      key: 'minTotalScore',
+      title: '最低总分',
+      dataIndex: 'minTotalScore',
+      hideInSearch: true,
+      render: (text, entity) => {
+        return entity?.minTotalScore?.toFixed(3);
+      },
+    },
+    {
       key: 'peakCount',
       title: '峰统计',
       dataIndex: 'statstic',
@@ -194,7 +203,6 @@ const TableList: React.FC = (props: any) => {
       title: '搜索肽段',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.TOTAL_PEPTIDE_COUNT;
       },
