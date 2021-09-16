@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
-import type { IdName } from '@/components/Commons/common';
+import type { IdNameAlias } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
 import {
@@ -43,7 +43,7 @@ let Height = 0;
 
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
-  const [exps, setExps] = useState<IdName[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
+  const [exps, setExps] = useState<IdNameAlias[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
   const [expData, setExpData] = useState<[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
 
@@ -159,7 +159,8 @@ const TableList: React.FC = (props: any) => {
         const expTags = expList.map((item: any) => {
           return {
             id: item.id,
-            name: item.alias ? item.alias : item.name,
+            alias: item.alias ? item.alias : item.name,
+            name: item.name
           };
         });
         setExps(expTags); // 放实验列表
@@ -474,7 +475,7 @@ const TableList: React.FC = (props: any) => {
         extra: (
           <Space>
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true)}>
-              预测兄弟肽段
+              吊炸天测试按钮
             </Button>
           </Space>
         ),
@@ -635,7 +636,7 @@ const TableList: React.FC = (props: any) => {
                       反选
                     </Button>
                     {exps.length > 0 &&
-                      exps?.map((item: IdName) => (
+                      exps?.map((item: IdNameAlias) => (
                         <Badge
                           style={{ marginTop: 5 }}
                           size="small"
@@ -643,18 +644,17 @@ const TableList: React.FC = (props: any) => {
                           offset={[-5, 0]}
                           key={item.id}
                         >
-                          <Tooltip style={{ marginTop: 5 }} title={item.id}>
+                          <Tooltip style={{ marginTop: 5 }} title={item.name}>
                             <CheckableTag
                               style={{ marginTop: 5, marginLeft: 5 }}
                               checked={selectedExpIds?.indexOf(item.id) > -1}
                               onChange={(checked) => {
-                                handleExpTagChange(item.id, checked);
+                                handleExpTagChange(item.id, checked)
                                 if (handleOption) {
-                                  setHandleSubmit(!handleSubmit);
+                                  setHandleSubmit(!handleSubmit)
                                 }
-                              }}
-                            >
-                              {item.name}
+                              }}>
+                              {item.alias}
                             </CheckableTag>
                           </Tooltip>
                         </Badge>
