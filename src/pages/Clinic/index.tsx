@@ -351,21 +351,13 @@ const TableList: React.FC = (props: any) => {
 
     Object.keys(a).forEach((item: any) => {
       score[item]?.scoreTypes?.forEach((key: any) => {
-        // console.log(key);
-
         a[item].forEach((type) => {
           if (type[key] !== undefined && score[item].scoreList) {
-            // console.log(type.key);
             score[item]?.scoreList[0].weights.push(type[key]);
-            // console.log(type[key]);
           }
         });
-        // Object.keys(a[item]).forEach((key) => {
-        // });
-        // console.log(a[item]);
       });
     });
-    // console.log(a);
   }
 
   /* 蛋白table键盘事件 */
