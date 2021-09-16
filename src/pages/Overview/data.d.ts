@@ -15,6 +15,7 @@ statistic:any;
 weights:any;
 note:string;
 featureMap:any;
+minTotalScore:number;
 };
 
 export type TableListPagination = {
