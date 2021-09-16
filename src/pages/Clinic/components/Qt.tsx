@@ -26,12 +26,17 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
       const option = {
         grid: {
           top: '3%',
-          left: '0',
+          left: '1%',
           right: '3%',
-          bottom: '0',
+          bottom: '2%',
           containLabel: true,
         },
         xAxis: {
+          // nameRotate: 90,
+          // nameGap: 80,
+          nameLocation: 'middle',
+          // boundaryGap: false,
+          name: 'Log_2(B)',
           splitLine: {
             show: false,
           },
@@ -51,6 +56,9 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           },
         },
         yAxis: {
+          nameRotate: 90,
+          nameLocation: 'middle',
+          name: 'Log_2(A:B)',
           splitLine: {
             show: false,
           },
@@ -62,6 +70,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             fontWeight: 'normal',
           },
           nameTextStyle: {
+            // lineHeight: 56,
             color: '#000',
             fontSize: '16',
             fontWeight: 'bold',
@@ -90,7 +99,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             fontWeight: 'normal',
             fontFamily: 'Times New Roman,STSong',
           },
-          formatter: (params: { seriesName: any; data: number[]; marker: any; }) => {
+          formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
             let res = params.seriesName;
             res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
               4,
@@ -111,8 +120,9 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             type: 'scatter',
             name: 'ecoli',
             symbolSize: 7,
-            color: 'tomato',
+            color: 'rgba(255,99,71,0.5)',
             data: ecoliData,
+            itemStyle: { borderWidth: 1, borderColor: 'tomato' },
             markLine: {
               symbol: ['none', 'none'],
               animation: false,
@@ -130,16 +140,14 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
               },
               label: { show: false },
               data: [{ yAxis: result.data.ecoliAvg, name: '平均线' }],
-              // tooltip: {
-              //   formatter: (params: any) => params,
-              // },
             },
           },
           {
             type: 'scatter',
             name: 'human',
             symbolSize: 7,
-            color: '#60B077',
+            color: 'rgba(64,144,247,0.5)',
+            itemStyle: { borderWidth: 1, borderColor: 'rgba(64,144,247)' },
             data: humanData,
             markLine: {
               symbol: ['none', 'none'],
@@ -164,7 +172,8 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             type: 'scatter',
             name: 'yeast',
             symbolSize: 7,
-            color: '#1890ff',
+            color: 'rgba(77,230,128,0.5)',
+            itemStyle: { borderWidth: 1, borderColor: 'rgba(77,230,128)' },
             data: yeastData,
             markLine: {
               symbol: ['none', 'none'],

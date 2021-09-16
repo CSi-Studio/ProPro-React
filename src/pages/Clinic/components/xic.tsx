@@ -398,7 +398,6 @@ export class XicOption {
             },
           },
           markLine: this.getMarkLine(data[i]),
-          areaStyle: { opacity: 0 },
         };
         series.push(seriesItem);
       });
