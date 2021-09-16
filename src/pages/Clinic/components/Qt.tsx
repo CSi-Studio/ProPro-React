@@ -172,8 +172,8 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             type: 'scatter',
             name: 'yeast',
             symbolSize: 7,
-            color: 'rgba(77,230,128,0.5)',
-            itemStyle: { borderWidth: 1, borderColor: 'rgba(77,230,128)' },
+            color: 'rgba(60,179,113,0.5)',
+            itemStyle: { borderWidth: 1, borderColor: 'rgba(60,179,113)' },
             data: yeastData,
             markLine: {
               symbol: ['none', 'none'],
