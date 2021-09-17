@@ -426,7 +426,7 @@ const TableList: React.FC = (props: any) => {
   );
 
   useEffect(() => {
-    if (prepareData && (currentTab === '1' || currentTab === '2')) {
+    if (prepareData) {
       if (proteinPage < 1 || proteinPage > Math.ceil(prepareData.proteins.length / 13)) {
         setProteinPage(1);
       }
@@ -467,28 +467,26 @@ const TableList: React.FC = (props: any) => {
   );
 
   useEffect(() => {
-    if (currentTab === '1' || currentTab === '2') {
-      const peptideArr = peptideList.map((item) => {
-        return item.peptideRef;
-      });
-      if (peptidePage < 1 || peptidePage > Math.ceil(peptideArr.length / 9)) {
-        setPeptidePage(1);
-      }
-      if (peptidesIndex < 0 || peptidesIndex >= peptideArr.length) {
-        setPeptidesIndex(0);
-        setPeptidePage(1);
-      } else {
-        selectPeptideRow(peptideArr[peptidesIndex]);
-        setHandleSubmit(!handleSubmit);
-        setPeptideRowKey(peptideArr[peptidesIndex]);
-        setChartsLoading(true);
-      }
-
-      document.addEventListener('keydown', onPeptideKey);
-      return () => {
-        document.removeEventListener('keydown', onPeptideKey);
-      };
+    const peptideArr = peptideList.map((item) => {
+      return item.peptideRef;
+    });
+    if (peptidePage < 1 || peptidePage > Math.ceil(peptideArr.length / 9)) {
+      setPeptidePage(1);
     }
+    if (peptidesIndex < 0 || peptidesIndex >= peptideArr.length) {
+      setPeptidesIndex(0);
+      setPeptidePage(1);
+    } else {
+      selectPeptideRow(peptideArr[peptidesIndex]);
+      setHandleSubmit(!handleSubmit);
+      setPeptideRowKey(peptideArr[peptidesIndex]);
+      setChartsLoading(true);
+    }
+
+    document.addEventListener('keydown', onPeptideKey);
+    return () => {
+      document.removeEventListener('keydown', onPeptideKey);
+    };
     return () => {};
     // }, [onPeptideKey, currentTab]);
   }, [onPeptideKey]);
