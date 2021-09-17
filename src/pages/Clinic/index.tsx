@@ -31,6 +31,7 @@ import IrtCharts from './components/Irt';
 import QtCharts from './components/Qt';
 import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
+import { irtList } from '../Irt/service';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -71,6 +72,8 @@ const TableList: React.FC = (props: any) => {
   const [proteinPage, setProteinPage] = useState<number>(1); // 蛋白table当前页数
   const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
+  /* Irt charts相关 */
+  const [irtData, setIrtData] = useState<any>();
   /* 当前Tab */
   const [currentTab, setCurrentTab] = useState<string>('1');
   /* CutInfo弹窗 */
@@ -171,6 +174,29 @@ const TableList: React.FC = (props: any) => {
     }
   }
 
+  /* **************  Irt result  ****************** */
+  const getIrtData = async (values: any) => {
+    try {
+      const result = await irtList(values.selectedExpIds);
+      result.data.forEach((value: { id: any; alias: any }) => {
+        values.exps.forEach((item: { id: any; alias: any }) => {
+          if (item.id === value.id) {
+            value.alias = item.alias;
+          }
+        });
+      });
+      result.data.sort((a: { alias: string }, b: { alias: string }) =>
+        a.alias > b.alias ? 1 : -1,
+      );
+      // console.log(result.data);
+
+      setIrtData(result.data);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   /** **************  use effect start  ****************** */
   useEffect(() => {
     /* 准备数据 */
@@ -185,6 +211,13 @@ const TableList: React.FC = (props: any) => {
             return item.id;
           }),
         );
+        getIrtData({
+          selectedExpIds: expList?.map((item: any) => {
+            return item.id;
+          }),
+          exps: expList,
+        });
+
         setLoading(false);
         const rationData = await getPeptideRatio({ projectId });
         setPeptideRatioData(rationData);
@@ -211,11 +244,11 @@ const TableList: React.FC = (props: any) => {
   }, [peptideList[0]?.peptideRef]);
 
   useEffect(() => {
-    fetchEicDataList(false,false);
+    fetchEicDataList(false, false);
   }, [handleSubmit, gridNumberInRow]);
 
   useEffect(() => {
-    fetchEicDataList(false,false);
+    fetchEicDataList(false, false);
   }, [smooth, denoise]);
 
   // 点击选择 tags
@@ -412,7 +445,7 @@ const TableList: React.FC = (props: any) => {
       };
     }
     return () => {};
-  }, [onProteinKey, currentTab]);
+  }, [onProteinKey]);
 
   /* 肽段table键盘事件 */
   const onPeptideKey = useCallback(
@@ -457,7 +490,8 @@ const TableList: React.FC = (props: any) => {
       };
     }
     return () => {};
-  }, [onPeptideKey, currentTab]);
+    // }, [onPeptideKey, currentTab]);
+  }, [onPeptideKey]);
 
   let searchInput: any;
   const getColumnSearchProps = (dataIndex: any) => ({
@@ -535,22 +569,23 @@ const TableList: React.FC = (props: any) => {
 
   /* 点击rt markLine展示光谱图 */
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
-  echarts?.getEchartsInstance().on('click', 'series.line', (params: any) => {
+  echarts?.getEchartsInstance().on('click', (params: any) => {
     setSpectrumVisible(true);
-    // console.log(
-    //   'expId',
-    //   selectedExpIds[params.dataIndex],
-    //   'mz',
-    //   peptideList.find((item) => item.peptideRef === peptideRef).mz,
-    //   peptideRef,
-    //   'rt',
-    //   params.data.xAxis,
-    // );
-    aa({
-      expId: selectedExpIds[params.dataIndex],
-      mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
-      rt: params.data.xAxis,
-    });
+    console.log(
+      'expId',
+      selectedExpIds[params.dataIndex],
+      'mz',
+      peptideList.find((item) => item.peptideRef === peptideRef).mz,
+      peptideRef,
+      'rt',
+      params.data[0],
+      params,
+    );
+    // aa({
+    //   expId: selectedExpIds[params.dataIndex],
+    //   mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
+    //   rt: params.data[0],
+    // });
 
     // setCutInfoName(expData[0].cutInfoMap);
   });
@@ -867,7 +902,7 @@ const TableList: React.FC = (props: any) => {
                 </Row>
               </TabPane>
               <TabPane tab="Irt结果" key="5">
-                <IrtCharts values={{ selectedExpIds, exps }} />
+                <IrtCharts values={irtData} />
               </TabPane>
             </Tabs>
           </Col>
