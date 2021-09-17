@@ -353,8 +353,8 @@ const TableList: React.FC = (props: any) => {
         return entity.scoreList !== null ? (
           entity.scoreList[0].scores[index] !== null ? (
             <>
-              <Tag color="blue">{entity.scoreList[0].scores[index].toFixed(4)}</Tag>
-              <Tag color="success">{entity.scoreList[0].weights[index].toFixed(4)}</Tag>
+              <Tag color="blue">{entity.scoreList[0].scores[index]?.toFixed(4)}</Tag>
+              <Tag color="success">{entity.scoreList[0].weights[index]?.toFixed(4)}</Tag>
             </>
           ) : null
         ) : null;
