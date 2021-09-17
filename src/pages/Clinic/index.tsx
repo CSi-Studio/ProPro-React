@@ -21,7 +21,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
-import { getExpData, getPeptideRatio, getPeptideRefs, prepare } from './service';
+import { getExpData, getPeptideRatio, getPeptideRefs, getSpectra, prepare } from './service';
 import { XicOption } from './components/xic';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -29,6 +29,8 @@ import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import IrtCharts from './components/Irt';
 import QtCharts from './components/Qt';
+import CutInfo from './components/CutInfo';
+import Spectrum from './components/Spectra';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -71,8 +73,12 @@ const TableList: React.FC = (props: any) => {
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
   /* 当前Tab */
   const [currentTab, setCurrentTab] = useState<string>('1');
-  /* 打分权重Column */
-  // const [weightsColumn, setWeightsColumn] = useState<any>({});
+  /* CutInfo弹窗 */
+  const [cutInfoVisible, setCutInfoVisible] = useState<boolean>(false);
+  /* 光谱图弹窗 */
+  const [spectrumVisible, setSpectrumVisible] = useState<boolean>(false);
+  /* 获取echarts实例，使用其Api */
+  const [echarts, setEcharts] = useState<any>();
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -142,7 +148,13 @@ const TableList: React.FC = (props: any) => {
         gridHeight,
         gridPaddingHeight,
       );
-      const option = irt.getXicOption();
+
+      const getCutInfo = () => {
+        setCutInfoVisible(true);
+        setExpData(result.data);
+      };
+
+      const option = irt.getXicOption(getCutInfo);
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
@@ -299,7 +311,7 @@ const TableList: React.FC = (props: any) => {
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
-      title: `${index}(sc:wg)`,
+      title: index,
       dataIndex: index,
       key: index,
       width: 70,
@@ -316,7 +328,7 @@ const TableList: React.FC = (props: any) => {
     }));
     scoreColumns.push(scoreColumn);
   }
-  scoreColumns = [].concat(...scoreColumns);
+  scoreColumns = [].concat(...scoreColumns); // 拍平数组
 
   let scoreExplain: any[] = [];
   if (prepareData) {
@@ -504,6 +516,44 @@ const TableList: React.FC = (props: any) => {
       ),
   });
 
+  const aa = async (values: any) => {
+    const hide = message.loading('正在请求');
+    try {
+      const b = await getSpectra({ expId: values.expId, mz: values.mz, rt: values.rt });
+      console.log(b);
+
+      hide();
+      message.success('请求ok');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('请求失败请重试！');
+      return false;
+    }
+  };
+
+  /* 点击rt markLine展示光谱图 */
+  echarts?.getEchartsInstance().off('click'); // 防止多次触发
+  echarts?.getEchartsInstance().on('click', 'series.line', (params: any) => {
+    setSpectrumVisible(true);
+    // console.log(
+    //   'expId',
+    //   selectedExpIds[params.dataIndex],
+    //   'mz',
+    //   peptideList.find((item) => item.peptideRef === peptideRef).mz,
+    //   peptideRef,
+    //   'rt',
+    //   params.data.xAxis,
+    // );
+    aa({
+      expId: selectedExpIds[params.dataIndex],
+      mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
+      rt: params.data.xAxis,
+    });
+
+    // setCutInfoName(expData[0].cutInfoMap);
+  });
+
   return (
     <PageContainer
       header={{
@@ -666,7 +716,7 @@ const TableList: React.FC = (props: any) => {
                       数据降噪
                     </Checkbox>
                   </Col>
-                  <Col span={24} style={{ marginTop: 5 }}>
+                  <Col span={24}>
                     <Button style={{ marginRight: 5 }} size="small" onClick={() => selectAll()}>
                       全选
                     </Button>
@@ -703,9 +753,12 @@ const TableList: React.FC = (props: any) => {
                     <Spin spinning={chartsLoading}>
                       {selectedExpIds.length > 0 && handleOption !== undefined ? (
                         <ReactECharts
+                          ref={(e) => {
+                            setEcharts(e);
+                          }}
                           option={handleOption}
                           notMerge={true}
-                          lazyUpdate={true}
+                          lazyUpdate={false}
                           style={{ width: '100%', height: Height }}
                         />
                       ) : (
@@ -816,6 +869,20 @@ const TableList: React.FC = (props: any) => {
           </Col>
         </Row>
       </ProCard>
+      <CutInfo
+        cutInfoVisible={cutInfoVisible}
+        values={{ expData }}
+        handleCancel={() => {
+          setCutInfoVisible(false);
+        }}
+      />
+      <Spectrum
+        spectrumVisible={spectrumVisible}
+        values={{ expData }}
+        handleCancel={() => {
+          setSpectrumVisible(false);
+        }}
+      />
     </PageContainer>
   );
 };
