@@ -568,18 +568,6 @@ const TableList: React.FC = (props: any) => {
   /* 点击坐标点展示光谱图 */
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
-    // console.log(
-    //   'expId',
-    //   selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
-    //   'mz',
-    //   peptideList.find((item) => item.peptideRef === peptideRef).mz,
-    //   peptideRef,
-    //   'rt',
-    //   params.data[0],
-    //   selectedExpIds.length,
-    //   params.seriesIndex,
-    //   params,
-    // );
     spectraFn({
       expId: selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
       mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
