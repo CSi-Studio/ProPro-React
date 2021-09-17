@@ -95,7 +95,7 @@ const TableList: React.FC = (props: any) => {
       key: 'peptide',
     },
     {
-      title: 'Mz',
+      title: 'm/z',
       dataIndex: 'mz',
       key: 'mz',
       render: (dom, entity) => {
@@ -105,7 +105,7 @@ const TableList: React.FC = (props: any) => {
   ];
 
   /** **************  网络调用相关接口 start  ****************** */
-  async function fetchEicDataList(predict: boolean) {
+  async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
     if (selectedExpIds.length === 0) {
       return false;
     }
@@ -119,6 +119,7 @@ const TableList: React.FC = (props: any) => {
         projectId,
         libraryId: prepareData?.anaLib?.id,
         predict,
+        changeCharge,
         peptideRef,
         expIds: selectedExpIds,
         onlyDefault,
@@ -198,11 +199,11 @@ const TableList: React.FC = (props: any) => {
   }, [peptideList[0]?.peptideRef]);
 
   useEffect(() => {
-    fetchEicDataList(false);
+    fetchEicDataList(false,false);
   }, [handleSubmit, gridNumberInRow]);
 
   useEffect(() => {
-    fetchEicDataList(false);
+    fetchEicDataList(false,false);
   }, [smooth, denoise]);
 
   // 点击选择 tags
@@ -512,8 +513,11 @@ const TableList: React.FC = (props: any) => {
         tags: <Tag>{prepareData?.project?.name}</Tag>,
         extra: (
           <Space>
-            <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true)}>
-              吊炸天测试按钮
+            <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
+              自身肽段预测
+            </Button>
+            <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, true)}>
+              异电肽段预测
             </Button>
           </Space>
         ),
