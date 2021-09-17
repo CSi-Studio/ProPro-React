@@ -80,6 +80,7 @@ const TableList: React.FC = (props: any) => {
   const [cutInfoVisible, setCutInfoVisible] = useState<boolean>(false);
   /* 光谱图弹窗 */
   const [spectrumVisible, setSpectrumVisible] = useState<boolean>(false);
+  const [spectra, setSpectra] = useState<boolean>(false);
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
 
@@ -488,7 +489,6 @@ const TableList: React.FC = (props: any) => {
       document.removeEventListener('keydown', onPeptideKey);
     };
     return () => {};
-    // }, [onPeptideKey, currentTab]);
   }, [onPeptideKey]);
 
   let searchInput: any;
@@ -549,12 +549,12 @@ const TableList: React.FC = (props: any) => {
       ),
   });
 
-  const aa = async (values: any) => {
+  const spectraFn = async (values: any) => {
     const hide = message.loading('正在请求');
     try {
-      const b = await getSpectra({ expId: values.expId, mz: values.mz, rt: values.rt });
-      console.log(b);
-
+      const data = await getSpectra({ expId: values.expId, mz: values.mz, rt: values.rt });
+      setSpectra(data);
+      setSpectrumVisible(true);
       hide();
       message.success('请求ok');
       return true;
@@ -565,27 +565,26 @@ const TableList: React.FC = (props: any) => {
     }
   };
 
-  /* 点击rt markLine展示光谱图 */
+  /* 点击坐标点展示光谱图 */
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
-    setSpectrumVisible(true);
-    console.log(
-      'expId',
-      selectedExpIds[params.dataIndex],
-      'mz',
-      peptideList.find((item) => item.peptideRef === peptideRef).mz,
-      peptideRef,
-      'rt',
-      params.data[0],
-      params,
-    );
-    // aa({
-    //   expId: selectedExpIds[params.dataIndex],
-    //   mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
-    //   rt: params.data[0],
-    // });
-
-    // setCutInfoName(expData[0].cutInfoMap);
+    // console.log(
+    //   'expId',
+    //   selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
+    //   'mz',
+    //   peptideList.find((item) => item.peptideRef === peptideRef).mz,
+    //   peptideRef,
+    //   'rt',
+    //   params.data[0],
+    //   selectedExpIds.length,
+    //   params.seriesIndex,
+    //   params,
+    // );
+    spectraFn({
+      expId: selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
+      mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
+      rt: params.data[0],
+    });
   });
 
   return (
@@ -915,7 +914,7 @@ const TableList: React.FC = (props: any) => {
       />
       <Spectrum
         spectrumVisible={spectrumVisible}
-        values={{ expData }}
+        values={spectra}
         handleCancel={() => {
           setSpectrumVisible(false);
         }}
