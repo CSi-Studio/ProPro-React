@@ -48,11 +48,28 @@ export class XicOption {
       grid: this.getXicGrids(gridNumber, this.data),
       tooltip: {
         trigger: 'axis',
+        // triggerOn: 'click',
+        axisPointer: {
+          snap: true,
+        },
         textStyle: {
           color: '#000',
           fontSize: '14',
           fontWeight: 'normal',
           fontFamily: 'Times New Roman,STSong',
+        },
+        formatter: (params: any) => {
+          console.log(
+            params.map((item: any) => {
+              return item.data[1];
+            }),
+          );
+          console.log(params);
+          let a = `${params[0].axisValue}<br /><br />`;
+          params.forEach((item: any) => {
+            a += `${item.marker}<span style=\"display:inline-block;margin-right:4px;width:30px\">${item.seriesName}</span>&nbsp&nbsp&nbsp <span style=\"font-weight:bold\">${item.data[1]}</span><br />`;
+          });
+          return a;
         },
       },
       xAxis: this.getXicxAxis(gridNumber, this.xName, this.data),
@@ -402,8 +419,25 @@ export class XicOption {
             lineStyle: {
               width: 1,
             },
+            focus: 'series',
           },
+          // tooltip: {
+          //   trigger: 'axis',
+          //   triggerOn: 'click',
+          //   axisPointer: {
+          //     snap: true,
+          //   },
+          //   formatter: (params: any) => {
+          //     // console.log(
+          //     //   params.map((item: any) => {
+          //     //     return item.data[1];
+          //     //   }),
+          //     // );
+          //     console.log(params);
+          //   },
+          // },
           markLine: this.getMarkLine(data[i]),
+          markArea: this.getMarkArea(data[i]),
         };
         series.push(seriesItem);
       });
@@ -438,44 +472,73 @@ export class XicOption {
           width: 2,
         },
       },
-      tooltip: {
-        // formatter: formula,
-        axisPointer: {
-          label: {
-            fontFamily: 'Times New Roman,STSong',
-          },
-        },
-      },
+      // silent: true, // 图形是不响应和触发鼠标事件
+
       label: { show: false },
       data: [],
     };
 
     data.scoreList.forEach((item: any, index: any) => {
       if (index === data.selectIndex) {
-        const rtRange = item.rtRangeFeature.split(';');
-        markLineOpt.data.push({
-          xAxis: rtRange[0],
-          lineStyle: { color: '#FF1D00', type: 'dashed', width: 1 },
-        });
-        markLineOpt.data.push({
-          xAxis: rtRange[1],
-          lineStyle: { color: '#FF1D00', type: 'dashed', width: 1 },
-        });
         markLineOpt.data.push({
           xAxis: item.rt,
-          lineStyle: { color: '#7b68ee', type: 'dotted', dashOffset: 2, width: 1 },
+          lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
         });
       } else {
-        const rtRange = item.rtRangeFeature.split(';');
-        markLineOpt.data.push({ xAxis: rtRange[0] });
-        markLineOpt.data.push({ xAxis: rtRange[1] });
         markLineOpt.data.push({
           xAxis: item.rt,
-          lineStyle: { color: '#7b68ee', type: 'dotted', dashOffset: 2, width: 1 },
+          lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
         });
       }
     });
 
     return markLineOpt;
+  }
+  // 设置标注区域
+  private getMarkArea(data: any) {
+    if (!data.scoreList) {
+      return null;
+    }
+    const markAreaOpt: any = {
+      animation: false,
+      // lineStyle: {
+      //   type: 'dashed',
+      //   color: '#777',
+      // },
+      // emphasis: {
+      //   lineStyle: {
+      //     type: 'solid',
+      //     color: 'tomato',
+      //     width: 2,
+      //   },
+      // },
+      // silent: true, // 图形是不响应和触发鼠标事件
+      // tooltip: {
+      //   formatter: '{a}',
+      //   item: 'none',
+      //   axisPointer: {
+      //     label: {
+      //       fontFamily: 'Times New Roman,STSong',
+      //     },
+      //   },
+      // },
+      // label: { show: false },
+      itemStyle: { color: '#eee' },
+      data: [],
+    };
+
+    data.scoreList.forEach((item: any, index: any) => {
+      const rtRange = item.rtRangeFeature.split(';');
+      markAreaOpt.data.push([
+        {
+          xAxis: rtRange[0],
+        },
+        {
+          xAxis: rtRange[1],
+        },
+      ]);
+    });
+
+    return markAreaOpt;
   }
 }

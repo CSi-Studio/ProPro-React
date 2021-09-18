@@ -153,7 +153,7 @@ const TableList: React.FC = (props: any) => {
         gridHeight,
         gridPaddingHeight,
       );
-
+      /* 碎片Mz echarts toolbox */
       const getCutInfo = () => {
         setCutInfoVisible(true);
         setExpData(result.data);
@@ -550,24 +550,44 @@ const TableList: React.FC = (props: any) => {
   });
 
   const spectraFn = async (values: any) => {
-    const hide = message.loading('正在请求');
+    const hide = message.loading('正在获取光谱图');
     try {
       const data = await getSpectra({ expId: values.expId, mz: values.mz, rt: values.rt });
       setSpectra(data);
       setSpectrumVisible(true);
       hide();
-      message.success('请求ok');
       return true;
     } catch (error) {
       hide();
-      message.error('请求失败请重试！');
       return false;
     }
   };
 
+  // const tipFormatterFn = () => {
+  //   spectraFn({
+  //     expId: selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
+  //     mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
+  //     rt: params.data[0],
+  //   });
+  // };
+
   /* 点击坐标点展示光谱图 */
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
+    console.log(
+      'expId',
+      selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
+      'mz',
+      peptideList.find((item) => item.peptideRef === peptideRef).mz,
+      peptideRef,
+      'rt',
+      params.data[0] ? params.data[0] : params.value,
+      selectedExpIds.length,
+      params.seriesIndex,
+      params,
+    );
+    console.log(echarts.getEchartsInstance().getOption());
+
     spectraFn({
       expId: selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
       mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
