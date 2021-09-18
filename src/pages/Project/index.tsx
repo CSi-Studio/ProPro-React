@@ -202,8 +202,16 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      hideInTable: true,
+      render: (dom) => {
+        return <Tag>{dom}</Tag>;
+      },
+    },
+    {
       key: 'group',
-      title: 'Group',
+      title: '分组',
       dataIndex: 'group',
       sorter: (a, b) => {
         return a?.group > b?.group ? -1 : 1;
@@ -232,14 +240,6 @@ const TableList: React.FC = () => {
             </a>
           </Tooltip>
         );
-      },
-    },
-    {
-      title: 'ProjectId',
-      dataIndex: 'id',
-      hideInTable: true,
-      render: (dom) => {
-        return <Tag>{dom}</Tag>;
       },
     },
     {
