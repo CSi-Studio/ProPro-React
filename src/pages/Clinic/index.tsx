@@ -361,7 +361,7 @@ const TableList: React.FC = (props: any) => {
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
-      title: index==0?"当前总分":index,
+      title: index==0?"0(总分)":index,
       dataIndex: index,
       key: index,
       width: 70,
