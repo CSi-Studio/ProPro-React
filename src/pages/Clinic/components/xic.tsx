@@ -59,13 +59,13 @@ export class XicOption {
           fontFamily: 'Times New Roman,STSong',
         },
         formatter: (params: any) => {
-          console.log(
-            params.map((item: any) => {
-              return item.data[1];
-            }),
-          );
-          console.log(params);
-          let a = `${params[0].axisValue}<br /><br />`;
+          // console.log(
+          //   params.map((item: any) => {
+          //     return item.data[1];
+          //   }),
+          // );
+          // console.log(params);
+          let a = `${params[0].axisValue}<br /><p style=\"margin-right:4px;width:30px\">123</p>`;
           params.forEach((item: any) => {
             a += `${item.marker}<span style=\"display:inline-block;margin-right:4px;width:30px\">${item.seriesName}</span>&nbsp&nbsp&nbsp <span style=\"font-weight:bold\">${item.data[1]}</span><br />`;
           });
