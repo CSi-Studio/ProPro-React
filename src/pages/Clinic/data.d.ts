@@ -7,7 +7,7 @@ export type PrepareData = {
   method: any;
   proteins: string[];
   expList: array<IdNameAlias>;
-  overviewMap: Map<string, Overview>; //key为expId
+  overviewMap: Map<string, Overview>; // key为expId
 };
 
 export type Overview = {

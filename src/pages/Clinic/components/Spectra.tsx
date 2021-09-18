@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Tag } from 'antd';
+import { Modal } from 'antd';
 import ReactECharts from 'echarts-for-react';
 
 export type spectrumProps = {
@@ -14,7 +14,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     const xData = props?.values?.data?.x?.map((value: number) => {
       return value.toFixed(2);
     });
-    console.log(props.values);
     const option = {
       grid: {
         top: '2%',
