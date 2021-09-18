@@ -4,6 +4,7 @@ import type { TableListItem } from '@/pages/Project/data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import ReactECharts from 'echarts-for-react';
+
 export type UpdateFormProps = {
   showDetail: any;
   currentRow: any;
@@ -13,10 +14,10 @@ export type UpdateFormProps = {
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
-  const upData:any[]=[]
+  const upData: any[]=[]
   const downData: any[]=[]
-  const xData:any[]=[]
-  const features:any[]=[]
+  const xData: any[]=[]
+  const features: any[]=[]
   props?.currentRow?.windowRanges.map((item: any, index: string)=>{
     upData.push(item?.end-item?.start)
     downData.push(item?.start)
@@ -34,10 +35,10 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
         // 坐标轴指示器，坐标轴触发有效
         type: 'shadow', // 默认为直线，可选为：'line' | 'shadow'
       },
-      formatter: function (params: any[]) {
-        var tar = params[0];
-        var tar2 = params[1];
-        return tar.name + '<br/>' + 'start' + ' : ' + tar.value + '<br/>' +'end' + ' : ' + (tar.value+tar2.value) + '<br/>'+' owid'+':'+tar2.value;
+      formatter (params: any[]) {
+        const tar = params[0];
+        const tar2 = params[1];
+        return `${tar.name  }<br/>` + `start` + ` : ${  tar.value  }<br/>` +`end` + ` : ${  tar.value+tar2.value  }<br/>`+` owid`+`:${tar2.value}`;
       },
     },
     // grid: {
@@ -53,7 +54,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
     yAxis: {
       type: 'value',
-      min: function (value: { min: number; }) {
+      min (value: { min: number; }) {
         return value.min;
     }
     },
