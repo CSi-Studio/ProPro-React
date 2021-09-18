@@ -338,11 +338,11 @@ const TableList: React.FC = (props: any) => {
             return <Tag color="warning">碎片不足</Tag>;
             break;
           case 4:
-              return <Tag color="warning">没有峰组</Tag>;
-              break;
+            return <Tag color="warning">没有峰组</Tag>;
+            break;
           case 5:
-              return <Tag color="warning">EIC为空</Tag>;
-              break;
+            return <Tag color="warning">EIC为空</Tag>;
+            break;
           default:
             return <Tag color="warning">没有峰组</Tag>;
             break;
@@ -361,19 +361,32 @@ const TableList: React.FC = (props: any) => {
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
-      title: index==0?"当前总分":index,
+      title: index === 0 ? '当前总分' : index,
       dataIndex: index,
       key: index,
       width: 70,
       render: (dom: any, entity: any) => {
-        if(entity.selectIndex !== null && entity.scoreList !== null && entity.scoreList[entity.selectIndex].scores[index] !== null && prepareData.overviewMap[entity.expId]!=null && prepareData.overviewMap[entity.expId].length > 0){
-            return  <>
-            <Tag color="blue">{entity.scoreList[entity.selectIndex].scores[index]?.toFixed(4)}</Tag>
-            {index==0?null:<Tag color="success">{prepareData.overviewMap[entity.expId][0].weights[type]?.toFixed(4)}</Tag>}
-          </>
-        }else{
-          return null
+        if (
+          entity.selectIndex !== null &&
+          entity.scoreList !== null &&
+          entity.scoreList[entity.selectIndex].scores[index] !== null &&
+          prepareData.overviewMap[entity.expId] != null &&
+          prepareData.overviewMap[entity.expId].length > 0
+        ) {
+          return (
+            <>
+              <Tag color="blue">
+                {entity.scoreList[entity.selectIndex].scores[index]?.toFixed(4)}
+              </Tag>
+              {index === 0 ? null : (
+                <Tag color="success">
+                  {prepareData.overviewMap[entity.expId][0].weights[type]?.toFixed(4)}
+                </Tag>
+              )}
+            </>
+          );
         }
+        return null;
       },
     }));
     scoreColumns.push(scoreColumn);
@@ -397,29 +410,6 @@ const TableList: React.FC = (props: any) => {
         return type.type;
       });
     });
-
-    /* 打分权重table数据 */
-    // const weights = Object.keys(prepareData.overviewMap).map((expId) => {
-    //   return prepareData.overviewMap[expId][0].weights;
-    // });
-    // const a = weights.map((type) => {
-    //   return Object.keys(type).map((i) => {
-    //     return { [i]: type[i] };
-    //   });
-    // });
-    // a.map((item) => {
-    //   return item.push({ WeightedTotalScore: null });
-    // });
-
-    // Object.keys(a).forEach((item: any) => {
-    //   score[item]?.scoreTypes?.forEach((key: any) => {
-    //     a[item].forEach((type) => {
-    //       if (type[key] !== undefined && score[item].scoreList) {
-    //         score[item]?.scoreList[0].weights.push(type[key]);
-    //       }
-    //     });
-    //   });
-    // });
   }
 
   /* 蛋白table键盘事件 */

@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-nested-ternary */
 export class XicOption {
   private data: any[]; // 点数据数组
@@ -48,7 +49,7 @@ export class XicOption {
       grid: this.getXicGrids(gridNumber, this.data),
       tooltip: {
         trigger: 'axis',
-        // triggerOn: 'click',
+        triggerOn: 'click',
         axisPointer: {
           snap: true,
         },
@@ -65,7 +66,7 @@ export class XicOption {
           //   }),
           // );
           // console.log(params);
-          let a = `${params[0].axisValue}<br /><p style=\"margin-right:4px;width:30px\">123</p>`;
+          let a = `${params[0].axisValue}<br />`;
           params.forEach((item: any) => {
             a += `${item.marker}<span style=\"display:inline-block;margin-right:4px;width:30px\">${item.seriesName}</span>&nbsp&nbsp&nbsp <span style=\"font-weight:bold\">${item.data[1]}</span><br />`;
           });
