@@ -335,10 +335,16 @@ const TableList: React.FC = (props: any) => {
             return <Tag color="error">鉴定失败</Tag>;
             break;
           case 3:
-            return <Tag color="warning">条件不足</Tag>;
+            return <Tag color="warning">碎片不足</Tag>;
             break;
+          case 4:
+              return <Tag color="warning">没有峰组</Tag>;
+              break;
+          case 5:
+              return <Tag color="warning">EIC为空</Tag>;
+              break;
           default:
-            return <Tag color="warning">缺少峰组</Tag>;
+            return <Tag color="warning">没有峰组</Tag>;
             break;
         }
       },
