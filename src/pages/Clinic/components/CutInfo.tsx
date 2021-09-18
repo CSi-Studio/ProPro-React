@@ -38,11 +38,11 @@ const CutInfo: React.FC<CutInfoProps> = (props) => {
             return <Tag color="warning">条件不足</Tag>;
             break;
           default:
-            return <Tag color="warning">缺少峰组</Tag>;
+            return <Tag color="warning">未知错误</Tag>;
             break;
         }
       },
-    },
+    }
   ];
   let fragments: any[] = [];
   props.values.expData.forEach((value: any) => {

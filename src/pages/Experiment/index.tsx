@@ -108,6 +108,20 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      title: 'Label',
+      dataIndex: 'label',
+      hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.label > b?.label ? -1 : 1;
+      },
+      render: (dom, entity) => {
+        if (entity?.label) {
+          return <Tag color="blue">{dom}</Tag>;
+        }
+        return false;
+      },
+    },
+    {
       title: '实验别名',
       dataIndex: 'alias',
       render: (dom, entity) => {
@@ -116,6 +130,27 @@ const TableList: React.FC = (props: any) => {
             <Tooltip title={dom} placement="topLeft">
               {dom}
             </Tooltip>
+          );
+        }
+        return false;
+      },
+    },
+    {
+      title: 'Tags',
+      dataIndex: 'tags',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        if (entity?.tags) {
+          return (
+            <>
+              {entity?.tags.map((item) => {
+                return (
+                  <Tag color="blue" key={item.toString()}>
+                    {item}
+                  </Tag>
+                );
+              })}
+            </>
           );
         }
         return false;
@@ -172,38 +207,6 @@ const TableList: React.FC = (props: any) => {
               >
                 <Tag color="green">查看</Tag>
               </Link>
-            </>
-          );
-        }
-        return false;
-      },
-    },
-    {
-      title: 'Label',
-      dataIndex: 'label',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        if (entity?.label) {
-          return <Tag color="blue">{dom}</Tag>;
-        }
-        return false;
-      },
-    },
-    {
-      title: 'Tags',
-      dataIndex: 'tags',
-      hideInSearch: true,
-      render: (dom, entity) => {
-        if (entity?.tags) {
-          return (
-            <>
-              {entity?.tags.map((item) => {
-                return (
-                  <Tag color="blue" key={item.toString()}>
-                    {item}
-                  </Tag>
-                );
-              })}
             </>
           );
         }

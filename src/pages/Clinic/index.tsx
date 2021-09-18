@@ -335,30 +335,45 @@ const TableList: React.FC = (props: any) => {
             return <Tag color="error">鉴定失败</Tag>;
             break;
           case 3:
-            return <Tag color="warning">条件不足</Tag>;
+            return <Tag color="warning">碎片不足</Tag>;
             break;
+          case 4:
+              return <Tag color="warning">没有峰组</Tag>;
+              break;
+          case 5:
+              return <Tag color="warning">EIC为空</Tag>;
+              break;
           default:
-            return <Tag color="warning">缺少峰组</Tag>;
+            return <Tag color="warning">没有峰组</Tag>;
             break;
         }
       },
     },
+    {
+      title: '最低总分',
+      dataIndex: 'minTotalScore',
+      key: 'minTotalScore',
+      width: 70,
+      render: (dom: any) => {
+        return <Tag color="blue">{dom?.toFixed(3)}</Tag>;
+      },
+    },
   ];
   if (prepareData) {
-    const scoreColumn = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
-      title: index,
+    const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
+      title: index==0?"当前总分":index,
       dataIndex: index,
       key: index,
       width: 70,
       render: (dom: any, entity: any) => {
-        return entity.scoreList !== null ? (
-          entity.scoreList[0].scores[index] !== null ? (
-            <>
-              <Tag color="blue">{entity.scoreList[0].scores[index]?.toFixed(4)}</Tag>
-              <Tag color="success">{entity.scoreList[0].weights[index]?.toFixed(4)}</Tag>
-            </>
-          ) : null
-        ) : null;
+        if(entity.selectIndex !== null && entity.scoreList !== null && entity.scoreList[entity.selectIndex].scores[index] !== null && prepareData.overviewMap[entity.expId]!=null && prepareData.overviewMap[entity.expId].length > 0){
+            return  <>
+            <Tag color="blue">{entity.scoreList[entity.selectIndex].scores[index]?.toFixed(4)}</Tag>
+            {index==0?null:<Tag color="success">{prepareData.overviewMap[entity.expId][0].weights[type]?.toFixed(4)}</Tag>}
+          </>
+        }else{
+          return null
+        }
       },
     }));
     scoreColumns.push(scoreColumn);
@@ -376,7 +391,7 @@ const TableList: React.FC = (props: any) => {
     const score: any = expData;
     score.forEach((item: any) => {
       if (item.scoreList) {
-        item.scoreList[0].weights = [];
+        item.scoreList[item.selectIndex].weights = [];
       }
       item.scoreTypes = scoreTypes.map((type: any) => {
         return type.type;
@@ -384,27 +399,27 @@ const TableList: React.FC = (props: any) => {
     });
 
     /* 打分权重table数据 */
-    const weights = Object.keys(prepareData.overviewMap).map((item) => {
-      return prepareData.overviewMap[item][0].weights;
-    });
-    const a = weights.map((type) => {
-      return Object.keys(type).map((i) => {
-        return { [i]: type[i] };
-      });
-    });
-    a.map((item) => {
-      return item.push({ WeightedTotalScore: null });
-    });
+    // const weights = Object.keys(prepareData.overviewMap).map((expId) => {
+    //   return prepareData.overviewMap[expId][0].weights;
+    // });
+    // const a = weights.map((type) => {
+    //   return Object.keys(type).map((i) => {
+    //     return { [i]: type[i] };
+    //   });
+    // });
+    // a.map((item) => {
+    //   return item.push({ WeightedTotalScore: null });
+    // });
 
-    Object.keys(a).forEach((item: any) => {
-      score[item]?.scoreTypes?.forEach((key: any) => {
-        a[item].forEach((type) => {
-          if (type[key] !== undefined && score[item].scoreList) {
-            score[item]?.scoreList[0].weights.push(type[key]);
-          }
-        });
-      });
-    });
+    // Object.keys(a).forEach((item: any) => {
+    //   score[item]?.scoreTypes?.forEach((key: any) => {
+    //     a[item].forEach((type) => {
+    //       if (type[key] !== undefined && score[item].scoreList) {
+    //         score[item]?.scoreList[0].weights.push(type[key]);
+    //       }
+    //     });
+    //   });
+    // });
   }
 
   /* 蛋白table键盘事件 */
@@ -730,7 +745,7 @@ const TableList: React.FC = (props: any) => {
                 setCurrentTab(activeKey);
               }}
             >
-              <TabPane tab="实验列表" key="1">
+              <TabPane tab="EIC列表" key="1">
                 <Row>
                   <Col span={24}>
                     <Tooltip title="仅选择实验默认的overview">

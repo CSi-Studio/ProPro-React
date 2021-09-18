@@ -217,8 +217,12 @@ export class XicOption {
               : data[i].status === 2
               ? '鉴定失败'
               : data[i].status === 3
-              ? '条件不足'
-              : '缺少峰组'
+              ? '碎片不足'
+              : data[i].status === 4
+              ? '缺少峰组'
+              : data[i].status === 5
+              ? 'EIC为空'
+              : '未知错误'
           }}`,
           `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr.toFixed(4)}` : `fdr: -`}}`,
           `{sum|${data[i].sum ? `sum: ${data[i].sum}` : `sum: -`}}`,
