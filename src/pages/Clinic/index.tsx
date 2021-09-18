@@ -349,10 +349,19 @@ const TableList: React.FC = (props: any) => {
         }
       },
     },
+    {
+      title: '最低总分',
+      dataIndex: 'minTotalScore',
+      key: 'minTotalScore',
+      width: 70,
+      render: (dom: any) => {
+        return <Tag color="blue">{dom?.toFixed(3)}</Tag>;
+      },
+    },
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
-      title: index,
+      title: index==0?"当前总分":index,
       dataIndex: index,
       key: index,
       width: 70,
@@ -361,7 +370,7 @@ const TableList: React.FC = (props: any) => {
           entity.scoreList[0].scores[index] !== null ? (
             <>
               <Tag color="blue">{entity.scoreList[0].scores[index]?.toFixed(4)}</Tag>
-              <Tag color="success">{entity.scoreList[0].weights[index]?.toFixed(4)}</Tag>
+              {index==0?null:<Tag color="success">{entity.scoreList[0].weights[index]?.toFixed(4)}</Tag>}
             </>
           ) : null
         ) : null;
@@ -716,7 +725,7 @@ const TableList: React.FC = (props: any) => {
                 setCurrentTab(activeKey);
               }}
             >
-              <TabPane tab="实验列表" key="1">
+              <TabPane tab="EIC列表" key="1">
                 <Row>
                   <Col span={24}>
                     <Tooltip title="仅选择实验默认的overview">

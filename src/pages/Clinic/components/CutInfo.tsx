@@ -42,7 +42,7 @@ const CutInfo: React.FC<CutInfoProps> = (props) => {
             break;
         }
       },
-    },
+    }
   ];
   let fragments: any[] = [];
   props.values.expData.forEach((value: any) => {
