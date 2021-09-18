@@ -32,6 +32,7 @@ import QtCharts from './components/Qt';
 import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
+import e from '_@types_express@4.17.13@@types/express';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -366,14 +367,14 @@ const TableList: React.FC = (props: any) => {
       key: index,
       width: 70,
       render: (dom: any, entity: any) => {
-        return entity.scoreList !== null ? (
-          entity.scoreList[0].scores[index] !== null ? (
-            <>
-              <Tag color="blue">{entity.scoreList[0].scores[index]?.toFixed(4)}</Tag>
-              {index==0?null:<Tag color="success">{entity.scoreList[0].weights[index]?.toFixed(4)}</Tag>}
-            </>
-          ) : null
-        ) : null;
+        if(entity.selectIndex !== null && entity.scoreList !== null && entity.scoreList[entity.selectIndex].scores[index] !== null){
+            return  <>
+            <Tag color="blue">{entity.scoreList[entity.selectIndex].scores[index]?.toFixed(4)}</Tag>
+            {index==0?null:<Tag color="success">{entity.scoreList[entity.selectIndex].weights[index]?.toFixed(4)}</Tag>}
+          </>
+        }else{
+          return null
+        }
       },
     }));
     scoreColumns.push(scoreColumn);
