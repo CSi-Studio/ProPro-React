@@ -393,25 +393,6 @@ const TableList: React.FC = (props: any) => {
   }
   scoreColumns = [].concat(...scoreColumns); // 拍平数组
 
-  let scoreExplain: any[] = [];
-  if (prepareData) {
-    const scoreTypes = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
-      index,
-      type,
-    }));
-    /* scoreTypes  打分说明table数据 */
-    scoreExplain = scoreTypes;
-    const score: any = expData;
-    score.forEach((item: any) => {
-      if (item.scoreList) {
-        item.scoreList[item.selectIndex].weights = [];
-      }
-      item.scoreTypes = scoreTypes.map((type: any) => {
-        return type.type;
-      });
-    });
-  }
-
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
     (e) => {
@@ -837,9 +818,11 @@ const TableList: React.FC = (props: any) => {
                           key: 'type',
                         },
                       ]}
-                      dataSource={scoreExplain.map((item) => {
-                        return { index: item.index, type: item.type, key: item.type.toString() };
-                      })}
+                      dataSource={prepareData?.method.score.scoreTypes.map(
+                        (name: any, index: number) => {
+                          return { index, type: name, key: name };
+                        },
+                      )}
                       rowKey={'key'}
                       size="small"
                       search={false}
