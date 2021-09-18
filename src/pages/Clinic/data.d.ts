@@ -7,7 +7,16 @@ export type PrepareData = {
   method: any;
   proteins: string[];
   expList: array<IdNameAlias>;
-  overviewMap: Map<string, any>;
+  overviewMap: Map<string, Overview>; //key为expId
+};
+
+export type Overview = {
+ id: string;
+  name: string;
+  expId: string;
+  defaultOne: boolean;
+  weights: Map<string, number>;
+  minTotalScore: number;
 };
 
 export type Peptide = {

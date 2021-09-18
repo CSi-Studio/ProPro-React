@@ -32,7 +32,6 @@ import QtCharts from './components/Qt';
 import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
-import e from '_@types_express@4.17.13@@types/express';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -361,16 +360,16 @@ const TableList: React.FC = (props: any) => {
     },
   ];
   if (prepareData) {
-    const scoreColumn = prepareData.method.score.scoreTypes.map((type: any, index: number) => ({
+    const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
       title: index==0?"当前总分":index,
       dataIndex: index,
       key: index,
       width: 70,
       render: (dom: any, entity: any) => {
-        if(entity.selectIndex !== null && entity.scoreList !== null && entity.scoreList[entity.selectIndex].scores[index] !== null){
+        if(entity.selectIndex !== null && entity.scoreList !== null && entity.scoreList[entity.selectIndex].scores[index] !== null && prepareData.overviewMap[entity.expId]!=null && prepareData.overviewMap[entity.expId].length > 0){
             return  <>
             <Tag color="blue">{entity.scoreList[entity.selectIndex].scores[index]?.toFixed(4)}</Tag>
-            {index==0?null:<Tag color="success">{entity.scoreList[entity.selectIndex].weights[index]?.toFixed(4)}</Tag>}
+            {index==0?null:<Tag color="success">{prepareData.overviewMap[entity.expId][0].weights[type]?.toFixed(4)}</Tag>}
           </>
         }else{
           return null
@@ -392,7 +391,7 @@ const TableList: React.FC = (props: any) => {
     const score: any = expData;
     score.forEach((item: any) => {
       if (item.scoreList) {
-        item.scoreList[0].weights = [];
+        item.scoreList[item.selectIndex].weights = [];
       }
       item.scoreTypes = scoreTypes.map((type: any) => {
         return type.type;
@@ -400,27 +399,27 @@ const TableList: React.FC = (props: any) => {
     });
 
     /* 打分权重table数据 */
-    const weights = Object.keys(prepareData.overviewMap).map((item) => {
-      return prepareData.overviewMap[item][0].weights;
-    });
-    const a = weights.map((type) => {
-      return Object.keys(type).map((i) => {
-        return { [i]: type[i] };
-      });
-    });
-    a.map((item) => {
-      return item.push({ WeightedTotalScore: null });
-    });
+    // const weights = Object.keys(prepareData.overviewMap).map((expId) => {
+    //   return prepareData.overviewMap[expId][0].weights;
+    // });
+    // const a = weights.map((type) => {
+    //   return Object.keys(type).map((i) => {
+    //     return { [i]: type[i] };
+    //   });
+    // });
+    // a.map((item) => {
+    //   return item.push({ WeightedTotalScore: null });
+    // });
 
-    Object.keys(a).forEach((item: any) => {
-      score[item]?.scoreTypes?.forEach((key: any) => {
-        a[item].forEach((type) => {
-          if (type[key] !== undefined && score[item].scoreList) {
-            score[item]?.scoreList[0].weights.push(type[key]);
-          }
-        });
-      });
-    });
+    // Object.keys(a).forEach((item: any) => {
+    //   score[item]?.scoreTypes?.forEach((key: any) => {
+    //     a[item].forEach((type) => {
+    //       if (type[key] !== undefined && score[item].scoreList) {
+    //         score[item]?.scoreList[0].weights.push(type[key]);
+    //       }
+    //     });
+    //   });
+    // });
   }
 
   /* 蛋白table键盘事件 */
