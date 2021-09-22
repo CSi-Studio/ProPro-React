@@ -370,8 +370,17 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'realRt',
       key: 'realRt',
       width: 70,
-      render: (dom: any) => {
-        return <Tag color="blue">{dom?.toFixed(1)}</Tag>;
+      render: (dom: any, entity: any) => {
+        return <Tag color="blue">{entity.realRt?.toFixed(1)}</Tag>;
+      },
+    },
+    {
+      title: 'Sum',
+      dataIndex: 'sum',
+      key: 'sum',
+      width: 70,
+      render: (dom: any, entity: any) => {
+        return <Tag color="blue">{entity.sum?.toFixed(0)}</Tag>;
       },
     },
     {
@@ -379,8 +388,8 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'minTotalScore',
       key: 'minTotalScore',
       width: 70,
-      render: (dom: any) => {
-        return <Tag color="blue">{dom?.toFixed(3)}</Tag>;
+      render: (dom: any, entity:any) => {
+        return <Tag color="blue">{entity.minTotalScore?.toFixed(3)}</Tag>;
       },
     },
     
@@ -396,14 +405,14 @@ const TableList: React.FC = (props: any) => {
           entity.selectIndex !== null &&
           entity.scoreList !== null &&
           entity.scoreList[entity.selectIndex].scores[index] !== null &&
+          entity.scoreList[entity.selectIndex].scores[index] !== 'NaN' &&
           prepareData.overviewMap[entity.expId] != null &&
           prepareData.overviewMap[entity.expId].length > 0
         ) {
           return (
             <>
-              
               {index === 0 ? <Tag color="blue">
-                {entity.scoreList[entity.selectIndex].scores[index]?.toFixed(4)}
+                {entity.scoreList[entity.selectIndex].scores[index]?.toFixed(3)}
               </Tag> : (
                 <Tag color="success">
                   {(prepareData.overviewMap[entity.expId][0].weights[type] * entity.scoreList[entity.selectIndex].scores[index]).toFixed(4)}
@@ -412,7 +421,7 @@ const TableList: React.FC = (props: any) => {
             </>
           );
         }
-        return null;
+        return <Tag color='red'>NaN</Tag>;
       },
     }));
     scoreColumns.push(scoreColumn);
