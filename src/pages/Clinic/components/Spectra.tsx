@@ -12,7 +12,12 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
 
   useEffect(() => {
     const xData = props?.values?.data?.x?.map((value: number) => {
-      return value.toFixed(2);
+      return {
+        value: value,
+        itemStyle: {
+          color: 'tomato',
+        },
+      };
     });
 
     // 设置标注区域
@@ -41,21 +46,22 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         //   },
         // },
         // label: { show: false },
-        itemStyle: { color: '#eee' },
+        itemStyle: { color: 'tomato' },
         data: [],
       };
 
-      props?.values?.xData?.forEach((item: number) => {
-        markAreaOpt.data.push([
-          {
-            xAxis: item - 0.015,
-          },
-          {
-            xAxis: item + 0.015,
-          },
-        ]);
+      props?.values?.expData?.forEach((item: { cutInfoMap: [] }) => {
+        Object.keys(item.cutInfoMap).forEach((key: any) => {
+          markAreaOpt.data.push([
+            {
+              xAxis: item.cutInfoMap[key] - 0.015,
+            },
+            {
+              xAxis: item.cutInfoMap[key] + 0.015,
+            },
+          ]);
+        });
       });
-
       return markAreaOpt;
     };
 
@@ -157,18 +163,29 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         },
       },
       series: [
+        // {
+        //   large: true,
+        //   type: 'bar',
+        //   legendHoverLink: true,
+        //   data: props?.values?.data?.y,
+        //   // itemStyle: {
+        //   //   color: 'tomato',
+        //   // },
+        //   // markArea: getMarkArea(),
+        // },
         {
-          large: true,
-          type: 'bar',
+          type: 'line',
           legendHoverLink: true,
           data: props?.values?.data?.y,
-          itemStyle: {
-            color: 'tomato',
-          },
+          // itemStyle: {
+          //   color: 'tomato',
+          // },
           markArea: getMarkArea(),
         },
       ],
     };
+    console.log('option1---', option);
+
     setHandleOption(option);
   }, [props.values]);
 
