@@ -42,7 +42,7 @@ const CutInfo: React.FC<CutInfoProps> = (props) => {
             break;
         }
       },
-    }
+    },
   ];
   let fragments: any[] = [];
   props.values.expData.forEach((value: any) => {
@@ -69,7 +69,7 @@ const CutInfo: React.FC<CutInfoProps> = (props) => {
     <Modal
       width={'45vw'}
       centered={true}
-      title="碎片Mz"
+      title="碎片m/z"
       visible={props.cutInfoVisible}
       onCancel={props.handleCancel}
       footer={[]}

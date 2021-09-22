@@ -22,7 +22,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRatio, getPeptideRefs, getSpectra, prepare } from './service';
-import { XicOption } from './components/xic';
+import { XicOption } from './components/xiccc';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
@@ -32,7 +32,7 @@ import QtCharts from './components/Qt';
 import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
-import xicc from './components/xicc';
+import xic from './components/xic';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -147,20 +147,13 @@ const TableList: React.FC = (props: any) => {
         });
       });
       setExpData(result.data);
-      const irt = new XicOption(
-        result.data,
-        gridNumberInRow,
-        xName,
-        yName,
-        gridHeight,
-        gridPaddingHeight,
-      );
 
       /* 碎片Mz echarts toolbox */
       const getCutInfo = () => {
         setCutInfoVisible(true);
         setExpData(result.data);
       };
+      console.log(result.data);
 
       /* 展示碎片光谱图 */
       const spectraFn = async (values: any) => {
@@ -171,9 +164,7 @@ const TableList: React.FC = (props: any) => {
             mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
             rt: values[0].axisValue,
           });
-          data.xData = values.map((item) => {
-            return item.data[1];
-          });
+          data.expData = result.data;
           setSpectra(data);
           setSpectrumVisible(true);
           hide();
@@ -185,11 +176,11 @@ const TableList: React.FC = (props: any) => {
       };
 
       /* 获取option */
-      const option = irt.getXicOption(getCutInfo, spectraFn);
+      const option = xic({ result: result.data, getCutInfo, spectraFn });
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
-      setHandleOption(xicc({ result: result.data, getCutInfo, spectraFn }));
+      setHandleOption(option);
       setChartsLoading(false);
       setPeptideLoading(false);
 
@@ -216,8 +207,6 @@ const TableList: React.FC = (props: any) => {
       result.data.sort((a: { alias: string }, b: { alias: string }) =>
         a.alias > b.alias ? 1 : -1,
       );
-      // console.log(result.data);
-
       setIrtData(result.data);
       return true;
     } catch (error) {
