@@ -32,6 +32,7 @@ import QtCharts from './components/Qt';
 import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
+import xicc from './components/xicc';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -136,6 +137,7 @@ const TableList: React.FC = (props: any) => {
         smooth,
         denoise,
       });
+
       // 将实验 别名 给 getExpData接口得到的数据
       result.data.forEach((item: any) => {
         exps?.forEach((_item: any) => {
@@ -153,19 +155,44 @@ const TableList: React.FC = (props: any) => {
         gridHeight,
         gridPaddingHeight,
       );
+
       /* 碎片Mz echarts toolbox */
       const getCutInfo = () => {
         setCutInfoVisible(true);
         setExpData(result.data);
       };
 
-      const option = irt.getXicOption(getCutInfo);
+      /* 展示碎片光谱图 */
+      const spectraFn = async (values: any) => {
+        const hide = message.loading('正在获取光谱图');
+        try {
+          const data = await getSpectra({
+            expId: selectedExpIds[Math.floor((values[0].seriesIndex + 1) / selectedExpIds.length)],
+            mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
+            rt: values[0].axisValue,
+          });
+          data.xData = values.map((item) => {
+            return item.data[1];
+          });
+          setSpectra(data);
+          setSpectrumVisible(true);
+          hide();
+          return true;
+        } catch (error) {
+          hide();
+          return false;
+        }
+      };
+
+      /* 获取option */
+      const option = irt.getXicOption(getCutInfo, spectraFn);
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
-      setHandleOption(option);
+      setHandleOption(xicc({ result: result.data, getCutInfo, spectraFn }));
       setChartsLoading(false);
       setPeptideLoading(false);
+
       return true;
     } catch (error) {
       message.error('获取EIC Matrix失败，请重试!');
@@ -361,7 +388,7 @@ const TableList: React.FC = (props: any) => {
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
-      title: index===0?"0(总分)":index,
+      title: index === 0 ? '0(总分)' : index,
       dataIndex: index,
       key: index,
       width: 70,
@@ -535,51 +562,15 @@ const TableList: React.FC = (props: any) => {
       ),
   });
 
-  const spectraFn = async (values: any) => {
-    const hide = message.loading('正在获取光谱图');
-    try {
-      const data = await getSpectra({ expId: values.expId, mz: values.mz, rt: values.rt });
-      setSpectra(data);
-      setSpectrumVisible(true);
-      hide();
-      return true;
-    } catch (error) {
-      hide();
-      return false;
-    }
-  };
-
-  // const tipFormatterFn = () => {
+  /* 点击坐标点展示光谱图 */
+  // echarts?.getEchartsInstance().off('click'); // 防止多次触发
+  // echarts?.getEchartsInstance().on('click', (params: any) => {
   //   spectraFn({
   //     expId: selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
   //     mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
   //     rt: params.data[0],
   //   });
-  // };
-
-  /* 点击坐标点展示光谱图 */
-  echarts?.getEchartsInstance().off('click'); // 防止多次触发
-  echarts?.getEchartsInstance().on('click', (params: any) => {
-    console.log(
-      'expId',
-      selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
-      'mz',
-      peptideList.find((item) => item.peptideRef === peptideRef).mz,
-      peptideRef,
-      'rt',
-      params.data[0] ? params.data[0] : params.value,
-      selectedExpIds.length,
-      params.seriesIndex,
-      params,
-    );
-    console.log(echarts.getEchartsInstance().getOption());
-
-    spectraFn({
-      expId: selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
-      mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
-      rt: params.data[0],
-    });
-  });
+  // });
 
   return (
     <PageContainer

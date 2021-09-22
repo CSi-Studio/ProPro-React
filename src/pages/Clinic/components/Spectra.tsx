@@ -14,6 +14,51 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     const xData = props?.values?.data?.x?.map((value: number) => {
       return value.toFixed(2);
     });
+
+    // 设置标注区域
+    const getMarkArea = () => {
+      const markAreaOpt: any = {
+        animation: false,
+        // lineStyle: {
+        //   type: 'dashed',
+        //   color: '#777',
+        // },
+        // emphasis: {
+        //   lineStyle: {
+        //     type: 'solid',
+        //     color: 'tomato',
+        //     width: 2,
+        //   },
+        // },
+        // silent: true, // 图形是不响应和触发鼠标事件
+        // tooltip: {
+        //   formatter: '{a}',
+        //   item: 'none',
+        //   axisPointer: {
+        //     label: {
+        //       fontFamily: 'Times New Roman,STSong',
+        //     },
+        //   },
+        // },
+        // label: { show: false },
+        itemStyle: { color: '#eee' },
+        data: [],
+      };
+
+      props?.values?.xData?.forEach((item: number) => {
+        markAreaOpt.data.push([
+          {
+            xAxis: item - 0.015,
+          },
+          {
+            xAxis: item + 0.015,
+          },
+        ]);
+      });
+
+      return markAreaOpt;
+    };
+
     const option = {
       grid: {
         top: '2%',
@@ -118,12 +163,9 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           legendHoverLink: true,
           data: props?.values?.data?.y,
           itemStyle: {
-            // 图形的形状
             color: 'tomato',
-            // barBorderRadius: [18, 18, 0, 0],
           },
-          // barWidth: 6, // 柱形的宽度
-          // barCategoryGap: '5%', // 柱形的间距
+          markArea: getMarkArea(),
         },
       ],
     };

@@ -7,3 +7,4 @@ export const layout: RunTimeLayoutConfig = () => {
     rightRender: () => {},
   };
 };
+

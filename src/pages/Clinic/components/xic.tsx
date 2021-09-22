@@ -41,8 +41,13 @@ export class XicOption {
   }
 
   // 设置option
-  getXicOption(getCutInfo: Record<any, any>): any {
+  getXicOption(getCutInfo: Record<any, any>, spectraFn: (values: any) => Promise<boolean>) {
     const gridNumber = this.data.length;
+    // window.myAerlt = myAerlt;
+
+    // const myAerlt = () => {
+    //   console.log('123');
+    // };
     return {
       title: this.getXicTitle(this.data),
       dataZoom: this.getDataZoom(this.data),
@@ -60,17 +65,13 @@ export class XicOption {
           fontFamily: 'Times New Roman,STSong',
         },
         formatter: (params: any) => {
-          // console.log(
-          //   params.map((item: any) => {
-          //     return item.data[1];
-          //   }),
-          // );
-          // console.log(params);
-          let a = `${params[0].axisValue}<br />`;
+          let html = `<div  id="specialLook" style=\"pointer-events: all;\"  onclick=spectraFn(
+            params,
+          )>查看光谱图</div>${params[0].axisValue}<br />`;
           params.forEach((item: any) => {
-            a += `${item.marker}<span style=\"display:inline-block;margin-right:4px;width:30px\">${item.seriesName}</span>&nbsp&nbsp&nbsp <span style=\"font-weight:bold\">${item.data[1]}</span><br />`;
+            html += `${item.marker}<span style=\"display:inline-block;margin-right:4px;width:30px\">${item.seriesName}</span>&nbsp&nbsp&nbsp <span style=\"font-weight:bold\">${item.data[1]}</span><br />`;
           });
-          return a;
+          return html;
         },
       },
       xAxis: this.getXicxAxis(gridNumber, this.xName, this.data),
@@ -478,7 +479,6 @@ export class XicOption {
         },
       },
       // silent: true, // 图形是不响应和触发鼠标事件
-
       label: { show: false },
       data: [],
     };
@@ -500,7 +500,7 @@ export class XicOption {
     return markLineOpt;
   }
   // 设置标注区域
-  private getMarkArea(data: any) {
+  private getMarkArea(data: { scoreList: { rtRangeFeature: string }[] }) {
     if (!data.scoreList) {
       return null;
     }
@@ -532,7 +532,7 @@ export class XicOption {
       data: [],
     };
 
-    data.scoreList.forEach((item: any, index: any) => {
+    data.scoreList.forEach((item: { rtRangeFeature: string }) => {
       const rtRange = item.rtRangeFeature.split(';');
       markAreaOpt.data.push([
         {
