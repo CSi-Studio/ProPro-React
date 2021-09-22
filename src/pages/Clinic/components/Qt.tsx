@@ -101,9 +101,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           },
           formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
             let res = params.seriesName;
-            res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
-              4,
-            )} &nbsp ${params.data[1]?.toFixed(4)}`;
+            res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(4)} &nbsp ${params.data[1]?.toFixed(4)}`;
             return res;
           },
         },

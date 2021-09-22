@@ -377,6 +377,15 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      title: 'RealRT',
+      dataIndex: 'realRt',
+      key: 'realRt',
+      width: 70,
+      render: (dom: any) => {
+        return <Tag color="blue">{dom?.toFixed(1)}</Tag>;
+      },
+    },
+    {
       title: '最低总分',
       dataIndex: 'minTotalScore',
       key: 'minTotalScore',
@@ -385,6 +394,7 @@ const TableList: React.FC = (props: any) => {
         return <Tag color="blue">{dom?.toFixed(3)}</Tag>;
       },
     },
+    
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
