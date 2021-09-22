@@ -22,7 +22,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
 import { getExpData, getPeptideRatio, getPeptideRefs, getSpectra, prepare } from './service';
-import { XicOption } from './components/xiccc';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
@@ -153,7 +152,6 @@ const TableList: React.FC = (props: any) => {
         setCutInfoVisible(true);
         setExpData(result.data);
       };
-      console.log(result.data);
 
       /* 展示碎片光谱图 */
       const spectraFn = async (values: any) => {

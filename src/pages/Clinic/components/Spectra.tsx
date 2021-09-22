@@ -7,64 +7,62 @@ export type spectrumProps = {
   spectrumVisible: boolean;
   values: any;
 };
+
+// const chooseFn = (arr1: any[], arr2: any[], value: number) => {
+//   let a = [];
+//   arr1.forEach((item) => {
+//     arr2.forEach((_item) => {
+//       if (_item - value < item && _item + value > item) {
+//         a.push(item);
+//       }
+//     });
+//   });
+//   return a;
+// };
+
 const Spectrum: React.FC<spectrumProps> = (props) => {
   const [handleOption, setHandleOption] = useState({});
 
-  useEffect(() => {
-    const xData = props?.values?.data?.x?.map((value: number) => {
-      return {
-        value: value,
-        itemStyle: {
-          color: 'tomato',
-        },
-      };
+  const xData = props?.values?.data?.x.map((value: number) => {
+    return { value };
+  });
+  const yData = props?.values?.data?.y.map((value: number) => {
+    return { value };
+  });
+
+  const a: number[] = [];
+  props?.values?.expData?.forEach((_item: { cutInfoMap: Record<string, number> }) => {
+    Object.keys(_item.cutInfoMap).forEach((key: any) => {
+      a.push(_item.cutInfoMap[key]);
     });
+  });
 
-    // 设置标注区域
-    const getMarkArea = () => {
-      const markAreaOpt: any = {
-        animation: false,
-        // lineStyle: {
-        //   type: 'dashed',
-        //   color: '#777',
-        // },
-        // emphasis: {
-        //   lineStyle: {
-        //     type: 'solid',
-        //     color: 'tomato',
-        //     width: 2,
-        //   },
-        // },
-        // silent: true, // 图形是不响应和触发鼠标事件
-        // tooltip: {
-        //   formatter: '{a}',
-        //   item: 'none',
-        //   axisPointer: {
-        //     label: {
-        //       fontFamily: 'Times New Roman,STSong',
-        //     },
-        //   },
-        // },
-        // label: { show: false },
-        itemStyle: { color: 'tomato' },
-        data: [],
-      };
+  const yyData: any[] = [];
+  a.forEach((item: any) => {
+    props?.values?.data?.x.forEach((value: number, index: number) => {
+      if (value > item - 0.015 && value < item + 0.015) {
+        yyData.push({ value: props?.values?.data?.x[index], itemStyle: { color: 'tomato' } });
+      } else {
+        yyData.push({ value: props?.values?.data?.x[index] });
+      }
+    });
+  });
 
-      props?.values?.expData?.forEach((item: { cutInfoMap: [] }) => {
-        Object.keys(item.cutInfoMap).forEach((key: any) => {
-          markAreaOpt.data.push([
-            {
-              xAxis: item.cutInfoMap[key] - 0.015,
-            },
-            {
-              xAxis: item.cutInfoMap[key] + 0.015,
-            },
-          ]);
-        });
-      });
-      return markAreaOpt;
-    };
+  // function unique(arr) {
+  //   for (var i = 0; i < arr.length; i++) {
+  //     for (var j = i + 1; j < arr.length; j++) {
+  //       if (arr[i].value === arr[j].value) {
+  //         //第一个等同于第二个，splice方法删除第二个
+  //         arr.splice(j, 1);
+  //         j--;
+  //       }
+  //     }
+  //   }
+  //   return arr;
+  // }
+  // console.log(unique(yyData));
 
+  useEffect(() => {
     const option = {
       grid: {
         top: '2%',
@@ -92,6 +90,9 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           show: true,
           fontFamily: 'Times New Roman,STSong',
           fontWeight: 'normal',
+          formatter: (value: number) => {
+            return (value * 1).toFixed(2);
+          },
         },
         nameTextStyle: {
           color: '#000',
@@ -144,7 +145,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       tooltip: {
         backgroundColor: ['rgba(255,255,255,0.9)'],
         axisPointer: {
-          type: 'cross',
           snap: true,
         },
         textStyle: {
@@ -163,29 +163,14 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         },
       },
       series: [
-        // {
-        //   large: true,
-        //   type: 'bar',
-        //   legendHoverLink: true,
-        //   data: props?.values?.data?.y,
-        //   // itemStyle: {
-        //   //   color: 'tomato',
-        //   // },
-        //   // markArea: getMarkArea(),
-        // },
         {
-          type: 'line',
+          large: true,
+          type: 'bar',
           legendHoverLink: true,
-          data: props?.values?.data?.y,
-          // itemStyle: {
-          //   color: 'tomato',
-          // },
-          markArea: getMarkArea(),
+          data: yData,
         },
       ],
     };
-    console.log('option1---', option);
-
     setHandleOption(option);
   }, [props.values]);
 

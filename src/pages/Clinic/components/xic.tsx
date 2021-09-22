@@ -272,28 +272,6 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
     }
     const markAreaOpt: any = {
       animation: false,
-      // lineStyle: {
-      //   type: 'dashed',
-      //   color: '#777',
-      // },
-      // emphasis: {
-      //   lineStyle: {
-      //     type: 'solid',
-      //     color: 'tomato',
-      //     width: 2,
-      //   },
-      // },
-      // silent: true, // 图形是不响应和触发鼠标事件
-      // tooltip: {
-      //   formatter: '{a}',
-      //   item: 'none',
-      //   axisPointer: {
-      //     label: {
-      //       fontFamily: 'Times New Roman,STSong',
-      //     },
-      //   },
-      // },
-      // label: { show: false },
       itemStyle: { color: '#eee' },
       data: [],
     };
