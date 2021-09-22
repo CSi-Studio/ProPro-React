@@ -266,24 +266,26 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   };
 
   // 设置标注区域
-  const getMarkArea = (value: { scoreList: { rtRangeFeature: string }[] }) => {
+  const getMarkArea = (value: { scoreList: { rtRangeFeature: string }[]; selectIndex: number }) => {
     if (!value.scoreList) {
       return null;
     }
     const markAreaOpt: any = {
       animation: false,
-      itemStyle: { color: '#eee' },
+
       data: [],
     };
 
-    value.scoreList.forEach((item: { rtRangeFeature: string }) => {
+    value.scoreList.forEach((item: { rtRangeFeature: string }, index) => {
       const rtRange = item.rtRangeFeature.split(';');
       markAreaOpt.data.push([
         {
           xAxis: rtRange[0],
+          itemStyle: { color: value.selectIndex === index ? '#A2D9FD' : '#eee' },
         },
         {
           xAxis: rtRange[1],
+          itemStyle: { color: value.selectIndex === index ? '#A2D9FD' : '#eee' },
         },
       ]);
     });
@@ -400,7 +402,7 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         trigger: 'axis',
         extraCssText: 'z-index: 2',
         position(pos: number[]) {
-          return [pos[0]+5, pos[1]+10];
+          return [pos[0] + 5, pos[1] + 10];
         },
         alwaysShowContent: true,
         textStyle: {
@@ -411,7 +413,9 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         },
         backgroundColor: ['rgba(255,255,255,0.8)'],
         formatter: (params: any) => {
-          params.sort(function(a, b){return b.data[1] - a.data[1]})
+          params.sort(function (a, b) {
+            return b.data[1] - a.data[1];
+          });
           window.paramsTool = params;
           let html = `<div  id="specialLook" style="pointer-events: all;" onclick="
             chartsFn(paramsTool);
@@ -486,7 +490,5 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       },
     };
   };
-  console.log('getXicOption---', getXicOption(result.getCutInfo));
-
   return getXicOption(result.getCutInfo);
 };

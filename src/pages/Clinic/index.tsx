@@ -64,6 +64,7 @@ const TableList: React.FC = (props: any) => {
   // 选中行的ID
   const [proteinRowKey, setProteinRowKey] = useState<any>();
   const [peptideRowKey, setPeptideRowKey] = useState<any>();
+  const [scoreTypeRowKey, setScoreTypeRowKey] = useState<any>();
   /* table 搜索 */
   const [searchText, setSearchText] = useState<any>();
   const [searchedCol, setSearchedCol] = useState<any>('protein');
@@ -386,18 +387,39 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'minTotalScore',
       key: 'minTotalScore',
       width: 70,
-      render: (dom: any, entity:any) => {
+      render: (dom: any, entity: any) => {
         return <Tag color="blue">{entity.minTotalScore?.toFixed(3)}</Tag>;
       },
     },
-    
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
-      title: index === 0 ? '0(总分)' : index,
+      // title: index === 0 ? '0(总分)' : index,
+      title: (a, b) => {
+        return index === 0 ? (
+          <a
+            style={{ width: '60px', display: 'inline-block' }}
+            onClick={() => {
+              setScoreTypeRowKey(a.tooltip);
+            }}
+          >
+            0(总分)
+          </a>
+        ) : (
+          <a
+            style={{ width: '60px', display: 'inline-block' }}
+            onClick={() => {
+              setScoreTypeRowKey(a.tooltip);
+            }}
+          >
+            {index}
+          </a>
+        );
+      },
       dataIndex: index,
       key: index,
-      width: 70,
+      width: 80,
+      tooltip: type,
       render: (dom: any, entity: any) => {
         if (
           entity.selectIndex !== null &&
@@ -409,17 +431,22 @@ const TableList: React.FC = (props: any) => {
         ) {
           return (
             <>
-              {index === 0 ? <Tag color="blue">
-                {entity.scoreList[entity.selectIndex].scores[index]?.toFixed(3)}
-              </Tag> : (
+              {index === 0 ? (
+                <Tag color="blue">
+                  {entity.scoreList[entity.selectIndex].scores[index]?.toFixed(3)}
+                </Tag>
+              ) : (
                 <Tag color="success">
-                  {(prepareData.overviewMap[entity.expId][0].weights[type] * entity.scoreList[entity.selectIndex].scores[index]).toFixed(4)}
+                  {(
+                    prepareData.overviewMap[entity.expId][0].weights[type] *
+                    entity.scoreList[entity.selectIndex].scores[index]
+                  ).toFixed(4)}
                 </Tag>
               )}
             </>
           );
         }
-        return <Tag color='red'>NaN</Tag>;
+        return <Tag color="red">NaN</Tag>;
       },
     }));
     scoreColumns.push(scoreColumn);
@@ -668,9 +695,6 @@ const TableList: React.FC = (props: any) => {
                   tableAlertRender={false}
                   loading={peptideLoading}
                   tableClassName="peptideTable"
-                  rowClassName={(record: any) => {
-                    return record.key === peptideRowKey ? 'clinicTableBgc' : '';
-                  }}
                   pagination={{
                     hideOnSinglePage: true,
                     current: peptidePage,
@@ -685,6 +709,9 @@ const TableList: React.FC = (props: any) => {
                     if (page.current) {
                       setPeptidePage(page.current);
                     }
+                  }}
+                  rowClassName={(record: any) => {
+                    return record.key === peptideRowKey ? 'clinicTableBgc' : '';
                   }}
                   onRow={(record: any) => {
                     return {
@@ -826,6 +853,16 @@ const TableList: React.FC = (props: any) => {
                       scroll={{ x: 'max-content' }}
                       toolBarRender={false}
                       tableAlertRender={false}
+                      rowClassName={(record: any) => {
+                        return record.key === scoreTypeRowKey ? 'clinicTableBgc' : '';
+                      }}
+                      onRow={(record: any) => {
+                        return {
+                          onClick: () => {
+                            setScoreTypeRowKey(record.key);
+                          },
+                        };
+                      }}
                       pagination={{
                         hideOnSinglePage: true,
                         size: 'small',
