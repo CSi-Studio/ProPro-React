@@ -422,7 +422,7 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         trigger: 'axis',
         extraCssText: 'z-index: 2',
         position(pos: number[]) {
-          return [pos[0], pos[1]];
+          return [pos[0], pos[1]+3];
         },
         alwaysShowContent: true,
         textStyle: {
