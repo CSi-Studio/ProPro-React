@@ -418,10 +418,11 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       grid: getXicGrids(gridNumber),
       tooltip: {
         enterable: true,
+        confine: true,
         trigger: 'axis',
         extraCssText: 'z-index: 2',
         position(pos: number[]) {
-          return [pos[0] - 2, pos[1] + 2];
+          return [pos[0], pos[1]];
         },
         alwaysShowContent: true,
         textStyle: {
