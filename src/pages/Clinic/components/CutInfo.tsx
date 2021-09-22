@@ -59,7 +59,7 @@ const CutInfo: React.FC<CutInfoProps> = (props) => {
     key: 'cutInfo',
     width: 70,
     render: (dom: any, entity: any) => {
-      return <Tag>{entity.cutInfoMap[fragment].toFixed(4)}</Tag>;
+      return <Tag>{entity.cutInfoMap[fragment]?.toFixed(4)}</Tag>;
     },
   }));
   fragmentsColumns.push(fragmentsColumn);
