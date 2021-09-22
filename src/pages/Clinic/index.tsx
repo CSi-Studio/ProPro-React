@@ -402,12 +402,12 @@ const TableList: React.FC = (props: any) => {
         ) {
           return (
             <>
-              <Tag color="blue">
+              
+              {index === 0 ? <Tag color="blue">
                 {entity.scoreList[entity.selectIndex].scores[index]?.toFixed(4)}
-              </Tag>
-              {index === 0 ? null : (
+              </Tag> : (
                 <Tag color="success">
-                  {prepareData.overviewMap[entity.expId][0].weights[type]?.toFixed(4)}
+                  {(prepareData.overviewMap[entity.expId][0].weights[type] * entity.scoreList[entity.selectIndex].scores[index]).toFixed(4)}
                 </Tag>
               )}
             </>
