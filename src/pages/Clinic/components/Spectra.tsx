@@ -41,10 +41,13 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
   a.forEach((item: any) => {
     props?.values?.data?.x.forEach((value: number, index: number) => {
       if (value > item - 0.015 && value < item + 0.015) {
-        yyData.push({ value: props?.values?.data?.x[index], itemStyle: { color: 'tomato' } });
-      } else {
-        yyData.push({ value: props?.values?.data?.x[index] });
+        console.log(index);
+        yData[index] = { value: yData[index].value, itemStyle: { color: 'tomato' } };
+        // yyData.push({ value: props?.values?.data?.y[index], itemStyle: { color: 'tomato' } });
       }
+      // else {
+      //   yyData.push({ value: props?.values?.data?.x[index] });
+      // }
     });
   });
 
@@ -68,7 +71,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         top: '2%',
         left: '4%',
         right: '2%',
-        bottom: '4%',
+        bottom: '11%',
         containLabel: true,
       },
       xAxis: {
@@ -81,7 +84,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         },
         nameLocation: 'middle',
         name: 'X',
-        nameGap: 20,
+        nameGap: 30,
         type: 'category',
         data: xData,
         scale: true,
@@ -169,6 +172,12 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           legendHoverLink: true,
           data: yData,
         },
+        // {
+        //   large: true,
+        //   type: 'bar',
+        //   legendHoverLink: true,
+        //   data: yyData,
+        // },
       ],
     };
     setHandleOption(option);

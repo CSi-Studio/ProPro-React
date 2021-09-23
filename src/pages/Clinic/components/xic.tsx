@@ -462,7 +462,7 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       animation: false,
       legend: {
         right: '8%',
-        width: '700px',
+        width: '70%',
         type: 'scroll',
         icon: 'none',
         itemGap: 0,
