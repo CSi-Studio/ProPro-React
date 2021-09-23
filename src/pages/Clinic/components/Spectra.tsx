@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal } from 'antd';
+import { Modal, Tag } from 'antd';
 import ReactECharts from 'echarts-for-react';
 
 export type spectrumProps = {
@@ -178,7 +178,11 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     <Modal
       width={'45vw'}
       centered={true}
-      title="光谱图"
+      title={
+        <>
+          光谱图 <Tag>rt：{window?.paramsTool ? window?.paramsTool[0]?.axisValue : null}</Tag>
+        </>
+      }
       onCancel={props.handleCancel}
       visible={props.spectrumVisible}
       footer={[]}

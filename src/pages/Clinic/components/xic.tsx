@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn: any }) => {
   const data: any[] = result.result;
   const gridNumInRow: number = 3;
@@ -272,20 +273,18 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
     }
     const markAreaOpt: any = {
       animation: false,
-
       data: [],
     };
-
     value.scoreList.forEach((item: { rtRangeFeature: string }, index) => {
       const rtRange = item.rtRangeFeature.split(';');
       markAreaOpt.data.push([
         {
           xAxis: rtRange[0],
-          itemStyle: { color: value.selectIndex === index ? '#A2D9FD' : '#eee' },
+          itemStyle: { color: value.selectIndex === index ? '#AAE68A' : '#eee' },
         },
         {
           xAxis: rtRange[1],
-          itemStyle: { color: value.selectIndex === index ? '#A2D9FD' : '#eee' },
+          itemStyle: { color: value.selectIndex === index ? '#AAE68A' : '#eee' },
         },
       ]);
     });
@@ -392,6 +391,8 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       result.spectraFn(params);
     }
     window.chartsFn = chartsFn;
+    let chooseRt: number;
+    window.chooseRt = chooseRt;
     return {
       title: getXicTitle(),
       dataZoom: getDataZoom(),
@@ -413,7 +414,7 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         },
         backgroundColor: ['rgba(255,255,255,0.8)'],
         formatter: (params: any) => {
-          params.sort(function (a, b) {
+          params.sort((a: { data: number[] }, b: { data: number[] }) => {
             return b.data[1] - a.data[1];
           });
           window.paramsTool = params;

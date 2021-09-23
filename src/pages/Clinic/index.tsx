@@ -75,8 +75,6 @@ const TableList: React.FC = (props: any) => {
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
   /* Irt charts相关 */
   const [irtData, setIrtData] = useState<any>();
-  /* 当前Tab */
-  const [currentTab, setCurrentTab] = useState<string>('1');
   /* CutInfo弹窗 */
   const [cutInfoVisible, setCutInfoVisible] = useState<boolean>(false);
   /* 光谱图弹窗 */
@@ -84,7 +82,7 @@ const TableList: React.FC = (props: any) => {
   const [spectra, setSpectra] = useState<boolean>(false);
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
-
+  
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
   const peptideColumn: ProColumns<PeptideTableItem>[] = [
@@ -182,6 +180,7 @@ const TableList: React.FC = (props: any) => {
       setHandleOption(option);
       setChartsLoading(false);
       setPeptideLoading(false);
+      console.log(option);
 
       return true;
     } catch (error) {
@@ -395,12 +394,12 @@ const TableList: React.FC = (props: any) => {
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
       // title: index === 0 ? '0(总分)' : index,
-      title: (a, b) => {
+      title: (value: { tooltip: any }) => {
         return index === 0 ? (
           <a
             style={{ width: '60px', display: 'inline-block' }}
             onClick={() => {
-              setScoreTypeRowKey(a.tooltip);
+              setScoreTypeRowKey(value.tooltip);
             }}
           >
             0(总分)
@@ -409,7 +408,7 @@ const TableList: React.FC = (props: any) => {
           <a
             style={{ width: '60px', display: 'inline-block' }}
             onClick={() => {
-              setScoreTypeRowKey(a.tooltip);
+              setScoreTypeRowKey(value.tooltip);
             }}
           >
             {index}
@@ -597,12 +596,8 @@ const TableList: React.FC = (props: any) => {
 
   /* 点击坐标点展示光谱图 */
   // echarts?.getEchartsInstance().off('click'); // 防止多次触发
-  // echarts?.getEchartsInstance().on('click', (params: any) => {
-  //   spectraFn({
-  //     expId: selectedExpIds[Math.floor((params.seriesIndex + 1) / selectedExpIds.length)],
-  //     mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
-  //     rt: params.data[0],
-  //   });
+  // echarts?.getEchartsInstance().on('click', 'markArea', (params: any) => {
+  //   console.log(params);
   // });
 
   return (
@@ -732,14 +727,7 @@ const TableList: React.FC = (props: any) => {
             </Row>
           </Col>
           <Col span={20}>
-            <Tabs
-              size="small"
-              defaultActiveKey="1"
-              destroyInactiveTabPane={true}
-              onChange={(activeKey) => {
-                setCurrentTab(activeKey);
-              }}
-            >
+            <Tabs size="small" defaultActiveKey="1" destroyInactiveTabPane={true}>
               <TabPane tab="EIC列表" key="1">
                 <Row>
                   <Col span={24}>
