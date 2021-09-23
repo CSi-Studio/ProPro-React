@@ -7,27 +7,15 @@ export type spectrumProps = {
   spectrumVisible: boolean;
   values: any;
 };
-
-// const chooseFn = (arr1: any[], arr2: any[], value: number) => {
-//   let a = [];
-//   arr1.forEach((item) => {
-//     arr2.forEach((_item) => {
-//       if (_item - value < item && _item + value > item) {
-//         a.push(item);
-//       }
-//     });
-//   });
-//   return a;
-// };
-
 const Spectrum: React.FC<spectrumProps> = (props) => {
   const [handleOption, setHandleOption] = useState({});
+  // const [chooseValue, setChooseValue] = useState();
 
   const xData = props?.values?.data?.x.map((value: number) => {
     return { value };
   });
   const yData = props?.values?.data?.y.map((value: number) => {
-    return { value };
+    return { value, name: '未被选中' };
   });
 
   const a: number[] = [];
@@ -37,33 +25,20 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     });
   });
 
-  const yyData: any[] = [];
+  let chooseValue: any[] = [];
   a.forEach((item: any) => {
     props?.values?.data?.x.forEach((value: number, index: number) => {
       if (value > item - 0.015 && value < item + 0.015) {
-        console.log(index);
-        yData[index] = { value: yData[index].value, itemStyle: { color: 'tomato' } };
-        // yyData.push({ value: props?.values?.data?.y[index], itemStyle: { color: 'tomato' } });
+        chooseValue.push(value);
+        yData[index] = {
+          value: yData[index].value,
+          itemStyle: { color: 'tomato' },
+          name: '被选中',
+        };
       }
-      // else {
-      //   yyData.push({ value: props?.values?.data?.x[index] });
-      // }
     });
   });
-
-  // function unique(arr) {
-  //   for (var i = 0; i < arr.length; i++) {
-  //     for (var j = i + 1; j < arr.length; j++) {
-  //       if (arr[i].value === arr[j].value) {
-  //         //第一个等同于第二个，splice方法删除第二个
-  //         arr.splice(j, 1);
-  //         j--;
-  //       }
-  //     }
-  //   }
-  //   return arr;
-  // }
-  // console.log(unique(yyData));
+  chooseValue = Array.from(new Set(chooseValue));
 
   useEffect(() => {
     const option = {
@@ -172,12 +147,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           legendHoverLink: true,
           data: yData,
         },
-        // {
-        //   large: true,
-        //   type: 'bar',
-        //   legendHoverLink: true,
-        //   data: yyData,
-        // },
       ],
     };
     setHandleOption(option);
@@ -197,6 +166,9 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       footer={[]}
       // maskClosable={false}
     >
+      {chooseValue.map((_item: number) => {
+        return <Tag key={_item.toString()}>{_item}</Tag>;
+      })}
       <ReactECharts
         option={handleOption}
         style={{ width: `100%`, height: '400px' }}

@@ -180,8 +180,6 @@ const TableList: React.FC = (props: any) => {
       setHandleOption(option);
       setChartsLoading(false);
       setPeptideLoading(false);
-      console.log(option);
-
       return true;
     } catch (error) {
       message.error('获取EIC Matrix失败，请重试!');

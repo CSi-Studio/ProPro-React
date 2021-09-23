@@ -347,9 +347,13 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   const getXicSeries = () => {
     const series: Record<any, any>[] = [];
     const cutInfo: string[] = [];
-    Object.keys(data[0].cutInfoMap).forEach((key) => {
-      cutInfo.push(key);
+    data.forEach((item: any) => {
+      Object.keys(item.cutInfoMap).forEach((key) => {
+        cutInfo.push(key);
+      });
     });
+    Array.from(new Set(cutInfo));
+
     for (let i = 0; i < data.length; i += 1) {
       if (
         data[i].rtArray == null ||
