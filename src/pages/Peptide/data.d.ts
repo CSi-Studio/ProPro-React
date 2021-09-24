@@ -15,6 +15,7 @@ export type TableListItem = {
   decoyUnimodMap: Record<string, string>;
   decoyFragments: any[];
   features: null;
+  disable: boolean;
 };
 
 export type TableListPagination = {
