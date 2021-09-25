@@ -1,41 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Col, Descriptions, Row, Tag } from 'antd';
+import { Col, Descriptions, Empty, Row, Spin, Tag } from 'antd';
+import { getRtPairs } from '../service';
 
 export type QtChartsProps = {
   values: any;
 };
 
-const QtCharts: React.FC<QtChartsProps> = (props: any) => {
+const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
-  const [ratioData, setRatioData] = useState<any>();
+  const [pairsData, setRatioData] = useState<any>();
 
   useEffect(() => {
     const op = async () => {
-      const result = props.values.peptideRatioData;
-      const ecoliData = result.data.ecoli.map((data: { peptide: string; x: any; y: any }) => {
-        return [data.x, data.y, data.peptide];
+      const result = await getRtPairs({
+        projectId: props.values.projectId,
+        onlyDefault: props.values.onlyDefault,
+        expIds: props.values.expIds,
       });
-      const humanData = result.data.human.map((data: { peptide: string; x: any; y: any }) => {
-        return [data.x, data.y, data.peptide];
+      const pairsInit: any[][] = [];
+      Object.keys(result.data).forEach((key) => {
+        result.data[key].x.forEach((x: number, index: number) => {
+          return pairsInit.push([x, result.data[key].y[index]]);
+        });
       });
-      const yeastData = result.data.yeast.map((data: { peptide: string; x: any; y: any }) => {
-        return [data.x, data.y, data.peptide];
-      });
-      console.log(ecoliData);
+      // console.log(pairsInit);
 
-      setRatioData(result.data);
+      setRatioData(pairsInit);
       const option = {
         grid: {
           top: '3%',
-          left: '1%',
+          left: '5%',
           right: '3%',
-          bottom: '2%',
+          bottom: '4%',
           containLabel: true,
         },
         xAxis: {
-          // nameRotate: 90,
-          // nameGap: 80,
+          nameGap: 80,
           nameLocation: 'middle',
           // boundaryGap: false,
           name: 'Log_2(B)',
@@ -59,6 +60,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
         },
         yAxis: {
           nameRotate: 90,
+          nameGap: 80,
           nameLocation: 'middle',
           name: 'Log_2(A:B)',
           splitLine: {
@@ -101,13 +103,13 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             fontWeight: 'normal',
             fontFamily: 'Times New Roman,STSong',
           },
-          formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
-            let res = params.seriesName;
-            res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
-              4,
-            )} &nbsp ${params.data[1]?.toFixed(4)}`;
-            return res;
-          },
+          //     // formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
+          //     //   let res = params.seriesName;
+          //     //   res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
+          //     //     4,
+          //     //   )} &nbsp ${params.data[1]?.toFixed(4)}`;
+          //     //   return res;
+          //     // },
         },
         legend: {
           right: '8%',
@@ -120,81 +122,29 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
         series: [
           {
             type: 'scatter',
-            name: 'ecoli',
+            // name: 'ecoli',
             symbolSize: 7,
             color: 'rgba(255,99,71,0.5)',
-            data: ecoliData,
+            data: pairsInit,
             itemStyle: { borderWidth: 1, borderColor: 'tomato' },
-            markLine: {
-              symbol: ['none', 'none'],
-              animation: false,
-              lineStyle: {
-                type: 'dashed',
-                color: '#333',
-                width: 2,
-              },
-              emphasis: {
-                lineStyle: {
-                  type: 'dashed',
-                  color: 'gold',
-                  width: 3,
-                },
-              },
-              label: { show: false },
-              data: [{ yAxis: result.data.ecoliAvg, name: '平均线' }],
-            },
-          },
-          {
-            type: 'scatter',
-            name: 'human',
-            symbolSize: 7,
-            color: 'rgba(64,144,247,0.5)',
-            itemStyle: { borderWidth: 1, borderColor: 'rgba(64,144,247)' },
-            data: humanData,
-            markLine: {
-              symbol: ['none', 'none'],
-              animation: false,
-              lineStyle: {
-                type: 'dashed',
-                color: '#333',
-                width: 2,
-              },
-              emphasis: {
-                lineStyle: {
-                  type: 'dashed',
-                  color: 'gold',
-                  width: 3,
-                },
-              },
-              label: { show: false },
-              data: [{ yAxis: result.data.humanAvg, name: '平均线' }],
-            },
-          },
-          {
-            type: 'scatter',
-            name: 'yeast',
-            symbolSize: 7,
-            color: 'rgba(60,179,113,0.5)',
-            itemStyle: { borderWidth: 1, borderColor: 'rgba(60,179,113)' },
-            data: yeastData,
-            markLine: {
-              symbol: ['none', 'none'],
-              animation: false,
-              lineStyle: {
-                type: 'dashed',
-                color: '#333',
-                width: 2,
-              },
-              emphasis: {
-                lineStyle: {
-                  type: 'dashed',
-                  color: 'gold',
-                  width: 3,
-                },
-              },
-              label: { show: false },
-              data: [{ yAxis: result.data.yeastAvg, name: '平均线' }],
-            },
+            // markLine: {
+            //   symbol: ['none', 'none'],
+            //   animation: false,
+            //   lineStyle: {
+            //     type: 'dashed',
+            //     color: '#333',
+            //     width: 2,
+            //   },
+            //   emphasis: {
+            //     lineStyle: {
+            //       type: 'dashed',
+            //       color: 'gold',
+            //       width: 3,
+            //     },
+            //   },
+            //   label: { show: false },
+            //   data: [{ yAxis: result.data.ecoliAvg, name: '平均线' }],
+            // },
           },
         ],
       };
@@ -205,7 +155,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
 
   return (
     <Row>
-      <Col span="5">
+      {/* <Col span="5">
         <Descriptions title="蛋白鉴定数(Unique)" column={2}>
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyProteinNumA}</Tag>
@@ -283,16 +233,26 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="blue">{ratioData?.ecoliSD.toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
-      </Col>
-      <Col span="19">
-        <ReactECharts
-          option={handleOption}
-          style={{ width: `100%`, height: '700px' }}
-          lazyUpdate={true}
-        />
+      </Col> */}
+      <Col span="24">
+        <Spin spinning={!pairsData}>
+          {pairsData ? (
+            <ReactECharts
+              option={handleOption}
+              style={{ width: `100%`, height: '700px' }}
+              lazyUpdate={true}
+            />
+          ) : (
+            <Empty
+              description="正在加载中,pairsData数据较大，请耐心等待"
+              style={{ padding: '10px', color: '#B0B8C1' }}
+              imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+            />
+          )}
+        </Spin>
       </Col>
     </Row>
   );
 };
 
-export default QtCharts;
+export default RtPairsCharts;

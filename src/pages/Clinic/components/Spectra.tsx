@@ -15,7 +15,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     return { value };
   });
   const yData = props?.values?.data?.y.map((value: number) => {
-    return { value, name: '未被选中' };
+    return { value };
   });
 
   const a: number[] = [];
@@ -33,12 +33,15 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         yData[index] = {
           value: yData[index].value,
           itemStyle: { color: 'tomato' },
-          name: '被选中',
         };
       }
     });
   });
   chooseValue = Array.from(new Set(chooseValue));
+  // const markLineData: any = { data: [] };
+  // chooseValue.forEach((item: any) => {
+  //   markLineData.data.push({ xAxis: item });
+  // });
 
   useEffect(() => {
     const option = {
@@ -70,6 +73,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           fontWeight: 'normal',
           formatter: (value: number) => {
             return (value * 1).toFixed(2);
+            // return value;
           },
         },
         nameTextStyle: {
@@ -121,8 +125,10 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         },
       ],
       tooltip: {
+        trigger: 'axis',
         backgroundColor: ['rgba(255,255,255,0.9)'],
         axisPointer: {
+          type: 'shadow',
           snap: true,
         },
         textStyle: {
@@ -146,6 +152,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           type: 'bar',
           legendHoverLink: true,
           data: yData,
+          // markLine: markLineData,
         },
       ],
     };

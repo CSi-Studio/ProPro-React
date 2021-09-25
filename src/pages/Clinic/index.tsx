@@ -32,6 +32,7 @@ import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
 import xic from './components/xic';
+import RtPairsCharts from './components/RtPairs';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -57,7 +58,7 @@ const TableList: React.FC = (props: any) => {
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
-  const [peptideRef, setPeptideRef] = useState<any>(); // 当前选中的peptideRef
+  const [peptideRef, setPeptideRef] = useState<any>(''); // 当前选中的peptideRef
   const [loading, setLoading] = useState<boolean>(true); // 蛋白table loading
   const [peptideLoading, setPeptideLoading] = useState<boolean>(true); // 肽段table loading
   const [chartsLoading, setChartsLoading] = useState<boolean>(true); // charts loading
@@ -82,7 +83,7 @@ const TableList: React.FC = (props: any) => {
   const [spectra, setSpectra] = useState<boolean>(false);
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
-  
+
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
   const peptideColumn: ProColumns<PeptideTableItem>[] = [
@@ -149,7 +150,6 @@ const TableList: React.FC = (props: any) => {
       /* 碎片Mz echarts toolbox */
       const getCutInfo = () => {
         setCutInfoVisible(true);
-        setExpData(result.data);
       };
 
       /* 展示碎片光谱图 */
@@ -158,7 +158,7 @@ const TableList: React.FC = (props: any) => {
         try {
           const data = await getSpectra({
             expId: selectedExpIds[Math.floor((values[0].seriesIndex + 1) / selectedExpIds.length)],
-            mz: peptideList.find((item) => item.peptideRef === peptideRef).mz,
+            mz: peptideList.find((item: any) => item.peptideRef === peptideRef).mz,
             rt: values[0].axisValue,
           });
           data.expData = result.data;
@@ -217,6 +217,7 @@ const TableList: React.FC = (props: any) => {
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
+
         const { expList } = result.data;
         setExps(expList); // 放实验列表
         setSelectedExpIds(
@@ -391,7 +392,6 @@ const TableList: React.FC = (props: any) => {
   ];
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
-      // title: index === 0 ? '0(总分)' : index,
       title: (value: { tooltip: any }) => {
         return index === 0 ? (
           <a
@@ -916,6 +916,25 @@ const TableList: React.FC = (props: any) => {
               </TabPane>
               <TabPane tab="Irt结果" key="5">
                 <IrtCharts values={irtData} />
+              </TabPane>
+              <TabPane tab="rtPairs" key="6">
+                <Spin spinning={!peptideRatioData}>
+                  {peptideRatioData ? (
+                    <RtPairsCharts
+                      values={{
+                        projectId,
+                        onlyDefault: true,
+                        expIds: selectedExpIds,
+                      }}
+                    />
+                  ) : (
+                    <Empty
+                      description="正在加载中"
+                      style={{ padding: '10px', color: '#B0B8C1' }}
+                      imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+                    />
+                  )}
+                </Spin>
               </TabPane>
             </Tabs>
           </Col>

@@ -95,6 +95,7 @@ const TableList: React.FC = (props: any) => {
   const expId = props?.location?.query?.expId;
 
   const [data, setData] = useState<any>({});
+  
   useEffect(() => {
     const init = async (projectId: string) => {
       const b: Record<any, any> = {};

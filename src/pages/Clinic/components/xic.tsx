@@ -12,10 +12,40 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   const titleHeight: number = 50;
   const Width: number = 99;
 
+  const statusFn = (
+    value: number,
+    str1: any,
+    str2: any,
+    str3: any,
+    str4: any,
+    str5?: any,
+    str6?: any,
+    str7?: any,
+  ) => {
+    if (value === 0) {
+      return str1;
+    }
+    if (value === 1) {
+      return str2;
+    }
+    if (value === 2) {
+      return str3;
+    }
+    if (value === 3) {
+      return str4;
+    }
+    if (value === 4) {
+      return str5;
+    }
+    if (value === 5) {
+      return str6;
+    }
+    return str7;
+  };
+
   // 设置Grids布局
   const getXicGrids = (count: number) => {
     const grids: any = [];
-
     for (let i: number = 0; i < count; i += 1) {
       const j: any = {
         left: `${(i % gridNumInRow) * Math.floor(Width / gridNumInRow) + totalPaddingWidth}%`,
@@ -25,17 +55,14 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         width: `${Math.floor(Width / gridNumInRow) - gridPaddingWight}%`,
         height: `${gridHeight}px`,
         show: 'true',
-        backgroundColor: `${
-          data[i].status === 0
-            ? '#000'
-            : data[i].status === 1
-            ? 'rgba(215,236,184)'
-            : data[i].status === 2
-            ? 'rgba(241,158,156,0.3)'
-            : data[i].status === 3
-            ? 'rgba(251,229,154,0.5)'
-            : 'rgba(251,229,154,0.5)'
-        }`,
+        backgroundColor: `${statusFn(
+          data[i].status,
+          '#000',
+          'rgba(215,236,184)',
+          'rgba(241,158,156,0.3)',
+          'rgba(251,229,154,0.5)',
+          'rgba(251,229,154,0.5)',
+        )}`,
       };
       grids.push(j);
     }
@@ -82,21 +109,16 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         },
 
         subtext: [
-          `{status|${
-            data[i].status === 0
-              ? '尚未鉴定'
-              : data[i].status === 1
-              ? '鉴定成功'
-              : data[i].status === 2
-              ? '鉴定失败'
-              : data[i].status === 3
-              ? '碎片不足'
-              : data[i].status === 4
-              ? '缺少峰组'
-              : data[i].status === 5
-              ? 'EIC为空'
-              : '未知错误'
-          }}`,
+          `{status|${statusFn(
+            data[i].status,
+            '尚未鉴定',
+            '鉴定成功',
+            '鉴定失败',
+            '碎片不足',
+            '缺少峰组',
+            'EIC为空',
+            '未知错误',
+          )}}`,
           `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr.toFixed(4)}` : `fdr: -`}}`,
           `{sum|${data[i].sum ? `sum: ${data[i].sum}` : `sum: -`}}`,
           `{rt|${data[i].scoreList !== null ? `rt: ${rt}` : `rt: -`}}`,
@@ -115,36 +137,18 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
               padding: [3, 3],
             },
             status: {
-              color: `${
-                data[i].status === 0
-                  ? '#000000d9'
-                  : data[i].status === 1
-                  ? '#389e0d'
-                  : data[i].status === 2
-                  ? '#ff4d4f'
-                  : '#fb8c00'
-              }`,
+              color: `${statusFn(data[i].status, '#000000d9', '#389e0d', '#ff4d4f', '#fb8c00')}`,
               fontSize: '12',
               fontWeight: 'normal',
               fontFamily: 'Times New Roman,STSong',
-              backgroundColor: `${
-                data[i].status === 0
-                  ? '#eee'
-                  : data[i].status === 1
-                  ? '#f6ffed'
-                  : data[i].status === 2
-                  ? '#fff2f0'
-                  : '#fffbe6'
-              }`,
-              borderColor: `${
-                data[i].status === 0
-                  ? '#777'
-                  : data[i].status === 1
-                  ? '#b7eb8f'
-                  : data[i].status === 2
-                  ? '#ffccc7'
-                  : '#ffe58f'
-              }`,
+              backgroundColor: `${statusFn(
+                data[i].status,
+                '#eee',
+                '#f6ffed',
+                '#fff2f0',
+                '#fffbe6',
+              )}`,
+              borderColor: `${statusFn(data[i].status, '#777', '#b7eb8f', '#ffccc7', '#ffe58f')}`,
               borderWidth: 1,
               borderRadius: 2,
               padding: [3, 3],
@@ -335,12 +339,12 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
 
   // 设置图表数据格式
   const getSeriesData = (xdata: [], ydata: []) => {
-    const result: any[][] = [];
+    const sData: any[][] = [];
     const length = Math.min(xdata.length);
     for (let i = 0; i < length; i += 1) {
-      result.push([xdata[i], ydata[i]]);
+      sData.push([xdata[i], ydata[i]]);
     }
-    return result;
+    return sData;
   };
 
   // 设置图表样式
@@ -382,7 +386,9 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
           markLine: getMarkLine(data[i]),
           markArea: getMarkArea(data[i]),
         };
+
         series.push(seriesItem);
+        // series.push(seriesPi);
       });
     }
     return series;
@@ -395,8 +401,6 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       result.spectraFn(params);
     }
     window.chartsFn = chartsFn;
-    let chooseRt: number;
-    window.chooseRt = chooseRt;
     return {
       title: getXicTitle(),
       dataZoom: getDataZoom(),

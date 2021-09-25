@@ -41,9 +41,23 @@ export async function getPeptideRatio(params: { projectId: string }) {
   });
 }
 
-/** 根据实验ID、肽段的mz、所选的rt 获取该实验的光谱图 GET /clinic/getSpectra  */
+/** 根据实验ID、肽段的mz、所选的rt 获取该实验的光谱图 POST /clinic/getSpectra  */
 export async function getSpectra(params: { expId: string; mz: number; rt: number }) {
   return request(`${url}/clinic/getSpectra`, {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
+
+/** 根据项目ID、实验ID、是否默认获取rtPairs POST /clinic/getRtPairs  */
+export async function getRtPairs(params: {
+  projectId: string;
+  onlyDefault: boolean;
+  expIds: string[];
+}) {
+  return request(`${url}/clinic/getRtPairs`, {
     method: 'POST',
     params: {
       ...params,
