@@ -121,6 +121,14 @@ const TableList: React.FC = (props: any) => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      title: 'disable',
+      dataIndex: 'disable',
+      width:50,
+      render: (dom, entity) => {
+        return entity.disable?<Tag color='red'>失效</Tag>:<Tag color='green'>有效</Tag>
+      },
+    },
+    {
       title: 'Proteins',
       dataIndex: 'proteins',
       render: (dom, entity) => {
