@@ -54,6 +54,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
       });
     });
     series.sort((a: { name: string }, b: { name: string }) => (a.name > b.name ? 1 : -1));
+    
     // console.log(series);
 
     // 设置Grids布局
