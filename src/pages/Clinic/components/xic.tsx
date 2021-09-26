@@ -69,6 +69,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
 
     return grids;
   };
+  
   // 设置缩放zoom
   const getDataZoom = () => {
     const grids: any = [];
@@ -81,6 +82,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
     }
     return grids;
   };
+
   // 设置表头
   const getXicTitle = () => {
     const titles = [];

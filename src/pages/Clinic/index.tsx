@@ -963,10 +963,10 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                 </Row>
               </TabPane>
-              <TabPane tab="Irt结果" key="5">
+              <TabPane tab="iRT结果" key="5">
                 <IrtCharts values={irtData} />
               </TabPane>
-              <TabPane tab="rtPairs" key="6">
+              <TabPane tab="RT结果" key="6">
                 <Spin spinning={!rtPairs}>
                   {rtPairs ? (
                     <RtPairsCharts values={{ rtPairs, expData }} />

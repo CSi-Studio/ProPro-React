@@ -19,29 +19,42 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
     const totalPaddingHeight: number = 90;
     const gridPaddingWight: number = 3;
     const totalPaddingWidth: number = 3;
-    // const titleHeight: number = 50;
+    const titleHeight: number = 50;
     const Width: number = 99;
+
+    // console.log(props);
 
     /* 设置series */
     const series: any[] = [];
     Object.keys(props.values.rtPairs.data).forEach((key, idx) => {
       const pairsInit: any[][][] = [];
       props.values.rtPairs.data[key].x.forEach((x: number, index: number) => {
-        return pairsInit.push([x, props.values.rtPairs.data[key].y[index], key]);
+        return pairsInit.push([
+          x,
+          props.values.rtPairs.data[key].y[index],
+          props.values.rtPairs.data[key].peptideRefs[index],
+        ]);
       });
-      series.push({
-        xAxisIndex: idx,
-        yAxisIndex: idx,
-        type: 'scatter',
-        name: key,
-        symbolSize: 7,
-        animation: false,
-        // color: 'rgba(255,99,71,0.5)',
-        data: pairsInit,
-        // itemStyle: { borderWidth: 1, borderColor: '#888' },
-        large: true,
+
+      props.values.expData.forEach((item: { expId: string; alias: string }) => {
+        if (item.expId === key) {
+          series.push({
+            xAxisIndex: idx,
+            yAxisIndex: idx,
+            type: 'scatter',
+            name: item.alias,
+            symbolSize: 2,
+            animation: false,
+            // color: 'rgba(255,99,71,0.5)',
+            data: pairsInit,
+            // itemStyle: { borderWidth: 1, borderColor: '#888' },
+            large: true,
+          });
+        }
       });
     });
+    series.sort((a: { name: string }, b: { name: string }) => (a.name > b.name ? 1 : -1));
+    // console.log(series);
 
     // 设置Grids布局
     const getXicGrids = (count: number) => {
@@ -67,6 +80,71 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         grids.push(j);
       }
       return grids;
+    };
+
+    // 设置表头
+    const getXicTitle = () => {
+      const titles: any[] = [];
+      Object.keys(props.values.rtPairs.data).forEach((key, idx) => {
+        props.values.expData.forEach((item: { expId: string; alias: string }) => {
+          if (item.expId === key) {
+            const xicTitle = {
+              text: item.alias,
+              height: '200px',
+              textAlign: 'center',
+              textStyle: {
+                color: '#000',
+                fontSize: '14',
+                fontWeight: 'normal',
+                fontFamily: 'Times New Roman,STSong',
+              },
+
+              padding: 0,
+              left: `${
+                (idx % gridNumInRow) * Math.floor(Width / gridNumInRow) +
+                Math.floor((Math.floor(Width / gridNumInRow) - gridPaddingWight) / 2) +
+                totalPaddingWidth
+              }%`,
+              top: `${
+                (gridHeight + gridPaddingHeight) * Math.floor(idx / gridNumInRow) +
+                totalPaddingHeight -
+                titleHeight
+              }px`,
+            };
+            titles.push(xicTitle);
+          }
+        });
+      });
+      titles.sort((a: { text: string }, b: { text: string }) => (a.text > b.text ? 1 : -1));
+      console.log(titles);
+
+      // for (let i = 0; i < props.values.expData.length; i += 1) {
+      //   const item = {
+      //     text: props.values.expData[i].alias,
+      //     height: '200px',
+      //     textAlign: 'center',
+      //     textStyle: {
+      //       color: '#000',
+      //       fontSize: '14',
+      //       fontWeight: 'normal',
+      //       fontFamily: 'Times New Roman,STSong',
+      //     },
+
+      //     padding: 0,
+      //     left: `${
+      //       (i % gridNumInRow) * Math.floor(Width / gridNumInRow) +
+      //       Math.floor((Math.floor(Width / gridNumInRow) - gridPaddingWight) / 2) +
+      //       totalPaddingWidth
+      //     }%`,
+      //     top: `${
+      //       (gridHeight + gridPaddingHeight) * Math.floor(i / gridNumInRow) +
+      //       totalPaddingHeight -
+      //       titleHeight
+      //     }px`,
+      //   };
+      //   titles.push(item);
+      // }
+      return titles;
     };
 
     // 设置缩放zoom
@@ -156,6 +234,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
     });
 
     const option = {
+      title: getXicTitle(),
       grid: getXicGrids(data.length),
       xAxis: getXicxAxis(data.length, xName),
       yAxis: getXicyAxis(data.length, yName),
@@ -193,13 +272,15 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           fontWeight: 'normal',
           fontFamily: 'Times New Roman,STSong',
         },
-        //     // formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
-        //     //   let res = params.seriesName;
-        //     //   res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
-        //     //     4,
-        //     //   )} &nbsp ${params.data[1]?.toFixed(4)}`;
-        //     //   return res;
-        //     // },
+        formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
+          console.log(params);
+
+          let res = params.seriesName;
+          res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
+            4,
+          )} &nbsp ${params.data[1]?.toFixed(4)}`;
+          return res;
+        },
       },
       legend: {
         right: '8%',
@@ -308,3 +389,5 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
 };
 
 export default RtPairsCharts;
+
+// title 辅助线 +-150 选中的 未选中的 选中的占总数的百分比 tooltip
