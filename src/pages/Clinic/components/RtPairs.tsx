@@ -27,14 +27,14 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
     Object.keys(props.values.rtPairs.data).forEach((key, idx) => {
       const pairsInit: any[][][] = [];
       props.values.rtPairs.data[key].x.forEach((x: number, index: number) => {
-        return pairsInit.push([x, props.values.rtPairs.data[key].y[index], key]);
+        return pairsInit.push([x, props.values.rtPairs.data[key].y[index], props.values.rtPairs.data[key].peptideRefs[index]]);
       });
       series.push({
         xAxisIndex: idx,
         yAxisIndex: idx,
         type: 'scatter',
         name: key,
-        symbolSize: 7,
+        symbolSize: 1,
         animation: false,
         // color: 'rgba(255,99,71,0.5)',
         data: pairsInit,
