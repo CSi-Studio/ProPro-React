@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Col, Descriptions, Empty, Row, Spin, Tag } from 'antd';
-import { getRtPairs } from '../service';
+import { Col, Row, Tag } from 'antd';
 
 export type QtChartsProps = {
   values: any;
@@ -9,46 +8,102 @@ export type QtChartsProps = {
 
 const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
-  const [pairsData, setRatioData] = useState<any>();
+  // const [pairsData, setRatioData] = useState<any>();
 
   useEffect(() => {
-    const op = async () => {
-      const result = await getRtPairs({
-        projectId: props.values.projectId,
-        onlyDefault: props.values.onlyDefault,
-        expIds: props.values.expIds,
-      });
-      const pairsInit: any[][] = [];
-      Object.keys(result.data).forEach((key) => {
-        result.data[key].x.forEach((x: number, index: number) => {
-          return pairsInit.push([x, result.data[key].y[index]]);
-        });
-      });
-      // console.log(pairsInit);
+    const gridNumInRow: number = 3;
+    const gridHeight: number = 200;
+    const xName: string = '';
+    const yName: string = '';
+    const gridPaddingHeight: number = 80;
+    const totalPaddingHeight: number = 90;
+    const gridPaddingWight: number = 3;
+    const totalPaddingWidth: number = 3;
+    // const titleHeight: number = 50;
+    const Width: number = 99;
 
-      setRatioData(pairsInit);
-      const option = {
-        grid: {
-          top: '3%',
-          left: '5%',
-          right: '3%',
-          bottom: '4%',
-          containLabel: true,
-        },
-        xAxis: {
+    /* 设置series */
+    const series: any[] = [];
+    Object.keys(props.values.rtPairs.data).forEach((key, idx) => {
+      const pairsInit: any[][][] = [];
+      props.values.rtPairs.data[key].x.forEach((x: number, index: number) => {
+        return pairsInit.push([x, props.values.rtPairs.data[key].y[index], key]);
+      });
+      series.push({
+        xAxisIndex: idx,
+        yAxisIndex: idx,
+        type: 'scatter',
+        name: key,
+        symbolSize: 7,
+        animation: false,
+        // color: 'rgba(255,99,71,0.5)',
+        data: pairsInit,
+        // itemStyle: { borderWidth: 1, borderColor: '#888' },
+        large: true,
+      });
+    });
+
+    // 设置Grids布局
+    const getXicGrids = (count: number) => {
+      const grids: any = [];
+      for (let i: number = 0; i < count; i += 1) {
+        const j: any = {
+          left: `${(i % gridNumInRow) * Math.floor(Width / gridNumInRow) + totalPaddingWidth}%`,
+          top: `${
+            (gridHeight + gridPaddingHeight) * Math.floor(i / gridNumInRow) + totalPaddingHeight
+          }px`,
+          width: `${Math.floor(Width / gridNumInRow) - gridPaddingWight}%`,
+          height: `${gridHeight}px`,
+          show: 'true',
+          // backgroundColor: `${statusFn(
+          //   data[i].status,
+          //   '#000',
+          //   'rgba(215,236,184)',
+          //   'rgba(241,158,156,0.3)',
+          //   'rgba(251,229,154,0.5)',
+          //   'rgba(251,229,154,0.5)',
+          // )}`,
+        };
+        grids.push(j);
+      }
+      return grids;
+    };
+
+    // 设置缩放zoom
+    const getDataZoom = () => {
+      const grids: any = [];
+      for (let i = 0; i < props.values.expData.length; i += 1) {
+        const item: any = {
+          type: 'inside',
+          xAxisIndex: i,
+        };
+        grids.push(item);
+      }
+      return grids;
+    };
+
+    // 设置x轴
+    const getXicxAxis = (count: number, axisName: string) => {
+      const xAxis = [];
+      for (let i = 0; i < count; i += 1) {
+        xAxis.push({
+          gridIndex: i,
+          name: axisName,
+          splitLine: {
+            show: false,
+          },
           nameGap: 80,
           nameLocation: 'middle',
           // boundaryGap: false,
-          name: 'Log_2(B)',
-          splitLine: {
-            show: false,
-          },
           scale: true,
           axisLabel: {
             color: '#000',
             show: true,
             fontFamily: 'Times New Roman,STSong',
             fontWeight: 'normal',
+            formatter(params: number) {
+              return params > 10000 ? params.toExponential(1) : params;
+            },
           },
           nameTextStyle: {
             color: '#000',
@@ -57,100 +112,107 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
             fontFamily: 'Times New Roman,STSong',
             align: 'left',
           },
-        },
-        yAxis: {
-          nameRotate: 90,
+        });
+      }
+      return xAxis;
+    };
+    // 设置y轴
+    const getXicyAxis = (count: number, axisName: string) => {
+      const yAxis: any[] = [];
+      for (let i = 0; i < count; i += 1) {
+        yAxis.push({
+          gridIndex: i,
+          name: axisName,
+          splitLine: {
+            show: false,
+          },
           nameGap: 80,
           nameLocation: 'middle',
-          name: 'Log_2(A:B)',
-          splitLine: {
-            show: false,
-          },
+          // boundaryGap: false,
           scale: true,
           axisLabel: {
             color: '#000',
             show: true,
             fontFamily: 'Times New Roman,STSong',
             fontWeight: 'normal',
+            formatter(params: number) {
+              return params > 10000 ? params.toExponential(1) : params;
+            },
           },
           nameTextStyle: {
-            // lineHeight: 56,
             color: '#000',
             fontSize: '16',
             fontWeight: 'bold',
             fontFamily: 'Times New Roman,STSong',
             align: 'left',
           },
-        },
-        animation: false,
-        toolbox: {
-          feature: {
-            restore: {},
-            dataView: {},
-            saveAsImage: {},
-          },
-        },
-        dataZoom: { type: 'inside' },
-        tooltip: {
-          backgroundColor: ['rgba(255,255,255,0.9)'],
-          axisPointer: {
-            type: 'cross',
-            snap: true,
-          },
-          textStyle: {
-            color: '#000',
-            fontSize: '14',
-            fontWeight: 'normal',
-            fontFamily: 'Times New Roman,STSong',
-          },
-          //     // formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
-          //     //   let res = params.seriesName;
-          //     //   res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
-          //     //     4,
-          //     //   )} &nbsp ${params.data[1]?.toFixed(4)}`;
-          //     //   return res;
-          //     // },
-        },
-        legend: {
-          right: '8%',
-          align: 'left',
-          textStyle: {
-            fontSize: '14',
-            fontFamily: 'Times New Roman,STSong',
-          },
-        },
-        series: [
-          {
-            type: 'scatter',
-            // name: 'ecoli',
-            symbolSize: 7,
-            color: 'rgba(255,99,71,0.5)',
-            data: pairsInit,
-            itemStyle: { borderWidth: 1, borderColor: 'tomato' },
-            // markLine: {
-            //   symbol: ['none', 'none'],
-            //   animation: false,
-            //   lineStyle: {
-            //     type: 'dashed',
-            //     color: '#333',
-            //     width: 2,
-            //   },
-            //   emphasis: {
-            //     lineStyle: {
-            //       type: 'dashed',
-            //       color: 'gold',
-            //       width: 3,
-            //     },
-            //   },
-            //   label: { show: false },
-            //   data: [{ yAxis: result.data.ecoliAvg, name: '平均线' }],
-            // },
-          },
-        ],
-      };
-      setHandleOption(option);
+        });
+      }
+      return yAxis;
     };
-    op();
+    const data = [];
+    Object.keys(props.values.rtPairs.data).forEach((key) => {
+      data.push(props.values.rtPairs.data[key]);
+    });
+
+    const option = {
+      grid: getXicGrids(data.length),
+      xAxis: getXicxAxis(data.length, xName),
+      yAxis: getXicyAxis(data.length, yName),
+      animation: false,
+      toolbox: {
+        feature: {
+          restore: {},
+          dataView: {},
+          saveAsImage: {},
+        },
+      },
+      color: [
+        '#1890ff',
+        'hotpink',
+        '#3CB371',
+        'orange',
+        '#9370D8',
+        'tomato',
+        '#71d8d2',
+        '#FFa246',
+        '#6C97D7',
+        '#F4B397',
+        '#395165',
+        '#F2DF5D',
+      ],
+      tooltip: {
+        backgroundColor: ['rgba(255,255,255,0.9)'],
+        axisPointer: {
+          type: 'cross',
+          snap: true,
+        },
+        textStyle: {
+          color: '#000',
+          fontSize: '14',
+          fontWeight: 'normal',
+          fontFamily: 'Times New Roman,STSong',
+        },
+        //     // formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
+        //     //   let res = params.seriesName;
+        //     //   res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
+        //     //     4,
+        //     //   )} &nbsp ${params.data[1]?.toFixed(4)}`;
+        //     //   return res;
+        //     // },
+      },
+      legend: {
+        right: '8%',
+        align: 'left',
+        textStyle: {
+          fontSize: '14',
+          fontFamily: 'Times New Roman,STSong',
+        },
+      },
+      dataZoom: getDataZoom(),
+      series,
+    };
+    setHandleOption(option);
   }, []);
 
   return (
@@ -235,21 +297,11 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         </Descriptions>
       </Col> */}
       <Col span="24">
-        <Spin spinning={!pairsData}>
-          {pairsData ? (
-            <ReactECharts
-              option={handleOption}
-              style={{ width: `100%`, height: '700px' }}
-              lazyUpdate={true}
-            />
-          ) : (
-            <Empty
-              description="正在加载中,pairsData数据较大，请耐心等待"
-              style={{ padding: '10px', color: '#B0B8C1' }}
-              imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
-            />
-          )}
-        </Spin>
+        <ReactECharts
+          option={handleOption}
+          style={{ width: `100%`, height: '700px' }}
+          lazyUpdate={true}
+        />
       </Col>
     </Row>
   );

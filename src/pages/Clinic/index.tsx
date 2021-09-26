@@ -21,7 +21,14 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 import ReactECharts from 'echarts-for-react';
-import { getExpData, getPeptideRatio, getPeptideRefs, getSpectra, prepare } from './service';
+import {
+  getExpData,
+  getPeptideRatio,
+  getPeptideRefs,
+  getRtPairs,
+  getSpectra,
+  prepare,
+} from './service';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
@@ -81,6 +88,8 @@ const TableList: React.FC = (props: any) => {
   /* 光谱图弹窗 */
   const [spectrumVisible, setSpectrumVisible] = useState<boolean>(false);
   const [spectra, setSpectra] = useState<boolean>(false);
+  /* RtPairs */
+  const [rtPairs, setRtPairs] = useState<any>();
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
 
@@ -210,6 +219,31 @@ const TableList: React.FC = (props: any) => {
     }
   };
 
+  /* **************  RtPairs result  ****************** */
+  const rtPairsData = async (values: {
+    projectId: string;
+    onlyDefault: boolean;
+    expIds: string[];
+  }) => {
+    try {
+      const result = await getRtPairs({
+        projectId: values.projectId,
+        onlyDefault: values.onlyDefault,
+        expIds: values.expIds,
+      });
+      // const pairsInit: any[][] = [];
+      // Object.keys(rtPairs?.data || result.data).forEach((key) => {
+      //   result.data[key].x.forEach((x: number, index: number) => {
+      //     return pairsInit.push([x, result.data[key].y[index]]);
+      //   });
+      // });
+      setRtPairs(result);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   /** **************  use effect start  ****************** */
   useEffect(() => {
     /* 准备数据 */
@@ -235,6 +269,13 @@ const TableList: React.FC = (props: any) => {
         setLoading(false);
         const rationData = await getPeptideRatio({ projectId });
         setPeptideRatioData(rationData);
+        rtPairsData({
+          projectId,
+          onlyDefault: true,
+          expIds: expList?.map((item: any) => {
+            return item.id;
+          }),
+        });
         return true;
       } catch (err) {
         return false;
@@ -242,6 +283,14 @@ const TableList: React.FC = (props: any) => {
     };
     init();
   }, []);
+
+  // useEffect(() => {
+  //   rtPairsData({
+  //     projectId,
+  //     onlyDefault: true,
+  //     expIds: selectedExpIds,
+  //   });
+  // }, [selectedExpIds]);
 
   useEffect(() => {
     // 根据第一个蛋白获得肽段列表
@@ -918,18 +967,12 @@ const TableList: React.FC = (props: any) => {
                 <IrtCharts values={irtData} />
               </TabPane>
               <TabPane tab="rtPairs" key="6">
-                <Spin spinning={!peptideRatioData}>
-                  {peptideRatioData ? (
-                    <RtPairsCharts
-                      values={{
-                        projectId,
-                        onlyDefault: true,
-                        expIds: selectedExpIds,
-                      }}
-                    />
+                <Spin spinning={!rtPairs}>
+                  {rtPairs ? (
+                    <RtPairsCharts values={{ rtPairs, expData }} />
                   ) : (
                     <Empty
-                      description="正在加载中"
+                      description="正在加载中,pairsData数据较大，请耐心等待"
                       style={{ padding: '10px', color: '#B0B8C1' }}
                       imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
                     />

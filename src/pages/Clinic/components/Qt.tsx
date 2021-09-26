@@ -22,7 +22,6 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
       const yeastData = result.data.yeast.map((data: { peptide: string; x: any; y: any }) => {
         return [data.x, data.y, data.peptide];
       });
-      console.log(ecoliData);
 
       setRatioData(result.data);
       const option = {

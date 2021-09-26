@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
-export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn: any }) => {
-  const data: any[] = result.result;
+export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn: any }) => {
+  const data: any[] = values.result;
   const gridNumInRow: number = 3;
   const xName: string = '';
   const yName: string = '';
@@ -398,7 +398,7 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   const getXicOption = (getCutInfo: Record<any, any>) => {
     const gridNumber = data.length;
     function chartsFn(params: any) {
-      result.spectraFn(params);
+      values.spectraFn(params);
     }
     window.chartsFn = chartsFn;
     return {
@@ -499,5 +499,5 @@ export default (result: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       },
     };
   };
-  return getXicOption(result.getCutInfo);
+  return getXicOption(values.getCutInfo);
 };

@@ -2,7 +2,7 @@ import { request } from 'umi';
 import { url } from '@/utils/request';
 
 /** 准备做蛋白诊断的相关数据 GET /clinic/prepare */
-export async function prepare(params: any) {
+export async function prepare(params: { projectId: string }) {
   return request(`${url}/clinic/prepare`, {
     method: 'GET',
     params: {
@@ -22,7 +22,17 @@ export async function getPeptideRefs(params: { libraryId: string; protein: strin
 }
 
 /** 根据肽段信息直接获取某实验下的EIC图像 POST data/getExpData  */
-export async function getExpData(params: any) {
+export async function getExpData(params: {
+  projectId: string;
+  libraryId: string | undefined;
+  predict: boolean;
+  changeCharge: boolean;
+  peptideRef: string;
+  expIds: string[];
+  onlyDefault: boolean;
+  smooth: boolean;
+  denoise: boolean;
+}) {
   return request(`${url}/clinic/getExpData`, {
     method: 'POST',
     params: {
