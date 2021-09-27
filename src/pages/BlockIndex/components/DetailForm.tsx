@@ -118,6 +118,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
                         setRtData(_item);
                         setShowCharts(true);
                       }}
+                      key={_item.toString()}
                     >
                       {_item}
                     </Tag>

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import React, { useEffect, useState } from 'react';
 import { Modal, Tag } from 'antd';
 import ReactECharts from 'echarts-for-react';
@@ -18,31 +19,54 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     return { value };
   });
 
-  const a: number[] = [];
+  const cutInfoMap: any = [];
   props?.values?.expData?.forEach((_item: { cutInfoMap: Record<string, number> }) => {
     Object.keys(_item.cutInfoMap).forEach((key: any) => {
-      a.push(_item.cutInfoMap[key]);
+      cutInfoMap.push({ data: _item.cutInfoMap[key], name: key });
     });
   });
 
-  let chooseValue: any[] = [];
-  a.forEach((item: any) => {
+  let chooseValue: any = [];
+  cutInfoMap.forEach((item: any) => {
     props?.values?.data?.x.forEach((value: number, index: number) => {
-      if (value > item - 0.015 && value < item + 0.015) {
-        chooseValue.push(value);
+      if (value > item.data - 0.015 && value < item.data + 0.015) {
+        chooseValue.push({ data: value, name: item.name, index });
         yData[index] = {
-          value: yData[index].value,
-          itemStyle: { color: 'tomato' },
+          value: 0,
+          // itemStyle: { color: 'tomato' },
         };
       }
     });
   });
-  chooseValue = Array.from(new Set(chooseValue));
-  // const markLineData: any = { data: [] };
-  // chooseValue.forEach((item: any) => {
-  //   markLineData.data.push({ xAxis: item });
-  // });
 
+  const map = new Map();
+  for (const i of chooseValue) {
+    if (!map.has(i.data)) {
+      map.set(i.data, i);
+    }
+  }
+  chooseValue = [...map.values()];
+  const series: any = [
+    {
+      large: true,
+      type: 'bar',
+      legendHoverLink: true,
+      data: yData,
+      // markLine: markLineData,
+    },
+  ];
+  chooseValue.forEach((value: { data: any; name: any; index: number }) => {
+    const result = new Array(props?.values?.data?.x.length).fill(0);
+    result[value.index] = value.data;
+    series.push({
+      large: true,
+      type: 'bar',
+      legendHoverLink: true,
+      data: result,
+      name: value.name,
+      // markLine: markLineData,
+    });
+  });
   useEffect(() => {
     const option = {
       grid: {
@@ -124,20 +148,20 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           type: 'slider',
         },
       ],
-      tooltip: {
-        trigger: 'axis',
-        backgroundColor: ['rgba(255,255,255,0.9)'],
-        axisPointer: {
-          type: 'shadow',
-          snap: true,
-        },
-        textStyle: {
-          color: '#000',
-          fontSize: '14',
-          fontWeight: 'normal',
-          fontFamily: 'Times New Roman,STSong',
-        },
-      },
+      // tooltip: {
+      //   trigger: 'axis',
+      //   backgroundColor: ['rgba(255,255,255,0.9)'],
+      //   axisPointer: {
+      //     type: 'shadow',
+      //     snap: true,
+      //   },
+      //   textStyle: {
+      //     color: '#000',
+      //     fontSize: '14',
+      //     fontWeight: 'normal',
+      //     fontFamily: 'Times New Roman,STSong',
+      //   },
+      // },
       legend: {
         right: '12%',
         align: 'left',
@@ -146,15 +170,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           fontFamily: 'Times New Roman,STSong',
         },
       },
-      series: [
-        {
-          large: true,
-          type: 'bar',
-          legendHoverLink: true,
-          data: yData,
-          // markLine: markLineData,
-        },
-      ],
+      series,
     };
     setHandleOption(option);
   }, [props.values]);
@@ -173,9 +189,9 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       footer={[]}
       // maskClosable={false}
     >
-      {chooseValue.map((_item: number) => {
-        return <Tag key={_item.toString()}>{_item}</Tag>;
-      })}
+      {/* {chooseValue.map((_item: any) => {
+        return <Tag key={_item.data.toString()}>{_item.data}</Tag>;
+      })} */}
       <ReactECharts
         option={handleOption}
         style={{ width: `100%`, height: '400px' }}
