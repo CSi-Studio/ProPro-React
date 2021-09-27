@@ -40,6 +40,7 @@ import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
 import xic from './components/xic';
 import RtPairsCharts from './components/RtPairs';
+import { Link } from 'umi';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -166,7 +167,7 @@ const TableList: React.FC = (props: any) => {
         const hide = message.loading('正在获取光谱图');
         try {
           const data = await getSpectra({
-            expId: selectedExpIds[Math.floor((values[0].seriesIndex) / selectedExpIds.length)],
+            expId: selectedExpIds[Math.floor(values[0].seriesIndex / selectedExpIds.length)],
             mz: peptideList.find((item: any) => item.peptideRef === peptideRef).mz,
             rt: values[0].axisValue,
           });
@@ -645,7 +646,16 @@ const TableList: React.FC = (props: any) => {
       header={{
         onBack: () => window.history.back(),
         title: '蛋白诊所',
-        tags: <Tag>{prepareData?.project?.name}</Tag>,
+        tags: (
+          <Link
+            target="_blank"
+            to={{
+              pathname: '/',
+            }}
+          >
+            <Tag>{prepareData?.project?.name}</Tag>
+          </Link>
+        ),
         extra: (
           <Space>
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
@@ -940,7 +950,10 @@ const TableList: React.FC = (props: any) => {
                   <Col span={24}>
                     <Space>
                       <Tag color="blue">内标库: {prepareData?.insLib?.name}</Tag>
-                      <Tag color="blue">标准库: {prepareData?.anaLib?.name}(肽段数:{prepareData?.peptideCount},蛋白数:{prepareData?.proteinCount})</Tag>
+                      <Tag color="blue">
+                        标准库: {prepareData?.anaLib?.name}(肽段数:{prepareData?.peptideCount}
+                        ,蛋白数:{prepareData?.proteinCount})
+                      </Tag>
                       <Tag color="blue">{prepareData?.method?.name}</Tag>
                     </Space>
                   </Col>
