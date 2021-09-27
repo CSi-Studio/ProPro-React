@@ -46,8 +46,8 @@ const { CheckableTag } = Tag;
 
 /* echarts参数 */
 let gridNumberInRow = 3; // 每行grid的个数
-const xName = `rt/s`; // 横坐标
-const yName = `int/s`; // 纵坐标
+// const xName = `rt/s`; // 横坐标
+// const yName = `int/s`; // 纵坐标
 const gridHeight = 200; // 单张高度（单位px）
 const gridPaddingHeight = 80; // 行间间隔高度（单位px）
 let Height = 0;
@@ -166,7 +166,7 @@ const TableList: React.FC = (props: any) => {
         const hide = message.loading('正在获取光谱图');
         try {
           const data = await getSpectra({
-            expId: selectedExpIds[Math.floor((values[0].seriesIndex + 1) / selectedExpIds.length)],
+            expId: selectedExpIds[Math.floor((values[0].seriesIndex) / selectedExpIds.length)],
             mz: peptideList.find((item: any) => item.peptideRef === peptideRef).mz,
             rt: values[0].axisValue,
           });
@@ -231,12 +231,6 @@ const TableList: React.FC = (props: any) => {
         onlyDefault: values.onlyDefault,
         expIds: values.expIds,
       });
-      // const pairsInit: any[][] = [];
-      // Object.keys(rtPairs?.data || result.data).forEach((key) => {
-      //   result.data[key].x.forEach((x: number, index: number) => {
-      //     return pairsInit.push([x, result.data[key].y[index]]);
-      //   });
-      // });
       setRtPairs(result);
       return true;
     } catch (error) {
@@ -580,7 +574,6 @@ const TableList: React.FC = (props: any) => {
     return () => {
       document.removeEventListener('keydown', onPeptideKey);
     };
-    return () => {};
   }, [onPeptideKey]);
 
   let searchInput: any;
@@ -821,7 +814,7 @@ const TableList: React.FC = (props: any) => {
                           offset={[-5, 0]}
                           key={item.id}
                         >
-                          <Tooltip style={{ marginTop: 5 }} title={item.name}>
+                          <Tooltip style={{ marginTop: 5 }} title={item.name + item.id}>
                             <CheckableTag
                               style={{ marginTop: 5, marginLeft: 5 }}
                               checked={selectedExpIds?.indexOf(item.id) > -1}

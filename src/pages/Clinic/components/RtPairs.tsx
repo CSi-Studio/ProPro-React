@@ -22,8 +22,46 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
     const titleHeight: number = 20;
     const Width: number = 99;
 
-
     /* 设置series */
+    const getMarkLine = (data: number[], slope: number, intercept: number, formula: string) => {
+      if (data.length === 0) {
+        return null;
+      }
+      const markLineOpt = {
+        animation: false,
+        silent: true,
+        label: {
+          formatter: formula,
+          align: 'right',
+          fontFamily: 'Times New Roman',
+        },
+        lineStyle: {
+          type: 'solid',
+        },
+        tooltip: {
+          formatter: formula,
+          axisPointer: {
+            label: {
+              fontFamily: 'Times New Roman',
+            },
+          },
+        },
+        data: [
+          [
+            {
+              coord: [Math.min(...data) * slope + intercept, Math.min(...data)],
+              symbol: 'none',
+            },
+            {
+              coord: [Math.max(...data) * slope + intercept, Math.max(...data)],
+              symbol: 'none',
+            },
+          ],
+        ],
+      };
+      return markLineOpt;
+    };
+
     const series: any[] = [];
     const seriesData: any[] = [];
     Object.keys(props.values.rtPairs.data).forEach((key) => {
@@ -53,6 +91,14 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         animation: false,
         data: item.value,
         large: true,
+        // markLine: getMarkLine(
+        //   item.value.map((item: any[]) => {
+        //     return item[1]
+        //   }),
+        //   data[i].irt.si.slope,
+        //   data[i].irt.si.intercept,
+        //   data[i].irt.si.formula,
+        // ),
       });
     });
 
@@ -277,3 +323,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
 export default RtPairsCharts;
 
 // title 辅助线 +-100 选中的 未选中的 选中的占总数的百分比 tooltip
+// y=0.025x-56.282
+// y=0.025x-156.282
+// y=0.025x+43.718

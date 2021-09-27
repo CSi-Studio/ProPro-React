@@ -61,7 +61,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           show: false,
         },
         nameLocation: 'middle',
-        name: 'X',
+        name: '',
         nameGap: 30,
         type: 'category',
         data: xData,
@@ -89,7 +89,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         nameRotate: 90,
         nameGap: 30,
         nameLocation: 'middle',
-        name: 'Y',
+        name: '',
         splitArea: {
           show: false,
         },
