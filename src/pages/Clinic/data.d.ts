@@ -5,6 +5,8 @@ export type PrepareData = {
   insLib: IdName;
   anaLib: IdName;
   method: any;
+  peptideCount: number;
+  proteinCount: number;
   proteins: string[];
   expList: array<IdNameAlias>;
   overviewMap: Map<string, Overview>; // key为expId

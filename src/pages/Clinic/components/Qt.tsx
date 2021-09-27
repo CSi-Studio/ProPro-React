@@ -120,7 +120,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           {
             type: 'scatter',
             name: 'ecoli',
-            symbolSize: 7,
+            symbolSize: 5,
             color: 'rgba(255,99,71,0.5)',
             data: ecoliData,
             itemStyle: { borderWidth: 1, borderColor: 'tomato' },
@@ -146,7 +146,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           {
             type: 'scatter',
             name: 'human',
-            symbolSize: 7,
+            symbolSize: 5,
             color: 'rgba(64,144,247,0.5)',
             itemStyle: { borderWidth: 1, borderColor: 'rgba(64,144,247)' },
             data: humanData,
@@ -172,7 +172,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           {
             type: 'scatter',
             name: 'yeast',
-            symbolSize: 7,
+            symbolSize: 5,
             color: 'rgba(60,179,113,0.5)',
             itemStyle: { borderWidth: 1, borderColor: 'rgba(60,179,113)' },
             data: yeastData,
@@ -204,7 +204,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
 
   return (
     <Row>
-      <Col span="5">
+      <Col span="8">
         <Descriptions title="蛋白鉴定数(Unique)" column={2}>
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyProteinNumA}</Tag>
@@ -214,7 +214,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="肽段鉴定数(Unique)" column={2}>
-          <Descriptions.Item label="A">
+          <Descriptions.Item label="A" >
             <Tag color="blue">{ratioData?.identifyNumA}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="缺失率">
@@ -283,7 +283,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           </Descriptions.Item>
         </Descriptions>
       </Col>
-      <Col span="19">
+      <Col span="16">
         <ReactECharts
           option={handleOption}
           style={{ width: `100%`, height: '700px' }}

@@ -821,7 +821,7 @@ const TableList: React.FC = (props: any) => {
                           offset={[-5, 0]}
                           key={item.id}
                         >
-                          <Tooltip style={{ marginTop: 5 }} title={item.name}>
+                          <Tooltip style={{ marginTop: 5 }} title={item.name+'('+item.id+')'}>
                             <CheckableTag
                               style={{ marginTop: 5, marginLeft: 5 }}
                               checked={selectedExpIds?.indexOf(item.id) > -1}
@@ -946,8 +946,8 @@ const TableList: React.FC = (props: any) => {
                 <Row>
                   <Col span={24}>
                     <Space>
-                      <Tag color="blue">{prepareData?.insLib?.name}</Tag>
-                      <Tag color="blue">{prepareData?.anaLib?.name}</Tag>
+                      <Tag color="blue">内标库: {prepareData?.insLib?.name}</Tag>
+                      <Tag color="blue">标准库: {prepareData?.anaLib?.name}(肽段数:{prepareData?.peptideCount},蛋白数:{prepareData?.proteinCount})</Tag>
                       <Tag color="blue">{prepareData?.method?.name}</Tag>
                     </Space>
                   </Col>
