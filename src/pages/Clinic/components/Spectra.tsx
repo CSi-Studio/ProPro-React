@@ -30,10 +30,10 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
   cutInfoMap.forEach((item: any) => {
     props?.values?.data?.x.forEach((value: number, index: number) => {
       if (value > item.data - 0.015 && value < item.data + 0.015) {
-        chooseValue.push({ data: value, name: item.name, index });
+        chooseValue.push({ data: yData[index].value, name: item.name, index });
+        console.log(xData[index]);
         yData[index] = {
           value: 0,
-          // itemStyle: { color: 'tomato' },
         };
       }
     });
@@ -52,12 +52,15 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       type: 'bar',
       legendHoverLink: true,
       data: yData,
+      name: '123',
       // markLine: markLineData,
     },
   ];
   chooseValue.forEach((value: { data: any; name: any; index: number }) => {
     const result = new Array(props?.values?.data?.x.length).fill(0);
     result[value.index] = value.data;
+    console.log(result);
+
     series.push({
       large: true,
       type: 'bar',
@@ -87,7 +90,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         nameLocation: 'middle',
         name: '',
         nameGap: 30,
-        type: 'category',
         data: xData,
         scale: true,
         axisLabel: {
@@ -148,20 +150,31 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           type: 'slider',
         },
       ],
-      // tooltip: {
-      //   trigger: 'axis',
-      //   backgroundColor: ['rgba(255,255,255,0.9)'],
-      //   axisPointer: {
-      //     type: 'shadow',
-      //     snap: true,
-      //   },
-      //   textStyle: {
-      //     color: '#000',
-      //     fontSize: '14',
-      //     fontWeight: 'normal',
-      //     fontFamily: 'Times New Roman,STSong',
-      //   },
-      // },
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: ['rgba(255,255,255,0.9)'],
+        axisPointer: {
+          type: 'cross',
+          snap: true,
+        },
+        textStyle: {
+          color: '#000',
+          fontSize: '14',
+          fontWeight: 'normal',
+          fontFamily: 'Times New Roman,STSong',
+        },
+        formatter: (params: any) => {
+          let html = `${params[0].axisValue}</br>`;
+          params.forEach((item: any, index) => {
+            if (item.data.value !== undefined) {
+              html += `${item.marker}&nbsp&nbsp&nbsp${item.data.value}`;
+            }
+          });
+          // console.log(params);
+          // Array.from(new Set(a));
+          return html;
+        },
+      },
       legend: {
         right: '12%',
         align: 'left',
