@@ -88,7 +88,7 @@ const TableList: React.FC = (props: any) => {
   const [cutInfoVisible, setCutInfoVisible] = useState<boolean>(false);
   /* 光谱图弹窗 */
   const [spectrumVisible, setSpectrumVisible] = useState<boolean>(false);
-  const [spectra, setSpectra] = useState<boolean>(false);
+  const [spectra, setSpectra] = useState<any>();
   /* RtPairs */
   const [rtPairs, setRtPairs] = useState<any>();
   /* 获取echarts实例，使用其Api */
@@ -165,6 +165,7 @@ const TableList: React.FC = (props: any) => {
       /* 展示碎片光谱图 */
       const spectraFn = async (values: any) => {
         const hide = message.loading('正在获取光谱图');
+
         try {
           const data = await getSpectra({
             expId: selectedExpIds[Math.floor(values[0].seriesIndex / selectedExpIds.length)],
@@ -172,6 +173,7 @@ const TableList: React.FC = (props: any) => {
             rt: values[0].axisValue,
           });
           data.expData = result.data;
+
           setSpectra(data);
           setSpectrumVisible(true);
           hide();

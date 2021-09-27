@@ -142,7 +142,7 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
     >
       <ReactECharts option={setOption()} key={gaussFit ? 0 : 1} style={{ height: 400 }} />
       <Switch onChange={onChange} />
-      <text>{'  显示高斯平滑'}</text>
+      显示高斯平滑
     </ModalForm>
   );
 };
