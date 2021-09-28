@@ -10,7 +10,6 @@ export type spectrumProps = {
 };
 const Spectrum: React.FC<spectrumProps> = (props) => {
   const [handleOption, setHandleOption] = useState({});
-  // const [chooseValue, setChooseValue] = useState();
 
   const xData = props?.values?.data?.x.map((value: number) => {
     return { value };
@@ -19,6 +18,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     return { value };
   });
 
+  /* 存放碎片mz和碎片name */
   const cutInfoMap: any = [];
   props?.values?.expData?.forEach((_item: { cutInfoMap: Record<string, number> }) => {
     Object.keys(_item.cutInfoMap).forEach((key: any) => {
@@ -26,14 +26,14 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     });
   });
 
+  /* 筛出+—0.015范围内的y值和x值 添加碎片name */
   let chooseValue: any = [];
   cutInfoMap.forEach((item: any) => {
     props?.values?.data?.x.forEach((value: number, index: number) => {
       if (value > item.data - 0.015 && value < item.data + 0.015) {
-        chooseValue.push({ data: value, name: item.name, index });
+        chooseValue.push({ data: yData[index].value, name: item.name, index });
         yData[index] = {
           value: 0,
-          // itemStyle: { color: 'tomato' },
         };
       }
     });
@@ -52,12 +52,14 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       type: 'bar',
       legendHoverLink: true,
       data: yData,
+      name: '123',
       // markLine: markLineData,
     },
   ];
   chooseValue.forEach((value: { data: any; name: any; index: number }) => {
     const result = new Array(props?.values?.data?.x.length).fill(0);
     result[value.index] = value.data;
+
     series.push({
       large: true,
       type: 'bar',
@@ -87,7 +89,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         nameLocation: 'middle',
         name: '',
         nameGap: 30,
-        type: 'category',
         data: xData,
         scale: true,
         axisLabel: {
@@ -148,20 +149,20 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           type: 'slider',
         },
       ],
-      // tooltip: {
-      //   trigger: 'axis',
-      //   backgroundColor: ['rgba(255,255,255,0.9)'],
-      //   axisPointer: {
-      //     type: 'shadow',
-      //     snap: true,
-      //   },
-      //   textStyle: {
-      //     color: '#000',
-      //     fontSize: '14',
-      //     fontWeight: 'normal',
-      //     fontFamily: 'Times New Roman,STSong',
-      //   },
-      // },
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: ['rgba(255,255,255,0.9)'],
+        axisPointer: {
+          type: 'cross',
+          snap: true,
+        },
+        textStyle: {
+          color: '#000',
+          fontSize: '14',
+          fontWeight: 'normal',
+          fontFamily: 'Times New Roman,STSong',
+        },
+      },
       legend: {
         right: '12%',
         align: 'left',
@@ -189,9 +190,9 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       footer={[]}
       // maskClosable={false}
     >
-      {/* {chooseValue.map((_item: any) => {
+      {chooseValue.map((_item: any) => {
         return <Tag key={_item.data.toString()}>{_item.data}</Tag>;
-      })} */}
+      })}
       <ReactECharts
         option={handleOption}
         style={{ width: `100%`, height: '400px' }}
