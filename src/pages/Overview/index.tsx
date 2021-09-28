@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { Icon } from '@iconify/react';
 import { Form, message, Tag, Tooltip, Typography } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
@@ -50,7 +51,7 @@ const handleBatchUpdate = async (values: any) => {
  * 批量修改
  * @param values
  */
- const handleStatistic = async (values: any) => {
+const handleStatistic = async (values: any) => {
   const hide = message.loading('正在统计');
   try {
     await statistic({ ...values });
@@ -95,25 +96,25 @@ const TableList: React.FC = (props: any) => {
   const expId = props?.location?.query?.expId;
 
   const [data, setData] = useState<any>({});
-  
+
   useEffect(() => {
-    const init = async (projectId: string) => {
+    const init = async () => {
       const b: Record<any, any> = {};
       try {
         const a = await expList({
           projectId,
         });
-        a?.data?.map((item: { name: string | number; id: any }) => {
+        a?.data?.forEach((item: { name: string | number; id: any }) => {
           b[item.id] = item.name;
-        }),
-          setData(b);
+        });
+        setData(b);
         return true;
       } catch (error) {
         console.log(error);
         return false;
       }
     };
-    init(projectId);
+    init();
   }, []);
 
   // /** 全选 */
@@ -138,7 +139,7 @@ const TableList: React.FC = (props: any) => {
       hideInSearch: true,
       render: (dom, entity) => {
         return (
-          <Tooltip title={'Id:' + entity.id} placement="topLeft">
+          <Tooltip title={`Id:${entity.id}`} placement="topLeft">
             <a
               onClick={() => {
                 setCurrentRow(entity);
@@ -156,7 +157,7 @@ const TableList: React.FC = (props: any) => {
       title: '实验名',
       dataIndex: 'expId',
       hideInTable: true,
-      renderFormItem: (_, { type, defaultRender, onChange, ...rest }, form) => {
+      renderFormItem: (_, { type, defaultRender, onChange, ...rest }) => {
         return defaultRender(_);
       },
       valueEnum: {
@@ -176,7 +177,7 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'defaultOne',
       hideInSearch: true,
 
-      render: (text, entity) => {
+      render: (text) => {
         return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
       },
     },
@@ -254,7 +255,7 @@ const TableList: React.FC = (props: any) => {
       hideInSearch: true,
       render: (text, entity) => {
         if (entity.tags && entity.tags.length !== 0) {
-          let tagsDom: any[] = [];
+          const tagsDom: any[] = [];
           entity.tags.forEach((tag) => {
             tagsDom.push([<Tag key={tag}>{tag}</Tag>]);
           });
@@ -274,6 +275,21 @@ const TableList: React.FC = (props: any) => {
         }
         return false;
       },
+    },
+    {
+      key: 'creatTime',
+      title: '创建时间',
+      dataIndex: 'createDate',
+      hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.createDate > b?.createDate ? -1 : 1;
+      },
+      // render: (dom, entity) => {
+      //   if (entity.note) {
+      //     return <Tag>{dom}</Tag>;
+      //   }
+      //   return false;
+      // },
     },
     {
       key: 'option',
@@ -329,7 +345,7 @@ const TableList: React.FC = (props: any) => {
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
     const rowData = [...selectedRows];
-    if (rowData.length == 0) {
+    if (rowData.length === 0) {
       rowData.push(record);
       setSelectedRows(rowData);
     } else {
@@ -361,9 +377,21 @@ const TableList: React.FC = (props: any) => {
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               {expName === undefined ? (
-                <a>
-                  <Text>概览列表 所属项目：{projectName}</Text>
-                </a>
+                <>
+                  <a>
+                    <Text>概览列表 所属项目：{projectName}</Text>
+                  </a>
+                  &nbsp;&nbsp;
+                  <Link
+                    to={{
+                      pathname: '/experiment/list',
+                      state: { projectName, projectId },
+                      search: `?projectId=${projectId}`,
+                    }}
+                  >
+                    <a> -- 对应实验列表</a>
+                  </Link>
+                </>
               ) : (
                 <>
                   <Link
@@ -393,11 +421,11 @@ const TableList: React.FC = (props: any) => {
             key="batchRestatistic"
             onClick={async () => {
               if (selectedRows?.length > 0) {
-                let idList =  selectedRows.map((item) => {
+                const idList = selectedRows.map((item) => {
                   return item.id;
-                })
-                let result = await handleStatistic({idList:idList})
-                if(result){
+                });
+                const result = await handleStatistic({ idList });
+                if (result) {
                   if (actionRef.current) {
                     actionRef.current.reload();
                   }
@@ -447,7 +475,7 @@ const TableList: React.FC = (props: any) => {
         ]}
         tableAlertRender={false}
         pagination={{
-          total: total,
+          total,
         }}
         request={async (params) => {
           if (projectId) {
@@ -455,9 +483,10 @@ const TableList: React.FC = (props: any) => {
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
           }
+          return null;
         }}
         columns={columns}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);
@@ -493,7 +522,7 @@ const TableList: React.FC = (props: any) => {
         }}
         onSubmit={async (value) => {
           value.id = currentRow?.id as unknown as string;
-          var mapvalue = {
+          const mapvalue = {
             id: value.id,
             tags: value.tags,
             note: value.note,
@@ -544,7 +573,7 @@ const TableList: React.FC = (props: any) => {
           formBatch?.resetFields();
         }}
         onSubmit={async (value) => {
-          var mapValue = {
+          const mapValue = {
             ids: selectedRows.map((item) => {
               return item.id;
             }),
@@ -563,7 +592,7 @@ const TableList: React.FC = (props: any) => {
         }}
         batchModalVisible={batchModalVisible}
         values={selectedRows.length}
-      ></BatchUpdateForm>
+      />
     </>
   );
 };

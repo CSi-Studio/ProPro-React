@@ -151,6 +151,7 @@ const TableList: React.FC = (props: any) => {
         smooth,
         denoise,
       });
+      console.log('peptideRef', peptideRef);
 
       // 将实验 别名 给 getExpData接口得到的数据
       result.data.forEach((item: any) => {

@@ -313,6 +313,16 @@ const TableList: React.FC = (props: any) => {
               <a>
                 <Text>实验列表 所属项目：{projectName}</Text>
               </a>
+              &nbsp;&nbsp;
+              <Link
+                to={{
+                  pathname: '/overview',
+                  state: { projectName, projectId },
+                  search: `?projectId=${projectId}`,
+                }}
+              >
+                <a> -- 对应概览列表</a>
+              </Link>
             </>
           )
         }
