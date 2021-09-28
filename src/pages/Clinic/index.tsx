@@ -264,8 +264,10 @@ const TableList: React.FC = (props: any) => {
         });
 
         setLoading(false);
-        const rationData = await getPeptideRatio({ projectId });
-        setPeptideRatioData(rationData);
+        if (result.data?.project?.name.substring(0, 3) === 'HYE') {
+          const rationData = await getPeptideRatio({ projectId });
+          setPeptideRatioData(rationData);
+        }
         rtPairsData({
           projectId,
           onlyDefault: true,
@@ -936,19 +938,21 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                 </Row>
               </TabPane>
-              <TabPane tab="定量结果" key="3">
-                <Spin spinning={!peptideRatioData}>
-                  {peptideRatioData ? (
-                    <QtCharts values={{ peptideRatioData }} />
-                  ) : (
-                    <Empty
-                      description="正在加载中"
-                      style={{ padding: '10px', color: '#B0B8C1' }}
-                      imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
-                    />
-                  )}
-                </Spin>
-              </TabPane>
+              {prepareData?.project?.name.substring(0, 3) === 'HYE' ? (
+                <TabPane tab="LFQBench" key="3">
+                  <Spin spinning={!peptideRatioData}>
+                    {peptideRatioData ? (
+                      <QtCharts values={{ peptideRatioData }} />
+                    ) : (
+                      <Empty
+                        description="正在加载中"
+                        style={{ padding: '10px', color: '#B0B8C1' }}
+                        imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+                      />
+                    )}
+                  </Spin>
+                </TabPane>
+              ) : null}
               <TabPane tab="方法参数" key="4">
                 <Row>
                   <Col span={24}>

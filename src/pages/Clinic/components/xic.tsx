@@ -69,7 +69,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
 
     return grids;
   };
-  
+
   // 设置缩放zoom
   const getDataZoom = () => {
     const grids: any = [];
@@ -139,7 +139,14 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
               padding: [3, 3],
             },
             status: {
-              color: `${statusFn(data[i].status, '#000000d9', '#389e0d', '#ff4d4f', '#fb8c00')}`,
+              color: `${statusFn(
+                data[i].status,
+                '#0000d9',
+                '#389e0d',
+                '#ff4d4f',
+                '#fb8c00',
+                '#fb8c00',
+              )}`,
               fontSize: '12',
               fontWeight: 'normal',
               fontFamily: 'Times New Roman,STSong',
@@ -149,8 +156,16 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
                 '#f6ffed',
                 '#fff2f0',
                 '#fffbe6',
+                '#fffbe6',
               )}`,
-              borderColor: `${statusFn(data[i].status, '#777', '#b7eb8f', '#ffccc7', '#ffe58f')}`,
+              borderColor: `${statusFn(
+                data[i].status,
+                '#777',
+                '#b7eb8f',
+                '#ffccc7',
+                '#ffe58f',
+                '#ffe58f',
+              )}`,
               borderWidth: 1,
               borderRadius: 2,
               padding: [3, 3],
