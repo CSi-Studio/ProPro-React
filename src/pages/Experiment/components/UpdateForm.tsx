@@ -40,16 +40,16 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <ProFormText
           initialValue={props?.values?.label}
           width="sm"
-          name="label"
-          label="Label"
-          placeholder="Label"
+          name="group"
+          label="分组"
+          placeholder="分组"
         />
       </ProForm.Group>
       <ProFormSelect
         initialValue={props?.values?.tags !== null ? props?.values?.tags : []}
         width="md"
         name="tags"
-        label="Tags"
+        label="标签"
         mode="tags"
         placeholder="Tags"
       />
