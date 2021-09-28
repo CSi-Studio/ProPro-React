@@ -518,6 +518,7 @@ const TableList: React.FC = () => {
             {selectedRows && selectedRows.length === 1 ? (
               <Link
                 key="clinic"
+                target="_blank"
                 to={{
                   pathname: '/clinic',
                   search: `?projectId=${selectedRows[0].id}`,
