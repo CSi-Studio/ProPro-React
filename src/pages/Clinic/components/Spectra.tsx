@@ -10,7 +10,6 @@ export type spectrumProps = {
 };
 const Spectrum: React.FC<spectrumProps> = (props) => {
   const [handleOption, setHandleOption] = useState({});
-  // const [chooseValue, setChooseValue] = useState();
 
   const xData = props?.values?.data?.x.map((value: number) => {
     return { value };
@@ -19,6 +18,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     return { value };
   });
 
+  /* 存放碎片mz和碎片name */
   const cutInfoMap: any = [];
   props?.values?.expData?.forEach((_item: { cutInfoMap: Record<string, number> }) => {
     Object.keys(_item.cutInfoMap).forEach((key: any) => {
@@ -26,12 +26,12 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
     });
   });
 
+  /* 筛出+—0.015范围内的y值和x值 添加碎片name */
   let chooseValue: any = [];
   cutInfoMap.forEach((item: any) => {
     props?.values?.data?.x.forEach((value: number, index: number) => {
       if (value > item.data - 0.015 && value < item.data + 0.015) {
         chooseValue.push({ data: yData[index].value, name: item.name, index });
-        console.log(xData[index]);
         yData[index] = {
           value: 0,
         };
@@ -59,7 +59,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
   chooseValue.forEach((value: { data: any; name: any; index: number }) => {
     const result = new Array(props?.values?.data?.x.length).fill(0);
     result[value.index] = value.data;
-    console.log(result);
 
     series.push({
       large: true,
@@ -151,7 +150,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         },
       ],
       tooltip: {
-        trigger: 'axis',
+        trigger: 'item',
         backgroundColor: ['rgba(255,255,255,0.9)'],
         axisPointer: {
           type: 'cross',
@@ -162,17 +161,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           fontSize: '14',
           fontWeight: 'normal',
           fontFamily: 'Times New Roman,STSong',
-        },
-        formatter: (params: any) => {
-          let html = `${params[0].axisValue}</br>`;
-          params.forEach((item: any, index) => {
-            if (item.data.value !== undefined) {
-              html += `${item.marker}&nbsp&nbsp&nbsp${item.data.value}`;
-            }
-          });
-          // console.log(params);
-          // Array.from(new Set(a));
-          return html;
         },
       },
       legend: {
@@ -202,9 +190,9 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       footer={[]}
       // maskClosable={false}
     >
-      {/* {chooseValue.map((_item: any) => {
+      {chooseValue.map((_item: any) => {
         return <Tag key={_item.data.toString()}>{_item.data}</Tag>;
-      })} */}
+      })}
       <ReactECharts
         option={handleOption}
         style={{ width: `100%`, height: '400px' }}

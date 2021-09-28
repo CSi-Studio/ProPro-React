@@ -480,10 +480,12 @@ const TableList: React.FC = (props: any) => {
                 </Tag>
               ) : (
                 <Tag color="success">
-                  {prepareData.overviewMap[entity.expId][0].weights[type].toFixed(3)+"x"+entity.scoreList[entity.selectIndex].scores[index].toFixed(2)+"="+(
+                  {`${prepareData.overviewMap[entity.expId][0].weights[type].toFixed(
+                    3,
+                  )}x${entity.scoreList[entity.selectIndex].scores[index].toFixed(2)}=${(
                     prepareData.overviewMap[entity.expId][0].weights[type] *
                     entity.scoreList[entity.selectIndex].scores[index]
-                  ).toFixed(4)}
+                  ).toFixed(4)}`}
                 </Tag>
               )}
             </>
