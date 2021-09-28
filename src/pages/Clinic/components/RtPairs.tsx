@@ -6,62 +6,52 @@ export type QtChartsProps = {
   values: any;
 };
 
+const gridNumInRow: number = 3;
+const gridHeight: number = 240;
+const xName: string = '';
+const yName: string = '';
+const gridPaddingHeight: number = 80;
+const totalPaddingHeight: number = 50;
+const gridPaddingWight: number = 3;
+const totalPaddingWidth: number = 3;
+const titleHeight: number = 20;
+const Width: number = 99;
+
 const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   // const [pairsData, setRatioData] = useState<any>();
+  console.log(props.values.expData.length);
+
+  const Height =
+    Math.ceil(props.values.expData.length / gridNumInRow) * (gridHeight + gridPaddingHeight);
 
   useEffect(() => {
-    const gridNumInRow: number = 3;
-    const gridHeight: number = 240;
-    const xName: string = '';
-    const yName: string = '';
-    const gridPaddingHeight: number = 80;
-    const totalPaddingHeight: number = 50;
-    const gridPaddingWight: number = 3;
-    const totalPaddingWidth: number = 3;
-    const titleHeight: number = 20;
-    const Width: number = 99;
-
-    /* 设置series */
-    const getMarkLine = (data: number[], slope: number, intercept: number, formula: string) => {
-      if (data.length === 0) {
+    const getMarkLine = (length: number) => {
+      if (length === 0) {
         return null;
       }
       const markLineOpt = {
+        symbol: ['none', 'none'],
         animation: false,
-        silent: true,
-        label: {
-          formatter: formula,
-          align: 'right',
-          fontFamily: 'Times New Roman',
-        },
         lineStyle: {
-          type: 'solid',
+          type: 'dashed',
+          color: '#333',
+          width: 2,
         },
-        tooltip: {
-          formatter: formula,
-          axisPointer: {
-            label: {
-              fontFamily: 'Times New Roman',
-            },
+        emphasis: {
+          lineStyle: {
+            type: 'dashed',
+            color: 'gold',
+            width: 3,
           },
         },
-        data: [
-          [
-            {
-              coord: [Math.min(...data) * slope + intercept, Math.min(...data)],
-              symbol: 'none',
-            },
-            {
-              coord: [Math.max(...data) * slope + intercept, Math.max(...data)],
-              symbol: 'none',
-            },
-          ],
-        ],
+        label: { show: false },
+        data: [{ yAxis: 100 }, { yAxis: -100 }],
       };
       return markLineOpt;
     };
 
+    /* 设置series */
     const series: any[] = [];
     const seriesData: any[] = [];
     Object.keys(props.values.rtPairs.data).forEach((key) => {
@@ -91,14 +81,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         animation: false,
         data: item.value,
         large: true,
-        // markLine: getMarkLine(
-        //   item.value.map((item: any[]) => {
-        //     return item[1]
-        //   }),
-        //   data[i].irt.si.slope,
-        //   data[i].irt.si.intercept,
-        //   data[i].irt.si.formula,
-        // ),
+        markLine: getMarkLine(seriesData.length),
       });
     });
 
@@ -114,14 +97,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           width: `${Math.floor(Width / gridNumInRow) - gridPaddingWight}%`,
           height: `${gridHeight}px`,
           show: 'true',
-          // backgroundColor: `${statusFn(
-          //   data[i].status,
-          //   '#000',
-          //   'rgba(215,236,184)',
-          //   'rgba(241,158,156,0.3)',
-          //   'rgba(251,229,154,0.5)',
-          //   'rgba(251,229,154,0.5)',
-          // )}`,
         };
         grids.push(j);
       }
@@ -158,7 +133,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         titles.push(xicTitle);
       });
       titles.sort((a: { text: string }, b: { text: string }) => (a.text > b.text ? 1 : -1));
-      // console.log(titles);
       return titles;
     };
 
@@ -284,8 +258,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           fontFamily: 'Times New Roman,STSong',
         },
         formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
-          // console.log(params);
-
           let res = params.seriesName;
           res += `<br />肽段：${params.data[2]}<br />${params.marker}${
             params.data[0]
@@ -293,14 +265,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           return res;
         },
       },
-      // legend: {
-      //   right: '8%',
-      //   align: 'left',
-      //   textStyle: {
-      //     fontSize: '14',
-      //     fontFamily: 'Times New Roman,STSong',
-      //   },
-      // },
       dataZoom: getDataZoom(),
       series,
     };
@@ -312,7 +276,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
       <Col span="24">
         <ReactECharts
           option={handleOption}
-          style={{ width: `100%`, height: '700px' }}
+          style={{ width: '100%', height: Height }}
           lazyUpdate={true}
         />
       </Col>
@@ -321,8 +285,3 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
 };
 
 export default RtPairsCharts;
-
-// title 辅助线 +-100 选中的 未选中的 选中的占总数的百分比 tooltip
-// y=0.025x-56.282
-// y=0.025x-156.282
-// y=0.025x+43.718

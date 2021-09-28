@@ -9,6 +9,8 @@ export type QtChartsProps = {
 const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   const [ratioData, setRatioData] = useState<any>();
+  /* 获取echarts实例，使用其Api */
+  const [echarts, setEcharts] = useState<any>();
 
   useEffect(() => {
     const op = async () => {
@@ -100,11 +102,13 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
             fontWeight: 'normal',
             fontFamily: 'Times New Roman,STSong',
           },
-          formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
+          formatter: (params: { seriesName: any; data: any[]; marker: any }) => {
             let res = params.seriesName;
-            res += `<br />肽段：${params.data[2]}<br />${params.marker}${params.data[0]?.toFixed(
+            res += `<br />蛋白：${params.data[2].split('-->')[0]}<br />肽段：${
+              params.data[2].split('-->')[1]
+            }<br />${params.marker}${params.data[0]?.toFixed(4)} &nbsp ${params.data[1]?.toFixed(
               4,
-            )} &nbsp ${params.data[1]?.toFixed(4)}`;
+            )}`;
             return res;
           },
         },
@@ -140,7 +144,24 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
                 },
               },
               label: { show: false },
-              data: [{ yAxis: result.data.ecoliAvg, name: '平均线' }],
+              data: [{ yAxis: result.data.ecoliAvg, name: 'ecoli' }],
+              tooltip: {
+                backgroundColor: ['rgba(255,255,255,0.9)'],
+                axisPointer: {
+                  type: 'cross',
+                  snap: true,
+                },
+                textStyle: {
+                  color: '#000',
+                  fontSize: '14',
+                  fontWeight: 'normal',
+                  fontFamily: 'Times New Roman,STSong',
+                },
+                formatter: (params: { value: number; name: string }) => {
+                  const res = `${params.name}</br>平均值：${params.value}`;
+                  return res;
+                },
+              },
             },
           },
           {
@@ -166,7 +187,24 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
                 },
               },
               label: { show: false },
-              data: [{ yAxis: result.data.humanAvg, name: '平均线' }],
+              data: [{ yAxis: result.data.humanAvg, name: 'human' }],
+              tooltip: {
+                backgroundColor: ['rgba(255,255,255,0.9)'],
+                axisPointer: {
+                  type: 'cross',
+                  snap: true,
+                },
+                textStyle: {
+                  color: '#000',
+                  fontSize: '14',
+                  fontWeight: 'normal',
+                  fontFamily: 'Times New Roman,STSong',
+                },
+                formatter: (params: { value: number; name: string }) => {
+                  const res = `${params.name}</br>平均值：${params.value}`;
+                  return res;
+                },
+              },
             },
           },
           {
@@ -192,7 +230,24 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
                 },
               },
               label: { show: false },
-              data: [{ yAxis: result.data.yeastAvg, name: '平均线' }],
+              data: [{ yAxis: result.data.yeastAvg, name: 'yeast' }],
+              tooltip: {
+                backgroundColor: ['rgba(255,255,255,0.9)'],
+                axisPointer: {
+                  type: 'cross',
+                  snap: true,
+                },
+                textStyle: {
+                  color: '#000',
+                  fontSize: '14',
+                  fontWeight: 'normal',
+                  fontFamily: 'Times New Roman,STSong',
+                },
+                formatter: (params: { value: number; name: string }) => {
+                  const res = `${params.name}</br>平均值：${params.value}`;
+                  return res;
+                },
+              },
             },
           },
         ],
@@ -201,6 +256,14 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
     };
     op();
   }, []);
+
+  /* 点击某个点跳到EIC图 */
+  echarts?.getEchartsInstance().off('click'); // 防止多次触发
+  echarts?.getEchartsInstance().on('click', (params: any) => {
+    const protein = params.data[2].split('-->')[0];
+    const peptide = params.data[2].split('-->')[1];
+    props.values.LFQClick(protein, peptide);
+  });
 
   return (
     <Row>
@@ -214,7 +277,7 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="肽段鉴定数(Unique)" column={2}>
-          <Descriptions.Item label="A" >
+          <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyNumA}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="缺失率">
@@ -285,6 +348,9 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
       </Col>
       <Col span="16">
         <ReactECharts
+          ref={(e) => {
+            setEcharts(e);
+          }}
           option={handleOption}
           style={{ width: `100%`, height: '700px' }}
           lazyUpdate={true}

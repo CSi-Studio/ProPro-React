@@ -52,6 +52,9 @@ let gridNumberInRow = 3; // 每行grid的个数
 const gridHeight = 200; // 单张高度（单位px）
 const gridPaddingHeight = 80; // 行间间隔高度（单位px）
 let Height = 0;
+/* 蛋白、肽段table 参数 */
+const proteinPageSize = 13;
+const peptidePageSize = 9;
 
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
@@ -93,6 +96,8 @@ const TableList: React.FC = (props: any) => {
   const [rtPairs, setRtPairs] = useState<any>();
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
+  /* 控制tabs */
+  const [tabActiveKey, setTabActiveKey] = useState<string>('1');
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -346,9 +351,13 @@ const TableList: React.FC = (props: any) => {
   };
 
   /* table 搜索 */
-  const handleSearch = (selectedKeys: any[], confirm: () => void, dataIndex: any) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
+  const handleSearch = (selectedKeys: any, confirm?: () => void, dataIndex?: string) => {
+    if (confirm) {
+      confirm();
+    }
+    console.log('selectedKeys', selectedKeys);
+    setSearchText(selectedKeys);
+    console.log('dataIndex', dataIndex);
     setSearchedCol(dataIndex);
   };
   const handleReset = (clearFilters: () => void) => {
@@ -365,7 +374,7 @@ const TableList: React.FC = (props: any) => {
       });
       setPeptideList(result.data);
       setPeptideLoading(false);
-      return true;
+      return result.data;
     }
     return false;
   }
@@ -503,14 +512,14 @@ const TableList: React.FC = (props: any) => {
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
     (e) => {
-      if (e.keyCode === 38 && e.shiftKey) {
-        if (proteinsIndex % 13 === 0) {
+      if (e.shiftKey && e.keyCode === 38) {
+        if (proteinsIndex % proteinPageSize === 0) {
           setProteinPage(proteinPage - 1);
         }
         setProteinsIndex(proteinsIndex - 1);
       }
-      if (e.keyCode === 40 && e.shiftKey) {
-        if ((proteinsIndex + 1) % 13 === 0) {
+      if (e.shiftKey && e.keyCode === 40) {
+        if ((proteinsIndex + 1) % proteinPageSize === 0) {
           setProteinPage(proteinPage + 1);
         }
         setProteinsIndex(proteinsIndex + 1);
@@ -521,7 +530,10 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     if (prepareData) {
-      if (proteinPage < 1 || proteinPage > Math.ceil(prepareData.proteins.length / 13)) {
+      if (
+        proteinPage < 1 ||
+        proteinPage > Math.ceil(prepareData.proteins.length / proteinPageSize)
+      ) {
         setProteinPage(1);
       }
       if (proteinsIndex < 0 || proteinsIndex >= prepareData.proteins.length) {
@@ -545,13 +557,13 @@ const TableList: React.FC = (props: any) => {
   const onPeptideKey = useCallback(
     (e) => {
       if (e.keyCode === 38) {
-        if (peptidesIndex % 9 === 0) {
+        if (peptidesIndex % peptidePageSize === 0) {
           setPeptidePage(peptidePage - 1);
         }
         setPeptidesIndex(peptidesIndex - 1);
       }
       if (e.keyCode === 40) {
-        if ((peptidesIndex + 1) % 9 === 0) {
+        if ((peptidesIndex + 1) % peptidePageSize === 0) {
           setPeptidePage(peptidePage + 1);
         }
         setPeptidesIndex(peptidesIndex + 1);
@@ -564,7 +576,7 @@ const TableList: React.FC = (props: any) => {
     const peptideArr = peptideList.map((item) => {
       return item.peptideRef;
     });
-    if (peptidePage < 1 || peptidePage > Math.ceil(peptideArr.length / 9)) {
+    if (peptidePage < 1 || peptidePage > Math.ceil(peptideArr.length / peptidePageSize)) {
       setPeptidePage(1);
     }
     if (peptidesIndex < 0 || peptidesIndex >= peptideArr.length) {
@@ -584,7 +596,7 @@ const TableList: React.FC = (props: any) => {
   }, [onPeptideKey]);
 
   let searchInput: any;
-  const getColumnSearchProps = (dataIndex: any) => ({
+  const getColumnSearchProps = (dataIndex: string) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
       <div style={{ padding: 8 }}>
         <Input
@@ -597,7 +609,7 @@ const TableList: React.FC = (props: any) => {
             setSelectedKeys(e.target.value ? [e.target.value] : []);
           }}
           onPressEnter={() => {
-            handleSearch(selectedKeys, confirm, dataIndex);
+            handleSearch(selectedKeys[0], confirm, dataIndex);
           }}
           style={{ marginBottom: 8, display: 'block' }}
         />
@@ -605,7 +617,7 @@ const TableList: React.FC = (props: any) => {
           <Button
             type="primary"
             onClick={() => {
-              handleSearch(selectedKeys, confirm, dataIndex);
+              handleSearch(selectedKeys[0], confirm, dataIndex);
             }}
             size="small"
             style={{ width: 90 }}
@@ -640,6 +652,29 @@ const TableList: React.FC = (props: any) => {
         '暂无数据'
       ),
   });
+
+  /* 点击LFQBench里的点切换EIC图 */
+  const LFQClick = async (protein: string, peptide: string) => {
+    // 切换蛋白和肽段
+    setProteinRowKey(protein);
+    const peptideResult = await onProteinChange(protein);
+
+    selectPeptideRow(peptide);
+    setHandleSubmit(!handleSubmit);
+    setPeptideRowKey(peptide);
+    setTabActiveKey('1');
+
+    /* 设置table 页码 */
+    prepareData?.proteins.forEach((item, index) => {
+      if (item === protein) {
+        setProteinPage(Math.ceil((index + 1) / proteinPageSize));
+      }
+    });
+    const peptideArr = peptideResult.map((item: { peptideRef: any }) => {
+      return item.peptideRef;
+    });
+    setPeptidePage(Math.ceil((peptideArr.indexOf(peptide) + 1) / peptidePageSize));
+  };
 
   /* 点击坐标点展示光谱图 */
   // echarts?.getEchartsInstance().off('click'); // 防止多次触发
@@ -722,7 +757,7 @@ const TableList: React.FC = (props: any) => {
                     size: 'small',
                     showSizeChanger: false,
                     showQuickJumper: false,
-                    pageSize: 13,
+                    pageSize: proteinPageSize,
                     showTotal: () => null,
                     position: ['bottomRight'],
                   }}
@@ -752,7 +787,7 @@ const TableList: React.FC = (props: any) => {
                     size: 'small',
                     showSizeChanger: false,
                     showQuickJumper: false,
-                    pageSize: 9,
+                    pageSize: peptidePageSize,
                     showTotal: () => null,
                     position: ['bottomRight'],
                   }}
@@ -783,7 +818,14 @@ const TableList: React.FC = (props: any) => {
             </Row>
           </Col>
           <Col span={20}>
-            <Tabs size="small" defaultActiveKey="1" destroyInactiveTabPane={true}>
+            <Tabs
+              size="small"
+              activeKey={tabActiveKey}
+              destroyInactiveTabPane={true}
+              onTabClick={(key) => {
+                setTabActiveKey(key);
+              }}
+            >
               <TabPane tab="EIC列表" key="1">
                 <Row>
                   <Col span={24}>
@@ -942,7 +984,7 @@ const TableList: React.FC = (props: any) => {
                 <TabPane tab="LFQBench" key="3">
                   <Spin spinning={!peptideRatioData}>
                     {peptideRatioData ? (
-                      <QtCharts values={{ peptideRatioData }} />
+                      <QtCharts values={{ peptideRatioData, LFQClick }} />
                     ) : (
                       <Empty
                         description="正在加载中"
