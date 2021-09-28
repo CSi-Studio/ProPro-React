@@ -108,14 +108,14 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'Label',
-      dataIndex: 'label',
+      title: '分组',
+      dataIndex: 'group',
       hideInSearch: true,
       sorter: (a, b) => {
-        return a?.label > b?.label ? -1 : 1;
+        return a?.group > b?.group ? -1 : 1;
       },
       render: (dom, entity) => {
-        if (entity?.label) {
+        if (entity?.group) {
           return <Tag color="blue">{dom}</Tag>;
         }
         return false;
@@ -136,7 +136,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'Tags',
+      title: '标签',
       dataIndex: 'tags',
       hideInSearch: true,
       render: (dom, entity) => {
