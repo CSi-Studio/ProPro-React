@@ -70,7 +70,8 @@ const TableList: React.FC = (props: any) => {
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
-  const [peptideRef, setPeptideRef] = useState<any>(''); // 当前选中的peptideRef
+  const [peptideRef, setPeptideRef] = useState<any>(''); // 默认选中的peptideRef
+  const [peptideSel, setPeptideSel] = useState<any>(); // 当前选中的peptideRef
   const [loading, setLoading] = useState<boolean>(true); // 蛋白table loading
   const [peptideLoading, setPeptideLoading] = useState<boolean>(true); // 肽段table loading
   const [chartsLoading, setChartsLoading] = useState<boolean>(true); // charts loading
@@ -141,6 +142,7 @@ const TableList: React.FC = (props: any) => {
     }
     setChartsLoading(true);
     try {
+      console.log('获取EIC数据前的peptideRef', peptideRef);
       const result = await getExpData({
         projectId,
         libraryId: prepareData?.anaLib?.id,
@@ -152,9 +154,8 @@ const TableList: React.FC = (props: any) => {
         smooth,
         denoise,
       });
-      console.log('peptideRef', peptideRef);
-
       // 将实验 别名 给 getExpData接口得到的数据
+      console.log('获取EIC数据前的ExpData', result.data);
       result.data.forEach((item: any) => {
         exps?.forEach((_item: any) => {
           if (item.expId === _item.id) {
@@ -163,7 +164,6 @@ const TableList: React.FC = (props: any) => {
         });
       });
       setExpData(result.data);
-
       /* 碎片Mz echarts toolbox */
       const getCutInfo = () => {
         setCutInfoVisible(true);
@@ -306,11 +306,18 @@ const TableList: React.FC = (props: any) => {
     }
   }, [prepareData]);
 
+  // 每次蛋白发生变化，都去第一个肽段作为展示
   useEffect(() => {
     setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
     setPeptideRowKey(peptideList[0]?.peptideRef);
     setHandleSubmit(!handleSubmit); // 触发设置option
-  }, [peptideList[0]?.peptideRef]);
+  }, [peptideList]);
+
+  useEffect(() => {
+    setPeptideRef(peptideSel);
+    setPeptideRowKey(peptideSel);
+    setHandleSubmit(!handleSubmit);
+  }, [peptideSel]);
 
   useEffect(() => {
     fetchEicDataList(false, false);
@@ -357,9 +364,7 @@ const TableList: React.FC = (props: any) => {
     if (confirm) {
       confirm();
     }
-    console.log('selectedKeys', selectedKeys);
     setSearchText(selectedKeys);
-    console.log('dataIndex', dataIndex);
     setSearchedCol(dataIndex);
   };
   const handleReset = (clearFilters: () => void) => {
@@ -558,13 +563,13 @@ const TableList: React.FC = (props: any) => {
   /* 肽段table键盘事件 */
   const onPeptideKey = useCallback(
     (e) => {
-      if (e.keyCode === 38) {
+      if (e.keyCode === 38 && !e.shiftKey) {
         if (peptidesIndex % peptidePageSize === 0) {
           setPeptidePage(peptidePage - 1);
         }
         setPeptidesIndex(peptidesIndex - 1);
       }
-      if (e.keyCode === 40) {
+      if (e.keyCode === 40 && !e.shiftKey) {
         if ((peptidesIndex + 1) % peptidePageSize === 0) {
           setPeptidePage(peptidePage + 1);
         }
@@ -660,10 +665,11 @@ const TableList: React.FC = (props: any) => {
     // 切换蛋白和肽段
     setProteinRowKey(protein);
     const peptideResult = await onProteinChange(protein);
-
-    selectPeptideRow(peptide);
-    setHandleSubmit(!handleSubmit);
-    setPeptideRowKey(peptide);
+    console.log('LFQClick');
+    setPeptideSel(peptide);
+    // setPeptideRef(peptide);
+    // setHandleSubmit(!handleSubmit);
+    // setPeptideRowKey(peptide);
     setTabActiveKey('1');
 
     /* 设置table 页码 */
