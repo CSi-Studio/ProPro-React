@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { Icon } from '@iconify/react';
-import { Form, message, Tag, Tooltip, Typography } from 'antd';
+import { Form, message, Tag, Tooltip, Typography, Button } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -377,7 +377,7 @@ const TableList: React.FC = (props: any) => {
                       search: `?projectId=${projectId}`,
                     }}
                   >
-                    -- 对应实验列表
+                    <Button type="primary" size='small'>切换至实验列表</Button>
                   </Link>
                 </>
               ) : (
