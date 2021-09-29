@@ -44,6 +44,7 @@ export async function updateList(params: {
   id: string;
   alias: string;
   group: string;
+  fragMode: string;
   tags: Set<string>;
 }) {
   return request(`${url}/experiment/edit`, {

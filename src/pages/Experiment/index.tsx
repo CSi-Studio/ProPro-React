@@ -45,6 +45,7 @@ const TableList: React.FC = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [formAnalyze] = Form.useForm();
   const [formUpdate] = Form.useForm();
+  const [formBatch] = Form.useForm();
   const [formAlias] = Form.useForm();
   /* 分析窗口变量 */
   const [analyzeModalVisible, handleAnalyzeModalVisible] = useState<boolean>(false);
@@ -580,6 +581,7 @@ const TableList: React.FC = (props: any) => {
         onSubmit={async (value) => {
           value.id = currentRow?.id as string;
           const success = await handleUpdate(value);
+          console.log('success', success);
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -593,11 +595,11 @@ const TableList: React.FC = (props: any) => {
       />
       {/* 批量编辑列表 */}
       <BatchEditForm
-        form={formUpdate}
+        form={formBatch}
         onCancel={() => {
           setBatchEditVisible(false);
           setCurrentRow(undefined);
-          formUpdate?.resetFields();
+          formBatch?.resetFields();
         }}
         onSubmit={async (value: {
           ids: string[];

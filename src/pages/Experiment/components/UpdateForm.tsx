@@ -4,6 +4,9 @@ import ProForm, { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-
 export type updateFormValueType = {
   alias?: string;
   id: string;
+  fragMode: string;
+  group: string;
+  tags: string;
 };
 
 export type UpdateFormProps = {
@@ -38,7 +41,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           placeholder="别名"
         />
         <ProFormText
-          initialValue={props?.values?.label}
+          initialValue={props?.values?.group}
           width="sm"
           name="group"
           label="分组"
