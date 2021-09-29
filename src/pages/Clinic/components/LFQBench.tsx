@@ -6,7 +6,7 @@ export type QtChartsProps = {
   values: any;
 };
 
-const QtCharts: React.FC<QtChartsProps> = (props: any) => {
+const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   const [ratioData, setRatioData] = useState<any>();
   /* 获取echarts实例，使用其Api */
@@ -360,4 +360,4 @@ const QtCharts: React.FC<QtChartsProps> = (props: any) => {
   );
 };
 
-export default QtCharts;
+export default LFQBench;

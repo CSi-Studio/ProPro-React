@@ -165,13 +165,6 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'createDate',
-      title: '创建时间',
-      dataIndex: 'createDate',
-      valueType: 'dateTime',
-      hideInSearch: true,
-    },
-    {
       key: 'defaultOne',
       title: '默认值',
       dataIndex: 'defaultOne',
@@ -277,19 +270,14 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'creatTime',
+      key: 'createDate',
       title: '创建时间',
       dataIndex: 'createDate',
+      valueType: 'dateTime',
       hideInSearch: true,
       sorter: (a, b) => {
         return a?.createDate > b?.createDate ? -1 : 1;
       },
-      // render: (dom, entity) => {
-      //   if (entity.note) {
-      //     return <Tag>{dom}</Tag>;
-      //   }
-      //   return false;
-      // },
     },
     {
       key: 'option',
@@ -389,7 +377,7 @@ const TableList: React.FC = (props: any) => {
                       search: `?projectId=${projectId}`,
                     }}
                   >
-                    <a> -- 对应实验列表</a>
+                    -- 对应实验列表
                   </Link>
                 </>
               ) : (
@@ -415,7 +403,7 @@ const TableList: React.FC = (props: any) => {
         actionRef={actionRef}
         rowKey="id"
         size="small"
-        search={expName === undefined ? { labelWidth: 'auto' } : false}
+        search={{ labelWidth: 'auto', span: 5 }}
         toolBarRender={() => [
           <a
             key="batchRestatistic"

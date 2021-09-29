@@ -14,9 +14,9 @@ export type UpdateFormProps = {
   onSubmit: (values: selectFormValueType) => Promise<void>;
 };
 
-let newData: any[] = [];
+const newData: any[] = [];
 const ProteinSelectForm: React.FC<UpdateFormProps> = (props) => {
-  props.values?.map((item: any, index: number) => {
+  props.values?.forEach((item: any) => {
     newData.push({ value: item, label: item });
   });
   return (

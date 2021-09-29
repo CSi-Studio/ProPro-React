@@ -401,6 +401,9 @@ const TableList: React.FC = () => {
       dataIndex: 'createDate',
       valueType: 'dateTime',
       hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.createDate > b?.createDate ? -1 : 1;
+      },
     },
     {
       key: 'option',

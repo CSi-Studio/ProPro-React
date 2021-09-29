@@ -1,6 +1,6 @@
 import React from 'react';
 import ProForm, { ModalForm, ProFormSelect } from '@ant-design/pro-form';
-import { AnalyzeParams } from '../data';
+import type { AnalyzeParams } from '../data';
 import { YesOrNo } from '@/components/Enums/Selects';
 
 export type AnalyzeFormProps = {
@@ -12,16 +12,16 @@ export type AnalyzeFormProps = {
 };
 
 const AnalyzeForm: React.FC<AnalyzeFormProps> = (props) => {
-  const values = props.values;
+  const {values} = props;
   return (
     <ModalForm
       form={props.form}
       title={
-        '项目名:' +
-        values.prepareData?.projectName +
-        ',开始分析-' +
-        (values.expNum ? values.expNum : 0) +
-        '个实验被选中'
+        `项目名:${ 
+        values.prepareData?.projectName 
+        },开始分析-${ 
+        values.expNum ? values.expNum : 0 
+        }个实验被选中`
       }
       width={800}
       visible={props.analyzeModalVisible}

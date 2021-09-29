@@ -34,13 +34,14 @@ import ProTable from '@ant-design/pro-table';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import IrtCharts from './components/Irt';
-import QtCharts from './components/Qt';
 import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
 import xic from './components/xic';
 import RtPairsCharts from './components/RtPairs';
 import { Link } from 'umi';
+import LFQBench from './components/LFQBench';
+import OverView from './components/OverView';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -985,7 +986,7 @@ const TableList: React.FC = (props: any) => {
                 <TabPane tab="LFQBench" key="3">
                   <Spin spinning={!peptideRatioData}>
                     {peptideRatioData ? (
-                      <QtCharts values={{ peptideRatioData, LFQClick }} />
+                      <LFQBench values={{ peptideRatioData, LFQClick }} />
                     ) : (
                       <Empty
                         description="正在加载中"
@@ -1035,6 +1036,20 @@ const TableList: React.FC = (props: any) => {
                     />
                   )}
                 </Spin>
+              </TabPane>
+              <TabPane tab="OverView" key="7">
+                {/* <Spin spinning={!rtPairs}>
+                  {rtPairs ? (
+                    <RtPairsCharts values={{ rtPairs, expData }} />
+                  ) : (
+                    <Empty
+                      description="正在加载中,pairsData数据较大，请耐心等待"
+                      style={{ padding: '10px', color: '#B0B8C1' }}
+                      imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+                    />
+                  )}
+                </Spin> */}
+                <OverView values={{ projectId }} />
               </TabPane>
             </Tabs>
           </Col>

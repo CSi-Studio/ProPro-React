@@ -90,6 +90,19 @@ const TableList: React.FC = (props: any) => {
   };
   const columns: ProColumns<TableListItem>[] = [
     {
+      title: '分组',
+      dataIndex: 'group',
+      sorter: (a, b) => {
+        return a?.group > b?.group ? -1 : 1;
+      },
+      render: (dom, entity) => {
+        if (entity?.group) {
+          return <Tag color="blue">{dom}</Tag>;
+        }
+        return false;
+      },
+    },
+    {
       title: '实验名',
       dataIndex: 'name',
       render: (dom, entity) => {
@@ -105,20 +118,6 @@ const TableList: React.FC = (props: any) => {
             </a>
           </Tooltip>
         );
-      },
-    },
-    {
-      title: '分组',
-      dataIndex: 'group',
-      hideInSearch: true,
-      sorter: (a, b) => {
-        return a?.group > b?.group ? -1 : 1;
-      },
-      render: (dom, entity) => {
-        if (entity?.group) {
-          return <Tag color="blue">{dom}</Tag>;
-        }
-        return false;
       },
     },
     {
@@ -138,7 +137,6 @@ const TableList: React.FC = (props: any) => {
     {
       title: '标签',
       dataIndex: 'tags',
-      hideInSearch: true,
       render: (dom, entity) => {
         if (entity?.tags) {
           return (
@@ -193,6 +191,7 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'SWATH窗口',
       dataIndex: 'windowRanges',
+      hideInSearch: true,
       render: (dom, entity) => {
         if (entity?.windowRanges) {
           return (
@@ -216,6 +215,7 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'IRT校验结果',
       dataIndex: 'irt',
+      hideInSearch: true,
       render: (dom, entity) => {
         if (entity.irt) {
           return <Tag color="green">{entity.irt.si.formula}</Tag>;
@@ -321,13 +321,13 @@ const TableList: React.FC = (props: any) => {
                   search: `?projectId=${projectId}`,
                 }}
               >
-                <a> -- 对应概览列表</a>
+                -- 对应概览列表
               </Link>
             </>
           )
         }
         actionRef={actionRef}
-        search={{ labelWidth: 'auto' }}
+        search={{ labelWidth: 'auto', span: 4 }}
         rowKey="id"
         size="small"
         pagination={{
@@ -376,6 +376,35 @@ const TableList: React.FC = (props: any) => {
               开始分析
             </Tag>
           </a>,
+          <>
+            {selectedRows && selectedRows.length > 0 ? (
+              <a
+                key="alias"
+                onClick={() => {
+                  if (selectedRows?.length > 0) {
+                    handleAliasModalVisible(true);
+                  }
+                }}
+              >
+                <Tag color="blue">
+                  <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
+                  批量编辑
+                </Tag>
+              </a>
+            ) : (
+              <a
+                onClick={() => {
+                  message.warn('至少选择一个实验 🔬');
+                }}
+                key="alias"
+              >
+                <Tag color="blue">
+                  <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
+                  批量编辑
+                </Tag>
+              </a>
+            )}
+          </>,
           <>
             {selectedRows && selectedRows.length > 0 ? (
               <a

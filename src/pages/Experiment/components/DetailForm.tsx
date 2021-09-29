@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Drawer } from 'antd';
 import type { TableListItem } from '@/pages/Project/data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
@@ -14,20 +14,20 @@ export type UpdateFormProps = {
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
-  const upData: any[]=[]
-  const downData: any[]=[]
-  const xData: any[]=[]
-  const features: any[]=[]
-  props?.currentRow?.windowRanges.map((item: any, index: string)=>{
-    upData.push(item?.end-item?.start)
-    downData.push(item?.start)
-    xData.push(index)
-    features.push(item?.features)
-  })
+  const upData: any[] = [];
+  const downData: any[] = [];
+  const xData: any[] = [];
+  const features: any[] = [];
+  props?.currentRow?.windowRanges.forEach((item: any, index: string) => {
+    upData.push(item?.end - item?.start);
+    downData.push(item?.start);
+    xData.push(index);
+    features.push(item?.features);
+  });
   const option = {
     title: {
       text: '窗口表',
-      subtext: 'Swath Chart'
+      subtext: 'Swath Chart',
     },
     tooltip: {
       trigger: 'axis',
@@ -35,28 +35,30 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
         // 坐标轴指示器，坐标轴触发有效
         type: 'shadow', // 默认为直线，可选为：'line' | 'shadow'
       },
-      formatter (params: any[]) {
+      formatter(params: any[]) {
         const tar = params[0];
         const tar2 = params[1];
-        return `${tar.name  }<br/>` + `start` + ` : ${  tar.value  }<br/>` +`end` + ` : ${  tar.value+tar2.value  }<br/>`+` owid`+`:${tar2.value}`;
+        return (
+          `${tar.name}<br/>` +
+          `start` +
+          ` : ${tar.value}<br/>` +
+          `end` +
+          ` : ${tar.value + tar2.value}<br/>` +
+          ` owid` +
+          `:${tar2.value}`
+        );
       },
     },
-    // grid: {
-    //   left: '3%',
-    //   right: '4%',
-    //   bottom: '3%',
-    //   containLabel: true,
-    // },
     xAxis: {
       type: 'category',
       splitLine: { show: false },
-      data:xData
+      data: xData,
     },
     yAxis: {
       type: 'value',
-      min (value: { min: number; }) {
+      min(value: { min: number }) {
         return value.min;
-    }
+      },
     },
     series: [
       {
@@ -73,7 +75,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
             color: 'rgba(0,0,0,0)',
           },
         },
-        data: downData
+        data: downData,
       },
       {
         name: 'swath最大值',
@@ -84,7 +86,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           position: 'inside',
         },
         data: upData,
-      },  
+      },
     ],
   };
 
@@ -105,7 +107,6 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       )}
       <ReactECharts option={option} style={{ height: 800 }} />
     </Drawer>
-     
   );
 };
 
