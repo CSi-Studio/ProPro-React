@@ -40,7 +40,7 @@ export async function addList(params: addFormValueType) {
 export async function updateList(params: updateFormValueType) {
   return request<TableListItem>(`${url}/project/update`, {
     method: 'POST',
-    params: params,
+    params,
   });
 }
 

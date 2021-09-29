@@ -96,12 +96,4 @@ export async function repeatCount(libraryId: string) {
   });
 }
 
-// /** 获取库列表 GET /library/getPeptide */
-// export async function getPeptide(params: { libraryId: any; proteinName: string; range: any }) {
-//   return request(`${url}/library/getPeptide`, {
-//     method: 'GET',
-//     params: {
-//       ...params,
-//     },
-//   });
-// }
+// 

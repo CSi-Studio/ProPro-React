@@ -367,13 +367,13 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   // 设置图表样式
   const getXicSeries = () => {
     const series: Record<any, any>[] = [];
-    const cutInfo: string[] = [];
+    let cutInfo: string[] = [];
     data.forEach((item: any) => {
       Object.keys(item.cutInfoMap).forEach((key) => {
         cutInfo.push(key);
       });
     });
-    Array.from(new Set(cutInfo));
+    cutInfo = Array.from(new Set(cutInfo));
 
     for (let i = 0; i < data.length; i += 1) {
       if (
@@ -383,13 +383,13 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       ) {
         return null;
       }
-      Object.keys(data[i].intMap).forEach((key, index) => {
+      Object.keys(data[i].intMap).forEach((key) => {
         const seriesItem = {
           type: 'line',
           showSymbol: false,
           xAxisIndex: i,
           yAxisIndex: i,
-          name: cutInfo[index],
+          name: key,
           lineStyle: {
             width: 1,
           },

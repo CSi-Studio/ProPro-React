@@ -40,7 +40,12 @@ export async function analyze(params: AnalyzeParams) {
 }
 
 /** 更新项目 POST /experiment/edit */
-export async function updateList(params: { id: string; alias: string; group: string; tags: Set<string> }) {
+export async function updateList(params: {
+  id: string;
+  alias: string;
+  group: string;
+  tags: Set<string>;
+}) {
   return request(`${url}/experiment/edit`, {
     method: 'POST',
     params: {
@@ -48,6 +53,22 @@ export async function updateList(params: { id: string; alias: string; group: str
     },
   });
 }
+
+/** 批量编辑组和标签 POST /experiment/batchEdit */
+export async function batchEdit(params: {
+  ids: string[];
+  fragMode: string;
+  label: string;
+  tags: Set<string>;
+}) {
+  return request(`${url}/experiment/batchEdit`, {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
+
 /** 生成别名 POST /experiment/generateAlias */
 export async function generateAlias(params: {
   expIds: string[];

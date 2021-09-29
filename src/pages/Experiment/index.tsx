@@ -20,6 +20,7 @@ import ProteinSelectForm from './components/ProteinSelectForm';
 import ProteinFixedChartsForm from './components/ProteinFixedChartsForm';
 import UpdateForm from './components/UpdateForm';
 import AliasForm from './components/AliasForm';
+import BatchEditForm from './components/BatchEdit';
 
 /**
  * 更新库
@@ -63,7 +64,8 @@ const TableList: React.FC = (props: any) => {
   const [proteinName, setProteinName] = useState<any>(false);
   /** 蛋白质选择界面 */
   const [proteinSelectVisible, setProteinSelectVisible] = useState<boolean>(false);
-  /** 蛋白质修复图 */
+  /** 批量修改界面 */
+  const [batchEditVisible, setBatchEditVisible] = useState<boolean>(false);
 
   const projectId = props?.location?.query?.projectId;
   const projectName = props?.location?.state?.projectName;
@@ -224,6 +226,17 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
+      title: '碎片模式',
+      dataIndex: 'fragMode',
+      hideInSearch: true,
+      // render: (dom, entity) => {
+      //   if (entity.irt) {
+      //     return <Tag color="green">{entity.irt.si.formula}</Tag>;
+      //   }
+      //   return <Tag color="red">未分析</Tag>;
+      // },
+    },
+    {
       title: '操作',
       valueType: 'option',
       fixed: 'right',
@@ -321,7 +334,9 @@ const TableList: React.FC = (props: any) => {
                   search: `?projectId=${projectId}`,
                 }}
               >
-               <Button type="primary" size='small'>切换至概览列表</Button>
+                <Button type="primary" size="small">
+                  切换至概览列表
+                </Button>
               </Link>
             </>
           )
@@ -382,7 +397,7 @@ const TableList: React.FC = (props: any) => {
                 key="alias"
                 onClick={() => {
                   if (selectedRows?.length > 0) {
-                    handleAliasModalVisible(true);
+                    setBatchEditVisible(true);
                   }
                 }}
               >
@@ -574,6 +589,28 @@ const TableList: React.FC = (props: any) => {
           }
         }}
         updateModalVisible={updateModalVisible}
+        values={currentRow || {}}
+      />
+      {/* 批量编辑列表 */}
+      <BatchEditForm
+        form={formUpdate}
+        onCancel={() => {
+          setBatchEditVisible(false);
+          setCurrentRow(undefined);
+          formUpdate?.resetFields();
+        }}
+        onSubmit={async (value) => {
+          value.id = currentRow?.id as string;
+          const success = await handleUpdate(value);
+          if (success) {
+            setBatchEditVisible(false);
+            setCurrentRow(undefined);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        batchEditVisible={batchEditVisible}
         values={currentRow || {}}
       />
       {/* 生成别名 */}
