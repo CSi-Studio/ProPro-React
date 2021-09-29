@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { Tag, Tooltip, Form, message, Typography } from 'antd';
+import { Tag, Tooltip, Form, message, Typography, Button } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { experimentList, analyze, prepare, getPeptide, getProteins } from './service';
 import { updateList, generateAlias } from './service';
@@ -321,7 +321,7 @@ const TableList: React.FC = (props: any) => {
                   search: `?projectId=${projectId}`,
                 }}
               >
-                <a> -- 对应概览列表</a>
+               <Button type="primary" size='small'>切换至概览列表</Button>
               </Link>
             </>
           )
