@@ -687,7 +687,6 @@ const TableList: React.FC = (props: any) => {
   return (
     <PageContainer
       header={{
-        onBack: () => window.history.back(),
         title: '蛋白诊所',
         tags: (
           <Link
