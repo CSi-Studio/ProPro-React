@@ -45,6 +45,15 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           placeholder="分组"
         />
       </ProForm.Group>
+      <ProForm.Group>
+        <ProFormText
+          initialValue={props?.values?.fragMode}
+          width="sm"
+          name="fragMode"
+          label="碎片模式"
+          placeholder="碎片模式"
+        />
+      </ProForm.Group>
       <ProFormSelect
         initialValue={props?.values?.tags !== null ? props?.values?.tags : []}
         width="md"

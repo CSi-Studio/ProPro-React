@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { Tag, Tooltip, Form, message, Typography, Button } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { experimentList, analyze, prepare, getPeptide, getProteins } from './service';
+import { experimentList, analyze, prepare, getPeptide, getProteins, batchEdit } from './service';
 import { updateList, generateAlias } from './service';
 import type {
   AliasParams,
@@ -599,9 +599,21 @@ const TableList: React.FC = (props: any) => {
           setCurrentRow(undefined);
           formUpdate?.resetFields();
         }}
-        onSubmit={async (value) => {
-          value.id = currentRow?.id as string;
-          const success = await handleUpdate(value);
+        onSubmit={async (value: {
+          ids: string[];
+          fragMode: string;
+          group: string;
+          tags: Set<string>;
+        }) => {
+          value.ids = selectedRows.map((row) => {
+            return row.id;
+          });
+          const success = await batchEdit({
+            ids: value.ids,
+            fragMode: value.fragMode,
+            group: value.group,
+            tags: value.tags,
+          });
           if (success) {
             setBatchEditVisible(false);
             setCurrentRow(undefined);

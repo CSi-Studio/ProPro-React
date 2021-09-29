@@ -58,7 +58,7 @@ export async function updateList(params: {
 export async function batchEdit(params: {
   ids: string[];
   fragMode: string;
-  label: string;
+  group: string;
   tags: Set<string>;
 }) {
   return request(`${url}/experiment/batchEdit`, {

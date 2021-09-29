@@ -465,7 +465,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         '#9370D8',
         'tomato',
         '#71d8d2',
-        '#FFa246',
+        '#d68022',
         '#6C97D7',
         '#F4B397',
         '#395165',

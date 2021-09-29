@@ -2,10 +2,9 @@ import React from 'react';
 import ProForm, { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
 
 export type BatchEditValueType = {
-  alias?: string;
-  id: string;
+  ids: string[];
   fragMode: string;
-  label: string;
+  group: string;
   tags: Set<string>;
 };
 
@@ -40,7 +39,7 @@ const BatchEditForm: React.FC<BatchEditProps> = (props) => {
           label="碎片模式"
         />
         <ProFormText
-          initialValue={props?.values?.label}
+          initialValue={props?.values?.group}
           width="sm"
           name="group"
           label="分组"
