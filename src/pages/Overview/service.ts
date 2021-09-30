@@ -19,7 +19,7 @@ export async function overviewList(params: {
     },
   });
 }
-/** 获取当前项目的实验列表 GET /experiment/listByProjectId*/
+/** 获取当前项目的实验列表 GET /experiment/listByProjectId */
 export async function expList(params: {
   projectId?: string;
 }) {

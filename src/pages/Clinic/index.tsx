@@ -290,14 +290,6 @@ const TableList: React.FC = (props: any) => {
     init();
   }, []);
 
-  // useEffect(() => {
-  //   rtPairsData({
-  //     projectId,
-  //     onlyDefault: true,
-  //     expIds: selectedExpIds,
-  //   });
-  // }, [selectedExpIds]);
-
   useEffect(() => {
     // 根据第一个蛋白获得肽段列表
     if (prepareData) {
@@ -306,14 +298,18 @@ const TableList: React.FC = (props: any) => {
     }
   }, [prepareData]);
 
-  // 每次蛋白发生变化，都去第一个肽段作为展示
+  // 每次蛋白发生变化，都取第一个肽段作为展示
   useEffect(() => {
+    console.log('1');
+
     setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
     setPeptideRowKey(peptideList[0]?.peptideRef);
     setHandleSubmit(!handleSubmit); // 触发设置option
   }, [peptideList]);
 
   useEffect(() => {
+    console.log('2');
+
     setPeptideRef(peptideSel);
     setPeptideRowKey(peptideSel);
     setHandleSubmit(!handleSubmit);
