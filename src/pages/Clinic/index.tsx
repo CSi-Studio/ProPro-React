@@ -72,6 +72,7 @@ const TableList: React.FC = (props: any) => {
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
   const [peptideRef, setPeptideRef] = useState<any>(''); // 默认选中的peptideRef
   const [peptideSel, setPeptideSel] = useState<any>(); // 当前选中的peptideRef
+  const [lfqStatus, setLfqStatus] = useState<any>(false); // 是否点击lfqStatus
   const [loading, setLoading] = useState<boolean>(true); // 蛋白table loading
   const [peptideLoading, setPeptideLoading] = useState<boolean>(true); // 肽段table loading
   const [chartsLoading, setChartsLoading] = useState<boolean>(true); // charts loading
@@ -301,15 +302,15 @@ const TableList: React.FC = (props: any) => {
   // 每次蛋白发生变化，都取第一个肽段作为展示
   useEffect(() => {
     console.log('1');
-
-    setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
-    setPeptideRowKey(peptideList[0]?.peptideRef);
-    setHandleSubmit(!handleSubmit); // 触发设置option
+    if (!lfqStatus) {
+      setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
+      setPeptideRowKey(peptideList[0]?.peptideRef);
+      setHandleSubmit(!handleSubmit); // 触发设置option
+    }
   }, [peptideList]);
 
   useEffect(() => {
     console.log('2');
-
     setPeptideRef(peptideSel);
     setPeptideRowKey(peptideSel);
     setHandleSubmit(!handleSubmit);
@@ -515,13 +516,14 @@ const TableList: React.FC = (props: any) => {
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
     (e) => {
-      if (e.shiftKey && e.keyCode === 38) {
+      console.log(e);
+      if (e.keyCode === 38 && e.shiftKey) {
         if (proteinsIndex % proteinPageSize === 0) {
           setProteinPage(proteinPage - 1);
         }
         setProteinsIndex(proteinsIndex - 1);
       }
-      if (e.shiftKey && e.keyCode === 40) {
+      if (e.keyCode === 40 && e.shiftKey) {
         if ((proteinsIndex + 1) % proteinPageSize === 0) {
           setProteinPage(proteinPage + 1);
         }
@@ -532,6 +534,8 @@ const TableList: React.FC = (props: any) => {
   );
 
   useEffect(() => {
+    setLfqStatus(false);
+    console.log('prepareData', prepareData);
     if (prepareData) {
       if (
         proteinPage < 1 ||
@@ -548,12 +552,11 @@ const TableList: React.FC = (props: any) => {
         setPeptideLoading(true);
         setChartsLoading(true);
       }
-      document.addEventListener('keydown', onProteinKey);
-      return () => {
-        document.removeEventListener('keydown', onProteinKey);
-      };
     }
-    return () => {};
+    document.addEventListener('keydown', onProteinKey);
+    return () => {
+      document.removeEventListener('keydown', onProteinKey);
+    };
   }, [onProteinKey]);
 
   /* 肽段table键盘事件 */
@@ -576,6 +579,7 @@ const TableList: React.FC = (props: any) => {
   );
 
   useEffect(() => {
+    setLfqStatus(false);
     const peptideArr = peptideList.map((item) => {
       return item.peptideRef;
     });
@@ -658,14 +662,12 @@ const TableList: React.FC = (props: any) => {
 
   /* 点击LFQBench里的点切换EIC图 */
   const LFQClick = async (protein: string, peptide: string) => {
+    setLfqStatus(true);
     // 切换蛋白和肽段
     setProteinRowKey(protein);
     const peptideResult = await onProteinChange(protein);
     console.log('LFQClick');
     setPeptideSel(peptide);
-    // setPeptideRef(peptide);
-    // setHandleSubmit(!handleSubmit);
-    // setPeptideRowKey(peptide);
     setTabActiveKey('1');
 
     /* 设置table 页码 */
@@ -740,6 +742,7 @@ const TableList: React.FC = (props: any) => {
                   onRow={(record) => {
                     return {
                       onClick: () => {
+                        setLfqStatus(false);
                         setPeptideLoading(true);
                         setProteinRowKey(record.key);
                         onProteinChange(record.protein);
@@ -805,6 +808,7 @@ const TableList: React.FC = (props: any) => {
                   onRow={(record: any) => {
                     return {
                       onClick: () => {
+                        setLfqStatus(false);
                         setPeptideRowKey(record.key);
                         selectPeptideRow(record.peptide);
                         setHandleSubmit(!handleSubmit);
