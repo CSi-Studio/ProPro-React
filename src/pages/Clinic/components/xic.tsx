@@ -5,11 +5,11 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   const xName: string = '';
   const yName: string = '';
   const gridHeight: number = 200;
-  const gridPaddingHeight: number = 80;
-  const totalPaddingHeight: number = 90;
+  const gridPaddingHeight: number = 105;
+  const totalPaddingHeight: number = 80;
   const gridPaddingWight: number = 5;
   const totalPaddingWidth: number = 3;
-  const titleHeight: number = 50;
+  const titleHeight: number = 75;
   const Width: number = 99;
 
   const statusFn = (
@@ -367,13 +367,20 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   // 设置图表样式
   const getXicSeries = () => {
     const series: Record<any, any>[] = [];
-    let cutInfo: string[] = [];
-    data.forEach((item: any) => {
-      Object.keys(item.cutInfoMap).forEach((key) => {
-        cutInfo.push(key);
-      });
-    });
-    cutInfo = Array.from(new Set(cutInfo));
+
+    console.log(
+      Array.from(
+        new Set(
+          [].concat(
+            ...data.map((item: any) => {
+              return Object.keys(item.cutInfoMap).map((key) => {
+                return key;
+              });
+            }),
+          ),
+        ),
+      ).sort((a, b) => (a > b ? 1 : -1)),
+    );
 
     for (let i = 0; i < data.length; i += 1) {
       if (
@@ -405,10 +412,66 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         };
 
         series.push(seriesItem);
-        // series.push(seriesPi);
       });
     }
     return series;
+  };
+
+  // 设置legend
+  const getXicLegend = () => {
+    const legends: any = [];
+    for (let i = 0; i < data.length; i += 1) {
+      // rt赋值
+      const keyName: any = [];
+      Object.keys(data[i].intMap).forEach((key) => {
+        keyName.push({ name: key });
+      });
+      const item = {
+        data: keyName,
+        right: '8%',
+        width: '30%',
+        type: 'scroll',
+        icon: 'none',
+        itemGap: 0,
+        itemWidth: 5,
+        textStyle: {
+          fontSize: '12',
+          color: '#fff',
+          padding: 5,
+          borderRadius: 5,
+          fontFamily: 'Times New Roman,STSong',
+          backgroundColor: [
+            '#1890ff',
+            'hotpink',
+            '#3CB371',
+            'orange',
+            '#9370D8',
+            'tomato',
+            '#71d8d2',
+            '#FFa246',
+            '#6C97D7',
+            '#F4B397',
+            '#395165',
+            '#F2DF5D',
+          ],
+        },
+        padding: 0,
+        left: `${
+          (i % gridNumInRow) * Math.floor(Width / gridNumInRow) +
+          Math.floor((Math.floor(Width / gridNumInRow) - gridPaddingWight) / 2) +
+          totalPaddingWidth -
+          14
+        }%`,
+        top: `${
+          (gridHeight + gridPaddingHeight) * Math.floor(i / gridNumInRow) +
+          totalPaddingHeight -
+          titleHeight +
+          50
+        }px`,
+      };
+      legends.push(item);
+    }
+    return legends;
   };
 
   // 设置option
@@ -485,35 +548,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         },
       },
       animation: false,
-      legend: {
-        right: '8%',
-        width: '70%',
-        type: 'scroll',
-        icon: 'none',
-        itemGap: 0,
-        itemWidth: 5,
-        textStyle: {
-          fontSize: '14',
-          color: '#fff',
-          padding: 5,
-          borderRadius: 5,
-          fontFamily: 'Times New Roman,STSong',
-          backgroundColor: [
-            '#1890ff',
-            'hotpink',
-            '#3CB371',
-            'orange',
-            '#9370D8',
-            'tomato',
-            '#71d8d2',
-            '#FFa246',
-            '#6C97D7',
-            '#F4B397',
-            '#395165',
-            '#F2DF5D',
-          ],
-        },
-      },
+      legend: getXicLegend(),
     };
   };
   return getXicOption(values.getCutInfo);

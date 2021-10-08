@@ -52,7 +52,7 @@ export async function getPeptideRatio(params: { projectId: string }) {
 }
 
 /** 根据实验ID、肽段的mz、所选的rt 获取该实验的光谱图 POST /clinic/getSpectra  */
-export async function getSpectra(params: { expId: string; mz: number; rt: number }) {
+export async function getSpectra(params: { expId: string; rt: number; mz?: number }) {
   return request(`${url}/clinic/getSpectra`, {
     method: 'POST',
     params: {

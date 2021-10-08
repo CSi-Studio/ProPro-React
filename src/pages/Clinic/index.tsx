@@ -17,6 +17,7 @@ import {
   Row,
   Col,
   Spin,
+  Typography,
 } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
@@ -45,6 +46,7 @@ import OverView from './components/OverView';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
+const { Text } = Typography;
 
 /* echarts参数 */
 let gridNumberInRow = 3; // 每行grid的个数
@@ -143,7 +145,6 @@ const TableList: React.FC = (props: any) => {
     }
     setChartsLoading(true);
     try {
-      console.log('获取EIC数据前的peptideRef', peptideRef);
       const result = await getExpData({
         projectId,
         libraryId: prepareData?.anaLib?.id,
@@ -156,7 +157,6 @@ const TableList: React.FC = (props: any) => {
         denoise,
       });
       // 将实验 别名 给 getExpData接口得到的数据
-      console.log('获取EIC数据前的ExpData', result.data);
       result.data.forEach((item: any) => {
         exps?.forEach((_item: any) => {
           if (item.expId === _item.id) {
@@ -177,7 +177,7 @@ const TableList: React.FC = (props: any) => {
         try {
           const data = await getSpectra({
             expId: selectedExpIds[Math.floor(values[0].seriesIndex / selectedExpIds.length)],
-            mz: peptideList.find((item: any) => item.peptideRef === peptideRef).mz,
+            mz: peptideList.find((item: any) => item.peptideRef === peptideRef)?.mz,
             rt: values[0].axisValue,
           });
           data.expData = result.data;
@@ -301,7 +301,6 @@ const TableList: React.FC = (props: any) => {
 
   // 每次蛋白发生变化，都取第一个肽段作为展示
   useEffect(() => {
-    console.log('1');
     if (!lfqStatus) {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
@@ -310,7 +309,6 @@ const TableList: React.FC = (props: any) => {
   }, [peptideList]);
 
   useEffect(() => {
-    console.log('2');
     setPeptideRef(peptideSel);
     setPeptideRowKey(peptideSel);
     setHandleSubmit(!handleSubmit);
@@ -516,7 +514,6 @@ const TableList: React.FC = (props: any) => {
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
     (e) => {
-      console.log(e);
       if (e.keyCode === 38 && e.shiftKey) {
         if (proteinsIndex % proteinPageSize === 0) {
           setProteinPage(proteinPage - 1);
@@ -535,7 +532,6 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     setLfqStatus(false);
-    console.log('prepareData', prepareData);
     if (prepareData) {
       if (
         proteinPage < 1 ||
@@ -666,7 +662,6 @@ const TableList: React.FC = (props: any) => {
     // 切换蛋白和肽段
     setProteinRowKey(protein);
     const peptideResult = await onProteinChange(protein);
-    console.log('LFQClick');
     setPeptideSel(peptide);
     setTabActiveKey('1');
 
@@ -895,6 +890,29 @@ const TableList: React.FC = (props: any) => {
                           </Tooltip>
                         </Badge>
                       ))}
+                  </Col>
+                  <Col span={24}>
+                    <Text
+                      strong={true}
+                      style={{ width: '100%', display: 'inline-block', textAlign: 'center' }}
+                    >
+                      {peptideRef}&nbsp;&nbsp;&nbsp;
+                      {Array.from(
+                        new Set(
+                          [].concat(
+                            ...expData.map((item: any) => {
+                              return Object.keys(item.cutInfoMap).map((key: any) => {
+                                return key;
+                              });
+                            }),
+                          ),
+                        ),
+                      )
+                        .sort((a, b) => (a > b ? 1 : -1))
+                        .map((item: any) => {
+                          return <Tag key={item.toString()}>{item}</Tag>;
+                        })}
+                    </Text>
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>
