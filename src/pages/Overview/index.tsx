@@ -4,7 +4,7 @@ import { Form, message, Tag, Tooltip, Typography, Button } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { batchUpdate, expList, overviewList, removeList, updateList, statistic } from './service';
+import { batchUpdate, expList, overviewList, removeList, updateList, statistic, repick } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
@@ -48,7 +48,7 @@ const handleBatchUpdate = async (values: any) => {
 };
 
 /**
- * 批量修改
+ * 批量统计
  * @param values
  */
 const handleStatistic = async (values: any) => {
@@ -61,6 +61,25 @@ const handleStatistic = async (values: any) => {
   } catch (error) {
     hide();
     message.error('批量统计失败!');
+    return false;
+  }
+};
+
+
+/**
+ * 批量repick
+ * @param values
+ */
+ const handleRepick = async (values: any) => {
+  const hide = message.loading('正在Repick');
+  try {
+    await repick({ ...values });
+    hide();
+    message.success('Repick成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('Repick失败!');
     return false;
   }
 };
@@ -168,6 +187,16 @@ const TableList: React.FC = (props: any) => {
       key: 'defaultOne',
       title: '默认值',
       dataIndex: 'defaultOne',
+      hideInSearch: true,
+
+      render: (text) => {
+        return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
+      },
+    },
+    {
+      key: 'repick',
+      title: '重选定',
+      dataIndex: 'repick',
       hideInSearch: true,
 
       render: (text) => {
@@ -428,6 +457,29 @@ const TableList: React.FC = (props: any) => {
               重新统计蛋白数
             </Tag>
           </a>,
+        <a
+        key="batchRepick"
+        onClick={async () => {
+          if (selectedRows?.length > 0) {
+            const overviewIds = selectedRows.map((item) => {
+              return item.id;
+            });
+            const result = await handleRepick({ overviewIds });
+            if (result) {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          } else {
+            message.warn('请选择要修改的概览，支持多选');
+          }
+        }}
+      >
+        <Tag color="red">
+          <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+          Repick
+        </Tag>
+      </a>,
           <a
             key="batchEdit"
             onClick={async () => {

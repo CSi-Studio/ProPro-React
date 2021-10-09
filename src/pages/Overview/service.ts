@@ -90,3 +90,15 @@ export async function statistic(params: { idList: any }) {
     },
   });
 }
+
+
+/** POST /overview/repick  */
+export async function repick(params: { overviewIds: any }) {
+  return request(`${url}/analyze/repick`, {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
+
