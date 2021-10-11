@@ -138,7 +138,7 @@ const TableList: React.FC = (props: any) => {
   /* 点击行选中相关 */
   const selectRow = (record: any) => {
     const rowData = [...selectedRows];
-    if (rowData.length == 0) {
+    if (rowData.length === 0) {
       rowData.push(record);
       setSelectedRows(rowData);
     } else {
@@ -170,7 +170,7 @@ const TableList: React.FC = (props: any) => {
         }}
         columns={columns}
         pagination={{
-          total: total,
+          total,
         }}
         toolBarRender={() => [
           <a key="add">
@@ -189,7 +189,7 @@ const TableList: React.FC = (props: any) => {
             </Tag>
           </a>,
         ]}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);

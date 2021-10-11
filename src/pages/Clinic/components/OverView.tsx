@@ -36,7 +36,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         if (entity.index === entity.selectIndex) {
           return <Tag color="#87d068">{dom}</Tag>;
         }
-        return <Tag color="success">{dom}</Tag>;
+        return <Tag color="blue">{dom}</Tag>;
       },
     },
     {
