@@ -53,7 +53,7 @@ let gridNumberInRow = 3; // 每行grid的个数
 // const xName = `rt/s`; // 横坐标
 // const yName = `int/s`; // 纵坐标
 const gridHeight = 200; // 单张高度（单位px）
-const gridPaddingHeight = 80; // 行间间隔高度（单位px）
+const gridPaddingHeight = 105; // 行间间隔高度（单位px）
 let Height = 0;
 /* 蛋白、肽段table 参数 */
 const proteinPageSize = 13;
@@ -75,9 +75,9 @@ const TableList: React.FC = (props: any) => {
   const [peptideRef, setPeptideRef] = useState<any>(''); // 默认选中的peptideRef
   const [peptideSel, setPeptideSel] = useState<any>(); // 当前选中的peptideRef
   const [lfqStatus, setLfqStatus] = useState<any>(false); // 是否点击lfqStatus
-  const [loading, setLoading] = useState<boolean>(true); // 蛋白table loading
-  const [peptideLoading, setPeptideLoading] = useState<boolean>(true); // 肽段table loading
-  const [chartsLoading, setChartsLoading] = useState<boolean>(true); // charts loading
+  const [loading, setLoading] = useState<boolean>(false); // 蛋白table loading
+  const [peptideLoading, setPeptideLoading] = useState<boolean>(false); // 肽段table loading
+  const [chartsLoading, setChartsLoading] = useState<boolean>(false); // charts loading
   // 选中行的ID
   const [proteinRowKey, setProteinRowKey] = useState<any>();
   const [peptideRowKey, setPeptideRowKey] = useState<any>();
@@ -198,11 +198,13 @@ const TableList: React.FC = (props: any) => {
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
       setHandleOption(option);
+      setLoading(false);
       setChartsLoading(false);
       setPeptideLoading(false);
       return true;
     } catch (error) {
       message.error('获取EIC Matrix失败，请重试!');
+      setLoading(false);
       setPeptideLoading(false);
       setChartsLoading(false);
       return false;
@@ -375,7 +377,6 @@ const TableList: React.FC = (props: any) => {
         protein: value,
       });
       setPeptideList(result.data);
-      setPeptideLoading(false);
       return result.data;
     }
     return false;
@@ -514,17 +515,19 @@ const TableList: React.FC = (props: any) => {
   /* 蛋白table键盘事件 */
   const onProteinKey = useCallback(
     (e) => {
-      if (e.keyCode === 38 && e.shiftKey) {
-        if (proteinsIndex % proteinPageSize === 0) {
-          setProteinPage(proteinPage - 1);
+      if (loading === true) {
+        if (e.keyCode === 38 && e.shiftKey) {
+          if (proteinsIndex % proteinPageSize === 0) {
+            setProteinPage(proteinPage - 1);
+          }
+          setProteinsIndex(proteinsIndex - 1);
         }
-        setProteinsIndex(proteinsIndex - 1);
-      }
-      if (e.keyCode === 40 && e.shiftKey) {
-        if ((proteinsIndex + 1) % proteinPageSize === 0) {
-          setProteinPage(proteinPage + 1);
+        if (e.keyCode === 40 && e.shiftKey) {
+          if ((proteinsIndex + 1) % proteinPageSize === 0) {
+            setProteinPage(proteinPage + 1);
+          }
+          setProteinsIndex(proteinsIndex + 1);
         }
-        setProteinsIndex(proteinsIndex + 1);
       }
     },
     [proteinsIndex],
@@ -532,6 +535,8 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     setLfqStatus(false);
+    setLoading(true);
+    setPeptideLoading(true);
     if (prepareData) {
       if (
         proteinPage < 1 ||
@@ -545,10 +550,9 @@ const TableList: React.FC = (props: any) => {
       } else {
         onProteinChange(prepareData?.proteins[proteinsIndex]);
         setProteinRowKey(prepareData?.proteins[proteinsIndex]);
-        setPeptideLoading(true);
-        setChartsLoading(true);
       }
     }
+
     document.addEventListener('keydown', onProteinKey);
     return () => {
       document.removeEventListener('keydown', onProteinKey);
@@ -576,6 +580,7 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     setLfqStatus(false);
+
     const peptideArr = peptideList.map((item) => {
       return item.peptideRef;
     });
@@ -586,10 +591,12 @@ const TableList: React.FC = (props: any) => {
       setPeptidesIndex(0);
       setPeptidePage(1);
     } else {
+      setPeptideLoading(true);
+      setChartsLoading(true);
       selectPeptideRow(peptideArr[peptidesIndex]);
       setHandleSubmit(!handleSubmit);
       setPeptideRowKey(peptideArr[peptidesIndex]);
-      setChartsLoading(true);
+      // console.log(peptideLoading);
     }
 
     document.addEventListener('keydown', onPeptideKey);
@@ -709,7 +716,7 @@ const TableList: React.FC = (props: any) => {
         ),
       }}
     >
-      <ProCard style={{ padding: '0 18px' }}>
+      <ProCard style={{ padding: '0 18px', height: '80vh' }}>
         <Row>
           <Col span={4}>
             <Row>
@@ -738,6 +745,7 @@ const TableList: React.FC = (props: any) => {
                     return {
                       onClick: () => {
                         setLfqStatus(false);
+                        setLoading(true);
                         setPeptideLoading(true);
                         setProteinRowKey(record.key);
                         onProteinChange(record.protein);
@@ -804,10 +812,11 @@ const TableList: React.FC = (props: any) => {
                     return {
                       onClick: () => {
                         setLfqStatus(false);
+                        setPeptideLoading(true);
+                        setChartsLoading(true);
                         setPeptideRowKey(record.key);
                         selectPeptideRow(record.peptide);
                         setHandleSubmit(!handleSubmit);
-                        setChartsLoading(true);
                         const peptideArr = peptideList.map((item) => {
                           return item.peptideRef;
                         });
@@ -890,29 +899,6 @@ const TableList: React.FC = (props: any) => {
                           </Tooltip>
                         </Badge>
                       ))}
-                  </Col>
-                  <Col span={24}>
-                    <Text
-                      strong={true}
-                      style={{ width: '100%', display: 'inline-block', textAlign: 'center' }}
-                    >
-                      {peptideRef}&nbsp;&nbsp;&nbsp;
-                      {Array.from(
-                        new Set(
-                          [].concat(
-                            ...expData.map((item: any) => {
-                              return Object.keys(item.cutInfoMap).map((key: any) => {
-                                return key;
-                              });
-                            }),
-                          ),
-                        ),
-                      )
-                        .sort((a, b) => (a > b ? 1 : -1))
-                        .map((item: any) => {
-                          return <Tag key={item.toString()}>{item}</Tag>;
-                        })}
-                    </Text>
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>

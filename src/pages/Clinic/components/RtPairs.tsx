@@ -20,7 +20,6 @@ const Width: number = 99;
 const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   // const [pairsData, setRatioData] = useState<any>();
-  console.log(props.values.expData.length);
 
   const Height =
     Math.ceil(props.values.expData.length / gridNumInRow) * (gridHeight + gridPaddingHeight);
@@ -45,7 +44,9 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
             width: 3,
           },
         },
-        label: { show: false },
+        label: {
+          show: false,
+        },
         data: [{ yAxis: 100 }, { yAxis: -100 }],
       };
       return markLineOpt;
@@ -246,6 +247,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         '#F2DF5D',
       ],
       tooltip: {
+        trigger: 'item',
         backgroundColor: ['rgba(255,255,255,0.9)'],
         axisPointer: {
           type: 'cross',
@@ -257,7 +259,15 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           fontWeight: 'normal',
           fontFamily: 'Times New Roman,STSong',
         },
-        formatter: (params: { seriesName: any; data: number[]; marker: any }) => {
+        formatter: (params: {
+          seriesName: any;
+          componentType: any;
+          data: number[];
+          marker: any;
+        }) => {
+          if (params.componentType === 'markLine') {
+            return 1;
+          }
           let res = params.seriesName;
           res += `<br />肽段：${params.data[2]}<br />${params.marker}${
             params.data[0]

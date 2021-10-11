@@ -4,7 +4,15 @@ import { Form, message, Tag, Tooltip, Typography, Button } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { batchUpdate, expList, overviewList, removeList, updateList, statistic, reselect } from './service';
+import {
+  batchUpdate,
+  expList,
+  overviewList,
+  removeList,
+  updateList,
+  statistic,
+  reselect,
+} from './service';
 import type { TableListItem, TableListPagination } from './data';
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
@@ -65,13 +73,13 @@ const handleStatistic = async (values: any) => {
   }
 };
 
-
 /**
  * 批量reselect
  * @param values
  */
  const handleReselect = async (values: any) => {
   const hide = message.loading('Reselecting');
+
   try {
     await reselect({ ...values });
     hide();
@@ -129,7 +137,6 @@ const TableList: React.FC = (props: any) => {
         setData(b);
         return true;
       } catch (error) {
-        console.log(error);
         return false;
       }
     };
@@ -155,8 +162,10 @@ const TableList: React.FC = (props: any) => {
       key: 'expName',
       title: '实验名',
       dataIndex: 'expName',
-      sorter: (a, b) => (a.expName > b.expName ? -1 : 1),
       hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.expName > b?.expName ? -1 : 1;
+      },
       render: (dom, entity) => {
         return (
           <Tooltip title={`Id:${entity.id}`} placement="topLeft">
@@ -177,8 +186,11 @@ const TableList: React.FC = (props: any) => {
       title: '实验ID',
       dataIndex: 'expId',
       hideInTable: true,
-      renderFormItem: (_, { type, defaultRender, onChange, ...rest }) => {
+      renderFormItem: (_, { defaultRender }) => {
         return defaultRender(_);
+      },
+      sorter: (a, b) => {
+        return a?.expId > b?.expId ? -1 : 1;
       },
       valueEnum: {
         ...data,
@@ -189,7 +201,9 @@ const TableList: React.FC = (props: any) => {
       title: '默认值',
       dataIndex: 'defaultOne',
       hideInSearch: true,
-
+      sorter: (a, b) => {
+        return a?.defaultOne > b?.defaultOne ? -1 : 1;
+      },
       render: (text) => {
         return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
       },
@@ -199,6 +213,9 @@ const TableList: React.FC = (props: any) => {
       title: '重选定',
       dataIndex: 'reselect',
       hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.reselect > b?.reselect ? -1 : 1;
+      },
       render: (text) => {
         return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
       },
@@ -217,7 +234,6 @@ const TableList: React.FC = (props: any) => {
       title: '峰统计',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.TOTAL_PEAK_COUNT;
       },
@@ -236,7 +252,6 @@ const TableList: React.FC = (props: any) => {
       title: '鉴定肽段(唯一)',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.MATCHED_UNIQUE_PEPTIDE_COUNT;
       },
@@ -246,7 +261,6 @@ const TableList: React.FC = (props: any) => {
       title: '鉴定肽段(全部)',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.MATCHED_TOTAL_PEPTIDE_COUNT;
       },
@@ -256,7 +270,6 @@ const TableList: React.FC = (props: any) => {
       title: '鉴定蛋白(唯一)',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.MATCHED_UNIQUE_PROTEIN_COUNT;
       },
@@ -400,7 +413,9 @@ const TableList: React.FC = (props: any) => {
                       search: `?projectId=${projectId}`,
                     }}
                   >
-                    <Button type="primary" size='small'>切换至实验列表</Button>
+                    <Button type="primary" size="small">
+                      切换至实验列表
+                    </Button>
                   </Link>
                 </>
               ) : (
