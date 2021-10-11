@@ -4,7 +4,15 @@ import { Form, message, Tag, Tooltip, Typography, Button } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { batchUpdate, expList, overviewList, removeList, updateList, statistic, repick } from './service';
+import {
+  batchUpdate,
+  expList,
+  overviewList,
+  removeList,
+  updateList,
+  statistic,
+  repick,
+} from './service';
 import type { TableListItem, TableListPagination } from './data';
 import UpdateForm from './components/UpdateForm';
 import { Link } from 'umi';
@@ -65,12 +73,11 @@ const handleStatistic = async (values: any) => {
   }
 };
 
-
 /**
  * 批量repick
  * @param values
  */
- const handleRepick = async (values: any) => {
+const handleRepick = async (values: any) => {
   const hide = message.loading('正在Repick');
   try {
     await repick({ ...values });
@@ -129,7 +136,6 @@ const TableList: React.FC = (props: any) => {
         setData(b);
         return true;
       } catch (error) {
-        console.log(error);
         return false;
       }
     };
@@ -156,6 +162,9 @@ const TableList: React.FC = (props: any) => {
       title: '实验名',
       dataIndex: 'expName',
       hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.expName > b?.expName ? -1 : 1;
+      },
       render: (dom, entity) => {
         return (
           <Tooltip title={`Id:${entity.id}`} placement="topLeft">
@@ -176,8 +185,11 @@ const TableList: React.FC = (props: any) => {
       title: '实验名',
       dataIndex: 'expId',
       hideInTable: true,
-      renderFormItem: (_, { type, defaultRender, onChange, ...rest }) => {
+      renderFormItem: (_, { defaultRender }) => {
         return defaultRender(_);
+      },
+      sorter: (a, b) => {
+        return a?.expId > b?.expId ? -1 : 1;
       },
       valueEnum: {
         ...data,
@@ -188,7 +200,9 @@ const TableList: React.FC = (props: any) => {
       title: '默认值',
       dataIndex: 'defaultOne',
       hideInSearch: true,
-
+      sorter: (a, b) => {
+        return a?.defaultOne > b?.defaultOne ? -1 : 1;
+      },
       render: (text) => {
         return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
       },
@@ -198,7 +212,9 @@ const TableList: React.FC = (props: any) => {
       title: '重选定',
       dataIndex: 'repick',
       hideInSearch: true,
-
+      sorter: (a, b) => {
+        return a?.repick > b?.repick ? -1 : 1;
+      },
       render: (text) => {
         return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
       },
@@ -217,7 +233,6 @@ const TableList: React.FC = (props: any) => {
       title: '峰统计',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.TOTAL_PEAK_COUNT;
       },
@@ -236,7 +251,6 @@ const TableList: React.FC = (props: any) => {
       title: '唯一肽段',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.MATCHED_UNIQUE_PEPTIDE_COUNT;
       },
@@ -246,7 +260,6 @@ const TableList: React.FC = (props: any) => {
       title: '全部肽段',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.MATCHED_TOTAL_PEPTIDE_COUNT;
       },
@@ -256,7 +269,6 @@ const TableList: React.FC = (props: any) => {
       title: '唯一蛋白',
       dataIndex: 'statstic',
       hideInSearch: true,
-
       render: (text, entity) => {
         return entity?.statistic?.MATCHED_UNIQUE_PROTEIN_COUNT;
       },
@@ -406,7 +418,9 @@ const TableList: React.FC = (props: any) => {
                       search: `?projectId=${projectId}`,
                     }}
                   >
-                    <Button type="primary" size='small'>切换至实验列表</Button>
+                    <Button type="primary" size="small">
+                      切换至实验列表
+                    </Button>
                   </Link>
                 </>
               ) : (
@@ -457,29 +471,29 @@ const TableList: React.FC = (props: any) => {
               重新统计蛋白数
             </Tag>
           </a>,
-        <a
-        key="batchRepick"
-        onClick={async () => {
-          if (selectedRows?.length > 0) {
-            const overviewIds = selectedRows.map((item) => {
-              return item.id;
-            });
-            const result = await handleRepick({ overviewIds });
-            if (result) {
-              if (actionRef.current) {
-                actionRef.current.reload();
+          <a
+            key="batchRepick"
+            onClick={async () => {
+              if (selectedRows?.length > 0) {
+                const overviewIds = selectedRows.map((item) => {
+                  return item.id;
+                });
+                const result = await handleRepick({ overviewIds });
+                if (result) {
+                  if (actionRef.current) {
+                    actionRef.current.reload();
+                  }
+                }
+              } else {
+                message.warn('请选择要修改的概览，支持多选');
               }
-            }
-          } else {
-            message.warn('请选择要修改的概览，支持多选');
-          }
-        }}
-      >
-        <Tag color="red">
-          <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-          Repick
-        </Tag>
-      </a>,
+            }}
+          >
+            <Tag color="red">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              Repick
+            </Tag>
+          </a>,
           <a
             key="batchEdit"
             onClick={async () => {

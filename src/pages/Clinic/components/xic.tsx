@@ -6,12 +6,22 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   const yName: string = '';
   const gridHeight: number = 200;
   const gridPaddingHeight: number = 105;
-  const totalPaddingHeight: number = 80;
+  const totalPaddingHeight: number = 120;
   const gridPaddingWight: number = 5;
   const totalPaddingWidth: number = 3;
   const titleHeight: number = 75;
   const Width: number = 99;
 
+  /* 碎片信息 */
+  const allCutInfo: any = [];
+  const allCutMz: any = {};
+  data.forEach((item: any) => {
+    Object.keys(item.cutInfoMap).forEach((key: any) => {
+      allCutMz[key] = item.cutInfoMap[key];
+      // allCutMz.push(`${key}:${item.cutInfoMap[key]}`);
+      allCutInfo.push(key);
+    });
+  });
   const statusFn = (
     value: number,
     str1: any,
@@ -85,7 +95,22 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
 
   // 设置表头
   const getXicTitle = () => {
-    const titles = [];
+    const titles = [
+      {
+        text: `${data[0].peptideRef} - ${[...new Set([].concat(...allCutInfo))].length}个碎片`,
+        height: '200px',
+        textAlign: 'left',
+        textStyle: {
+          color: '#000',
+          fontSize: '15',
+          fontWeight: 'normal',
+          fontFamily: 'Times New Roman,STSong',
+        },
+        padding: 0,
+        top: `${10}px`,
+        left: '4%',
+      },
+    ];
     for (let i = 0; i < data.length; i += 1) {
       // rt赋值
       let rt: any[] = [];
@@ -367,21 +392,6 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   // 设置图表样式
   const getXicSeries = () => {
     const series: Record<any, any>[] = [];
-
-    console.log(
-      Array.from(
-        new Set(
-          [].concat(
-            ...data.map((item: any) => {
-              return Object.keys(item.cutInfoMap).map((key) => {
-                return key;
-              });
-            }),
-          ),
-        ),
-      ).sort((a, b) => (a > b ? 1 : -1)),
-    );
-
     for (let i = 0; i < data.length; i += 1) {
       if (
         data[i].rtArray == null ||
@@ -419,7 +429,43 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
 
   // 设置legend
   const getXicLegend = () => {
-    const legends: any = [];
+    const legends: any = [
+      {
+        data: [...new Set([].concat(...allCutInfo))],
+        right: '6%',
+        width: '77%',
+        top: `${6}px`,
+        padding: 0,
+        type: 'scroll',
+        icon: 'none',
+        itemGap: 0,
+        itemWidth: 5,
+        textStyle: {
+          fontSize: '14',
+          color: '#fff',
+          padding: 5,
+          borderRadius: 5,
+          fontFamily: 'Times New Roman,STSong',
+          backgroundColor: [
+            '#1890ff',
+            'hotpink',
+            '#3CB371',
+            'orange',
+            '#9370D8',
+            'tomato',
+            '#71d8d2',
+            '#FFa246',
+            '#6C97D7',
+            '#F4B397',
+            '#395165',
+            '#F2DF5D',
+          ],
+        },
+        formatter(name: any) {
+          return `${name}：${allCutMz[name]}`;
+        },
+      },
+    ];
     for (let i = 0; i < data.length; i += 1) {
       // rt赋值
       const keyName: any = [];

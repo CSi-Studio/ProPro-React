@@ -25,6 +25,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       cutInfoMap.push({ data: _item.cutInfoMap[key], name: key });
     });
   });
+  console.log([...new Set(cutInfoMap)]);
 
   /* 筛出+—0.015范围内的y值和x值 添加碎片name */
   let chooseValue: any = [];
@@ -53,9 +54,10 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       legendHoverLink: true,
       data: yData,
       name: '123',
-      // markLine: markLineData,
     },
   ];
+  console.log('chooseValue', chooseValue);
+
   chooseValue.forEach((value: { data: any; name: any; index: number }) => {
     const result = new Array(props?.values?.data?.x.length).fill(0);
     result[value.index] = value.data;
@@ -66,7 +68,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       legendHoverLink: true,
       data: result,
       name: value.name,
-      // markLine: markLineData,
     });
   });
   useEffect(() => {
@@ -79,6 +80,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         containLabel: true,
       },
       xAxis: {
+        type: 'category',
         silent: false,
         splitLine: {
           show: false,
@@ -190,9 +192,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       footer={[]}
       // maskClosable={false}
     >
-      {chooseValue.map((_item: any) => {
-        return <Tag key={_item.data.toString()}>{_item.data}</Tag>;
-      })}
       <ReactECharts
         option={handleOption}
         style={{ width: `100%`, height: '400px' }}
