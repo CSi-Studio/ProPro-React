@@ -20,102 +20,159 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
       let minY = 99999;
       let maxY = 0;
       const ecoliData = result.data.ecoli.map((data: { peptide: string; x: any; y: any }) => {
-        minX = data.x < minX?data.x:minX;
-        maxX = data.x > maxX?data.x:maxX;
-        minY = data.y < minY?data.y:minY;
-        maxY = data.y > maxY?data.y:maxY;
+        minX = data.x < minX ? data.x : minX;
+        maxX = data.x > maxX ? data.x : maxX;
+        minY = data.y < minY ? data.y : minY;
+        maxY = data.y > maxY ? data.y : maxY;
         return [data.x, data.y, data.peptide];
       });
       const humanData = result.data.human.map((data: { peptide: string; x: any; y: any }) => {
-        minX = data.x < minX?data.x:minX;
-        maxX = data.x > maxX?data.x:maxX;
-        minY = data.y < minY?data.y:minY;
-        maxY = data.y > maxY?data.y:maxY;
+        minX = data.x < minX ? data.x : minX;
+        maxX = data.x > maxX ? data.x : maxX;
+        minY = data.y < minY ? data.y : minY;
+        maxY = data.y > maxY ? data.y : maxY;
         return [data.x, data.y, data.peptide];
       });
       const yeastData = result.data.yeast.map((data: { peptide: string; x: any; y: any }) => {
-        minX = data.x < minX?data.x:minX;
-        maxX = data.x > maxX?data.x:maxX;
-        minY = data.y < minY?data.y:minY;
-        maxY = data.y > maxY?data.y:maxY;
+        minX = data.x < minX ? data.x : minX;
+        maxX = data.x > maxX ? data.x : maxX;
+        minY = data.y < minY ? data.y : minY;
+        maxY = data.y > maxY ? data.y : maxY;
         return [data.x, data.y, data.peptide];
       });
 
       setRatioData(result.data);
       const option = {
-        grid: [{
-          show:true,
-          top: '5%',
-          left: '1%',
-          right: '19%',
-          bottom: '2%',
-          containLabel: true,
-        },
-        {
-          show:true,
-          top: '5%',
-          left: '81%',
-          right: '3%',
-          bottom: '2%',
-          backgroundColor:"red"
-        }],
-        xAxis: [{
-          type:'value',
-          gridIndex: 0,
-          nameLocation: 'middle',
-          name: 'Log2(B)',
-          min:minX,
-          max:maxX,
-          splitLine: {
-            show: false,
-          },
-          scale: true,
-          axisLabel: {
-            color: '#000',
+        grid: [
+          {
             show: true,
-            fontFamily: 'Times New Roman,STSong',
-            fontWeight: 'normal',
-            formatter: function (value :any, index:any) {
-              return value.toFixed(1);
-            }
+            top: '5%',
+            left: '1%',
+            right: '19%',
+            bottom: '2%',
+            containLabel: true,
+            tooltip: {
+              show: true,
+              backgroundColor: ['rgba(255,255,255,0.9)'],
+              axisPointer: {
+                type: 'cross',
+                snap: true,
+              },
+              textStyle: {
+                color: '#000',
+                fontSize: '14',
+                fontWeight: 'normal',
+                fontFamily: 'Times New Roman,STSong',
+              },
+              formatter: (params: { seriesName: any; data: any[]; marker: any }) => {
+                let res = params?.seriesName;
+                res += `<br />蛋白：${params?.data[2].split('-->')[0]}<br />肽段：${
+                  params?.data[2].split('-->')[1]
+                }<br />${params?.marker}${params?.data[0]?.toFixed(
+                  4,
+                )} &nbsp ${params?.data[1]?.toFixed(4)}`;
+                return res;
+              },
+            },
           },
-          nameTextStyle: {
-            color: '#000',
-            fontSize: '16',
-            fontWeight: 'bold',
-            fontFamily: 'Times New Roman,STSong',
-            align: 'left',
+          {
+            top: '5%',
+            left: '81%',
+            right: '3%',
+            bottom: '2%',
+            containLabel: false,
           },
-        }],
-        yAxis: [{
-          nameRotate: 90,
-          nameLocation: 'middle',
-          gridIndex: 0,
-          name: 'Log2(A:B)',
-          min:minY,
-          max:maxY,
-          splitLine: {
-            show: false,
+        ],
+        xAxis: [
+          {
+            type: 'value',
+            gridIndex: 0,
+            nameLocation: 'middle',
+            name: 'Log2(B)',
+            min: minX,
+            max: maxX,
+            splitLine: {
+              show: false,
+            },
+            scale: true,
+            axisLabel: {
+              color: '#000',
+              show: true,
+              fontFamily: 'Times New Roman,STSong',
+              fontWeight: 'normal',
+              formatter(value: any) {
+                return value.toFixed(1);
+              },
+            },
+            nameTextStyle: {
+              color: '#000',
+              fontSize: '16',
+              fontWeight: 'bold',
+              fontFamily: 'Times New Roman,STSong',
+              align: 'left',
+            },
           },
-          scale: true,
-          axisLabel: {
-            color: '#000',
-            show: true,
-            fontFamily: 'Times New Roman,STSong',
-            fontWeight: 'normal',
-            formatter: function (value :any, index:any) {
-              return value.toFixed(1);
-            }
+          {
+            type: 'category',
+            gridIndex: 1,
+            boundaryGap: true,
+            nameGap: 30,
+            splitArea: {
+              show: false,
+            },
+            splitLine: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+            axisLine: { show: false },
+            axisTick: { show: false },
           },
-          nameTextStyle: {
-            // lineHeight: 56,
-            color: '#000',
-            fontSize: '16',
-            fontWeight: 'bold',
-            fontFamily: 'Times New Roman,STSong',
-            align: 'left',
+        ],
+        yAxis: [
+          {
+            nameRotate: 90,
+            nameLocation: 'middle',
+            gridIndex: 0,
+            name: 'Log2(A:B)',
+            min: minY,
+            max: maxY,
+            splitLine: {
+              show: false,
+            },
+            scale: true,
+            axisLabel: {
+              color: '#000',
+              show: true,
+              fontFamily: 'Times New Roman,STSong',
+              fontWeight: 'normal',
+              formatter(value: any) {
+                return value.toFixed(1);
+              },
+            },
+            nameTextStyle: {
+              // lineHeight: 56,
+              color: '#000',
+              fontSize: '16',
+              fontWeight: 'bold',
+              fontFamily: 'Times New Roman,STSong',
+              align: 'left',
+            },
           },
-        }],
+          {
+            nameLocation: 'middle',
+            gridIndex: 1,
+            min: minY,
+            max: maxY,
+            splitLine: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
+          },
+        ],
         animation: false,
         toolbox: {
           feature: {
@@ -124,37 +181,38 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             saveAsImage: {},
           },
         },
-        dataZoom: { type: 'inside' },
-        tooltip: {
-          backgroundColor: ['rgba(255,255,255,0.9)'],
-          axisPointer: {
-            type: 'cross',
-            snap: true,
-          },
-          textStyle: {
-            color: '#000',
-            fontSize: '14',
-            fontWeight: 'normal',
-            fontFamily: 'Times New Roman,STSong',
-          },
-          formatter: (params: { seriesName: any; data: any[]; marker: any }) => {
-            let res = params.seriesName;
-            res += `<br />蛋白：${params.data[2].split('-->')[0]}<br />肽段：${
-              params.data[2].split('-->')[1]
-            }<br />${params.marker}${params.data[0]?.toFixed(4)} &nbsp ${params.data[1]?.toFixed(
-              4,
-            )}`;
-            return res;
-          },
-        },
+        dataZoom: [
+          { type: 'inside', xAxisIndex: 0 },
+          { type: 'inside', xAxisIndex: 1 },
+        ],
+        tooltip: {},
         legend: {
           right: '8%',
+          gridIndex: 0,
           align: 'left',
           textStyle: {
             fontSize: '14',
             fontFamily: 'Times New Roman,STSong',
           },
         },
+        dataset: [
+          {
+            source: [
+              result.data.ecoliPercentile,
+              result.data.humanPercentile,
+              result.data.yeastPercentile,
+            ],
+          },
+          {
+            transform: {
+              type: 'boxplot',
+            },
+          },
+          {
+            fromDatasetIndex: 1,
+            fromTransformResult: 1,
+          },
+        ],
         series: [
           {
             type: 'scatter',
@@ -291,6 +349,30 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
               },
             },
           },
+          {
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+            type: 'boxplot',
+            dimensions: ['ecoli', 'human', 'yeast'],
+            tooltip: {
+              backgroundColor: ['rgba(255,255,255,0.9)'],
+              axisPointer: {
+                type: 'cross',
+                snap: true,
+              },
+              textStyle: {
+                color: '#000',
+                fontSize: '14',
+                fontWeight: 'normal',
+                fontFamily: 'Times New Roman,STSong',
+              },
+            },
+          },
+          {
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+            type: 'scatter',
+          },
         ],
       };
       setHandleOption(option);
@@ -301,8 +383,8 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   /* 点击某个点跳到EIC图 */
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
-    const protein = params.data[2].split('-->')[0];
-    const peptide = params.data[2].split('-->')[1];
+    const protein = params?.data[2].split('-->')[0];
+    const peptide = params?.data[2].split('-->')[1];
     props.values.LFQClick(protein, peptide);
   });
 
