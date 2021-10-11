@@ -2,41 +2,21 @@ import React, { useState } from 'react';
 import { Col, Row, Tag } from 'antd';
 import ProTable from '@ant-design/pro-table';
 
-export type OverViewProps = {
+export type ScoreProps = {
   values: any;
 };
 
-const OverView: React.FC<OverViewProps> = (props: any) => {
-  const [ovRowKey, setOvRowKey] = useState<any>();
+const ScoreResults: React.FC<ScoreProps> = (props: any) => {
+  const [scoreTypeRowKey, setScoreTypeRowKey] = useState<any>();
   const { prepareData, expData } = props.values;
-
-  let scoreResult = expData.map((item: any) => {
-    return item.scoreList.map((_item: any, index: any) => ({
-      expId: item.expId,
-      alias: item.alias,
-      status: item.status,
-      realRt: item.realRt,
-      sum: item.sum,
-      minTotalScore: item.minTotalScore,
-      index,
-      key: _item.rt,
-      selectIndex: item.selectIndex,
-      scoreList: item.scoreList,
-    }));
-  });
-  scoreResult = [].concat(...scoreResult); // 拍平数组
-
   /* 打分结果Columns */
   let scoreColumns: any = [
     {
       title: '别名',
       dataIndex: 'alias',
       key: 'alias',
-      render: (dom: any, entity: any) => {
-        if (entity.index === entity.selectIndex) {
-          return <Tag color="#87d068">{dom}</Tag>;
-        }
-        return <Tag color="success">{dom}</Tag>;
+      render: (dom: any) => {
+        return <Tag color="blue">{dom}</Tag>;
       },
     },
     {
@@ -97,7 +77,6 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
     },
   ];
-
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
       title: (value: { tooltip: any }) => {
@@ -105,7 +84,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           <a
             style={{ width: '60px', display: 'inline-block' }}
             onClick={() => {
-              setOvRowKey(value.tooltip);
+              setScoreTypeRowKey(value.tooltip);
             }}
           >
             0(总分)
@@ -114,7 +93,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           <a
             style={{ width: '60px', display: 'inline-block' }}
             onClick={() => {
-              setOvRowKey(value.tooltip);
+              setScoreTypeRowKey(value.tooltip);
             }}
           >
             {index}
@@ -137,19 +116,16 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           return (
             <>
               {index === 0 ? (
-                <Tag color="blue" key={entity.scoreList[entity.index]?.scores[index]?.toString()}>
-                  {entity.scoreList[entity.index]?.scores[index]?.toFixed(3)}
+                <Tag color="blue">
+                  {entity.scoreList[entity.selectIndex]?.scores[index]?.toFixed(3)}
                 </Tag>
               ) : (
-                <Tag
-                  color="success"
-                  key={entity.scoreList[entity.index]?.scores[index]?.toString()}
-                >
+                <Tag color="success">
                   {`${prepareData.overviewMap[entity.expId][0]?.weights[type]?.toFixed(
                     3,
-                  )}x${entity.scoreList[entity.index]?.scores[index]?.toFixed(2)}=${(
+                  )}x${entity.scoreList[entity.selectIndex]?.scores[index]?.toFixed(2)}=${(
                     prepareData.overviewMap[entity.expId][0]?.weights[type] *
-                    entity.scoreList[entity.index]?.scores[index]
+                    entity.scoreList[entity.selectIndex]?.scores[index]
                   )?.toFixed(4)}`}
                 </Tag>
               )}
@@ -189,12 +165,12 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           toolBarRender={false}
           tableAlertRender={false}
           rowClassName={(record: any) => {
-            return record.key === ovRowKey ? 'clinicTableBgc' : '';
+            return record.key === scoreTypeRowKey ? 'clinicTableBgc' : '';
           }}
           onRow={(record: any) => {
             return {
               onClick: () => {
-                setOvRowKey(record.key);
+                setScoreTypeRowKey(record.key);
               },
             };
           }}
@@ -213,11 +189,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         <ProTable
           style={{ width: '69vw' }}
           columns={scoreColumns}
-          dataSource={scoreResult}
-          // dataSource={expData.map((item: any, index: number) => {
-          //   return { index, type: name, key: name };
-          // })}
-          rowKey={'key'}
+          dataSource={expData}
+          rowKey={'id'}
           size="small"
           search={false}
           scroll={{ x: 'max-content' }}
@@ -225,7 +198,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           tableAlertRender={false}
           pagination={{
             hideOnSinglePage: true,
-            pageSize: 23,
+            pageSize: 24,
             size: 'small',
           }}
         />
@@ -234,4 +207,4 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
   );
 };
 
-export default OverView;
+export default ScoreResults;

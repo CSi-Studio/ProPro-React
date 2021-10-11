@@ -256,7 +256,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'matchedUniqueProteinCount',
+      key: 'matchedUniquePeptideCount',
       title: '全部肽段',
       dataIndex: 'statstic',
       hideInSearch: true,
@@ -265,7 +265,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'matcheTotalProteinCount',
+      key: 'matchedTotalProteinCount',
       title: '唯一蛋白',
       dataIndex: 'statstic',
       hideInSearch: true,
@@ -274,7 +274,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'matcheTotalProteinCount',
+      key: 'matchedTotalProteinCount',
       title: '全部蛋白',
       dataIndex: 'statstic',
       hideInSearch: true,

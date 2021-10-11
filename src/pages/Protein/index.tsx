@@ -93,13 +93,9 @@ const TableList: React.FC = (props: any) => {
       title: '有机生物',
       dataIndex: 'organism',
       hideInSearch: true,
-      render: (dom, entity) => {
+      render: (dom) => {
         return (
-          <a
-            onClick={() => {
-              console.log(entity);
-            }}
-          >
+          <a>
             <Tag color="geekblue">{dom}</Tag>
           </a>
         );

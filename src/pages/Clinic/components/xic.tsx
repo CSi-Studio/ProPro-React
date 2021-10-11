@@ -107,7 +107,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
           fontFamily: 'Times New Roman,STSong',
         },
         padding: 0,
-        top: `${10}px`,
+        top: `${11}px`,
         left: '4%',
       },
     ];
@@ -440,6 +440,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         icon: 'none',
         itemGap: 0,
         itemWidth: 5,
+        selector: true,
         textStyle: {
           fontSize: '14',
           color: '#fff',

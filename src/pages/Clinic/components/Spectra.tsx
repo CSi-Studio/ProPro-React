@@ -25,7 +25,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       cutInfoMap.push({ data: _item.cutInfoMap[key], name: key });
     });
   });
-  console.log([...new Set(cutInfoMap)]);
+  // console.log([...new Set(cutInfoMap)]);
 
   /* 筛出+—0.015范围内的y值和x值 添加碎片name */
   let chooseValue: any = [];
@@ -56,7 +56,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       name: '123',
     },
   ];
-  console.log('chooseValue', chooseValue);
+  // console.log('chooseValue', chooseValue);
 
   chooseValue.forEach((value: { data: any; name: any; index: number }) => {
     const result = new Array(props?.values?.data?.x.length).fill(0);
