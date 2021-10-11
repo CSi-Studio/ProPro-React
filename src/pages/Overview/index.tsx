@@ -11,7 +11,7 @@ import {
   removeList,
   updateList,
   statistic,
-  repick,
+  reselect,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import UpdateForm from './components/UpdateForm';
@@ -74,19 +74,20 @@ const handleStatistic = async (values: any) => {
 };
 
 /**
- * 批量repick
+ * 批量reselect
  * @param values
  */
-const handleRepick = async (values: any) => {
-  const hide = message.loading('正在Repick');
+const handleReselect = async (values: any) => {
+  const hide = message.loading('Reselecting');
+
   try {
-    await repick({ ...values });
+    await reselect({ ...values });
     hide();
-    message.success('Repick成功');
+    message.success('Reselect成功');
     return true;
   } catch (error) {
     hide();
-    message.error('Repick失败!');
+    message.error('Reselect失败!');
     return false;
   }
 };
@@ -182,7 +183,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'expId',
-      title: '实验名',
+      title: '实验ID',
       dataIndex: 'expId',
       hideInTable: true,
       renderFormItem: (_, { defaultRender }) => {
@@ -208,12 +209,12 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'repick',
+      key: 'reselect',
       title: '重选定',
-      dataIndex: 'repick',
+      dataIndex: 'reselect',
       hideInSearch: true,
       sorter: (a, b) => {
-        return a?.repick > b?.repick ? -1 : 1;
+        return a?.reselect > b?.reselect ? -1 : 1;
       },
       render: (text) => {
         return text ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag>;
@@ -247,8 +248,8 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'uniquePeptides',
-      title: '唯一肽段',
+      key: 'matchedTotalPeptideCount',
+      title: '鉴定肽段(唯一)',
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -257,7 +258,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'matchedUniquePeptideCount',
-      title: '全部肽段',
+      title: '鉴定肽段(全部)',
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -266,7 +267,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'matchedTotalProteinCount',
-      title: '唯一蛋白',
+      title: '鉴定蛋白(唯一)',
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -275,7 +276,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'matchedTotalProteinCount',
-      title: '全部蛋白',
+      title: '鉴定蛋白(全部)',
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -300,15 +301,9 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'note',
-      title: '标注',
+      title: '备注',
       dataIndex: 'note',
       hideInSearch: true,
-      render: (dom, entity) => {
-        if (entity.note) {
-          return <Tag>{dom}</Tag>;
-        }
-        return false;
-      },
     },
     {
       key: 'createDate',
@@ -472,26 +467,26 @@ const TableList: React.FC = (props: any) => {
             </Tag>
           </a>,
           <a
-            key="batchRepick"
+            key="batchReselect"
             onClick={async () => {
               if (selectedRows?.length > 0) {
                 const overviewIds = selectedRows.map((item) => {
                   return item.id;
                 });
-                const result = await handleRepick({ overviewIds });
+                const result = await handleReselect({ overviewIds });
                 if (result) {
                   if (actionRef.current) {
                     actionRef.current.reload();
                   }
                 }
               } else {
-                message.warn('请选择要修改的概览，支持多选');
+                message.warn('请选择要Reselect的概览，支持多选');
               }
             }}
           >
-            <Tag color="red">
+            <Tag color="yellow">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-              Repick
+              Reselect
             </Tag>
           </a>,
           <a

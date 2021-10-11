@@ -92,9 +92,9 @@ export async function statistic(params: { idList: any }) {
 }
 
 
-/** POST /overview/repick  */
-export async function repick(params: { overviewIds: any }) {
-  return request(`${url}/analyze/repick`, {
+/** POST /overview/reselect  */
+export async function reselect(params: { overviewIds: any }) {
+  return request(`${url}/analyze/reselect`, {
     method: 'POST',
     params: {
       ...params,

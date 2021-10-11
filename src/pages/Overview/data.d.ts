@@ -17,7 +17,7 @@ export type TableListItem = {
   featureMap: any;
   minTotalScore: number;
   defaultOne: boolean;
-  repick: boolean;
+  reselect: boolean;
 };
 
 export type TableListPagination = {

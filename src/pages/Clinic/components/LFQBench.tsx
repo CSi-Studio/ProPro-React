@@ -15,31 +15,57 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   useEffect(() => {
     const op = async () => {
       const result = props.values.peptideRatioData;
+      let minX = 99999;
+      let maxX = 0;
+      let minY = 99999;
+      let maxY = 0;
       const ecoliData = result.data.ecoli.map((data: { peptide: string; x: any; y: any }) => {
+        minX = data.x < minX?data.x:minX;
+        maxX = data.x > maxX?data.x:maxX;
+        minY = data.y < minY?data.y:minY;
+        maxY = data.y > maxY?data.y:maxY;
         return [data.x, data.y, data.peptide];
       });
       const humanData = result.data.human.map((data: { peptide: string; x: any; y: any }) => {
+        minX = data.x < minX?data.x:minX;
+        maxX = data.x > maxX?data.x:maxX;
+        minY = data.y < minY?data.y:minY;
+        maxY = data.y > maxY?data.y:maxY;
         return [data.x, data.y, data.peptide];
       });
       const yeastData = result.data.yeast.map((data: { peptide: string; x: any; y: any }) => {
+        minX = data.x < minX?data.x:minX;
+        maxX = data.x > maxX?data.x:maxX;
+        minY = data.y < minY?data.y:minY;
+        maxY = data.y > maxY?data.y:maxY;
         return [data.x, data.y, data.peptide];
       });
 
       setRatioData(result.data);
       const option = {
-        grid: {
-          top: '3%',
+        grid: [{
+          show:true,
+          top: '5%',
           left: '1%',
-          right: '3%',
+          right: '19%',
           bottom: '2%',
           containLabel: true,
         },
-        xAxis: {
-          // nameRotate: 90,
-          // nameGap: 80,
+        {
+          show:true,
+          top: '5%',
+          left: '81%',
+          right: '3%',
+          bottom: '2%',
+          backgroundColor:"red"
+        }],
+        xAxis: [{
+          type:'value',
+          gridIndex: 0,
           nameLocation: 'middle',
-          // boundaryGap: false,
-          name: 'Log_2(B)',
+          name: 'Log2(B)',
+          min:minX,
+          max:maxX,
           splitLine: {
             show: false,
           },
@@ -49,6 +75,9 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             show: true,
             fontFamily: 'Times New Roman,STSong',
             fontWeight: 'normal',
+            formatter: function (value :any, index:any) {
+              return value.toFixed(1);
+            }
           },
           nameTextStyle: {
             color: '#000',
@@ -57,11 +86,14 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             fontFamily: 'Times New Roman,STSong',
             align: 'left',
           },
-        },
-        yAxis: {
+        }],
+        yAxis: [{
           nameRotate: 90,
           nameLocation: 'middle',
-          name: 'Log_2(A:B)',
+          gridIndex: 0,
+          name: 'Log2(A:B)',
+          min:minY,
+          max:maxY,
           splitLine: {
             show: false,
           },
@@ -71,6 +103,9 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             show: true,
             fontFamily: 'Times New Roman,STSong',
             fontWeight: 'normal',
+            formatter: function (value :any, index:any) {
+              return value.toFixed(1);
+            }
           },
           nameTextStyle: {
             // lineHeight: 56,
@@ -80,7 +115,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             fontFamily: 'Times New Roman,STSong',
             align: 'left',
           },
-        },
+        }],
         animation: false,
         toolbox: {
           feature: {
@@ -125,6 +160,8 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             type: 'scatter',
             name: 'ecoli',
             symbolSize: 5,
+            xAxisIndex: 0,
+            yAxisIndex: 0,
             color: 'rgba(255,99,71,0.5)',
             data: ecoliData,
             itemStyle: { borderWidth: 1, borderColor: 'tomato' },
@@ -168,6 +205,8 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             type: 'scatter',
             name: 'human',
             symbolSize: 5,
+            xAxisIndex: 0,
+            yAxisIndex: 0,
             color: 'rgba(64,144,247,0.5)',
             itemStyle: { borderWidth: 1, borderColor: 'rgba(64,144,247)' },
             data: humanData,
@@ -211,6 +250,8 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             type: 'scatter',
             name: 'yeast',
             symbolSize: 5,
+            xAxisIndex: 0,
+            yAxisIndex: 0,
             color: 'rgba(60,179,113,0.5)',
             itemStyle: { borderWidth: 1, borderColor: 'rgba(60,179,113)' },
             data: yeastData,
@@ -267,7 +308,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
 
   return (
     <Row>
-      <Col span="8">
+      <Col span="6">
         <Descriptions title="蛋白鉴定数(Unique)" column={2}>
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyProteinNumA}</Tag>
@@ -346,7 +387,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
           </Descriptions.Item>
         </Descriptions>
       </Col>
-      <Col span="16">
+      <Col span="18">
         <ReactECharts
           ref={(e) => {
             setEcharts(e);
