@@ -76,11 +76,12 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             },
           },
           {
+            show: true,
             top: '5%',
             left: '81%',
             right: '3%',
             bottom: '2%',
-            containLabel: false,
+            containLabel: true,
           },
         ],
         xAxis: [
@@ -115,8 +116,6 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
           {
             type: 'category',
             gridIndex: 1,
-            boundaryGap: true,
-            nameGap: 30,
             splitArea: {
               show: false,
             },
@@ -124,10 +123,16 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
               show: false,
             },
             axisLabel: {
-              show: false,
+              color: '#000',
+              show: true,
+              fontFamily: 'Times New Roman,STSong',
+              fontWeight: 'normal',
             },
-            axisLine: { show: false },
-            axisTick: { show: false },
+            // axisLabel: {
+            //   show: false,
+            // },
+            // axisLine: { show: false },
+            // axisTick: { show: false },
           },
         ],
         yAxis: [
@@ -161,7 +166,6 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             },
           },
           {
-            nameLocation: 'middle',
             gridIndex: 1,
             min: minY,
             max: maxY,
@@ -197,7 +201,14 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         },
         dataset: [
           {
+            dimensions: ['name', 'data'],
             source: [
+              // { name: 'ecoli', data: result.data.ecoliPercentile },
+              // { name: 'human', data: result.data.humanPercentile },
+              // { name: 'yeast', data: result.data.yeastPercentile },
+              // result.data.ecoliPercentile.unshift('ecoli'),
+              // result.data.humanPercentile.unshift('human'),
+              // result.data.yeastPercentile.unshift('yeast'),
               result.data.ecoliPercentile,
               result.data.humanPercentile,
               result.data.yeastPercentile,
@@ -353,8 +364,19 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             xAxisIndex: 1,
             yAxisIndex: 1,
             type: 'boxplot',
-            dimensions: ['ecoli', 'human', 'yeast'],
+            datasetIndex: 1,
             tooltip: {
+              formatter(param: { name: any; data: any[] }) {
+                console.log(param);
+                return [
+                  `Experiment ${param.name}: `,
+                  `upper: ${param.data[5]}`,
+                  `Q3: ${param.data[4]}`,
+                  `median: ${param.data[3]}`,
+                  `Q1: ${param.data[2]}`,
+                  `lower: ${param.data[1]}`,
+                ].join('<br/>');
+              },
               backgroundColor: ['rgba(255,255,255,0.9)'],
               axisPointer: {
                 type: 'cross',
@@ -371,6 +393,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
           {
             xAxisIndex: 1,
             yAxisIndex: 1,
+            datasetIndex: 2,
             type: 'scatter',
           },
         ],

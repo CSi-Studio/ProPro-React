@@ -275,6 +275,7 @@ const TableList: React.FC = (props: any) => {
         setLoading(false);
         if (result.data?.project?.name.substring(0, 3) === 'HYE') {
           const rationData = await getPeptideRatio({ projectId });
+          console.log('rationData', rationData);
           setPeptideRatioData(rationData);
         }
         rtPairsData({
