@@ -470,25 +470,28 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             )}%`}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="Yeast(Avg:SD:CV)" column={1}>
+        <Descriptions title="Yeast(Avg:SD:CV:Percentile50)" column={1}>
           <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.yeastAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.yeastCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.yeastSD.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.yeastPercentile[50].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="Human(Avg:SD:CV)" column={1}>
+        <Descriptions title="Human(Avg:SD:CV:Percentile50)" column={1}>
           <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.humanAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.humanCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.humanSD.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.humanPercentile[50].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="EColi(Avg:SD:CV)" column={1}>
+        <Descriptions title="EColi(Avg:SD:CV:Percentile50)" column={1}>
           <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.ecoliAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.ecoliCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.ecoliSD.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.ecoliPercentile[50].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
       </Col>

@@ -304,6 +304,9 @@ const TableList: React.FC = (props: any) => {
       title: '备注',
       dataIndex: 'note',
       hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.note > b?.note ? -1 : 1;
+      },
     },
     {
       key: 'createDate',

@@ -1,5 +1,5 @@
 import React from 'react';
-import ProForm, { ModalForm, ProFormSelect } from '@ant-design/pro-form';
+import ProForm, { ModalForm, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form';
 import type { AnalyzeParams } from '../data';
 import { YesOrNo } from '@/components/Enums/Selects';
 
@@ -93,6 +93,13 @@ const AnalyzeForm: React.FC<AnalyzeFormProps> = (props) => {
           name="onlyIrt"
           label="仅执行Irt"
           options={YesOrNo}
+        />
+      </ProForm.Group>
+      <ProForm.Group>
+        <ProFormTextArea
+          width="lg"
+          name="note"
+          label="备注"
         />
       </ProForm.Group>
     </ModalForm>
