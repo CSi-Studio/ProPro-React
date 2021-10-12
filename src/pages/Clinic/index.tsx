@@ -850,7 +850,7 @@ const TableList: React.FC = (props: any) => {
                   )}
                 </Spin>
               </TabPane>
-              <TabPane tab="OverView" key="7">
+              <TabPane tab="峰组得分" key="7">
                 <OverView values={{ prepareData, expData }} />
               </TabPane>
             </Tabs>
