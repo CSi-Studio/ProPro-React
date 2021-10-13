@@ -433,7 +433,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       {
         data: [...new Set([].concat(...allCutInfo))],
         right: '6%',
-        width: '77%',
+        width: '65%',
         top: `${6}px`,
         padding: 0,
         type: 'scroll',

@@ -535,23 +535,25 @@ const TableList: React.FC = (props: any) => {
 
   /* 点击LFQBench里的点切换EIC图 */
   const LFQClick = async (protein: string, peptide: string) => {
-    setLfqStatus(true);
-    // 切换蛋白和肽段
-    setProteinRowKey(protein);
-    const peptideResult = await onProteinChange(protein);
-    setPeptideSel(peptide);
-    setTabActiveKey('1');
+    if (protein) {
+      setLfqStatus(true);
+      // 切换蛋白和肽段
+      setProteinRowKey(protein);
+      const peptideResult = await onProteinChange(protein);
+      setPeptideSel(peptide);
+      setTabActiveKey('1');
 
-    /* 设置table 页码 */
-    prepareData?.proteins.forEach((item, index) => {
-      if (item === protein) {
-        setProteinPage(Math.ceil((index + 1) / proteinPageSize));
-      }
-    });
-    const peptideArr = peptideResult.map((item: { peptideRef: any }) => {
-      return item.peptideRef;
-    });
-    setPeptidePage(Math.ceil((peptideArr.indexOf(peptide) + 1) / peptidePageSize));
+      /* 设置table 页码 */
+      prepareData?.proteins.forEach((item, index) => {
+        if (item === protein) {
+          setProteinPage(Math.ceil((index + 1) / proteinPageSize));
+        }
+      });
+      const peptideArr = peptideResult.map((item: { peptideRef: any }) => {
+        return item.peptideRef;
+      });
+      setPeptidePage(Math.ceil((peptideArr.indexOf(peptide) + 1) / peptidePageSize));
+    }
   };
 
   /* 点击坐标点展示光谱图 */

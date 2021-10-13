@@ -42,12 +42,18 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
       });
 
       setRatioData(result.data);
+      const median = (arr: any) => {
+        const mid = Math.floor(arr.length / 2);
+        const nums = [...arr].sort((a: any, b: any) => a - b);
+        return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+      };
+
       const option = {
         grid: [
           {
             show: true,
             top: '5%',
-            left: '1%',
+            left: '3%',
             right: '19%',
             bottom: '2%',
             containLabel: true,
@@ -138,6 +144,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         yAxis: [
           {
             nameRotate: 90,
+            nameGap: 30,
             nameLocation: 'middle',
             gridIndex: 0,
             name: 'Log2(A:B)',
@@ -163,6 +170,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
               fontWeight: 'bold',
               fontFamily: 'Times New Roman,STSong',
               align: 'left',
+              padding: '40',
             },
           },
           {
@@ -201,7 +209,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         },
         dataset: [
           {
-            dimensions: ['name', 'data'],
+            // dimensions: ['name', 'data'],
             source: [
               // { name: 'ecoli', data: result.data.ecoliPercentile },
               // { name: 'human', data: result.data.humanPercentile },
@@ -217,6 +225,17 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
           {
             transform: {
               type: 'boxplot',
+              config: {
+                itemNameFormatter: (params: any) => {
+                  if (params.value === 0) {
+                    return 'ecoli';
+                  }
+                  if (params.value === 1) {
+                    return 'human';
+                  }
+                  return 'yeast';
+                },
+              },
             },
           },
           {
@@ -250,7 +269,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
                 },
               },
               label: { show: false },
-              data: [{ yAxis: result.data.ecoliAvg, name: 'ecoli' }],
+              data: [{ yAxis: median(result.data.ecoliPercentile), name: 'ecoli' }],
               tooltip: {
                 backgroundColor: ['rgba(255,255,255,0.9)'],
                 axisPointer: {
@@ -264,7 +283,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
                   fontFamily: 'Times New Roman,STSong',
                 },
                 formatter: (params: { value: number; name: string }) => {
-                  const res = `${params.name}</br>平均值：${params.value}`;
+                  const res = `${params.name}</br>中位数：${params.value}`;
                   return res;
                 },
               },
@@ -295,7 +314,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
                 },
               },
               label: { show: false },
-              data: [{ yAxis: result.data.humanAvg, name: 'human' }],
+              data: [{ yAxis: median(result.data.humanPercentile), name: 'human' }],
               tooltip: {
                 backgroundColor: ['rgba(255,255,255,0.9)'],
                 axisPointer: {
@@ -340,7 +359,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
                 },
               },
               label: { show: false },
-              data: [{ yAxis: result.data.yeastAvg, name: 'yeast' }],
+              data: [{ yAxis: median(result.data.yeastPercentile), name: 'yeast' }],
               tooltip: {
                 backgroundColor: ['rgba(255,255,255,0.9)'],
                 axisPointer: {
@@ -361,20 +380,20 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             },
           },
           {
+            name: 'BoxPlot',
             xAxisIndex: 1,
             yAxisIndex: 1,
             type: 'boxplot',
             datasetIndex: 1,
             tooltip: {
               formatter(param: { name: any; data: any[] }) {
-                console.log(param);
                 return [
-                  `Experiment ${param.name}: `,
-                  `upper: ${param.data[5]}`,
-                  `Q3: ${param.data[4]}`,
-                  `median: ${param.data[3]}`,
-                  `Q1: ${param.data[2]}`,
-                  `lower: ${param.data[1]}`,
+                  `<strong>${param.name}</strong>`,
+                  `Max: &nbsp&nbsp${param.data[5]}`,
+                  `Q3 &nbsp: &nbsp&nbsp${param.data[4]}`,
+                  `Med: &nbsp&nbsp${param.data[3]}`,
+                  `Q1 &nbsp: &nbsp&nbsp${param.data[2]}`,
+                  `Min: &nbsp&nbsp${param.data[1]}`,
                 ].join('<br/>');
               },
               backgroundColor: ['rgba(255,255,255,0.9)'],
@@ -391,10 +410,10 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             },
           },
           {
+            type: 'scatter',
             xAxisIndex: 1,
             yAxisIndex: 1,
             datasetIndex: 2,
-            type: 'scatter',
           },
         ],
       };
@@ -406,9 +425,11 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   /* 点击某个点跳到EIC图 */
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
-    const protein = params?.data[2].split('-->')[0];
-    const peptide = params?.data[2].split('-->')[1];
-    props.values.LFQClick(protein, peptide);
+    if (params.seriesType === 'scatter') {
+      const protein = params?.data[2]?.split('-->')[0];
+      const peptide = params?.data[2]?.split('-->')[1];
+      props?.values.LFQClick(protein, peptide);
+    }
   });
 
   return (
@@ -470,28 +491,28 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             )}%`}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="Yeast(Avg:SD:CV:Percentile50)" column={1}>
+        <Descriptions title="Yeast(Avg:SD:CV:Percentile49)" column={1}>
           <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.yeastAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.yeastCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.yeastSD.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.yeastPercentile[50].toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.yeastPercentile[49].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="Human(Avg:SD:CV:Percentile50)" column={1}>
+        <Descriptions title="Human(Avg:SD:CV:Percentile49)" column={1}>
           <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.humanAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.humanCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.humanSD.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.humanPercentile[50].toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.humanPercentile[49].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="EColi(Avg:SD:CV:Percentile50)" column={1}>
+        <Descriptions title="EColi(Avg:SD:CV:Percentile49)" column={1}>
           <Descriptions.Item label="Stat">
             <Tag color="blue">{ratioData?.ecoliAvg.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.ecoliCV.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.ecoliSD.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.ecoliPercentile[50].toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.ecoliPercentile[49].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
       </Col>
