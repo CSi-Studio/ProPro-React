@@ -40,61 +40,47 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         maxY = data.y > maxY ? data.y : maxY;
         return [data.x, data.y, data.peptide];
       });
-
       setRatioData(result.data);
 
       /* 四分位数 */
       const boxplotData = (arr: any) => {
-        const nums = [...arr].sort((a: any, b: any) => (a - b ? -1 : 1));
+        const data = [...arr].sort((a: any, b: any) => (a - b ? -1 : 1));
         const q2 = Math.floor(arr.length / 2);
         const q1 = Math.floor(Math.ceil(arr.length / 4));
         const q3 = Math.floor(Math.ceil(arr.length * 0.75));
         return [
-          nums[q1] - 1.5 * (Math.abs(nums[q3]) - Math.abs(nums[q1])),
-          (nums[q1] + nums[q1 - 1]) / 2,
-          nums.length % 2 !== 0 ? nums[q2] : (nums[q2 - 1] + nums[q2]) / 2,
-          (nums[q3] + nums[q3 - 1]) / 2,
-          nums[q3] + 1.5 * (Math.abs(nums[q3]) - Math.abs(nums[q1])),
+          data[q1] -
+            1.5 *
+              ((data[q3] < 0 && data[q1] > 0) || (data[q3] > 0 && data[q1] < 0)
+                ? Math.abs(data[q1]) + Math.abs(data[q3])
+                : Math.abs(Math.abs(data[q3]) - Math.abs(data[q1]))),
+          (data[q1] + data[q1 - 1]) / 2,
+          data.length % 2 !== 0 ? data[q2] : (data[q2 - 1] + data[q2]) / 2,
+          (data[q3] + data[q3 - 1]) / 2,
+          data[q3] +
+            1.5 *
+              ((data[q3] < 0 && data[q1] > 0) || (data[q3] > 0 && data[q1] < 0)
+                ? Math.abs(data[q1]) + Math.abs(data[q3])
+                : Math.abs(Math.abs(data[q3]) - Math.abs(data[q1]))),
         ];
       };
-      console.log('ecoli--', boxplotData(result.data.ecoliPercentile));
-      console.log('human--', boxplotData(result.data.humanPercentile));
-      console.log('yeast--', boxplotData(result.data.yeastPercentile));
 
-      const abnormalValue = (arr: any) => {
+      const abnormalValue = (index: number, arr: any) => {
         const data: any[] = [];
         arr.forEach((item: any) => {
-          if (
-            item < boxplotData(result.data.ecoliPercentile)[0] ||
-            item > boxplotData(result.data.ecoliPercentile)[4]
-          ) {
+          if (item < boxplotData(arr)[0] || item > boxplotData(arr)[4]) {
             data.push(item);
           }
         });
-        return data;
+        const data1 = data.map((_item: any) => {
+          return [index, _item];
+        });
+        return data1;
       };
-      console.log('ecoli==', abnormalValue(result.data.ecoliPercentile));
-      console.log('human==', abnormalValue(result.data.humanPercentile));
-      console.log('yeast==', abnormalValue(result.data.yeastPercentile));
-
-      // console.log(
-      //   boxplotData(result.data.ecoliPercentile)[1] -
-      //     1.5 *
-      //       (boxplotData(result.data.ecoliPercentile)[3] -
-      //         boxplotData(result.data.ecoliPercentile)[1]),
-      // );
-      // console.log(
-      //   boxplotData(result.data.humanPercentile)[1] -
-      //     1.5 *
-      //       (boxplotData(result.data.humanPercentile)[3] -
-      //         boxplotData(result.data.humanPercentile)[1]),
-      // );
-      // console.log(
-      //   boxplotData(result.data.yeastPercentile)[1] -
-      //     1.5 *
-      //       (boxplotData(result.data.yeastPercentile)[3] -
-      //         boxplotData(result.data.yeastPercentile)[1]),
-      // );
+      const abnormalData = [];
+      abnormalData.push(...abnormalValue(0, result.data.ecoliPercentile));
+      abnormalData.push(...abnormalValue(1, result.data.humanPercentile));
+      abnormalData.push(...abnormalValue(2, result.data.yeastPercentile));
 
       const option = {
         grid: [
@@ -176,9 +162,10 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             splitLine: {
               show: false,
             },
-            // data: ['ecoli', 'human', 'yeast'],
+            data: ['ecoli', 'human', 'yeast'],
             axisLabel: {
               // color: 'transparent',
+              color: '#000',
               show: true,
               fontFamily: 'Times New Roman,STSong',
               fontWeight: 'normal',
@@ -251,81 +238,6 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             fontFamily: 'Times New Roman,STSong',
           },
         },
-        dataset: [
-          {
-            source: [result.data.ecoliPercentile],
-          },
-          {
-            source: [result.data.humanPercentile],
-          },
-          {
-            source: [result.data.yeastPercentile],
-          },
-          {
-            fromDatasetIndex: 0,
-            transform: {
-              type: 'boxplot',
-              // config: {
-              //   itemNameFormatter: (params: any) => {
-              //     if (params.value === 0) {
-              //       return 'ecoli';
-              //     }
-              //     if (params.value === 1) {
-              //       return 'human';
-              //     }
-              //     return 'yeast';
-              //   },
-              // },
-            },
-          },
-          {
-            fromDatasetIndex: 1,
-            transform: {
-              type: 'boxplot',
-              print: true,
-              // config: {
-              //   itemNameFormatter: (params: any) => {
-              //     if (params.value === 0) {
-              //       return 'ecoli';
-              //     }
-              //     if (params.value === 1) {
-              //       return 'human';
-              //     }
-              //     return 'yeast';
-              //   },
-              // },
-            },
-          },
-          {
-            fromDatasetIndex: 2,
-            transform: {
-              type: 'boxplot',
-              // config: {
-              //   itemNameFormatter: (params: any) => {
-              //     if (params.value === 0) {
-              //       return 'ecoli';
-              //     }
-              //     if (params.value === 1) {
-              //       return 'human';
-              //     }
-              //     return 'yeast';
-              //   },
-              // },
-            },
-          },
-          {
-            fromDatasetIndex: 3,
-            fromTransformResult: 1,
-          },
-          {
-            fromDatasetIndex: 4,
-            fromTransformResult: 1,
-          },
-          {
-            fromDatasetIndex: 5,
-            fromTransformResult: 1,
-          },
-        ],
         series: [
           {
             type: 'scatter',
@@ -443,38 +355,37 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             },
           },
           {
-            name: 'ecoli',
+            // name: 'ecoli',
             xAxisIndex: 1,
             yAxisIndex: 1,
             boxWidth: [7, 20],
-            datasetIndex: 3,
-
-            // data: [
-            //   {
-            //     name: 'ecoli',
-            //     value: boxplotData(result.data.ecoliPercentile),
-            //   },
-            //   {
-            //     name: 'human',
-            //     value: [],
-            //   },
-            //   {
-            //     name: 'yeast',
-            //     value: [],
-            //   },
-            // ],
             type: 'boxplot',
-            color: 'rgba(255,99,71,0.5)',
+            colorBy: 'data',
+            color: ['rgba(255,99,71,0.5)', 'rgba(64,144,247,0.5)', 'rgba(60,179,113,0.5)'],
+            data: [
+              {
+                name: 'ecoli',
+                value: boxplotData(result.data.ecoliPercentile),
+              },
+              {
+                name: 'human',
+                value: boxplotData(result.data.humanPercentile),
+              },
+              {
+                name: 'yeast',
+                value: boxplotData(result.data.yeastPercentile),
+              },
+            ],
             itemStyle: { borderWidth: 2 },
             tooltip: {
-              formatter(param: { seriesName: any; data: any[] }) {
+              formatter(param: { name: any; data: any }) {
                 return [
-                  `<strong>${param.seriesName}</strong>`,
-                  `Max: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[4]}`,
-                  `Q3 &nbsp: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[3]}`,
-                  `Med: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[2]}`,
-                  `Q1 &nbsp: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[1]}`,
-                  `Min: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[0]}`,
+                  `<strong>${param.name}</strong>`,
+                  `Max: &nbsp&nbsp${param.data.value[5]}`,
+                  `Q3 &nbsp: &nbsp&nbsp${param.data.value[4]}`,
+                  `Med: &nbsp&nbsp${param.data.value[3]}`,
+                  `Q1 &nbsp: &nbsp&nbsp${param.data.value[2]}`,
+                  `Min: &nbsp&nbsp${param.data.value[1]}`,
                 ].join('<br/>');
               },
               backgroundColor: ['rgba(255,255,255,0.9)'],
@@ -492,13 +403,29 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             markLine: {
               symbol: ['none', 'none'],
               animation: false,
+              colorBy: 'data',
               lineStyle: {
                 type: 'dashed',
-                color: 'rgba(255,99,71,0.5)',
                 width: 3,
               },
               label: { show: false },
-              data: [{ yAxis: boxplotData(result.data.ecoliPercentile)[2], name: 'ecoli' }],
+              data: [
+                {
+                  yAxis: boxplotData(result.data.ecoliPercentile)[2],
+                  name: 'ecoli',
+                  lineStyle: { color: 'rgba(255,99,71,0.5)' },
+                },
+                {
+                  yAxis: boxplotData(result.data.humanPercentile)[2],
+                  name: 'human',
+                  lineStyle: { color: 'rgba(64,144,247,0.5)' },
+                },
+                {
+                  yAxis: boxplotData(result.data.yeastPercentile)[2],
+                  name: 'yeast',
+                  lineStyle: { color: 'rgba(60,179,113,0.5)' },
+                },
+              ],
               tooltip: {
                 backgroundColor: ['rgba(255,255,255,0.9)'],
                 axisPointer: {
@@ -515,124 +442,13 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             },
           },
           {
-            name: 'ecoli',
+            // name: 'ecoli',
             type: 'scatter',
             xAxisIndex: 1,
             yAxisIndex: 1,
-            // data: [
-            //   abnormalValue(result.data.ecoliPercentile)[0],
-            //   // abnormalValue(result.data.ecoliPercentile)[1],
-            //   // {
-            //   //   name: 'ecoli',
-            //   //   value: abnormalValue(result.data.ecoliPercentile),
-            //   // },
-            //   // {
-            //   //   name: 'human',
-            //   //   value: null,
-            //   // },
-            //   // {
-            //   //   name: 'yeast',
-            //   //   value: null,
-            //   // },
-            // ],
-            datasetIndex: 6,
-            color: 'rgba(255,99,71,0.5)',
-          },
-          {
-            name: 'human',
-            xAxisIndex: 1,
-            yAxisIndex: 1,
-            type: 'boxplot',
-            datasetIndex: 4,
-
-            // data: [
-            //   {
-            //     name: 'ecoli',
-            //     value: [],
-            //   },
-            //   {
-            //     name: 'human',
-            //     value: boxplotData(result.data.humanPercentile),
-            //   },
-            //   {
-            //     name: 'yeast',
-            //     value: [],
-            //   },
-            // ],
-            boxWidth: [7, 20],
-            color: 'rgba(64,144,247,0.5)',
-            itemStyle: { borderWidth: 2 },
-            tooltip: {
-              formatter(param: { seriesName: any; data: any[] }) {
-                console.log(param);
-
-                return [
-                  `<strong>${param.seriesName}</strong>`,
-                  `Max: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[4]}`,
-                  `Q3 &nbsp: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[3]}`,
-                  `Med: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[2]}`,
-                  `Q1 &nbsp: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[1]}`,
-                  `Min: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[0]}`,
-                ].join('<br/>');
-              },
-              backgroundColor: ['rgba(255,255,255,0.9)'],
-              axisPointer: {
-                type: 'cross',
-                snap: true,
-              },
-              textStyle: {
-                color: '#000',
-                fontSize: '14',
-                fontWeight: 'normal',
-                fontFamily: 'Times New Roman,STSong',
-              },
-            },
-            markLine: {
-              symbol: ['none', 'none'],
-              animation: false,
-              lineStyle: {
-                type: 'dashed',
-                color: 'rgba(64,144,247,0.5)',
-                width: 3,
-              },
-              label: { show: false },
-              data: [{ yAxis: boxplotData(result.data.humanPercentile)[2], name: 'human' }],
-              tooltip: {
-                backgroundColor: ['rgba(255,255,255,0.9)'],
-                axisPointer: {
-                  type: 'cross',
-                  snap: true,
-                },
-                textStyle: {
-                  color: '#000',
-                  fontSize: '14',
-                  fontWeight: 'normal',
-                  fontFamily: 'Times New Roman,STSong',
-                },
-              },
-            },
-          },
-          {
-            type: 'scatter',
-            name: 'human',
-            xAxisIndex: 1,
-            yAxisIndex: 1,
-            datasetIndex: 7,
-            // data: [
-            //   {
-            //     name: 'ecoli',
-            //     value: [],
-            //   },
-            //   {
-            //     name: 'human',
-            //     // value: abnormalValue(result.data.humanPercentile),
-            //   },
-            //   {
-            //     name: 'yeast',
-            //     value: [],
-            //   },
-            // ],
-            color: 'rgba(64,144,247,0.5)',
+            colorBy: 'data',
+            color: ['rgba(255,99,71,0.5)', 'rgba(64,144,247,0.5)', 'rgba(60,179,113,0.5)'],
+            data: abnormalData,
             tooltip: {
               backgroundColor: ['rgba(255,255,255,0.9)'],
               axisPointer: {
@@ -645,104 +461,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
                 fontWeight: 'normal',
                 fontFamily: 'Times New Roman,STSong',
               },
-              // formatter: (params: { value: number; name: string }) => {
-              //   console.log(params);
-              // },
             },
-          },
-          {
-            name: 'yeast',
-            xAxisIndex: 1,
-            yAxisIndex: 1,
-            type: 'boxplot',
-            boxWidth: [7, 20],
-            datasetIndex: 5,
-
-            // data: [
-            //   {
-            //     name: 'ecoli',
-            //     value: [],
-            //   },
-            //   {
-            //     name: 'human',
-            //     value: [],
-            //   },
-            //   {
-            //     name: 'yeast',
-            //     value: boxplotData(result.data.yeastPercentile),
-            //   },
-            // ],
-            color: 'rgba(60,179,113,0.5)',
-            itemStyle: { borderWidth: 2 },
-            tooltip: {
-              formatter(param: { seriesName: any; data: any[] }) {
-                return [
-                  `<strong>${param.seriesName}</strong>`,
-                  `Max: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[4]}`,
-                  `Q3 &nbsp: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[3]}`,
-                  `Med: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[2]}`,
-                  `Q1 &nbsp: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[1]}`,
-                  `Min: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[0]}`,
-                ].join('<br/>');
-              },
-              backgroundColor: ['rgba(255,255,255,0.9)'],
-              axisPointer: {
-                type: 'cross',
-                snap: true,
-              },
-              textStyle: {
-                color: '#000',
-                fontSize: '14',
-                fontWeight: 'normal',
-                fontFamily: 'Times New Roman,STSong',
-              },
-            },
-            markLine: {
-              symbol: ['none', 'none'],
-              animation: false,
-              lineStyle: {
-                type: 'dashed',
-                color: 'rgba(60,179,113,0.5)',
-                width: 3,
-              },
-              label: { show: false },
-              data: [{ yAxis: boxplotData(result.data.yeastPercentile)[2], name: 'yeast' }],
-              tooltip: {
-                backgroundColor: ['rgba(255,255,255,0.9)'],
-                axisPointer: {
-                  type: 'cross',
-                  snap: true,
-                },
-                textStyle: {
-                  color: '#000',
-                  fontSize: '14',
-                  fontWeight: 'normal',
-                  fontFamily: 'Times New Roman,STSong',
-                },
-              },
-            },
-          },
-          {
-            name: 'yeast',
-            // data: [
-            //   {
-            //     name: 'ecoli',
-            //     value: [],
-            //   },
-            //   {
-            //     name: 'human',
-            //     value: [],
-            //   },
-            //   {
-            //     name: 'yeast',
-            //     value: boxplotData(result.data.yeastPercentile),
-            //   },
-            // ],
-            type: 'scatter',
-            color: 'rgba(60,179,113,0.5)',
-            xAxisIndex: 1,
-            yAxisIndex: 1,
-            datasetIndex: 8,
           },
         ],
       };
