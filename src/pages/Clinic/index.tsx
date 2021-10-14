@@ -275,7 +275,7 @@ const TableList: React.FC = (props: any) => {
         setLoading(false);
         if (result.data?.project?.name.substring(0, 3) === 'HYE') {
           const rationData = await getPeptideRatio({ projectId });
-          console.log('rationData', rationData);
+          // console.log('rationData', rationData);
           setPeptideRatioData(rationData);
         }
         rtPairsData({
@@ -588,7 +588,7 @@ const TableList: React.FC = (props: any) => {
         ),
       }}
     >
-      <ProCard style={{ padding: '0 18px', height: '1000px' }}>
+      <ProCard style={{ padding: '0 18px', minHeight: '1000px' }}>
         <Row>
           <Col span={4}>
             <Row>
@@ -637,7 +637,7 @@ const TableList: React.FC = (props: any) => {
                     current: proteinPage,
                     size: 'small',
                     showSizeChanger: false,
-                    showQuickJumper: false,
+                    showQuickJumper: true,
                     pageSize: proteinPageSize,
                     showTotal: () => null,
                     position: ['bottomRight'],
@@ -796,7 +796,8 @@ const TableList: React.FC = (props: any) => {
                 </Row>
               </TabPane>
               <TabPane tab="打分结果" key="2">
-                <ScoreResults values={{ prepareData, expData }} />
+                {/* <ScoreResults values={{ prepareData, expData }} /> */}
+                <OverView values={{ prepareData, expData }} />
               </TabPane>
               {prepareData?.project?.name.substring(0, 3) === 'HYE' ? (
                 <TabPane tab="LFQBench" key="3">
@@ -853,9 +854,9 @@ const TableList: React.FC = (props: any) => {
                   )}
                 </Spin>
               </TabPane>
-              <TabPane tab="峰组得分" key="7">
-                <OverView values={{ prepareData, expData }} />
-              </TabPane>
+              {/* <TabPane tab="峰组得分" key="7"> */}
+              {/* <OverView values={{ prepareData, expData }} /> */}
+              {/* </TabPane> */}
             </Tabs>
           </Col>
         </Row>

@@ -10,13 +10,13 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
   const [ovRowKey, setOvRowKey] = useState<any>();
   const { prepareData, expData } = props.values;
 
-  let scoreResult = expData.map((item: any) => {
+  let scoreResult: any[] = expData.map((item: any) => {
     return item.scoreList.map((_item: any, index: any) => ({
       expId: item.expId,
       alias: item.alias,
       status: item.status,
-      realRt: item.realRt,
-      sum: item.sum,
+      realRt: _item.rt,
+      sum: _item.intensitySum,
       minTotalScore: item.minTotalScore,
       index,
       key: _item.rt,
@@ -25,6 +25,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
     }));
   });
   scoreResult = [].concat(...scoreResult); // 拍平数组
+  const pageSize: number = scoreResult.length;
+  console.log(expData);
 
   /* 打分结果Columns */
   let scoreColumns: any = [
@@ -225,7 +227,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           tableAlertRender={false}
           pagination={{
             hideOnSinglePage: true,
-            pageSize: 23,
+            pageSize,
             size: 'small',
           }}
         />

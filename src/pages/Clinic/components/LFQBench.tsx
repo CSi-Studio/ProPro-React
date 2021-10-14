@@ -62,16 +62,16 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
           Math.max.apply(null, arr),
         ];
       };
-      console.log(boxplotData(result.data.ecoliPercentile));
-      console.log(boxplotData(result.data.humanPercentile));
-      console.log(boxplotData(result.data.yeastPercentile));
+      // console.log(boxplotData(result.data.ecoliPercentile));
+      // console.log(boxplotData(result.data.humanPercentile));
+      // console.log(boxplotData(result.data.yeastPercentile));
 
       const abnormalValue = (arr: any) => {
         const nums = [...arr].sort((a: any, b: any) => (a - b ? -1 : 1));
         const data: any[] = [];
 
-        console.log(boxplotData(nums)[1] - 1.5 * (boxplotData(nums)[3] - boxplotData(nums)[1]));
-        console.log(boxplotData(nums)[3] + 1.5 * (boxplotData(nums)[3] - boxplotData(nums)[1]));
+        // console.log(boxplotData(nums)[1] - 1.5 * (boxplotData(nums)[3] - boxplotData(nums)[1]));
+        // console.log(boxplotData(nums)[3] + 1.5 * (boxplotData(nums)[3] - boxplotData(nums)[1]));
 
         arr.forEach((item: any) => {
           if (
@@ -576,11 +576,11 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
               formatter(param: { seriesName: any; data: any[] }) {
                 return [
                   `<strong>${param.seriesName}</strong>`,
-                  `Max: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[4]}`,
-                  `Q3 &nbsp: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[3]}`,
-                  `Med: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[2]}`,
-                  `Q1 &nbsp: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[1]}`,
-                  `Min: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[0]}`,
+                  `Max: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[4]}`,
+                  `Q3 &nbsp: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[3]}`,
+                  `Med: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[2]}`,
+                  `Q1 &nbsp: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[1]}`,
+                  `Min: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[0]}`,
                 ].join('<br/>');
               },
               backgroundColor: ['rgba(255,255,255,0.9)'],
@@ -683,11 +683,11 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
               formatter(param: { seriesName: any; data: any[] }) {
                 return [
                   `<strong>${param.seriesName}</strong>`,
-                  `Max: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[4]}`,
-                  `Q3 &nbsp: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[3]}`,
-                  `Med: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[2]}`,
-                  `Q1 &nbsp: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[1]}`,
-                  `Min: &nbsp&nbsp${boxplotData(result.data.ecoliPercentile)[0]}`,
+                  `Max: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[4]}`,
+                  `Q3 &nbsp: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[3]}`,
+                  `Med: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[2]}`,
+                  `Q1 &nbsp: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[1]}`,
+                  `Min: &nbsp&nbsp${boxplotData(result.data.yeastPercentile)[0]}`,
                 ].join('<br/>');
               },
               backgroundColor: ['rgba(255,255,255,0.9)'],
