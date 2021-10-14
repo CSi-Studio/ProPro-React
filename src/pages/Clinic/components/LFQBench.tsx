@@ -42,12 +42,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
       });
 
       setRatioData(result.data);
-      /* 中位数 */
-      const median = (arr: any) => {
-        const mid = Math.floor(arr.length / 2);
-        const nums = [...arr].sort((a: any, b: any) => a - b);
-        return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
-      };
+
       /* 四分位数 */
       const boxplotData = (arr: any) => {
         const nums = [...arr].sort((a: any, b: any) => (a - b ? -1 : 1));
@@ -55,37 +50,32 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         const q1 = Math.floor(Math.ceil(arr.length / 4));
         const q3 = Math.floor(Math.ceil(arr.length * 0.75));
         return [
-          Math.min.apply(null, arr),
-          (arr[q1] + arr[q1 - 1]) / 2,
-          arr.length % 2 !== 0 ? nums[q2] : (nums[q2 - 1] + nums[q2]) / 2,
-          (arr[q3] + arr[q3 - 1]) / 2,
-          Math.max.apply(null, arr),
+          nums[q1] - 1.5 * (Math.abs(nums[q3]) - Math.abs(nums[q1])),
+          (nums[q1] + nums[q1 - 1]) / 2,
+          nums.length % 2 !== 0 ? nums[q2] : (nums[q2 - 1] + nums[q2]) / 2,
+          (nums[q3] + nums[q3 - 1]) / 2,
+          nums[q3] + 1.5 * (Math.abs(nums[q3]) - Math.abs(nums[q1])),
         ];
       };
-      // console.log(boxplotData(result.data.ecoliPercentile));
-      // console.log(boxplotData(result.data.humanPercentile));
-      // console.log(boxplotData(result.data.yeastPercentile));
+      console.log('ecoli--', boxplotData(result.data.ecoliPercentile));
+      console.log('human--', boxplotData(result.data.humanPercentile));
+      console.log('yeast--', boxplotData(result.data.yeastPercentile));
 
       const abnormalValue = (arr: any) => {
-        const nums = [...arr].sort((a: any, b: any) => (a - b ? -1 : 1));
         const data: any[] = [];
-
-        // console.log(boxplotData(nums)[1] - 1.5 * (boxplotData(nums)[3] - boxplotData(nums)[1]));
-        // console.log(boxplotData(nums)[3] + 1.5 * (boxplotData(nums)[3] - boxplotData(nums)[1]));
-
         arr.forEach((item: any) => {
           if (
-            item < boxplotData(nums)[1] - 1.5 * (boxplotData(nums)[3] - boxplotData(nums)[1]) ||
-            item > boxplotData(nums)[3] + 1.5 * (boxplotData(nums)[3] - boxplotData(nums)[1])
+            item < boxplotData(result.data.ecoliPercentile)[0] ||
+            item > boxplotData(result.data.ecoliPercentile)[4]
           ) {
             data.push(item);
           }
         });
         return data;
       };
-      // console.log(abnormalValue(result.data.ecoliPercentile));
-      // console.log(abnormalValue(result.data.humanPercentile));
-      // console.log(abnormalValue(result.data.yeastPercentile));
+      console.log('ecoli==', abnormalValue(result.data.ecoliPercentile));
+      console.log('human==', abnormalValue(result.data.humanPercentile));
+      console.log('yeast==', abnormalValue(result.data.yeastPercentile));
 
       // console.log(
       //   boxplotData(result.data.ecoliPercentile)[1] -
@@ -186,7 +176,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             splitLine: {
               show: false,
             },
-            data: ['ecoli', 'human', 'yeast'],
+            // data: ['ecoli', 'human', 'yeast'],
             axisLabel: {
               // color: 'transparent',
               show: true,
@@ -261,85 +251,81 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             fontFamily: 'Times New Roman,STSong',
           },
         },
-        // dataset: [
-        //   {
-        //     source: [
-        //       result.data.ecoliPercentile,
-        //       // result.data.humanPercentile,
-        //       // result.data.yeastPercentile,
-        //     ],
-        //   },
-        //   {
-        //     source: [result.data.humanPercentile],
-        //   },
-        //   {
-        //     source: [result.data.yeastPercentile],
-        //   },
-        //   {
-        //     fromDatasetIndex: 0,
-        //     transform: {
-        //       type: 'boxplot',
-        //       config: {
-        //         itemNameFormatter: (params: any) => {
-        //           if (params.value === 0) {
-        //             return 'ecoli';
-        //           }
-        //           if (params.value === 1) {
-        //             return 'human';
-        //           }
-        //           return 'yeast';
-        //         },
-        //       },
-        //     },
-        //   },
-        //   {
-        //     fromDatasetIndex: 1,
-        //     transform: {
-        //       type: 'boxplot',
-        //       print: true,
-        //       config: {
-        //         itemNameFormatter: (params: any) => {
-        //           if (params.value === 0) {
-        //             return 'ecoli';
-        //           }
-        //           if (params.value === 1) {
-        //             return 'human';
-        //           }
-        //           return 'yeast';
-        //         },
-        //       },
-        //     },
-        //   },
-        //   {
-        //     fromDatasetIndex: 2,
-        //     transform: {
-        //       type: 'boxplot',
-        //       config: {
-        //         itemNameFormatter: (params: any) => {
-        //           if (params.value === 0) {
-        //             return 'ecoli';
-        //           }
-        //           if (params.value === 1) {
-        //             return 'human';
-        //           }
-        //           return 'yeast';
-        //         },
-        //       },
-        //     },
-        //   },
-        //   // {
-        //   //   fromDatasetIndex: 3,
-        //   //   fromTransformResult: 1,
-        //   // },
-        //   // {
-        //   //   fromDatasetIndex: 4,
-        //   //   fromTransformResult: 1,
-        //   // },
-        //   // {
-        //   //   fromDatasetIndex: 5,
-        //   //   fromTransformResult: 1,
-        //   // },
-        // ],
+        dataset: [
+          {
+            source: [result.data.ecoliPercentile],
+          },
+          {
+            source: [result.data.humanPercentile],
+          },
+          {
+            source: [result.data.yeastPercentile],
+          },
+          {
+            fromDatasetIndex: 0,
+            transform: {
+              type: 'boxplot',
+              // config: {
+              //   itemNameFormatter: (params: any) => {
+              //     if (params.value === 0) {
+              //       return 'ecoli';
+              //     }
+              //     if (params.value === 1) {
+              //       return 'human';
+              //     }
+              //     return 'yeast';
+              //   },
+              // },
+            },
+          },
+          {
+            fromDatasetIndex: 1,
+            transform: {
+              type: 'boxplot',
+              print: true,
+              // config: {
+              //   itemNameFormatter: (params: any) => {
+              //     if (params.value === 0) {
+              //       return 'ecoli';
+              //     }
+              //     if (params.value === 1) {
+              //       return 'human';
+              //     }
+              //     return 'yeast';
+              //   },
+              // },
+            },
+          },
+          {
+            fromDatasetIndex: 2,
+            transform: {
+              type: 'boxplot',
+              // config: {
+              //   itemNameFormatter: (params: any) => {
+              //     if (params.value === 0) {
+              //       return 'ecoli';
+              //     }
+              //     if (params.value === 1) {
+              //       return 'human';
+              //     }
+              //     return 'yeast';
+              //   },
+              // },
+            },
+          },
+          {
+            fromDatasetIndex: 3,
+            fromTransformResult: 1,
+          },
+          {
+            fromDatasetIndex: 4,
+            fromTransformResult: 1,
+          },
+          {
+            fromDatasetIndex: 5,
+            fromTransformResult: 1,
+          },
+        ],
         series: [
           {
             type: 'scatter',
@@ -461,20 +447,22 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             xAxisIndex: 1,
             yAxisIndex: 1,
             boxWidth: [7, 20],
-            data: [
-              {
-                name: 'ecoli',
-                value: boxplotData(result.data.ecoliPercentile),
-              },
-              {
-                name: 'human',
-                value: [],
-              },
-              {
-                name: 'yeast',
-                value: [],
-              },
-            ],
+            datasetIndex: 3,
+
+            // data: [
+            //   {
+            //     name: 'ecoli',
+            //     value: boxplotData(result.data.ecoliPercentile),
+            //   },
+            //   {
+            //     name: 'human',
+            //     value: [],
+            //   },
+            //   {
+            //     name: 'yeast',
+            //     value: [],
+            //   },
+            // ],
             type: 'boxplot',
             color: 'rgba(255,99,71,0.5)',
             itemStyle: { borderWidth: 2 },
@@ -531,23 +519,23 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             type: 'scatter',
             xAxisIndex: 1,
             yAxisIndex: 1,
-            data: [
-              abnormalValue(result.data.ecoliPercentile)[0],
-              abnormalValue(result.data.ecoliPercentile)[1],
-              // {
-              //   name: 'ecoli',
-              //   value: abnormalValue(result.data.ecoliPercentile),
-              // },
-              // {
-              //   name: 'human',
-              //   value: null,
-              // },
-              // {
-              //   name: 'yeast',
-              //   value: null,
-              // },
-            ],
-            // datasetIndex: 6,
+            // data: [
+            //   abnormalValue(result.data.ecoliPercentile)[0],
+            //   // abnormalValue(result.data.ecoliPercentile)[1],
+            //   // {
+            //   //   name: 'ecoli',
+            //   //   value: abnormalValue(result.data.ecoliPercentile),
+            //   // },
+            //   // {
+            //   //   name: 'human',
+            //   //   value: null,
+            //   // },
+            //   // {
+            //   //   name: 'yeast',
+            //   //   value: null,
+            //   // },
+            // ],
+            datasetIndex: 6,
             color: 'rgba(255,99,71,0.5)',
           },
           {
@@ -555,25 +543,29 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             xAxisIndex: 1,
             yAxisIndex: 1,
             type: 'boxplot',
-            data: [
-              {
-                name: 'ecoli',
-                value: [],
-              },
-              {
-                name: 'human',
-                value: boxplotData(result.data.humanPercentile),
-              },
-              {
-                name: 'yeast',
-                value: [],
-              },
-            ],
+            datasetIndex: 4,
+
+            // data: [
+            //   {
+            //     name: 'ecoli',
+            //     value: [],
+            //   },
+            //   {
+            //     name: 'human',
+            //     value: boxplotData(result.data.humanPercentile),
+            //   },
+            //   {
+            //     name: 'yeast',
+            //     value: [],
+            //   },
+            // ],
             boxWidth: [7, 20],
             color: 'rgba(64,144,247,0.5)',
             itemStyle: { borderWidth: 2 },
             tooltip: {
               formatter(param: { seriesName: any; data: any[] }) {
+                console.log(param);
+
                 return [
                   `<strong>${param.seriesName}</strong>`,
                   `Max: &nbsp&nbsp${boxplotData(result.data.humanPercentile)[4]}`,
@@ -625,20 +617,21 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             name: 'human',
             xAxisIndex: 1,
             yAxisIndex: 1,
-            data: [
-              {
-                name: 'ecoli',
-                value: [],
-              },
-              {
-                name: 'human',
-                value: abnormalValue(result.data.humanPercentile),
-              },
-              {
-                name: 'yeast',
-                value: [],
-              },
-            ],
+            datasetIndex: 7,
+            // data: [
+            //   {
+            //     name: 'ecoli',
+            //     value: [],
+            //   },
+            //   {
+            //     name: 'human',
+            //     // value: abnormalValue(result.data.humanPercentile),
+            //   },
+            //   {
+            //     name: 'yeast',
+            //     value: [],
+            //   },
+            // ],
             color: 'rgba(64,144,247,0.5)',
             tooltip: {
               backgroundColor: ['rgba(255,255,255,0.9)'],
@@ -652,9 +645,9 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
                 fontWeight: 'normal',
                 fontFamily: 'Times New Roman,STSong',
               },
-              formatter: (params: { value: number; name: string }) => {
-                console.log(params);
-              },
+              // formatter: (params: { value: number; name: string }) => {
+              //   console.log(params);
+              // },
             },
           },
           {
@@ -663,20 +656,22 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             yAxisIndex: 1,
             type: 'boxplot',
             boxWidth: [7, 20],
-            data: [
-              {
-                name: 'ecoli',
-                value: [],
-              },
-              {
-                name: 'human',
-                value: [],
-              },
-              {
-                name: 'yeast',
-                value: boxplotData(result.data.yeastPercentile),
-              },
-            ],
+            datasetIndex: 5,
+
+            // data: [
+            //   {
+            //     name: 'ecoli',
+            //     value: [],
+            //   },
+            //   {
+            //     name: 'human',
+            //     value: [],
+            //   },
+            //   {
+            //     name: 'yeast',
+            //     value: boxplotData(result.data.yeastPercentile),
+            //   },
+            // ],
             color: 'rgba(60,179,113,0.5)',
             itemStyle: { borderWidth: 2 },
             tooltip: {
@@ -729,25 +724,25 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
           },
           {
             name: 'yeast',
-            data: [
-              {
-                name: 'ecoli',
-                value: [],
-              },
-              {
-                name: 'human',
-                value: [],
-              },
-              {
-                name: 'yeast',
-                value: abnormalValue(result.data.yeastPercentile),
-              },
-            ],
+            // data: [
+            //   {
+            //     name: 'ecoli',
+            //     value: [],
+            //   },
+            //   {
+            //     name: 'human',
+            //     value: [],
+            //   },
+            //   {
+            //     name: 'yeast',
+            //     value: boxplotData(result.data.yeastPercentile),
+            //   },
+            // ],
             type: 'scatter',
             color: 'rgba(60,179,113,0.5)',
             xAxisIndex: 1,
             yAxisIndex: 1,
-            // datasetIndex: 8,
+            datasetIndex: 8,
           },
         ],
       };

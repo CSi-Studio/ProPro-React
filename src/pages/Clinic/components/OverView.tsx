@@ -26,7 +26,6 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
   });
   scoreResult = [].concat(...scoreResult); // 拍平数组
   const pageSize: number = scoreResult.length;
-  console.log(expData);
 
   /* 打分结果Columns */
   let scoreColumns: any = [
@@ -46,29 +45,35 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       dataIndex: 'status',
       key: 'status',
       render: (dom: any, entity: any) => {
-        switch (entity.status) {
-          case 0:
-            return <Tag color="blue">尚未鉴定</Tag>;
-            break;
-          case 1:
-            return <Tag color="success">鉴定成功</Tag>;
-            break;
-          case 2:
-            return <Tag color="error">鉴定失败</Tag>;
-            break;
-          case 3:
-            return <Tag color="warning">碎片不足</Tag>;
-            break;
-          case 4:
-            return <Tag color="warning">没有峰组</Tag>;
-            break;
-          case 5:
-            return <Tag color="warning">EIC为空</Tag>;
-            break;
-          default:
-            return <Tag color="warning">没有峰组</Tag>;
-            break;
+        if (entity.index === entity.selectIndex) {
+          switch (entity.status) {
+            case 0:
+              return <Tag color="blue">尚未鉴定</Tag>;
+              break;
+            case 1:
+              return <Tag color="success">鉴定成功</Tag>;
+              break;
+            case 2:
+              return <Tag color="error">鉴定失败</Tag>;
+              break;
+            case 3:
+              return <Tag color="warning">碎片不足</Tag>;
+              break;
+            case 4:
+              return <Tag color="warning">没有峰组</Tag>;
+              break;
+            case 5:
+              return <Tag color="warning">EIC为空</Tag>;
+              break;
+            default:
+              return <Tag color="warning">没有峰组</Tag>;
+              break;
+          }
         }
+        if (entity.scoreList[entity.index]?.scores[0] >= entity.minTotalScore) {
+          return <Tag color="success">鉴定成功</Tag>;
+        }
+        return <Tag color="error">鉴定失败</Tag>;
       },
     },
     {
@@ -216,9 +221,6 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           style={{ width: '69vw' }}
           columns={scoreColumns}
           dataSource={scoreResult}
-          // dataSource={expData.map((item: any, index: number) => {
-          //   return { index, type: name, key: name };
-          // })}
           rowKey={'key'}
           size="small"
           search={false}

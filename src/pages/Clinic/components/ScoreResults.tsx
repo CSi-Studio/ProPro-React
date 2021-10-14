@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Col, Row, Tag } from 'antd';
 import ProTable from '@ant-design/pro-table';
-import { data } from '_autoprefixer@10.3.3@autoprefixer';
 
 export type ScoreProps = {
   values: any;
