@@ -97,7 +97,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   const getXicTitle = () => {
     const titles = [
       {
-        text: `${data[0].peptideRef} - ${[...new Set([].concat(...allCutInfo))].length}个碎片`,
+        text: `${data[0].peptideRef}（${[...new Set([].concat(...allCutInfo))].length}个碎片）`,
         height: '200px',
         textAlign: 'left',
         textStyle: {
@@ -463,7 +463,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
           ],
         },
         formatter(name: any) {
-          return `${name}：${allCutMz[name]}`;
+          return `${name}：${allCutMz[name].toFixed(4)}`;
         },
       },
     ];

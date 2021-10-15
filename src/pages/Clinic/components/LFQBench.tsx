@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Col, Descriptions, Row, Tag } from 'antd';
+import ecStat from 'echarts-stat';
 
 export type QtChartsProps = {
   values: any;
 };
+// const { transform } = EChartsStat;
 
 const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   const [ratioData, setRatioData] = useState<any>();
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
+  /* 回归曲线 */
 
   useEffect(() => {
     const op = async () => {
@@ -19,15 +22,16 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
       let maxX = 0;
       let minY = 99999;
       let maxY = 0;
+      /* 散点图 */
       const ecoliData = result.data.ecoli.map((data: { peptide: string; x: any; y: any }) => {
-        minX = data.x < minX ? data.x : minX;
+        minX = data.x < minX ? data.x - 0.1 : minX;
         maxX = data.x > maxX ? data.x : maxX;
         minY = data.y < minY ? data.y : minY;
         maxY = data.y > maxY ? data.y : maxY;
         return [data.x, data.y, data.peptide];
       });
       const humanData = result.data.human.map((data: { peptide: string; x: any; y: any }) => {
-        minX = data.x < minX ? data.x : minX;
+        minX = data.x < minX ? data.x - 0.1 : minX;
         maxX = data.x > maxX ? data.x : maxX;
         minY = data.y < minY ? data.y : minY;
         maxY = data.y > maxY ? data.y : maxY;
@@ -41,6 +45,10 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         return [data.x, data.y, data.peptide];
       });
       setRatioData(result.data);
+
+      const ecoliRegression = ecStat.regression('polynomial', ecoliData, 3);
+      const humanRegression = ecStat.regression('polynomial', humanData, 3);
+      const yeastRegression = ecStat.regression('polynomial', yeastData, 3);
 
       /* 四分位数 */
       const boxplotData = (arr: any) => {
@@ -65,6 +73,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         ];
       };
 
+      /* 盒须图异常值 */
       const abnormalValue = (index: number, arr: any) => {
         const data: any[] = [];
         arr.forEach((item: any) => {
@@ -238,6 +247,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             fontFamily: 'Times New Roman,STSong',
           },
         },
+        dataset: [],
         series: [
           {
             type: 'scatter',
@@ -442,13 +452,14 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             },
           },
           {
-            // name: 'ecoli',
+            name: 'ecoli',
             type: 'scatter',
+            symbolSize: 7,
             xAxisIndex: 1,
             yAxisIndex: 1,
-            colorBy: 'data',
-            color: ['rgba(255,99,71,0.5)', 'rgba(64,144,247,0.5)', 'rgba(60,179,113,0.5)'],
-            data: abnormalData,
+            color: 'rgba(255,99,71,0.5)',
+            itemStyle: { borderWidth: 1, borderColor: 'tomato' },
+            data: abnormalValue(0, result.data.ecoliPercentile),
             tooltip: {
               backgroundColor: ['rgba(255,255,255,0.9)'],
               axisPointer: {
@@ -461,6 +472,94 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
                 fontWeight: 'normal',
                 fontFamily: 'Times New Roman,STSong',
               },
+            },
+          },
+          {
+            name: 'human',
+            type: 'scatter',
+            symbolSize: 7,
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+            color: 'rgba(64,144,247,0.5)',
+            itemStyle: { borderWidth: 1, borderColor: 'rgba(64,144,247)' },
+            data: abnormalValue(1, result.data.humanPercentile),
+            tooltip: {
+              backgroundColor: ['rgba(255,255,255,0.9)'],
+              axisPointer: {
+                type: 'cross',
+                snap: true,
+              },
+              textStyle: {
+                color: '#000',
+                fontSize: '14',
+                fontWeight: 'normal',
+                fontFamily: 'Times New Roman,STSong',
+              },
+            },
+          },
+          {
+            name: 'yeast',
+            type: 'scatter',
+            symbolSize: 7,
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+            color: 'rgba(60,179,113,0.5)',
+            itemStyle: { borderWidth: 1, borderColor: 'rgba(60,179,113)' },
+            data: abnormalValue(2, result.data.yeastPercentile),
+            tooltip: {
+              backgroundColor: ['rgba(255,255,255,0.9)'],
+              axisPointer: {
+                type: 'cross',
+                snap: true,
+              },
+              textStyle: {
+                color: '#000',
+                fontSize: '14',
+                fontWeight: 'normal',
+                fontFamily: 'Times New Roman,STSong',
+              },
+            },
+          },
+          {
+            name: 'ecoli',
+            type: 'line',
+            smooth: true,
+            data: ecoliRegression.points,
+            symbol: 'none',
+            lineStyle: {
+              // color: 'rgba(255,99,71)',
+              color: '#666',
+              width: 3,
+              type: 'dashed',
+              borderType: '[50, 100]',
+            },
+          },
+          {
+            name: 'human',
+            type: 'line',
+            smooth: true,
+            data: humanRegression.points,
+            symbol: 'none',
+            lineStyle: {
+              // color: 'rgba(64,144,247)',
+              color: '#666',
+              width: 3,
+              type: 'dashed',
+              borderType: '[50, 100]',
+            },
+          },
+          {
+            name: 'yeast',
+            type: 'line',
+            smooth: true,
+            data: yeastRegression.points,
+            symbol: 'none',
+            lineStyle: {
+              // color: 'rgba(60,179,113)',
+              color: '#666',
+              width: 3,
+              type: 'dashed',
+              borderType: '[50, 100]',
             },
           },
         ],
