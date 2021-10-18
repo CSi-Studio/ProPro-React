@@ -47,6 +47,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
     {
       title: 'cutInfo',
       dataIndex: 'cutInfo',
+      showSorterTooltip: false,
       sorter: (a, b) => (a.predict > b.predict ? -1 : 1),
       render: (dom) => {
         return <Tooltip title={dom}>{dom}</Tooltip>;

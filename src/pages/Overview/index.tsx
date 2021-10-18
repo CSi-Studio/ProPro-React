@@ -163,6 +163,7 @@ const TableList: React.FC = (props: any) => {
       title: '实验名',
       dataIndex: 'expName',
       hideInSearch: true,
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.expName > b?.expName ? -1 : 1;
       },
@@ -189,6 +190,7 @@ const TableList: React.FC = (props: any) => {
       renderFormItem: (_, { defaultRender }) => {
         return defaultRender(_);
       },
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.expId > b?.expId ? -1 : 1;
       },
@@ -201,6 +203,7 @@ const TableList: React.FC = (props: any) => {
       title: '默认值',
       dataIndex: 'defaultOne',
       hideInSearch: true,
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.defaultOne > b?.defaultOne ? -1 : 1;
       },
@@ -213,6 +216,7 @@ const TableList: React.FC = (props: any) => {
       title: '重选定',
       dataIndex: 'reselect',
       hideInSearch: true,
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.reselect > b?.reselect ? -1 : 1;
       },
@@ -304,6 +308,7 @@ const TableList: React.FC = (props: any) => {
       title: '备注',
       dataIndex: 'note',
       hideInSearch: true,
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.note > b?.note ? -1 : 1;
       },
@@ -314,6 +319,7 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'createDate',
       valueType: 'dateTime',
       hideInSearch: true,
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.createDate > b?.createDate ? -1 : 1;
       },

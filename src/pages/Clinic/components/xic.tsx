@@ -540,7 +540,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         position(pos: number[]) {
           return [pos[0] + 5, pos[1] + 10];
         },
-        alwaysShowContent: true,
+        alwaysShowContent: false,
         textStyle: {
           color: '#000',
           fontSize: '14',

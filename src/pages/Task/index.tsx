@@ -48,7 +48,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       render: (text, record) => {
         return (
-          <Tooltip title={`Id:${  record.id}`} placement="topLeft">
+          <Tooltip title={`Id:${record.id}`} placement="topLeft">
             <a
               onClick={() => {
                 setCurrentRow(record);
@@ -99,6 +99,7 @@ const TableList: React.FC = () => {
       dataIndex: 'totalCost',
       align: 'right',
       width: '100px',
+      showSorterTooltip: false,
       sorter: (a, b) => (a.totalCost > b.totalCost ? -1 : 1),
       render: (text, record) => {
         if (record.totalCost >= 1000) {

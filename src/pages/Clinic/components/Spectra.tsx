@@ -19,16 +19,21 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
   });
 
   /* 存放碎片mz和碎片name */
-  const cutInfoMap: any = [];
+  let cutInfoMap: any = [];
   props?.values?.expData?.forEach((_item: { cutInfoMap: Record<string, number> }) => {
     Object.keys(_item.cutInfoMap).forEach((key: any) => {
       cutInfoMap.push({ data: _item.cutInfoMap[key], name: key });
     });
   });
-  // console.log([...new Set(cutInfoMap)]);
+  const unique = (arr: any[]) => {
+    const res = new Map();
+    return arr.filter((value) => !res.has(value.name) && res.set(value.name, 1));
+  };
+
+  cutInfoMap = unique(cutInfoMap);
 
   /* 筛出+—0.015范围内的y值和x值 添加碎片name */
-  let chooseValue: any = [];
+  const chooseValue: any = [];
   cutInfoMap.forEach((item: any) => {
     props?.values?.data?.x.forEach((value: number, index: number) => {
       if (value > item.data - 0.015 && value < item.data + 0.015) {
@@ -39,37 +44,61 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       }
     });
   });
+  // console.log('chooseValue--', chooseValue);
+  // console.log('cutInfoMap--', cutInfoMap);
 
-  const map = new Map();
-  for (const i of chooseValue) {
-    if (!map.has(i.data)) {
-      map.set(i.data, i);
-    }
-  }
-  chooseValue = [...map.values()];
-  const series: any = [
-    {
-      large: true,
-      type: 'bar',
-      legendHoverLink: true,
-      data: yData,
-      name: '123',
-    },
-  ];
-  // console.log('chooseValue', chooseValue);
+  chooseValue.forEach((value: any) => {
+    // for (let i = 1; i < 11; i++) {
+    //   a.push(props?.values?.data?.y[value.index - i]);
+    // }
+    // result.push({ data: value.data, name: value.name });
+    // result.name = value.name;
+  });
+  // console.log(result);
 
-  chooseValue.forEach((value: { data: any; name: any; index: number }) => {
-    const result = new Array(props?.values?.data?.x.length).fill(0);
-    result[value.index] = value.data;
+  const cutInfoName = Array.from(
+    new Set(
+      chooseValue.map((item: any) => {
+        return item.name;
+      }),
+    ),
+  );
 
+  const series: any = [];
+
+  const result = cutInfoName.map((item: any, index: number) => {
+    const data: any[] = [];
+    chooseValue.forEach((_item: { name: unknown; data: any }) => {
+      if (item === _item.name) {
+        // _item.data.forEach((value: any) => {
+        data.push(_item.data);
+        // });
+      }
+    });
     series.push({
       large: true,
       type: 'bar',
       legendHoverLink: true,
-      data: result,
-      name: value.name,
+      data,
+      // name: item,
     });
+    return { data, name: item };
   });
+  // console.log('result', result);
+  // chooseValue.forEach((value: { data: any; name: any; index: number }) => {
+  // const result = new Array(props?.values?.data?.x.length).fill(0);
+  // result[value.index] = value.data;
+  // result[value.name] = value;
+  // series.push({
+  //   large: true,
+  //   type: 'bar',
+  //   legendHoverLink: true,
+  //   data: result,
+  //   name: value.name,
+  // });
+  // });
+  // console.log(series);
+
   useEffect(() => {
     const option = {
       grid: {
@@ -91,25 +120,26 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         nameLocation: 'middle',
         name: '',
         nameGap: 30,
-        data: xData,
+        // data: xData,
+        data: cutInfoName,
         scale: true,
-        axisLabel: {
-          color: '#000',
-          show: true,
-          fontFamily: 'Times New Roman,STSong',
-          fontWeight: 'normal',
-          formatter: (value: number) => {
-            return (value * 1).toFixed(2);
-            // return value;
-          },
-        },
-        nameTextStyle: {
-          color: '#000',
-          fontSize: '16',
-          fontWeight: 'bold',
-          fontFamily: 'Times New Roman,STSong',
-          align: 'left',
-        },
+        // axisLabel: {
+        //   color: '#000',
+        //   show: true,
+        //   fontFamily: 'Times New Roman,STSong',
+        //   fontWeight: 'normal',
+        //   formatter: (value: number) => {
+        //     return (value * 1).toFixed(2);
+        //     // return value;
+        //   },
+        // },
+        // nameTextStyle: {
+        //   color: '#000',
+        //   fontSize: '16',
+        //   fontWeight: 'bold',
+        //   fontFamily: 'Times New Roman,STSong',
+        //   align: 'left',
+        // },
       },
       yAxis: {
         type: 'value',

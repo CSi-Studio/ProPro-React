@@ -23,12 +23,14 @@ const TableList: React.FC = (props: any) => {
       title: 'level',
       dataIndex: 'level',
       search: false,
+      showSorterTooltip:false,
       sorter: (a, b) => (a.level < b.level ? -1 : 1),
     },
     {
       title: '文件开始位置',
       dataIndex: 'startPtr',
       search: false,
+      showSorterTooltip:false,
       sorter: (a, b) => (a.startPtr < b.startPtr ? -1 : 1),
     },
     {
@@ -39,6 +41,7 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'mz范围',
       dataIndex: 'range',
+      showSorterTooltip:false,
       sorter: (a, b) => {
         if (a.range?.start < b.range?.start) {
           return -1;

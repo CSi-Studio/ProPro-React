@@ -95,6 +95,7 @@ const TableList: React.FC = (props: any) => {
     {
       title: '分组',
       dataIndex: 'group',
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.group > b?.group ? -1 : 1;
       },

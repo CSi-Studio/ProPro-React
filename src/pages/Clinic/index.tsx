@@ -42,7 +42,7 @@ import RtPairsCharts from './components/RtPairs';
 import { Link } from 'umi';
 import LFQBench from './components/LFQBench';
 import OverView from './components/OverView';
-import ScoreResults from './components/ScoreResults';
+import PeptideDis from './components/PeptideDis';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -755,7 +755,18 @@ const TableList: React.FC = (props: any) => {
                           offset={[-5, 0]}
                           key={item.id}
                         >
-                          <Tooltip style={{ marginTop: 5 }} title={`${item.name}(${item.id})`}>
+                          <Tooltip
+                            title={() => {
+                              return (
+                                <>
+                                  <span>{item.name}</span>
+                                  <br />
+                                  <span>{item.id}</span>
+                                </>
+                              );
+                            }}
+                            overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
+                          >
                             <CheckableTag
                               style={{ marginTop: 5, marginLeft: 5 }}
                               checked={selectedExpIds?.indexOf(item.id) > -1}
@@ -797,7 +808,16 @@ const TableList: React.FC = (props: any) => {
               </TabPane>
               <TabPane tab="打分结果" key="2">
                 {/* <ScoreResults values={{ prepareData, expData }} /> */}
-                <OverView values={{ prepareData, expData }} />
+                <Spin spinning={!prepareData}>
+                  {prepareData ? (
+                    <OverView values={{ prepareData, expData }} />
+                  ) : (
+                    <Empty
+                      style={{ padding: '10px', color: '#B0B8C1' }}
+                      imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+                    />
+                  )}
+                </Spin>
               </TabPane>
               {prepareData?.project?.name.substring(0, 3) === 'HYE' ? (
                 <TabPane tab="LFQBench" key="3">
@@ -854,9 +874,18 @@ const TableList: React.FC = (props: any) => {
                   )}
                 </Spin>
               </TabPane>
-              {/* <TabPane tab="峰组得分" key="7"> */}
-              {/* <OverView values={{ prepareData, expData }} /> */}
-              {/* </TabPane> */}
+              <TabPane tab="肽段分布" key="7">
+                <Spin spinning={!prepareData}>
+                  {prepareData !== undefined ? (
+                    <PeptideDis values={{ prepareData, expData }} />
+                  ) : (
+                    <Empty
+                      style={{ padding: '10px', color: '#B0B8C1' }}
+                      imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
+                    />
+                  )}
+                </Spin>
+              </TabPane>
             </Tabs>
           </Col>
         </Row>

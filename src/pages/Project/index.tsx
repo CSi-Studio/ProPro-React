@@ -213,6 +213,7 @@ const TableList: React.FC = () => {
       key: 'group',
       title: '分组',
       dataIndex: 'group',
+      showSorterTooltip:false,
       sorter: (a, b) => {
         return a?.group > b?.group ? -1 : 1;
       },
@@ -401,6 +402,7 @@ const TableList: React.FC = () => {
       dataIndex: 'createDate',
       valueType: 'dateTime',
       hideInSearch: true,
+      showSorterTooltip:false,
       sorter: (a, b) => {
         return a?.createDate > b?.createDate ? -1 : 1;
       },

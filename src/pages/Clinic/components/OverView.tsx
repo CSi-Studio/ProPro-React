@@ -33,6 +33,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       title: '别名',
       dataIndex: 'alias',
       key: 'alias',
+      fixed: 'left',
+      width: 50,
       render: (dom: any, entity: any) => {
         if (entity.index === entity.selectIndex) {
           return <Tag color="#87d068">{dom}</Tag>;
@@ -44,6 +46,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       title: '鉴定态',
       dataIndex: 'status',
       key: 'status',
+      fixed: 'left',
+      width: 70,
       render: (dom: any, entity: any) => {
         if (entity.index === entity.selectIndex) {
           switch (entity.status) {
@@ -81,6 +85,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       dataIndex: 'realRt',
       key: 'realRt',
       width: 70,
+      fixed: 'left',
       render: (dom: any, entity: any) => {
         return <Tag color="blue">{entity.realRt?.toFixed(1)}</Tag>;
       },
@@ -89,6 +94,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       title: 'Sum',
       dataIndex: 'sum',
       key: 'sum',
+      fixed: 'left',
       width: 70,
       render: (dom: any, entity: any) => {
         return <Tag color="blue">{entity.sum?.toFixed(0)}</Tag>;
@@ -99,6 +105,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       dataIndex: 'minTotalScore',
       key: 'minTotalScore',
       width: 70,
+      fixed: 'left',
       render: (dom: any, entity: any) => {
         return <Tag color="blue">{entity.minTotalScore?.toFixed(3)}</Tag>;
       },
@@ -131,6 +138,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       dataIndex: index,
       key: index,
       width: 80,
+      fixed: `${index === 0 ? 'left' : 'false'}`,
       tooltip: type,
       render: (dom: any, entity: any) => {
         if (

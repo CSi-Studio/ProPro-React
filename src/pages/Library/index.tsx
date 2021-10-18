@@ -215,6 +215,7 @@ const TableList: React.FC = () => {
     {
       title: '库类型',
       dataIndex: 'type',
+      showSorterTooltip:false,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
         if (dom === 'ANA') {
@@ -245,6 +246,7 @@ const TableList: React.FC = () => {
       title: '有机物种',
       hideInSearch: true,
       dataIndex: 'organism',
+      showSorterTooltip:false,
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
       render: (dom, entity) => {
         if (entity.organism.length > 0) {

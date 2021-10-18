@@ -155,6 +155,7 @@ const TableList: React.FC = () => {
     {
       title: '字典名',
       dataIndex: 'name',
+      showSorterTooltip: false,
       sorter: (a, b) => (a.name > b.name ? -1 : 1),
       render: (dom, entity) => {
         return (
