@@ -99,17 +99,29 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
     console.log('seriesData', seriesData);
 
     seriesData.forEach((item: any, idx: any) => {
-      series.push({
-        xAxisIndex: idx,
-        yAxisIndex: idx,
-        type: 'bar',
-        name: item?.alias,
-        symbolSize: 2,
-        animation: false,
-        data: item?.decoy[0]?.data,
-        large: true,
-        markLine: getMarkLine(),
-      });
+      series.push(
+        {
+          xAxisIndex: idx,
+          yAxisIndex: idx,
+          type: 'bar',
+          name: 'decoy',
+          symbolSize: 2,
+          animation: false,
+          data: item?.decoy[0]?.data,
+          large: true,
+          markLine: getMarkLine(),
+        },
+        {
+          xAxisIndex: idx,
+          yAxisIndex: idx,
+          type: 'bar',
+          name: 'target',
+          symbolSize: 2,
+          animation: false,
+          data: item?.target[0]?.data,
+          large: true,
+        },
+      );
     });
 
     // 设置Grids布局
@@ -265,6 +277,7 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
           saveAsImage: {},
         },
       },
+      legend: {},
       color: [
         '#1890ff',
         'hotpink',
