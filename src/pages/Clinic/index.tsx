@@ -61,7 +61,8 @@ const peptidePageSize = 9;
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const [exps, setExps] = useState<IdNameAlias[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
-  const [expData, setExpData] = useState<[]>([]); // 选中exp,存放的真实值为exp.id列表
+  const [expData, setExpData] = useState<any>([]); // 选中exp,存放的真实值为exp.id列表
+  const [featureMap, setFeatureMap] = useState<any>([]); //
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [peptideRatioData, setPeptideRatioData] = useState<any>(); // 存放分析结果的初始数据
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
@@ -164,6 +165,7 @@ const TableList: React.FC = (props: any) => {
         });
       });
       setExpData(result.data);
+      setFeatureMap(result.featureMap.intensityMap);
       /* 碎片Mz echarts toolbox */
       const getCutInfo = () => {
         setCutInfoVisible(true);
@@ -275,7 +277,6 @@ const TableList: React.FC = (props: any) => {
         setLoading(false);
         if (result.data?.project?.name.substring(0, 3) === 'HYE') {
           const rationData = await getPeptideRatio({ projectId });
-          // console.log('rationData', rationData);
           setPeptideRatioData(rationData);
         }
         rtPairsData({
@@ -466,7 +467,6 @@ const TableList: React.FC = (props: any) => {
       selectPeptideRow(peptideArr[peptidesIndex]);
       setHandleSubmit(!handleSubmit);
       setPeptideRowKey(peptideArr[peptidesIndex]);
-      // console.log(peptideLoading);
     }
 
     document.addEventListener('keydown', onPeptideKey);
@@ -555,6 +555,17 @@ const TableList: React.FC = (props: any) => {
       setPeptidePage(Math.ceil((peptideArr.indexOf(peptide) + 1) / peptidePageSize));
     }
   };
+
+  /* 碎片信息 */
+  const allCutInfo: any = [];
+  const allCutMz: any = {};
+  expData.forEach((item: any) => {
+    Object.keys(item.cutInfoMap).forEach((key: any) => {
+      allCutMz[key] = item.cutInfoMap[key];
+      // allCutMz.push(`${key}:${item.cutInfoMap[key]}`);
+      allCutInfo.push(key);
+    });
+  });
 
   /* 点击坐标点展示光谱图 */
   // echarts?.getEchartsInstance().off('click'); // 防止多次触发
@@ -712,6 +723,20 @@ const TableList: React.FC = (props: any) => {
               <TabPane tab="EIC列表" key="1">
                 <Row>
                   <Col span={24}>
+                    <strong>
+                      {expData.length > 0 ? expData[0].peptideRef : ''} (cutInfoNum:
+                      {[...new Set([].concat(...allCutInfo))].length})
+                    </strong>
+                    &nbsp;&nbsp;
+                    {Object.keys(featureMap).map((key: any) => {
+                      return (
+                        <Tag key={key.toString()}>
+                          {key}:{featureMap[key]}
+                        </Tag>
+                      );
+                    })}
+                  </Col>
+                  <Col span={24}>
                     <Tooltip title="仅选择实验默认的overview">
                       <Checkbox
                         checked={onlyDefault}
@@ -797,7 +822,7 @@ const TableList: React.FC = (props: any) => {
                         />
                       ) : (
                         <Empty
-                          description="请先选择实验"
+                          description="Loading..."
                           style={{ padding: '10px', color: '#B0B8C1' }}
                           imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
                         />
@@ -875,8 +900,8 @@ const TableList: React.FC = (props: any) => {
                 </Spin>
               </TabPane>
               <TabPane tab="肽段分布" key="7">
-                <Spin spinning={!prepareData}>
-                  {prepareData !== undefined ? (
+                <Spin spinning={!expData}>
+                  {expData !== undefined ? (
                     <PeptideDis values={{ prepareData, expData }} />
                   ) : (
                     <Empty

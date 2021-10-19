@@ -18,7 +18,6 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   data.forEach((item: any) => {
     Object.keys(item.cutInfoMap).forEach((key: any) => {
       allCutMz[key] = item.cutInfoMap[key];
-      // allCutMz.push(`${key}:${item.cutInfoMap[key]}`);
       allCutInfo.push(key);
     });
   });
@@ -96,20 +95,20 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   // 设置表头
   const getXicTitle = () => {
     const titles = [
-      {
-        text: `${data[0].peptideRef}（${[...new Set([].concat(...allCutInfo))].length}个碎片）`,
-        height: '200px',
-        textAlign: 'left',
-        textStyle: {
-          color: '#000',
-          fontSize: '15',
-          fontWeight: 'normal',
-          fontFamily: 'Times New Roman,STSong',
-        },
-        padding: 0,
-        top: `${11}px`,
-        left: '4%',
-      },
+      // {
+      //   text: `${data[0].peptideRef}（${[...new Set([].concat(...allCutInfo))].length}个碎片）`,
+      //   height: '200px',
+      //   textAlign: 'left',
+      //   textStyle: {
+      //     color: '#000',
+      //     fontSize: '15',
+      //     fontWeight: 'normal',
+      //     fontFamily: 'Times New Roman,STSong',
+      //   },
+      //   padding: 0,
+      //   top: `${11}px`,
+      //   left: '4%',
+      // },
     ];
     for (let i = 0; i < data.length; i += 1) {
       // rt赋值
@@ -433,7 +432,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       {
         data: [...new Set([].concat(...allCutInfo))],
         right: '6%',
-        width: '65%',
+        width: '100%',
         top: `${6}px`,
         padding: 0,
         type: 'scroll',
@@ -463,7 +462,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
           ],
         },
         formatter(name: any) {
-          return `${name}：${allCutMz[name].toFixed(4)}`;
+          return `${name}:${allCutMz[name].toFixed(4)}`;
         },
       },
     ];
