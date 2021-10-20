@@ -724,17 +724,21 @@ const TableList: React.FC = (props: any) => {
                 <Row>
                   <Col span={24}>
                     <strong>
-                      {expData.length > 0 ? expData[0].peptideRef : ''} (cutInfoNum:
-                      {[...new Set([].concat(...allCutInfo))].length})
+                      {expData.length > 0 ? expData[0].peptideRef : ''} &nbsp;&nbsp;
+                      <Tag>
+                        {[...new Set([].concat(...allCutInfo))].length}&nbsp; Ions
+                      </Tag>
                     </strong>
-                    &nbsp;&nbsp;
-                    {Object.keys(featureMap).map((key: any) => {
-                      return (
-                        <Tag key={key.toString()}>
-                          {key}:{featureMap[key]}
-                        </Tag>
-                      );
-                    })}
+                    <>
+                      <strong>Intensity:</strong>&nbsp;&nbsp;
+                      {Object.keys(featureMap).map((key: any) => {
+                        return (
+                          <Tag key={key.toString()}>
+                            {key}:{featureMap[key]}
+                          </Tag>
+                        );
+                      })}
+                    </>
                   </Col>
                   <Col span={24}>
                     <Tooltip title="仅选择实验默认的overview">
@@ -832,9 +836,8 @@ const TableList: React.FC = (props: any) => {
                 </Row>
               </TabPane>
               <TabPane tab="打分结果" key="2">
-                {/* <ScoreResults values={{ prepareData, expData }} /> */}
-                <Spin spinning={!prepareData}>
-                  {prepareData ? (
+                <Spin spinning={!expData}>
+                  {expData.length > 0 ? (
                     <OverView values={{ prepareData, expData }} />
                   ) : (
                     <Empty

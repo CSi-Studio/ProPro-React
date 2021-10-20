@@ -232,7 +232,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           rowKey={'key'}
           size="small"
           search={false}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: 'max-content', y: 730 }}
           toolBarRender={false}
           tableAlertRender={false}
           pagination={{

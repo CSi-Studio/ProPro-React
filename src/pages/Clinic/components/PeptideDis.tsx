@@ -103,26 +103,40 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
 
       seriesData.forEach((item: any, idx: any) => {
         series.push(
+          // {
+          //   xAxisIndex: idx,
+          //   yAxisIndex: idx,
+          //   type: 'bar',
+          //   name: 'decoy',
+          //   symbolSize: 2,
+          //   animation: false,
+          //   data: item?.decoy[0]?.data,
+          //   large: true,
+          //   markLine: getMarkLine(),
+          // },
+          // {
+          //   xAxisIndex: idx,
+          //   yAxisIndex: idx,
+          //   type: 'bar',
+          //   name: 'target',
+          //   symbolSize: 2,
+          //   animation: false,
+          //   data: item?.target[0]?.data,
+          //   large: true,
+          // },
           {
+            name: 'decoy',
+            type: 'line',
             xAxisIndex: idx,
             yAxisIndex: idx,
-            type: 'bar',
-            name: 'decoy',
-            symbolSize: 2,
-            animation: false,
             data: item?.decoy[0]?.data,
-            large: true,
-            markLine: getMarkLine(),
           },
           {
+            name: 'target',
+            type: 'line',
             xAxisIndex: idx,
             yAxisIndex: idx,
-            type: 'bar',
-            name: 'target',
-            symbolSize: 2,
-            animation: false,
             data: item?.target[0]?.data,
-            large: true,
           },
         );
       });

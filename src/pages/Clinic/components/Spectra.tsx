@@ -65,6 +65,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
   );
 
   const series: any = [];
+  console.log('chooseValue', chooseValue);
 
   const result = cutInfoName.map((item: any, index: number) => {
     const data: any[] = [];
