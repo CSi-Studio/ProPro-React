@@ -16,6 +16,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       alias: item.alias,
       status: item.status,
       realRt: _item.rt,
+      totalIons: _item.totalIons,
       sum: _item.intensitySum,
       minTotalScore: item.minTotalScore,
       index,
@@ -78,6 +79,16 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           return <Tag color="success">鉴定成功</Tag>;
         }
         return <Tag color="error">鉴定失败</Tag>;
+      },
+    },
+    {
+      title: 'Ions',
+      dataIndex: 'totalIons',
+      key: 'totalIons',
+      fixed: 'left',
+      width: 50,
+      render: (dom: any, entity: any) => {
+        return <Tag color="blue">{entity.totalIons}</Tag>;
       },
     },
     {
