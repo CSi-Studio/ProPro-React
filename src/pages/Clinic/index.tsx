@@ -566,6 +566,11 @@ const TableList: React.FC = (props: any) => {
       allCutInfo.push(key);
     });
   });
+  const IntensityData: any = [];
+  Object.keys(featureMap).forEach((key: any) => {
+    IntensityData.push({ name: key, data: featureMap[key] });
+  });
+  IntensityData.sort((a: { data: number }, b: { data: number }) => (a.data - b.data ? -1 : 1));
 
   /* 点击坐标点展示光谱图 */
   // echarts?.getEchartsInstance().off('click'); // 防止多次触发
@@ -724,17 +729,21 @@ const TableList: React.FC = (props: any) => {
                 <Row>
                   <Col span={24}>
                     <strong>
-                      {expData.length > 0 ? expData[0].peptideRef : ''} &nbsp;&nbsp;
-                      <Tag>
-                        {[...new Set([].concat(...allCutInfo))].length}&nbsp; Ions
-                      </Tag>
+                      {expData.length > 0 ? (
+                        <>
+                          {expData[0].peptideRef}&nbsp;&nbsp;
+                          <Tag>{[...new Set([].concat(...allCutInfo))].length}&nbsp; Ions</Tag>
+                          Intensity:&nbsp;&nbsp;
+                        </>
+                      ) : (
+                        ''
+                      )}
                     </strong>
                     <>
-                      <strong>Intensity:</strong>&nbsp;&nbsp;
-                      {Object.keys(featureMap).map((key: any) => {
+                      {IntensityData.map((item: any) => {
                         return (
-                          <Tag key={key.toString()}>
-                            {key}:{featureMap[key]}
+                          <Tag key={item.name.toString()}>
+                            {item.name}:{item.data}
                           </Tag>
                         );
                       })}

@@ -249,11 +249,11 @@ const TableList: React.FC = (props: any) => {
                 if (selectedRows.length == 1) {
                   handleDeleteModalVisible(true);
                 } else {
-                  message.warn('目前只支持单个库的删除');
+                  message.warn('目前只支持单个方法的删除');
                   setSelectedRows([]);
                 }
               } else {
-                message.warn('请选择要删除的库');
+                message.warn('请选择要删除的方法');
               }
             }}
           >
@@ -269,7 +269,7 @@ const TableList: React.FC = (props: any) => {
           return Promise.resolve(msg);
         }}
         pagination={{
-          total: total,
+          total,
         }}
         columns={columns}
         onRow={(record, index) => {

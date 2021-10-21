@@ -44,17 +44,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       }
     });
   });
-  // console.log('chooseValue--', chooseValue);
-  // console.log('cutInfoMap--', cutInfoMap);
-
-  chooseValue.forEach((value: any) => {
-    // for (let i = 1; i < 11; i++) {
-    //   a.push(props?.values?.data?.y[value.index - i]);
-    // }
-    // result.push({ data: value.data, name: value.name });
-    // result.name = value.name;
-  });
-  // console.log(result);
 
   const cutInfoName = Array.from(
     new Set(
@@ -65,40 +54,64 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
   );
 
   const series: any = [];
-  console.log('chooseValue', chooseValue);
 
-  const result = cutInfoName.map((item: any, index: number) => {
-    const data: any[] = [];
-    chooseValue.forEach((_item: { name: unknown; data: any }) => {
-      if (item === _item.name) {
-        // _item.data.forEach((value: any) => {
-        data.push(_item.data);
-        // });
+  const result: any = [];
+  const leftResult: any = [];
+  const rightResult: any = [];
+  const midZerResult: any = [];
+  cutInfoName.forEach((value: any) => {
+    let cutInfoData: any[] = [value];
+    const chooseData: any = [];
+    const leftData: any[] = [value];
+    const rightData: any[] = [];
+    const b: any = [];
+
+    const midZerData: any[] = [];
+    chooseValue.forEach((item: { name: string; data: any; index: number }) => {
+      if (item.name === value) {
+        cutInfoData.push(item.data);
+        midZerData.push(0);
+        chooseData.push(item.index);
       }
     });
+
+    for (let index = 1; index < 11; index += 1) {
+      leftData.push(props?.values?.data?.y[Math.min(...chooseData) - index]);
+      rightData.push(props?.values?.data?.y[Math.max(...chooseData) + index]);
+    }
+    cutInfoData.splice(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    cutInfoData = cutInfoData.concat(new Array(10).fill(0));
+
+    result.push(cutInfoData);
+    midZerResult.push(b.concat(leftData).concat(midZerData).concat(rightData));
+
+    leftResult.push(leftData);
+    rightResult.push(rightData);
+  });
+
+  const resLength: any = [];
+  result.forEach((item: any) => {
+    resLength.push(item.length);
+  });
+
+  for (let index = 0; index < Math.max(...resLength) - 1; index += 1) {
     series.push({
-      large: true,
       type: 'bar',
       legendHoverLink: true,
-      data,
+      stack: index,
+      datasetIndex: 0,
+      color: 'tomato',
       // name: item,
     });
-    return { data, name: item };
-  });
-  // console.log('result', result);
-  // chooseValue.forEach((value: { data: any; name: any; index: number }) => {
-  // const result = new Array(props?.values?.data?.x.length).fill(0);
-  // result[value.index] = value.data;
-  // result[value.name] = value;
-  // series.push({
-  //   large: true,
-  //   type: 'bar',
-  //   legendHoverLink: true,
-  //   data: result,
-  //   name: value.name,
-  // });
-  // });
-  // console.log(series);
+    series.push({
+      type: 'bar',
+      legendHoverLink: true,
+      stack: index,
+      datasetIndex: 1,
+      color: '#4090F7',
+      // name: item,
+    });
+  }
 
   useEffect(() => {
     const option = {
@@ -121,26 +134,11 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         nameLocation: 'middle',
         name: '',
         nameGap: 30,
-        // data: xData,
         data: cutInfoName,
         scale: true,
-        // axisLabel: {
-        //   color: '#000',
-        //   show: true,
-        //   fontFamily: 'Times New Roman,STSong',
-        //   fontWeight: 'normal',
-        //   formatter: (value: number) => {
-        //     return (value * 1).toFixed(2);
-        //     // return value;
-        //   },
-        // },
-        // nameTextStyle: {
-        //   color: '#000',
-        //   fontSize: '16',
-        //   fontWeight: 'bold',
-        //   fontFamily: 'Times New Roman,STSong',
-        //   align: 'left',
-        // },
+        axisPointer: {
+          type: 'shadow',
+        },
       },
       yAxis: {
         type: 'value',
@@ -174,6 +172,12 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           saveAsImage: {},
         },
       },
+      dataset: [
+        {
+          source: result,
+        },
+        { source: midZerResult },
+      ],
       dataZoom: [
         {
           type: 'inside',
@@ -183,11 +187,14 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
         },
       ],
       tooltip: {
-        trigger: 'item',
-        backgroundColor: ['rgba(255,255,255,0.9)'],
+        trigger: 'axis',
+        // backgroundColor: ['rgba(255,255,255,0.9)'],
         axisPointer: {
           type: 'cross',
           snap: true,
+          crossStyle: {
+            color: '#999',
+          },
         },
         textStyle: {
           color: '#000',
@@ -195,14 +202,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
           fontWeight: 'normal',
           fontFamily: 'Times New Roman,STSong',
         },
-      },
-      legend: {
-        right: '12%',
-        align: 'left',
-        textStyle: {
-          fontSize: '14',
-          fontFamily: 'Times New Roman,STSong',
-        },
+        formatter: {},
       },
       series,
     };

@@ -56,8 +56,6 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
       /* 设置series */
       const series: any[] = [];
       const seriesData: any = [];
-      console.log('values.expData', values.expData);
-      console.log('prepareData', values.prepareData);
 
       Object.keys(values.prepareData.overviewMap).forEach((key) => {
         values.prepareData.overviewMap[key].forEach((item: any) => {
@@ -99,7 +97,6 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
         });
       });
       seriesData.sort((a: { alias: any }, b: { alias: any }) => (a.alias > b.alias ? 1 : -1));
-      console.log('seriesData', seriesData);
 
       seriesData.forEach((item: any, idx: any) => {
         series.push(
@@ -130,6 +127,7 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
             xAxisIndex: idx,
             yAxisIndex: idx,
             data: item?.decoy[0]?.data,
+            markLine: getMarkLine(),
           },
           {
             name: 'target',
@@ -327,7 +325,6 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
         series,
       };
       setHandleOption(option);
-      console.log(option);
     }
   }, [props.values.expData.length, values]);
 
