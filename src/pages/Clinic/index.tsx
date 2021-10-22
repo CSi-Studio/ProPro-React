@@ -62,7 +62,8 @@ const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const [exps, setExps] = useState<IdNameAlias[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
   const [expData, setExpData] = useState<any>([]); // 选中exp,存放的真实值为exp.id列表
-  const [featureMap, setFeatureMap] = useState<any>([]); //
+  const [overviewIds, setOverviewIds] = useState<any>([]); // 存放overviewIds
+  const [featureMap, setFeatureMap] = useState<any>([]); // 存放featureMap
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [peptideRatioData, setPeptideRatioData] = useState<any>(); // 存放分析结果的初始数据
   const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
@@ -150,10 +151,9 @@ const TableList: React.FC = (props: any) => {
         predict,
         changeCharge,
         peptideRef,
-        expIds: selectedExpIds,
-        onlyDefault,
         smooth,
         denoise,
+        overviewIds,
       });
 
       // 将实验 别名 给 getExpData接口得到的数据
@@ -164,6 +164,7 @@ const TableList: React.FC = (props: any) => {
           }
         });
       });
+
       setExpData(result.data);
       setFeatureMap(result.featureMap.intensityMap);
       /* 碎片Mz echarts toolbox */
@@ -260,8 +261,14 @@ const TableList: React.FC = (props: any) => {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
 
-        const { expList } = result.data;
+        const { expList, overviewMap } = result.data;
         setExps(expList); // 放实验列表
+        // 将实验 overviewIds 给 getExpData接口得到的数据
+        const overviewIdsData = expList?.map((item: any) => {
+          return overviewMap[item.id][0].id;
+        });
+
+        setOverviewIds(overviewIdsData); // 放实验列表
         setSelectedExpIds(
           expList?.map((item: any) => {
             return item.id;
@@ -570,7 +577,7 @@ const TableList: React.FC = (props: any) => {
   Object.keys(featureMap).forEach((key: any) => {
     IntensityData.push({ name: key, data: featureMap[key] });
   });
-  IntensityData.sort((a: { data: number }, b: { data: number }) => (a.data - b.data ? -1 : 1));
+  IntensityData.sort((a: { data: number }, b: { data: number }) => a.data - b.data);
 
   /* 点击坐标点展示光谱图 */
   // echarts?.getEchartsInstance().off('click'); // 防止多次触发

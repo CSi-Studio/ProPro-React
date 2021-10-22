@@ -213,7 +213,7 @@ const TableList: React.FC = () => {
       key: 'group',
       title: '分组',
       dataIndex: 'group',
-      showSorterTooltip:false,
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.group > b?.group ? -1 : 1;
       },
@@ -402,7 +402,7 @@ const TableList: React.FC = () => {
       dataIndex: 'createDate',
       valueType: 'dateTime',
       hideInSearch: true,
-      showSorterTooltip:false,
+      showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.createDate > b?.createDate ? -1 : 1;
       },
@@ -678,6 +678,8 @@ const TableList: React.FC = () => {
           pageSize?: number | undefined;
         }) => {
           const msg = await projectList({ ...params });
+          console.log(msg);
+
           setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
