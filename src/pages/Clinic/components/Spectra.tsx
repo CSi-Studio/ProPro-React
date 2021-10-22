@@ -36,7 +36,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
   const chooseValue: any = [];
   cutInfoMap.forEach((item: any) => {
     props?.values?.data?.x.forEach((value: number, index: number) => {
-      if (value > item.data - 0.015 && value < item.data + 0.015) {
+      if (value > item.data - 0.025 && value < item.data + 0.025) {
         chooseValue.push({ data: yData[index].value, name: item.name, index });
         yData[index] = {
           value: 0,
@@ -75,12 +75,12 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       }
     });
 
-    for (let index = 1; index < 11; index += 1) {
+    for (let index = 1; index < 21; index += 1) {
       leftData.push(props?.values?.data?.y[Math.min(...chooseData) - index]);
       rightData.push(props?.values?.data?.y[Math.max(...chooseData) + index]);
     }
-    cutInfoData.splice(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    cutInfoData = cutInfoData.concat(new Array(10).fill(0));
+    cutInfoData.splice(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    cutInfoData = cutInfoData.concat(new Array(20).fill(0));
 
     result.push(cutInfoData);
     midZerResult.push(b.concat(leftData).concat(midZerData).concat(rightData));

@@ -72,19 +72,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
       seriesData.push(pairsInit);
     });
     seriesData.sort((a: { alias: string }, b: { alias: string }) => (a.alias > b.alias ? 1 : -1));
-    seriesData.forEach((item, idx) => {
-      series.push({
-        xAxisIndex: idx,
-        yAxisIndex: idx,
-        type: 'scatter',
-        name: item.alias,
-        symbolSize: 2,
-        animation: false,
-        data: item.value,
-        large: true,
-        markLine: getMarkLine(seriesData.length),
-      });
-    });
 
     // 设置Grids布局
     const getXicGrids = (count: number) => {
@@ -148,6 +135,86 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         grids.push(item);
       }
       return grids;
+    };
+
+    // 设置graphic自定义图形
+    let itemIndex = 0;
+    const ratio: any = [];
+    seriesData.forEach((item, idx) => {
+      itemIndex = 0;
+      item.value.forEach((value: number[]) => {
+        if (value[1] > -100 && value[1] < 100) {
+          itemIndex += 1;
+        }
+      });
+      ratio.push(itemIndex / item.value.length);
+      series.push({
+        xAxisIndex: idx,
+        yAxisIndex: idx,
+        type: 'scatter',
+        name: item.alias,
+        symbolSize: 2,
+        animation: false,
+        data: item.value,
+        large: true,
+        markLine: getMarkLine(seriesData.length),
+      });
+    });
+
+    const getGraphic = () => {
+      const graphic: any = [];
+      ratio.forEach((item: any, index: number) => {
+        graphic.push({
+          type: 'group',
+          left: `${
+            (index % gridNumInRow) * Math.floor(Width / gridNumInRow) +
+            Math.floor((Math.floor(Width / gridNumInRow) - gridPaddingWight) / 2) +
+            totalPaddingWidth -
+            14
+          }%`,
+          top: `${
+            (gridHeight + gridPaddingHeight) * Math.floor(index / gridNumInRow) +
+            totalPaddingHeight -
+            titleHeight +
+            30
+          }px`,
+          children: [
+            {
+              type: 'rect',
+              z: 100,
+              left: '0',
+              top: '0',
+              shape: {
+                width: 70,
+                height: 16,
+              },
+              style: {
+                fill: '#fff',
+                stroke: '#555',
+                lineWidth: 1,
+                shadowBlur: 8,
+                shadowOffsetX: 3,
+                shadowOffsetY: 3,
+                shadowColor: 'rgba(0,0,0,0.2)',
+              },
+            },
+            {
+              type: 'text',
+              z: 100,
+              left: '10',
+              top: '2',
+              style: {
+                fill: '#333',
+                width: 220,
+                overflow: 'break',
+                text: `${item.toFixed(4)}%`,
+                font: '14px Times New Roman,STSong',
+              },
+            },
+          ],
+        });
+      });
+      return graphic;
     };
 
     // 设置x轴
@@ -276,6 +343,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         },
       },
       dataZoom: getDataZoom(),
+      graphic: getGraphic(),
       series,
     };
     setHandleOption(option);

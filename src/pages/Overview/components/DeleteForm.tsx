@@ -19,7 +19,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title={'你确定要删除这' + props.selectedRows.length + '个方法吗？'}
+      title={'你确定要删除这' + props.selectedRows.length + '个概览吗？'}
       width={530}
       visible={props.deleteModalVisible}
       modalProps={{
