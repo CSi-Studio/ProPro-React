@@ -19,6 +19,8 @@ import { Link } from 'umi';
 import DetailForm from './components/OverviewDetail';
 import DeleteForm from './components/DeleteForm';
 import BatchUpdateForm from './components/BatchUpdateForm';
+import ReselectForm from './components/ReselectForm';
+import SelectDef from './components/SelectDef';
 
 /**
  * 更新库
@@ -153,6 +155,10 @@ const TableList: React.FC = (props: any) => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  /** Reselect的弹窗 */
+  const [reselectVisible, handleReselectVisible] = useState<boolean>(false);
+  /** 快速选择默认的弹窗 */
+  const [selectDefVisible, handleSelectDefVisible] = useState<boolean>(false);
   /** 删除窗口的弹窗 */
   const [deleteModalVisible, handleDeleteModalVisible] = useState<boolean>(false);
   /** 批量修改窗口的弹窗 */
@@ -452,6 +458,59 @@ const TableList: React.FC = (props: any) => {
         size="small"
         search={{ labelWidth: 'auto', span: 5 }}
         toolBarRender={() => [
+          <a
+            key="batchRestatistic"
+            onClick={async () => {
+              if (selectedRows?.length > 0) {
+                const idList = selectedRows.map((item) => {
+                  return item.id;
+                });
+                const result = await handleStatistic({ idList });
+                if (result) {
+                  if (actionRef.current) {
+                    actionRef.current.reload();
+                  }
+                }
+              } else {
+                message.warn('请选择要修改的概览，支持多选');
+              }
+            }}
+          >
+            <Tag color="green">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:scatter-plot" />
+              重新统计蛋白数
+            </Tag>
+          </a>,
+          <a
+            key="batchReselect"
+            onClick={async () => {
+              if (selectedRows?.length > 0) {
+                handleReselectVisible(true);
+              } else {
+                message.warn('请选择要Reselect的概览，支持多选');
+              }
+            }}
+          >
+            <Tag color="yellow">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:select-compare" />
+              Reselect
+            </Tag>
+          </a>,
+          <a
+            key="batchReselectDef"
+            onClick={async () => {
+              if (selectedRows?.length > 0) {
+                handleSelectDefVisible(true);
+              } else {
+                message.warn('请至少选择一个概览，支持多选');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:gesture-tap" />
+              选择默认
+            </Tag>
+          </a>,
           <>
             {selectedRows && selectedRows.length > 0 ? (
               <Link
@@ -492,54 +551,6 @@ const TableList: React.FC = (props: any) => {
             )}
           </>,
           <a
-            key="batchRestatistic"
-            onClick={async () => {
-              if (selectedRows?.length > 0) {
-                console.log(selectedRows);
-
-                const idList = selectedRows.map((item) => {
-                  return item.id;
-                });
-                const result = await handleStatistic({ idList });
-                if (result) {
-                  if (actionRef.current) {
-                    actionRef.current.reload();
-                  }
-                }
-              } else {
-                message.warn('请选择要修改的概览，支持多选');
-              }
-            }}
-          >
-            <Tag color="green">
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:scatter-plot" />
-              重新统计蛋白数
-            </Tag>
-          </a>,
-          <a
-            key="batchReselect"
-            onClick={async () => {
-              if (selectedRows?.length > 0) {
-                const overviewIds = selectedRows.map((item) => {
-                  return item.id;
-                });
-                const result = await handleReselect({ overviewIds });
-                if (result) {
-                  if (actionRef.current) {
-                    actionRef.current.reload();
-                  }
-                }
-              } else {
-                message.warn('请选择要Reselect的概览，支持多选');
-              }
-            }}
-          >
-            <Tag color="yellow">
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:select-compare" />
-              Reselect
-            </Tag>
-          </a>,
-          <a
             key="batchEdit"
             onClick={async () => {
               formBatch?.resetFields();
@@ -575,6 +586,12 @@ const TableList: React.FC = (props: any) => {
         tableAlertRender={false}
         pagination={{
           total,
+          hideOnSinglePage: true,
+          size: 'small',
+          showSizeChanger: false,
+          showQuickJumper: false,
+          showTotal: () => null,
+          position: ['bottomRight'],
         }}
         request={async (params) => {
           if (projectId) {
@@ -621,13 +638,13 @@ const TableList: React.FC = (props: any) => {
         }}
         onSubmit={async (value) => {
           value.id = currentRow?.id as unknown as string;
-          const mapvalue = {
+          const mapValue = {
             id: value.id,
             tags: value.tags,
             note: value.note,
             defaultOne: value.defaultOne,
           };
-          const success = await handleUpdate(mapvalue);
+          const success = await handleUpdate(mapValue);
           if (success) {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
@@ -663,6 +680,57 @@ const TableList: React.FC = (props: any) => {
           }
         }}
         deleteModalVisible={deleteModalVisible}
+      />
+      {/* Reselect确认界面 */}
+      <ReselectForm
+        selectedRows={selectedRows}
+        form={formDelete}
+        onCancel={() => {
+          handleReselectVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
+        }}
+        onSubmit={async () => {
+          const overviewIds = selectedRows.map((item) => {
+            return item.id;
+          });
+          const result = await handleReselect({ overviewIds });
+          if (result) {
+            handleDeleteModalVisible(false);
+            setSelectedRows([]);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        reselectVisible={reselectVisible}
+      />
+      {/* 快速选择默认界面 */}
+      <SelectDef
+        selectedRows={selectedRows}
+        form={formDelete}
+        onCancel={() => {
+          handleSelectDefVisible(false);
+          setSelectedRows([]);
+          formDelete?.resetFields();
+        }}
+        onSubmit={async () => {
+          const mapValue = {
+            ids: selectedRows.map((item) => {
+              return item.id;
+            }),
+            defaultOne: true,
+          };
+          const success = await handleBatchUpdate(mapValue);
+          if (success) {
+            handleSelectDefVisible(false);
+            setSelectedRows([]);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        selectDefVisible={selectDefVisible}
       />
       <BatchUpdateForm
         form={formBatch}

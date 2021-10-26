@@ -26,8 +26,8 @@ import DetailForm from './components/DetailForm';
 import { Link } from 'umi';
 
 /**
- * 
- * 
+ *
+ *
  */
 //  const getPeptide = async (values: selectFormValueType) => {
 //   const hide = message.loading('正在获取');
@@ -215,7 +215,7 @@ const TableList: React.FC = () => {
     {
       title: '库类型',
       dataIndex: 'type',
-      showSorterTooltip:false,
+      showSorterTooltip: false,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
       render: (dom) => {
         if (dom === 'ANA') {
@@ -246,7 +246,7 @@ const TableList: React.FC = () => {
       title: '有机物种',
       hideInSearch: true,
       dataIndex: 'organism',
-      showSorterTooltip:false,
+      showSorterTooltip: false,
       sorter: (a, b) => (a.organism > b.organism ? -1 : 1),
       render: (dom, entity) => {
         if (entity.organism.length > 0) {
@@ -259,6 +259,7 @@ const TableList: React.FC = () => {
       title: '蛋白质数目',
       dataIndex: 'Protein_Count',
       hideInSearch: true,
+      sorter: (a, b) => (a.Protein_Count > b.Protein_Count ? -1 : 1),
       render: (dom, entity) => {
         return <Tag>{entity?.statistic?.Protein_Count}</Tag>;
       },
@@ -267,6 +268,7 @@ const TableList: React.FC = () => {
       title: '肽段数目',
       dataIndex: 'Peptide_Count',
       hideInSearch: true,
+      sorter: (a, b) => (a.Peptide_Count > b.Peptide_Count ? -1 : 1),
       render: (dom, entity) => {
         return (
           <>
@@ -290,6 +292,7 @@ const TableList: React.FC = () => {
       title: '碎片数目',
       dataIndex: 'Fragment_Count',
       hideInSearch: true,
+      sorter: (a, b) => (a.Fragment_Count > b.Fragment_Count ? -1 : 1),
       render: (dom, entity) => {
         return <Tag>{entity?.statistic?.Fragment_Count}</Tag>;
       },
@@ -594,7 +597,6 @@ const TableList: React.FC = () => {
           formCreate?.resetFields();
         }}
         onSubmit={async (value: addFormValueType) => {
-          // const success = handleAdd(value, addList({ ...value }), '123', '123', '123');
           const success = await handleAdd(value as addFormValueType);
           if (success) {
             handleModalVisible(false);
@@ -626,7 +628,7 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
           formUpdate?.resetFields();
         }}
-        onSubmit={async (value) => {
+        onSubmit={async (value: any) => {
           value.id = currentRow?.id as string;
           const success = await handleUpdate(value);
           if (success) {

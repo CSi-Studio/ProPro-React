@@ -127,6 +127,9 @@ const TableList: React.FC = (props: any) => {
     {
       title: '实验别名',
       dataIndex: 'alias',
+      sorter: (a: any, b: any) => {
+        return a.alias > b.alias ? -1 : 1;
+      },
       render: (dom, entity) => {
         if (entity.alias) {
           return (
@@ -349,6 +352,12 @@ const TableList: React.FC = (props: any) => {
         size="small"
         pagination={{
           pageSize: 100,
+          hideOnSinglePage: true,
+          size: 'small',
+          showSizeChanger: false,
+          showQuickJumper: false,
+          showTotal: () => null,
+          position: ['bottomRight'],
         }}
         tableAlertRender={false}
         request={async (params) => {

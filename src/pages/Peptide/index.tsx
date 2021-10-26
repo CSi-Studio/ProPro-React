@@ -123,16 +123,20 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'disable',
       dataIndex: 'disable',
-      width:50,
+      width: 50,
+      hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.disable > b?.disable ? -1 : 1;
+      },
       render: (dom, entity) => {
-        return entity.disable?<Tag color='red'>失效</Tag>:<Tag color='green'>有效</Tag>
+        return entity.disable ? <Tag color="red">失效</Tag> : <Tag color="green">有效</Tag>;
       },
     },
     {
       title: 'Proteins',
       dataIndex: 'proteins',
       render: (dom, entity) => {
-        let pros: any[] = [];
+        const pros: any[] = [];
         if (entity.proteins) {
           entity.proteins.forEach((pro) => {
             pros.push(<Tag key={pro}>{pro}</Tag>);
@@ -157,11 +161,17 @@ const TableList: React.FC = (props: any) => {
       title: 'm/z',
       dataIndex: 'mz',
       hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.mz > b?.mz ? -1 : 1;
+      },
     },
     {
       title: 'RT',
       dataIndex: 'rt',
       hideInSearch: true,
+      sorter: (a, b) => {
+        return a?.rt > b?.rt ? -1 : 1;
+      },
     },
     {
       title: '离子片段',
