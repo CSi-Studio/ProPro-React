@@ -16,7 +16,7 @@ const TableList: React.FC = (props: any) => {
       title: 'Proteins',
       dataIndex: 'proteins',
       render: (dom, entity) => {
-        let pros: any[] = [];
+        const pros: any[] = [];
         if (entity.proteins) {
           entity.proteins.forEach((pro) => {
             pros.push(<Tag key={pro}>{pro}</Tag>);
@@ -29,11 +29,10 @@ const TableList: React.FC = (props: any) => {
       title: 'Decoy',
       dataIndex: 'decoy',
       render: (dom, entity) => {
-        if(entity.decoy){
-          return <Tag color='red'>伪</Tag>;
-        }else{
-          return <Tag color='green'>真</Tag>;
+        if (entity.decoy) {
+          return <Tag color="red">伪</Tag>;
         }
+        return <Tag color="green">真</Tag>;
       },
     },
     {
@@ -50,55 +49,84 @@ const TableList: React.FC = (props: any) => {
     {
       title: 'FDR',
       dataIndex: 'fdr',
-      render: (dom, entity)=>{
-        return entity.fdr?<Tag color="green">{entity.fdr.toFixed(4)}</Tag>:<Tag color="red">NaN</Tag>
-      }
+      render: (dom, entity) => {
+        return entity.fdr ? (
+          <Tag color="green">{entity.fdr.toFixed(4)}</Tag>
+        ) : (
+          <Tag color="red">NaN</Tag>
+        );
+      },
     },
     {
       title: '鉴定状态',
       dataIndex: 'status',
       render: (dom, entity) => {
-        switch(entity.status){
-          case 0: return <Tag color="blue">等待鉴定</Tag>
-          case 1: return <Tag color="green">鉴定成功</Tag>
-          case 2: return <Tag color="red">鉴定失败</Tag>
-          case 3: return <Tag color="purple">条件不符</Tag>
-          case 4: return <Tag color="purple">峰组未知</Tag>
+        switch (entity.status) {
+          case 0:
+            return <Tag color="blue">等待鉴定</Tag>;
+          case 1:
+            return <Tag color="green">鉴定成功</Tag>;
+          case 2:
+            return <Tag color="red">鉴定失败</Tag>;
+          case 3:
+            return <Tag color="purple">条件不符</Tag>;
+          case 4:
+            return <Tag color="purple">峰组未知</Tag>;
         }
-        return <Tag color="yellow">未知状态</Tag>
+        return <Tag color="yellow">未知状态</Tag>;
       },
     },
     {
       title: 'RealRt/LibRt/ΔT',
       dataIndex: 'realRt',
       hideInSearch: true,
-      render: (dom, entity)=>{
-        let tags = [];
+      render: (dom, entity) => {
+        const tags = [];
 
-        if(entity.realRt){
-          tags.push(<Tag key="1" color="green">{entity.realRt.toFixed(0)}</Tag>)
-        }else{
-          tags.push(<Tag key="1" color="red">NaN</Tag>)
+        if (entity.realRt) {
+          tags.push(
+            <Tag key="1" color="green">
+              {entity.realRt.toFixed(0)}
+            </Tag>,
+          );
+        } else {
+          tags.push(
+            <Tag key="1" color="red">
+              NaN
+            </Tag>,
+          );
         }
-        
-        if(entity.irt){
-          tags.push(<Tag key="2" color="green">{entity.irt.toFixed(0)}</Tag>)
-        }else{
-          tags.push(<Tag key="2" color="red">NaN</Tag>)
+
+        if (entity.irt) {
+          tags.push(
+            <Tag key="2" color="green">
+              {entity.irt.toFixed(0)}
+            </Tag>,
+          );
+        } else {
+          tags.push(
+            <Tag key="2" color="red">
+              NaN
+            </Tag>,
+          );
         }
-        if(entity.realRt && entity.irt){
-          tags.push(<Tag key="3" color="blue">{Math.abs(entity.realRt - entity.irt).toFixed(1)}</Tag>)
+        if (entity.realRt && entity.irt) {
+          tags.push(
+            <Tag key="3" color="blue">
+              {Math.abs(entity.realRt - entity.irt).toFixed(1)}
+            </Tag>,
+          );
         }
         return <>{tags}</>;
-      }
+      },
     },
     {
       title: 'Sum',
       dataIndex: 'sum',
       hideInSearch: true,
-      render: (dom, entity) =>{
-        return <Tag color="purple">{entity.sum}</Tag>
-      }
+      render: (dom, entity) => {
+        return <Tag color="purple">{entity.sum}</Tag>;
+      },
     },
     // {
     //   key: 'option',
@@ -159,10 +187,10 @@ const TableList: React.FC = (props: any) => {
         }}
         columns={columns}
         pagination={{
-          total: total,
+          total,
         }}
         toolBarRender={() => []}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);
@@ -178,8 +206,6 @@ const TableList: React.FC = (props: any) => {
           },
         }}
       />
-     
-     
     </>
   );
 };

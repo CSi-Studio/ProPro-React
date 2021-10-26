@@ -43,6 +43,7 @@ import { Link } from 'umi';
 import LFQBench from './components/LFQBench';
 import OverView from './components/OverView';
 import PeptideDis from './components/PeptideDis';
+import { overviewList } from '../Overview/service';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -60,6 +61,7 @@ const peptidePageSize = 9;
 
 const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
+  const overviewIdsInt = props?.location?.query?.overviewIds;
   const [exps, setExps] = useState<IdNameAlias[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
   const [expData, setExpData] = useState<any>([]); // 选中exp,存放的真实值为exp.id列表
   const [overviewIds, setOverviewIds] = useState<any>([]); // 存放overviewIds
@@ -153,9 +155,16 @@ const TableList: React.FC = (props: any) => {
         peptideRef,
         smooth,
         denoise,
-        overviewIds,
+        overviewIds: overviewIdsInt || overviewIds,
       });
 
+      // project对应的ov列表
+      const expValues = await overviewList({
+        projectId,
+      });
+      console.log('expValues?.data', expValues?.data);
+
+      console.log('exps', exps);
       // 将实验 别名 给 getExpData接口得到的数据
       result.data.forEach((item: any) => {
         exps?.forEach((_item: any) => {
@@ -163,9 +172,17 @@ const TableList: React.FC = (props: any) => {
             item.alias = _item.alias;
           }
         });
+        expValues?.data?.forEach((_item: any) => {
+          if (item.expId === _item.expId) {
+            item.name = _item.expName;
+          }
+        });
       });
+      result.data.sort((a: any, b: any) => a.alias.charCodeAt(0) - b.alias.charCodeAt(0));
+      console.log(['A-1', 'B-1', 'A-2', 'B-2', 'B-3', 'A-3'].sort());
 
       setExpData(result.data);
+
       setFeatureMap(result.featureMap.intensityMap);
       /* 碎片Mz echarts toolbox */
       const getCutInfo = () => {
@@ -173,14 +190,13 @@ const TableList: React.FC = (props: any) => {
       };
 
       /* 展示碎片光谱图 */
-      const spectraFn = async (values: any) => {
+      const spectraFn = async (item: any) => {
         const hide = message.loading('正在获取光谱图');
-
         try {
           const data = await getSpectra({
-            expId: selectedExpIds[Math.floor(values[0].seriesIndex / selectedExpIds.length)],
-            mz: peptideList.find((item: any) => item.peptideRef === peptideRef)?.mz,
-            rt: values[0].axisValue,
+            expId: selectedExpIds[Math.floor(item[0].seriesIndex / selectedExpIds.length)],
+            mz: peptideList.find((_item: any) => _item.peptideRef === peptideRef)?.mz,
+            rt: item[0].axisValue,
           });
           data.expData = result.data;
 
@@ -193,6 +209,7 @@ const TableList: React.FC = (props: any) => {
           return false;
         }
       };
+      console.log('result.data1', result.data);
 
       /* 获取option */
       const option = xic({ result: result.data, getCutInfo, spectraFn });
@@ -260,9 +277,12 @@ const TableList: React.FC = (props: any) => {
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
+        const { overviewMap, expList } = result.data;
+        expList.sort((a: any, b: any) => (a.alias > b.alias ? 1 : -1));
+        console.log('expList', expList);
 
-        const { expList, overviewMap } = result.data;
         setExps(expList); // 放实验列表
+
         // 将实验 overviewIds 给 getExpData接口得到的数据
         const overviewIdsData = expList?.map((item: any) => {
           return overviewMap[item.id][0].id;
@@ -273,6 +293,7 @@ const TableList: React.FC = (props: any) => {
           expList?.map((item: any) => {
             return item.id;
           }),
+          // expDataSet
         );
         getIrtData({
           selectedExpIds: expList?.map((item: any) => {
@@ -332,6 +353,13 @@ const TableList: React.FC = (props: any) => {
     fetchEicDataList(false, false);
   }, [smooth, denoise]);
 
+  const expDataObj = {};
+  // exp对象数组去重
+  const expDataSet = expData.reduce((preValue: any[], value: { alias: string | number }) => {
+    expDataObj[value.alias] ? '' : (expDataObj[value.alias] = true && preValue.push(value));
+    return preValue;
+  }, []);
+
   // 点击选择 tags
   const handleExpTagChange = (item: string, checked: boolean) => {
     const nextSelectedTags = checked
@@ -342,18 +370,34 @@ const TableList: React.FC = (props: any) => {
 
   /* 全选所有实验Tag */
   const selectAll = () => {
-    setSelectedExpIds(
-      exps?.map((item: any) => {
-        return item.id;
-      }),
-    );
+    if (overviewIdsInt) {
+      setSelectedExpIds(
+        expDataSet?.map((item: any) => {
+          return item.expId;
+        }),
+      );
+    } else {
+      setSelectedExpIds(
+        exps?.map((item: any) => {
+          return item.id;
+        }),
+      );
+    }
     setHandleSubmit(!handleSubmit);
   };
+  console.log('expDataSet', expDataSet);
 
   /* 反选当前选择的实验Tag */
   const selectReverse = () => {
-    const reverse = exps.map((item) => item.id).filter((id) => !selectedExpIds.includes(id));
-    setSelectedExpIds(reverse);
+    if (overviewIdsInt) {
+      const reverse = expDataSet
+        .map((item: { expId: any }) => item.expId)
+        .filter((expId: string) => !selectedExpIds.includes(expId));
+      setSelectedExpIds(reverse);
+    } else {
+      const reverse = exps.map((item) => item.id).filter((id) => !selectedExpIds.includes(id));
+      setSelectedExpIds(reverse);
+    }
     setHandleSubmit(!handleSubmit);
   };
 
@@ -577,13 +621,25 @@ const TableList: React.FC = (props: any) => {
   Object.keys(featureMap).forEach((key: any) => {
     IntensityData.push({ name: key, data: featureMap[key] });
   });
-  IntensityData.sort((a: { data: number }, b: { data: number }) => a.data - b.data);
+
+  IntensityData.sort((a: { data: number }, b: { data: number }) =>
+    b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
+  );
 
   /* 点击坐标点展示光谱图 */
   // echarts?.getEchartsInstance().off('click'); // 防止多次触发
   // echarts?.getEchartsInstance().on('click', 'markArea', (params: any) => {
   //   console.log(params);
   // });
+
+  // console.log(
+  //   'expData',
+  //   expData,
+  //   exps,
+  //   expData.map((item: { alias: any }) => {
+  //     return item.alias;
+  //   }),
+  // );
 
   return (
     <PageContainer
@@ -791,42 +847,80 @@ const TableList: React.FC = (props: any) => {
                     <Button style={{ marginRight: 5 }} size="small" onClick={selectReverse}>
                       反选
                     </Button>
-                    {exps.length > 0 &&
-                      exps?.map((item: IdNameAlias) => (
-                        <Badge
-                          style={{ marginTop: 5 }}
-                          size="small"
-                          count={prepareData?.overviewMap[item.id]?.length}
-                          offset={[-5, 0]}
-                          key={item.id}
-                        >
-                          <Tooltip
-                            title={() => {
-                              return (
-                                <>
-                                  <span>{item.name}</span>
-                                  <br />
-                                  <span>{item.id}</span>
-                                </>
-                              );
-                            }}
-                            overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
-                          >
-                            <CheckableTag
-                              style={{ marginTop: 5, marginLeft: 5 }}
-                              checked={selectedExpIds?.indexOf(item.id) > -1}
-                              onChange={(checked) => {
-                                handleExpTagChange(item.id, checked);
-                                if (handleOption) {
-                                  setHandleSubmit(!handleSubmit);
-                                }
-                              }}
+                    {overviewIdsInt
+                      ? expDataSet
+                          .sort((a: any, b: any) => (a.alias > b.alias ? 1 : -1))
+                          ?.map((item: any) => (
+                            <Badge
+                              style={{ marginTop: 5 }}
+                              size="small"
+                              count={prepareData?.overviewMap[item.id]?.length}
+                              offset={[-5, 0]}
+                              key={item.id}
                             >
-                              {item.alias}
-                            </CheckableTag>
-                          </Tooltip>
-                        </Badge>
-                      ))}
+                              <Tooltip
+                                title={() => {
+                                  return (
+                                    <>
+                                      <span>{item.name}</span>
+                                      <br />
+                                      <span>{item.expId}</span>
+                                    </>
+                                  );
+                                }}
+                                overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
+                              >
+                                <CheckableTag
+                                  style={{ marginTop: 5, marginLeft: 5 }}
+                                  checked={selectedExpIds?.indexOf(item.id) > -1}
+                                  onChange={(checked) => {
+                                    handleExpTagChange(item.id, checked);
+                                    if (handleOption) {
+                                      setHandleSubmit(!handleSubmit);
+                                    }
+                                  }}
+                                >
+                                  {item.alias}
+                                </CheckableTag>
+                              </Tooltip>
+                            </Badge>
+                          ))
+                      : exps.length > 0 &&
+                        exps?.map((item: IdNameAlias) => (
+                          <Badge
+                            style={{ marginTop: 5 }}
+                            size="small"
+                            count={prepareData?.overviewMap[item.id]?.length}
+                            offset={[-5, 0]}
+                            key={item.id}
+                          >
+                            <Tooltip
+                              title={() => {
+                                return (
+                                  <>
+                                    <span>{item.name}</span>
+                                    <br />
+                                    <span>{item.id}</span>
+                                  </>
+                                );
+                              }}
+                              overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
+                            >
+                              <CheckableTag
+                                style={{ marginTop: 5, marginLeft: 5 }}
+                                checked={selectedExpIds?.indexOf(item.id) > -1}
+                                onChange={(checked) => {
+                                  handleExpTagChange(item.id, checked);
+                                  if (handleOption) {
+                                    setHandleSubmit(!handleSubmit);
+                                  }
+                                }}
+                              >
+                                {item.alias}
+                              </CheckableTag>
+                            </Tooltip>
+                          </Badge>
+                        ))}
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>

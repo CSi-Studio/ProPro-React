@@ -452,10 +452,51 @@ const TableList: React.FC = (props: any) => {
         size="small"
         search={{ labelWidth: 'auto', span: 5 }}
         toolBarRender={() => [
+          <>
+            {selectedRows && selectedRows.length > 0 ? (
+              <Link
+                key="clinic"
+                target="_blank"
+                to={{
+                  pathname: '/clinic',
+                  search: `?projectId=${selectedRows[0].projectId}&overviewIds=${selectedRows.map(
+                    (item) => {
+                      return item.id;
+                    },
+                  )}`,
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:stethoscope"
+                  />
+                  蛋白诊所
+                </Tag>
+              </Link>
+            ) : (
+              <a
+                key="clinic"
+                onClick={() => {
+                  message.warn('请至少选择一个实验');
+                }}
+              >
+                <Tag color="blue">
+                  <Icon
+                    style={{ verticalAlign: '-4px', fontSize: '16px' }}
+                    icon="mdi:stethoscope"
+                  />
+                  蛋白诊所
+                </Tag>
+              </a>
+            )}
+          </>,
           <a
             key="batchRestatistic"
             onClick={async () => {
               if (selectedRows?.length > 0) {
+                console.log(selectedRows);
+
                 const idList = selectedRows.map((item) => {
                   return item.id;
                 });
@@ -471,7 +512,7 @@ const TableList: React.FC = (props: any) => {
             }}
           >
             <Tag color="green">
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:scatter-plot" />
               重新统计蛋白数
             </Tag>
           </a>,
@@ -494,7 +535,7 @@ const TableList: React.FC = (props: any) => {
             }}
           >
             <Tag color="yellow">
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:select-compare" />
               Reselect
             </Tag>
           </a>,
@@ -510,7 +551,7 @@ const TableList: React.FC = (props: any) => {
             }}
           >
             <Tag color="blue">
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
               批量修改
             </Tag>
           </a>,

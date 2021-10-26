@@ -21,6 +21,9 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       allCutInfo.push(key);
     });
   });
+  data.sort((a, b) => (b.expId === a.expId ? 0 : a.expId > b.expId ? 1 : -1));
+  console.log('data', data);
+
   const statusFn = (
     value: number,
     str1: any,
@@ -124,7 +127,9 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       }
 
       const item = {
-        text: data[i].alias,
+        text: `${data[i].alias} (${data[i].expId.substring(data[i].expId.length - 5)} - ${data[
+          i
+        ].overviewId.substring(data[i].overviewId.length - 5)})`,
         height: '200px',
         textAlign: 'center',
         textStyle: {
@@ -582,12 +587,12 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       ],
       toolbox: {
         feature: {
-          myTool1: {
-            show: true,
-            title: '碎片m/z',
-            icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
-            onclick: getCutInfo,
-          },
+          // myTool1: {
+          //   show: true,
+          //   title: '碎片m/z',
+          //   icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+          //   onclick: getCutInfo,
+          // },
           restore: {},
           dataView: {},
           saveAsImage: {},
