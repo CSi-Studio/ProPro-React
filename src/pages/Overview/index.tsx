@@ -574,22 +574,22 @@ const TableList: React.FC = (props: any) => {
               </a>
             )}
           </>,
-          // <a
-          //   key="batchEdit"
-          //   onClick={async () => {
-          //     formBatch?.resetFields();
-          //     if (selectedRows?.length > 0) {
-          //       handleBatchModalVisible(true);
-          //     } else {
-          //       message.warn('请选择要修改的概览，支持多选');
-          //     }
-          //   }}
-          // >
-          //   <Tag color="blue">
-          //     <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
-          //     批量修改
-          //   </Tag>
-          // </a>,
+          <a
+            key="batchEdit"
+            onClick={async () => {
+              formBatch?.resetFields();
+              if (selectedRows?.length > 0) {
+                handleBatchModalVisible(true);
+              } else {
+                message.warn('请选择要修改的概览，支持多选');
+              }
+            }}
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
+              批量修改
+            </Tag>
+          </a>,
           <a
             key="delete"
             onClick={async () => {
@@ -690,7 +690,6 @@ const TableList: React.FC = (props: any) => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          console.log('删除');
           if (value.name === '我确认删除') {
             const success = await handleRemove(selectedRows);
             if (success) {
@@ -717,8 +716,6 @@ const TableList: React.FC = (props: any) => {
           const overviewIds = selectedRows.map((item) => {
             return item.id;
           });
-          console.log('1231231');
-
           const result = await handleReselect({ overviewIds });
           if (result) {
             handleReselectVisible(false);
