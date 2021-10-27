@@ -138,13 +138,13 @@ const TableList: React.FC = (props: any) => {
 
   /** **************  网络调用相关接口 start  ****************** */
   async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
-    console.log('123123');
+    // console.log(selectedExpIds);
 
-    if (selectedExpIds.length === 0) {
-      return false;
-    }
+    // if (selectedExpIds.length === 0) {
+    //   return false;
+    // }
     if (!peptideRef) {
-      message.warn('请选择一个PeptideRef');
+      // message.warn('请选择一个PeptideRef');
       return false;
     }
     setChartsLoading(true);
@@ -182,6 +182,7 @@ const TableList: React.FC = (props: any) => {
       result.data.sort((a: any, b: any) => a.alias.charCodeAt(0) - b.alias.charCodeAt(0));
 
       setExpData(result.data);
+      // console.log(result.data);
 
       setFeatureMap(result.featureMap.intensityMap);
       /* 碎片Mz echarts toolbox */
@@ -293,9 +294,6 @@ const TableList: React.FC = (props: any) => {
 
         setOverviewIds(overviewIdsData); // 放实验列表
 
-        // console.log('overviewIdsInt', overviewIdsInt);
-        // console.log('expData', expData);
-
         if (!overviewIdsInt) {
           setSelectedExpIds(
             expList?.map((item: any) => {
@@ -309,14 +307,6 @@ const TableList: React.FC = (props: any) => {
             }),
           );
         }
-
-        // if (overviewIdsInt) {
-        //   setSelectedExpIds(
-        //     expData?.map((item: any) => {
-        //       return item.expId;
-        //     }),
-        //   );
-        // }
 
         getIrtData({
           selectedExpIds: expList?.map((item: any) => {
@@ -942,7 +932,7 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>
-                      {selectedExpIds.length > 0 && handleOption !== undefined ? (
+                      {selectedExpIds && handleOption !== undefined ? (
                         <ReactECharts
                           ref={(e) => {
                             setEcharts(e);
