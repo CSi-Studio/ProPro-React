@@ -739,6 +739,7 @@ const TableList: React.FC = (props: any) => {
               </Col>
               <Col span={24}>
                 <ProTable
+                  scroll={{ x: 'max-content' }}
                   columns={peptideColumn}
                   dataSource={peptideList?.map((item) => {
                     return {
