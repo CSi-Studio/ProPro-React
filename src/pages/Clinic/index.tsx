@@ -138,6 +138,8 @@ const TableList: React.FC = (props: any) => {
 
   /** **************  网络调用相关接口 start  ****************** */
   async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
+    console.log('123123');
+
     if (selectedExpIds.length === 0) {
       return false;
     }
@@ -209,10 +211,15 @@ const TableList: React.FC = (props: any) => {
       };
 
       /* 获取option */
-      const option = xic({ result: result.data, getCutInfo, spectraFn });
+      const option = xic({
+        result: result.data.sort((a: any, b: any) => b.alias - a.alias),
+        getCutInfo,
+        spectraFn,
+      });
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
+
       setHandleOption(option);
       setLoading(false);
       setChartsLoading(false);
@@ -271,6 +278,7 @@ const TableList: React.FC = (props: any) => {
   useEffect(() => {
     /* 准备数据 */
     const init = async () => {
+      fetchEicDataList(false, false);
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
@@ -286,14 +294,21 @@ const TableList: React.FC = (props: any) => {
         setOverviewIds(overviewIdsData); // 放实验列表
 
         // console.log('overviewIdsInt', overviewIdsInt);
+        // console.log('expData', expData);
 
-        // if (!overviewIdsInt) {
-        setSelectedExpIds(
-          expList?.map((item: any) => {
-            return item.id;
-          }),
-        );
-        // }
+        if (!overviewIdsInt) {
+          setSelectedExpIds(
+            expList?.map((item: any) => {
+              return item.id;
+            }),
+          );
+        } else {
+          setSelectedExpIds(
+            expData?.map((item: any) => {
+              return item.id;
+            }),
+          );
+        }
 
         // if (overviewIdsInt) {
         //   setSelectedExpIds(

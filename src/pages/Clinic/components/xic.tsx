@@ -21,8 +21,6 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       allCutInfo.push(key);
     });
   });
-  data.sort((a, b) => (b.expId === a.expId ? 0 : a.expId > b.expId ? 1 : -1));
-
   const statusFn = (
     value: number,
     str1: any,
