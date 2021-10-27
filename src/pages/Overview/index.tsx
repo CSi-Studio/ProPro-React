@@ -413,11 +413,13 @@ const TableList: React.FC = (props: any) => {
   //     }),
   //   ),
   // );
+  console.log('selectedRows', selectedRows);
+  
 
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
-        scroll={{ x: 'max-content' }}
+        // scroll={{ x: 'max-content' }}
         headerTitle={
           projectName === undefined ? (
             <>
