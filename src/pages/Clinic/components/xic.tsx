@@ -364,17 +364,10 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
     };
 
     value.scoreList.forEach((item: any, index: any) => {
-      if (index === value.selectIndex) {
         markLineOpt.data.push({
-          xAxis: item.rt,
+          xAxis: item.nearestRt,
           lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
         });
-      } else {
-        markLineOpt.data.push({
-          xAxis: item.rt,
-          lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
-        });
-      }
     });
 
     return markLineOpt;

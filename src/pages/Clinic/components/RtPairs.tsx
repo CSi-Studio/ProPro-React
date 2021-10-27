@@ -153,7 +153,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         yAxisIndex: idx,
         type: 'scatter',
         name: item.alias,
-        symbolSize: 2,
+        symbolSize: 3,
         animation: false,
         data: item.value,
         large: true,
