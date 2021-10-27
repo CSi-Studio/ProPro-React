@@ -81,15 +81,14 @@ const handleStatistic = async (values: any) => {
  */
 const handleReselect = async (values: any) => {
   const hide = message.loading('Reselecting');
-
   try {
     await reselect({ ...values });
     hide();
-    message.success('Reselect成功');
+    message.success('ReSelect成功');
     return true;
   } catch (error) {
     hide();
-    message.error('Reselect失败!');
+    message.error('ReSelect失败!');
     return false;
   }
 };
@@ -575,22 +574,22 @@ const TableList: React.FC = (props: any) => {
               </a>
             )}
           </>,
-          <a
-            key="batchEdit"
-            onClick={async () => {
-              formBatch?.resetFields();
-              if (selectedRows?.length > 0) {
-                handleBatchModalVisible(true);
-              } else {
-                message.warn('请选择要修改的概览，支持多选');
-              }
-            }}
-          >
-            <Tag color="blue">
-              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
-              批量修改
-            </Tag>
-          </a>,
+          // <a
+          //   key="batchEdit"
+          //   onClick={async () => {
+          //     formBatch?.resetFields();
+          //     if (selectedRows?.length > 0) {
+          //       handleBatchModalVisible(true);
+          //     } else {
+          //       message.warn('请选择要修改的概览，支持多选');
+          //     }
+          //   }}
+          // >
+          //   <Tag color="blue">
+          //     <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
+          //     批量修改
+          //   </Tag>
+          // </a>,
           <a
             key="delete"
             onClick={async () => {
@@ -691,6 +690,7 @@ const TableList: React.FC = (props: any) => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
+          console.log('删除');
           if (value.name === '我确认删除') {
             const success = await handleRemove(selectedRows);
             if (success) {
@@ -709,19 +709,19 @@ const TableList: React.FC = (props: any) => {
       {/* Reselect确认界面 */}
       <ReselectForm
         selectedRows={selectedRows}
-        form={formDelete}
         onCancel={() => {
           handleReselectVisible(false);
           setSelectedRows([]);
-          formDelete?.resetFields();
         }}
         onSubmit={async () => {
           const overviewIds = selectedRows.map((item) => {
             return item.id;
           });
+          console.log('1231231');
+
           const result = await handleReselect({ overviewIds });
           if (result) {
-            handleDeleteModalVisible(false);
+            handleReselectVisible(false);
             setSelectedRows([]);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -733,11 +733,9 @@ const TableList: React.FC = (props: any) => {
       {/* 快速选择默认界面 */}
       <SelectDef
         selectedRows={selectedRows}
-        form={formDelete}
         onCancel={() => {
           handleSelectDefVisible(false);
           setSelectedRows([]);
-          formDelete?.resetFields();
         }}
         onSubmit={async () => {
           const mapValue = {

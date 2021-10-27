@@ -5,16 +5,12 @@ export type SelectDefProps = {
   onSubmit: () => Promise<void>;
   onCancel: () => void;
   selectDefVisible: boolean;
-  form: any;
   selectedRows: any;
 };
 
 const SelectDefault: React.FC<SelectDefProps> = (props) => {
-  console.log(props.selectDefVisible);
-
   return (
     <ModalForm
-      form={props.form}
       title={`选择是否默认`}
       width={530}
       visible={props.selectDefVisible}

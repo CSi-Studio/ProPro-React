@@ -5,14 +5,12 @@ export type ReselectFormProps = {
   onSubmit: () => Promise<void>;
   onCancel: () => void;
   reselectVisible: boolean;
-  form: any;
   selectedRows: any;
 };
 
 const ReselectForm: React.FC<ReselectFormProps> = (props) => {
   return (
     <ModalForm
-      form={props.form}
       title={`Reselect概览`}
       width={530}
       visible={props.reselectVisible}
