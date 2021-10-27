@@ -312,7 +312,7 @@ const TableList: React.FC = (props: any) => {
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
-        scroll={{ x: 'max-content' }}
+        // scroll={{ x: 'max-content' }}
         headerTitle={
           props?.location?.state?.projectName === undefined ? (
             <>

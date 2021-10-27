@@ -138,7 +138,31 @@ const TableList: React.FC = (props: any) => {
 
   /** **************  网络调用相关接口 start  ****************** */
   async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
-    // console.log(selectedExpIds);
+    console.log('selectedExpIds', selectedExpIds);
+    // console.log('overviewIdsInt', overviewIdsInt?.split(','));
+    // console.log('prepareData', prepareData?.overviewMap);
+    let selectedOverviewIds = [];
+    if (!overviewIdsInt) {
+      selectedOverviewIds = []
+        .concat(
+          ...selectedExpIds.map((expId) => {
+            return prepareData?.overviewMap[expId];
+          }),
+        )
+        .map((item: any) => {
+          return item.id;
+        });
+    }
+    // console.log(
+    //   projectId,
+    //   prepareData?.anaLib?.id,
+    //   predict,
+    //   changeCharge,
+    //   peptideRef,
+    //   smooth,
+    //   denoise,
+    //   overviewIdsInt?.split(','),
+    // );
 
     // if (selectedExpIds.length === 0) {
     //   return false;
@@ -157,14 +181,13 @@ const TableList: React.FC = (props: any) => {
         peptideRef,
         smooth,
         denoise,
-        overviewIds: overviewIdsInt || overviewIds,
+        overviewIds: overviewIdsInt ? overviewIdsInt?.split(',') : selectedOverviewIds,
       });
 
       // project对应的ov列表
       const expValues = await overviewList({
         projectId,
       });
-      // console.log(result);
 
       // 将实验 别名 给 getExpData接口得到的数据
       result.data.forEach((item: any) => {
@@ -182,7 +205,6 @@ const TableList: React.FC = (props: any) => {
       result.data.sort((a: any, b: any) => a.alias.charCodeAt(0) - b.alias.charCodeAt(0));
 
       setExpData(result.data);
-      // console.log(result.data);
 
       setFeatureMap(result.featureMap.intensityMap);
       /* 碎片Mz echarts toolbox */
@@ -280,29 +302,27 @@ const TableList: React.FC = (props: any) => {
     /* 准备数据 */
     const init = async () => {
       fetchEicDataList(false, false);
+      if (overviewIdsInt) {
+        setSelectedExpIds(overviewIdsInt?.split(','));
+        console.log('设置SelectedExpIds');
+      }
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
-        const { overviewMap, expList } = result.data;
+        const { expList } = result.data;
         // expList.sort();
         setExps(expList); // 放实验列表
 
         // 将实验 overviewIds 给 getExpData接口得到的数据
-        const overviewIdsData = expList?.map((item: any) => {
-          return overviewMap[item.id][0].id;
-        });
+        // const overviewIdsData = expList?.map((item: any) => {
+        //   return overviewMap[item.id][0].id;
+        // });
 
-        setOverviewIds(overviewIdsData); // 放实验列表
+        // setOverviewIds(overviewIdsData); // 放实验列表
 
         if (!overviewIdsInt) {
           setSelectedExpIds(
             expList?.map((item: any) => {
-              return item.id;
-            }),
-          );
-        } else {
-          setSelectedExpIds(
-            expData?.map((item: any) => {
               return item.id;
             }),
           );
@@ -381,17 +401,10 @@ const TableList: React.FC = (props: any) => {
     setSelectedExpIds(nextSelectedTags);
   };
 
-  // console.log('expData', expData, 'exps', exps);
-  // console.log('selectedExpIds', selectedExpIds);
-
   /* 全选所有实验Tag */
   const selectAll = () => {
     if (overviewIdsInt) {
-      setSelectedExpIds(
-        expData?.map((item: any) => {
-          return item.expId;
-        }),
-      );
+      setSelectedExpIds(overviewIdsInt?.split(','));
     } else {
       setSelectedExpIds(
         exps?.map((item: any) => {
@@ -405,9 +418,10 @@ const TableList: React.FC = (props: any) => {
   /* 反选当前选择的实验Tag */
   const selectReverse = () => {
     if (overviewIdsInt) {
-      const reverse = expData
-        .map((item: { expId: any }) => item.expId)
-        .filter((expId: string) => !selectedExpIds.includes(expId));
+      const reverse = overviewIdsInt
+        ?.split(',')
+        .map((item: string) => item)
+        .filter((_item: string) => !selectedExpIds.includes(_item));
       setSelectedExpIds(reverse);
     } else {
       const reverse = exps.map((item) => item.id).filter((id) => !selectedExpIds.includes(id));
@@ -641,15 +655,6 @@ const TableList: React.FC = (props: any) => {
     b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
   );
 
-  // console.log(
-  //   'expData',
-  //   expData,
-  //   exps,
-  //   expData.map((item: { alias: any }) => {
-  //     return item.alias;
-  //   }),
-  // );
-
   return (
     <PageContainer
       header={{
@@ -734,6 +739,7 @@ const TableList: React.FC = (props: any) => {
               </Col>
               <Col span={24}>
                 <ProTable
+                  scroll={{ x: 'max-content' }}
                   columns={peptideColumn}
                   dataSource={peptideList?.map((item) => {
                     return {
@@ -799,17 +805,22 @@ const TableList: React.FC = (props: any) => {
               <TabPane tab="EIC列表" key="1">
                 <Row>
                   <Col span={24}>
-                    <strong>
+                    <span>
                       {expData.length > 0 ? (
                         <>
-                          {expData[0].peptideRef}&nbsp;&nbsp;
+                          <strong>Protein: </strong>
+                          <span style={{ userSelect: 'all' }}>{expData[0].proteins[0]}</span>
+                          &nbsp;&nbsp;
+                          <strong>Peptide</strong>:{' '}
+                          <span style={{ userSelect: 'all' }}>{expData[0].peptideRef}</span>
+                          &nbsp;&nbsp;
                           <Tag>{[...new Set([].concat(...allCutInfo))].length}&nbsp; Ions</Tag>
-                          Intensity:&nbsp;&nbsp;
+                          <strong>Intensity: </strong>&nbsp;&nbsp;
                         </>
                       ) : (
                         ''
                       )}
-                    </strong>
+                    </span>
                     <>
                       {IntensityData.map((item: any) => {
                         return (
