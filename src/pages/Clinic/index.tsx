@@ -64,7 +64,6 @@ const TableList: React.FC = (props: any) => {
   const overviewIdsInt = props?.location?.query?.overviewIds;
   const [exps, setExps] = useState<IdNameAlias[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
   const [expData, setExpData] = useState<any>([]); // 选中exp,存放的真实值为exp.id列表
-  const [overviewIds, setOverviewIds] = useState<any>([]); // 存放overviewIds
   const [featureMap, setFeatureMap] = useState<any>([]); // 存放featureMap
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [peptideRatioData, setPeptideRatioData] = useState<any>(); // 存放分析结果的初始数据
@@ -242,6 +241,7 @@ const TableList: React.FC = (props: any) => {
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
+      console.log(option);
 
       setHandleOption(option);
       setLoading(false);
