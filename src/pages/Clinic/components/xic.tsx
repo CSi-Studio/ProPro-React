@@ -362,11 +362,12 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       label: { show: false },
       data: [],
     };
-    value.scoreList.forEach((item: any) => {
-      markLineOpt.data.push({
-        xAxis: item.rt,
-        lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
-      });
+
+    value.scoreList.forEach((item: any, index: any) => {
+        markLineOpt.data.push({
+          xAxis: item.nearestRt,
+          lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
+        });
     });
 
     return markLineOpt;
