@@ -396,6 +396,25 @@ const TableList: React.FC = (props: any) => {
       setSelectedRows(rowData);
     }
   };
+  /* 判断是否选中相同expId的行 */
+  const isRepeat = (arr: any) => {
+    const hash = {};
+    for (let i = 0; i < arr.length; i++) {
+      if (hash[arr[i]]) {
+        return true;
+      }
+      hash[arr[i]] = true;
+    }
+    return false;
+  };
+  // console.log(
+  //   isRepeat(
+  //     selectedRows.map((row) => {
+  //       return row.expId;
+  //     }),
+  //   ),
+  // );
+
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
@@ -512,7 +531,13 @@ const TableList: React.FC = (props: any) => {
             </Tag>
           </a>,
           <>
-            {selectedRows && selectedRows.length > 0 ? (
+            {selectedRows &&
+            selectedRows.length > 0 &&
+            !isRepeat(
+              selectedRows.map((row) => {
+                return row.expId;
+              }),
+            ) ? (
               <Link
                 key="clinic"
                 target="_blank"
@@ -537,7 +562,7 @@ const TableList: React.FC = (props: any) => {
               <a
                 key="clinic"
                 onClick={() => {
-                  message.warn('请至少选择一个实验');
+                  message.warn('请至少选择一个实验，多选请选择不同的实验名');
                 }}
               >
                 <Tag color="blue">

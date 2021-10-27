@@ -160,6 +160,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         markLine: getMarkLine(seriesData.length),
       });
     });
+    console.log(ratio);
 
     const getGraphic = () => {
       const graphic: any = [];

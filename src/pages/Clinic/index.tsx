@@ -162,9 +162,8 @@ const TableList: React.FC = (props: any) => {
       const expValues = await overviewList({
         projectId,
       });
-      console.log('expValues?.data', expValues?.data);
+      // console.log(result);
 
-      console.log('exps', exps);
       // 将实验 别名 给 getExpData接口得到的数据
       result.data.forEach((item: any) => {
         exps?.forEach((_item: any) => {
@@ -179,7 +178,6 @@ const TableList: React.FC = (props: any) => {
         });
       });
       result.data.sort((a: any, b: any) => a.alias.charCodeAt(0) - b.alias.charCodeAt(0));
-      console.log(['A-1', 'B-1', 'A-2', 'B-2', 'B-3', 'A-3'].sort());
 
       setExpData(result.data);
 
@@ -209,7 +207,6 @@ const TableList: React.FC = (props: any) => {
           return false;
         }
       };
-      console.log('result.data1', result.data);
 
       /* 获取option */
       const option = xic({ result: result.data, getCutInfo, spectraFn });
@@ -278,9 +275,7 @@ const TableList: React.FC = (props: any) => {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
         const { overviewMap, expList } = result.data;
-        expList.sort((a: any, b: any) => (a.alias > b.alias ? 1 : -1));
-        console.log('expList', expList);
-
+        // expList.sort();
         setExps(expList); // 放实验列表
 
         // 将实验 overviewIds 给 getExpData接口得到的数据
@@ -289,12 +284,25 @@ const TableList: React.FC = (props: any) => {
         });
 
         setOverviewIds(overviewIdsData); // 放实验列表
+
+        // console.log('overviewIdsInt', overviewIdsInt);
+
+        // if (!overviewIdsInt) {
         setSelectedExpIds(
           expList?.map((item: any) => {
             return item.id;
           }),
-          // expDataSet
         );
+        // }
+
+        // if (overviewIdsInt) {
+        //   setSelectedExpIds(
+        //     expData?.map((item: any) => {
+        //       return item.expId;
+        //     }),
+        //   );
+        // }
+
         getIrtData({
           selectedExpIds: expList?.map((item: any) => {
             return item.id;
@@ -353,12 +361,12 @@ const TableList: React.FC = (props: any) => {
     fetchEicDataList(false, false);
   }, [smooth, denoise]);
 
-  const expDataObj = {};
-  // exp对象数组去重
-  const expDataSet = expData.reduce((preValue: any[], value: { alias: string | number }) => {
-    expDataObj[value.alias] ? '' : (expDataObj[value.alias] = true && preValue.push(value));
-    return preValue;
-  }, []);
+  // const expDataObj = {};
+  // // exp对象数组去重
+  // const expDataSet = expData.reduce((preValue: any[], value: { alias: string | number }) => {
+  //   expDataObj[value.alias] ? '' : (expDataObj[value.alias] = true && preValue.push(value));
+  //   return preValue;
+  // }, []);
 
   // 点击选择 tags
   const handleExpTagChange = (item: string, checked: boolean) => {
@@ -368,11 +376,14 @@ const TableList: React.FC = (props: any) => {
     setSelectedExpIds(nextSelectedTags);
   };
 
+  // console.log('expData', expData, 'exps', exps);
+  // console.log('selectedExpIds', selectedExpIds);
+
   /* 全选所有实验Tag */
   const selectAll = () => {
     if (overviewIdsInt) {
       setSelectedExpIds(
-        expDataSet?.map((item: any) => {
+        expData?.map((item: any) => {
           return item.expId;
         }),
       );
@@ -385,12 +396,11 @@ const TableList: React.FC = (props: any) => {
     }
     setHandleSubmit(!handleSubmit);
   };
-  console.log('expDataSet', expDataSet);
 
   /* 反选当前选择的实验Tag */
   const selectReverse = () => {
     if (overviewIdsInt) {
-      const reverse = expDataSet
+      const reverse = expData
         .map((item: { expId: any }) => item.expId)
         .filter((expId: string) => !selectedExpIds.includes(expId));
       setSelectedExpIds(reverse);
@@ -626,12 +636,6 @@ const TableList: React.FC = (props: any) => {
     b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
   );
 
-  /* 点击坐标点展示光谱图 */
-  // echarts?.getEchartsInstance().off('click'); // 防止多次触发
-  // echarts?.getEchartsInstance().on('click', 'markArea', (params: any) => {
-  //   console.log(params);
-  // });
-
   // console.log(
   //   'expData',
   //   expData,
@@ -736,7 +740,6 @@ const TableList: React.FC = (props: any) => {
                   })}
                   size="small"
                   search={false}
-                  scroll={{ x: 'max-content' }}
                   toolBarRender={false}
                   tableAlertRender={false}
                   loading={peptideLoading}
@@ -848,7 +851,7 @@ const TableList: React.FC = (props: any) => {
                       反选
                     </Button>
                     {overviewIdsInt
-                      ? expDataSet
+                      ? expData
                           .sort((a: any, b: any) => (a.alias > b.alias ? 1 : -1))
                           ?.map((item: any) => (
                             <Badge
