@@ -185,7 +185,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
               left: '0',
               top: '0',
               shape: {
-                width: 70,
+                width: 40,
                 height: 16,
               },
               style: {

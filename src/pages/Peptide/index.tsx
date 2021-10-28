@@ -1,4 +1,4 @@
-import { Form, message, Tooltip, Tag, Space, Table, Typography, Row, Col } from 'antd';
+import { Form, message, Tag, Space, Typography, Row, Col } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { peptideList, predictPeptide, removeList, updateFragment, updateList } from './service';
 import type { TableListItem, TableListPagination } from './data';
@@ -183,9 +183,9 @@ const TableList: React.FC = (props: any) => {
           dataIndex: 'cutInfo',
           hideInSearch: true,
           render: (dom, entity) =>
-            entity.fragments.map((item) => {
+            entity.fragments.map((item, index) => {
               return (
-                <Row>
+                <Row key={index.toString()}>
                   <Col>{item.cutInfo}</Col>
                 </Row>
               );
@@ -196,9 +196,9 @@ const TableList: React.FC = (props: any) => {
           dataIndex: 'mz',
           hideInSearch: true,
           render: (dom, entity) =>
-            entity.fragments.map((item) => {
+            entity.fragments.map((item, index) => {
               return (
-                <Row>
+                <Row key={index.toString()}>
                   <Col>{item.mz}</Col>
                 </Row>
               );
@@ -209,9 +209,9 @@ const TableList: React.FC = (props: any) => {
           dataIndex: 'intensity',
           hideInSearch: true,
           render: (dom, entity) =>
-            entity.fragments.map((item) => {
+            entity.fragments.map((item, index) => {
               return (
-                <Row>
+                <Row key={index.toString()}>
                   <Col>{item.intensity}</Col>
                 </Row>
               );
@@ -222,9 +222,9 @@ const TableList: React.FC = (props: any) => {
           dataIndex: 'charge',
           hideInSearch: true,
           render: (dom, entity) =>
-            entity.fragments.map((item) => {
+            entity.fragments.map((item, index) => {
               return (
-                <Row>
+                <Row key={index.toString()}>
                   <Col>{item.charge}</Col>
                 </Row>
               );
@@ -235,109 +235,14 @@ const TableList: React.FC = (props: any) => {
           dataIndex: 'Annotations',
           hideInSearch: true,
           render: (dom, entity) =>
-            entity.fragments.map((item) => {
+            entity.fragments.map((item, index) => {
               return (
-                <Row>
+                <Row key={index.toString()}>
                   <Col>{item.annotations}</Col>
                 </Row>
               );
             }),
         },
-        // {
-        //   title: 'CutInfo',
-        //   dataIndex: 'cutInfo',
-        //   hideInSearch: true,
-        //   render: (dom, entity) => [
-        //     <Table
-        //       showHeader={false}
-        //       bordered={false}
-        //       pagination={false}
-        //       size="small"
-        //       dataSource={entity.fragments}
-        //       columns={[
-        //         {
-        //           dataIndex: 'cutInfo',
-        //         },
-        //       ]}
-        //     />,
-        //   ],
-        // },
-        // {
-        //   title: '碎片荷质比',
-        //   dataIndex: 'mz',
-        //   hideInSearch: true,
-        //   render: (dom, entity) => [
-        //     <Table
-        //       showHeader={false}
-        //       bordered={false}
-        //       pagination={false}
-        //       size="small"
-        //       dataSource={entity.fragments}
-        //       columns={[
-        //         {
-        //           dataIndex: 'mz',
-        //         },
-        //       ]}
-        //     />,
-        //   ],
-        // },
-        // {
-        //   title: '强度',
-        //   dataIndex: 'intensity',
-        //   hideInSearch: true,
-        //   render: (dom, entity) => [
-        //     <Table
-        //       showHeader={false}
-        //       bordered={false}
-        //       pagination={false}
-        //       size="small"
-        //       dataSource={entity.fragments}
-        //       columns={[
-        //         {
-        //           dataIndex: 'intensity',
-        //         },
-        //       ]}
-        //     />,
-        //   ],
-        // },
-        // {
-        //   title: '带电量',
-        //   dataIndex: 'charge',
-        //   hideInSearch: true,
-        //   render: (dom, entity) => [
-        //     <Table
-        //       showHeader={false}
-        //       bordered={false}
-        //       pagination={false}
-        //       size="small"
-        //       dataSource={entity.fragments}
-        //       columns={[
-        //         {
-        //           dataIndex: 'charge',
-        //         },
-        //       ]}
-        //     />,
-        //   ],
-        // },
-        // {
-        //   title: 'Annotations',
-        //   dataIndex: 'Annotations',
-        //   hideInSearch: true,
-        //   render: (dom, entity) => [
-        //     <Table
-        //       showHeader={false}
-        //       bordered={false}
-        //       pagination={false}
-        //       size="small"
-        //       dataSource={entity.fragments}
-        //       columns={[
-        //         {
-        //           dataIndex: 'annotations',
-        //         },
-        //       ]}
-        //     />,
-        //   ],
-        // },
       ],
     },
     {
@@ -353,7 +258,7 @@ const TableList: React.FC = (props: any) => {
               handleUpdateModalVisible(true);
               setCurrentRow(record);
             }}
-            key="detail"
+            key="edit"
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
@@ -425,6 +330,8 @@ const TableList: React.FC = (props: any) => {
           total: total,
         }}
         request={async (params) => {
+          console.log(params);
+
           const msg = await peptideList({ libraryId, ...params });
           setTotal(msg.totalNum);
           return Promise.resolve(msg);

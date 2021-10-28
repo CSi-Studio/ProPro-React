@@ -39,6 +39,7 @@ import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
 import xic from './components/xic';
 import RtPairsCharts from './components/RtPairs';
+import { peptideList as getPeptideList } from '../Peptide/service';
 import { Link } from 'umi';
 import LFQBench from './components/LFQBench';
 import OverView from './components/OverView';
@@ -47,6 +48,7 @@ import { overviewList } from '../Overview/service';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
+const { Search } = Input;
 
 /* echarts参数 */
 let gridNumberInRow = 3; // 每行grid的个数
@@ -104,7 +106,7 @@ const TableList: React.FC = (props: any) => {
   const [echarts, setEcharts] = useState<any>();
   /* 控制tabs */
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
-
+  const [proteinName, setProteinName] = useState<string>('请输入要查找的肽段'); // 根据肽段查找蛋白
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
   const peptideColumn: ProColumns<PeptideTableItem>[] = [
@@ -137,17 +139,16 @@ const TableList: React.FC = (props: any) => {
 
   /** **************  网络调用相关接口 start  ****************** */
   async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
-    console.log('selectedExpIds', selectedExpIds);
     let selectedOverviewIds = [];
     if (!overviewIdsInt) {
       selectedOverviewIds = []
         .concat(
-          ...selectedExpIds.map((expId) => {
+          ...selectedExpIds?.map((expId) => {
             return prepareData?.overviewMap[expId];
           }),
         )
         .map((item: any) => {
-          return item.id;
+          return item?.id;
         });
     }
 
@@ -655,6 +656,18 @@ const TableList: React.FC = (props: any) => {
     b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
   );
 
+  /* 根据肽段搜索蛋白 */
+  const onSearch = async (value: any) => {
+    if (prepareData) {
+      const msg = await getPeptideList({ libraryId: prepareData.anaLib.id, peptideRef: value });
+      if (msg?.data[0]?.proteins[0]) {
+        setProteinName(msg?.data[0]?.proteins[0]);
+      } else {
+        setProteinName('未找到，请检查输入是否正确');
+      }
+    }
+  };
+
   return (
     <PageContainer
       header={{
@@ -671,6 +684,23 @@ const TableList: React.FC = (props: any) => {
         ),
         extra: (
           <Space>
+            {/* <Search placeholder="请输入肽段" onSearch={onSearch} style={{ width: 400 }} /> */}
+            <Input
+              prefix={
+                <>
+                  <SearchOutlined />
+                  <span>肽段：</span>
+                </>
+              }
+              onChange={(event) => {
+                if (event.target.value !== '') {
+                  onSearch(event.target.value);
+                }
+              }}
+              placeholder="请输入肽段"
+              style={{ width: 300 }}
+            />
+            <Input prefix={<span>所属蛋白：</span>} value={proteinName} style={{ width: 300 }} />
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
               自身肽段预测
             </Button>
