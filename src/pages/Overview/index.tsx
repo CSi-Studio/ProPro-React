@@ -414,7 +414,6 @@ const TableList: React.FC = (props: any) => {
   //   ),
   // );
   console.log('selectedRows', selectedRows);
-  
 
   return (
     <>
@@ -614,8 +613,9 @@ const TableList: React.FC = (props: any) => {
           total,
           hideOnSinglePage: true,
           size: 'small',
-          showSizeChanger: false,
-          showQuickJumper: false,
+          defaultPageSize: 100,
+          // showSizeChanger: false,
+          // showQuickJumper: false,
           showTotal: () => null,
           position: ['bottomRight'],
         }}
