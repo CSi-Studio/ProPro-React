@@ -45,6 +45,7 @@ import LFQBench from './components/LFQBench';
 import OverView from './components/OverView';
 import PeptideDis from './components/PeptideDis';
 import { overviewList } from '../Overview/service';
+import { YesOrNo } from '../../components/Enums/Selects';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -106,7 +107,7 @@ const TableList: React.FC = (props: any) => {
   const [echarts, setEcharts] = useState<any>();
   /* 控制tabs */
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
-  const [proteinName, setProteinName] = useState<string>('请输入要查找的肽段'); // 根据肽段查找蛋白
+  const [peptideName, setPeptideName] = useState<string>(); // 根据肽段查找蛋白
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
   const peptideColumn: ProColumns<PeptideTableItem>[] = [
@@ -359,18 +360,18 @@ const TableList: React.FC = (props: any) => {
   useEffect(() => {
     // 根据第一个蛋白获得肽段列表
     if (prepareData) {
-      onProteinChange(prepareData.proteins[0]);
+      onProteinChange(prepareData?.proteins[0]);
       setProteinRowKey(prepareData?.proteins[0]);
     }
   }, [prepareData]);
 
   // 每次蛋白发生变化，都取第一个肽段作为展示
   useEffect(() => {
-    if (!lfqStatus) {
+    if (!lfqStatus && !peptideName) {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
-      setHandleSubmit(!handleSubmit); // 触发设置option
     }
+    setHandleSubmit(!handleSubmit); // 触发设置option
   }, [peptideList]);
 
   useEffect(() => {
@@ -660,12 +661,28 @@ const TableList: React.FC = (props: any) => {
   const onSearch = async (value: any) => {
     if (prepareData) {
       const msg = await getPeptideList({ libraryId: prepareData.anaLib.id, peptideRef: value });
+      const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
       if (msg?.data[0]?.proteins[0]) {
-        setProteinName(msg?.data[0]?.proteins[0]);
+        onProteinChange(msg?.data[0]?.proteins[0]); //table选择搜索蛋白
+        setProteinRowKey(msg?.data[0]?.proteins[0]); //table选中搜索蛋白行
+        setProteinPage(
+          Math.ceil(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]) / proteinPageSize),
+        ); //跳转到搜索蛋白所在的页
+        const peptideArr = peptideRes.map((item: { peptideRef: any }) => {
+          return item.peptideRef;
+        }); //当前蛋白的所有肽段
+        setPeptideRowKey(value); //table选择搜索肽段
+        selectPeptideRow(value); //table选中搜索肽段行
+        setPeptidePage(Math.ceil(peptideArr.indexOf(value) / peptidePageSize)); //跳转到搜索肽段所在的页
+        setPeptidesIndex(peptideArr.indexOf(value));
+        setProteinsIndex(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]));
+        return true;
       } else {
-        setProteinName('未找到，请检查输入是否正确');
+        message.warn('未找到相应蛋白，请检查输入是否正确');
+        return false;
       }
     }
+    return false;
   };
 
   return (
@@ -689,18 +706,19 @@ const TableList: React.FC = (props: any) => {
               prefix={
                 <>
                   <SearchOutlined />
-                  <span>肽段：</span>
+                  <span> 搜索肽段：</span>
                 </>
               }
               onChange={(event) => {
                 if (event.target.value !== '') {
+                  setPeptideName(event.target.value);
                   onSearch(event.target.value);
                 }
               }}
-              placeholder="请输入肽段"
+              placeholder="请输入要搜索的肽段"
               style={{ width: 300 }}
             />
-            <Input prefix={<span>所属蛋白：</span>} value={proteinName} style={{ width: 300 }} />
+            {/* <Input prefix={<span>所属蛋白：</span>} value={proteinName} style={{ width: 300 }} /> */}
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
               自身肽段预测
             </Button>
@@ -751,6 +769,8 @@ const TableList: React.FC = (props: any) => {
                     };
                   }}
                   onChange={(page) => {
+                    console.log('page', page);
+
                     if (page.current) {
                       setProteinPage(page.current);
                     }
@@ -809,7 +829,7 @@ const TableList: React.FC = (props: any) => {
                         setLfqStatus(false);
                         setPeptideLoading(true);
                         setChartsLoading(true);
-                        setPeptideRowKey(record.key);
+                        setPeptideRowKey(record.peptide);
                         selectPeptideRow(record.peptide);
                         setHandleSubmit(!handleSubmit);
                         const peptideArr = peptideList.map((item) => {
