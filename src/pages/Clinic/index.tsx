@@ -138,8 +138,6 @@ const TableList: React.FC = (props: any) => {
   /** **************  网络调用相关接口 start  ****************** */
   async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
     console.log('selectedExpIds', selectedExpIds);
-    // console.log('overviewIdsInt', overviewIdsInt?.split(','));
-    // console.log('prepareData', prepareData?.overviewMap);
     let selectedOverviewIds = [];
     if (!overviewIdsInt) {
       selectedOverviewIds = []
@@ -152,6 +150,7 @@ const TableList: React.FC = (props: any) => {
           return item.id;
         });
     }
+
     // console.log(
     //   projectId,
     //   prepareData?.anaLib?.id,
@@ -160,12 +159,15 @@ const TableList: React.FC = (props: any) => {
     //   peptideRef,
     //   smooth,
     //   denoise,
+    //   selectedOverviewIds,
+    //   selectedExpIds,
     //   overviewIdsInt?.split(','),
     // );
 
     // if (selectedExpIds.length === 0) {
     //   return false;
     // }
+
     if (!peptideRef) {
       // message.warn('请选择一个PeptideRef');
       return false;
@@ -182,6 +184,7 @@ const TableList: React.FC = (props: any) => {
         denoise,
         overviewIds: overviewIdsInt ? overviewIdsInt?.split(',') : selectedOverviewIds,
       });
+      // console.log('result', result);
 
       // project对应的ov列表
       const expValues = await overviewList({
@@ -241,8 +244,6 @@ const TableList: React.FC = (props: any) => {
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
-      console.log(option);
-
       setHandleOption(option);
       setLoading(false);
       setChartsLoading(false);
@@ -310,7 +311,6 @@ const TableList: React.FC = (props: any) => {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
         const { expList } = result.data;
-        // expList.sort();
         setExps(expList); // 放实验列表
 
         // 将实验 overviewIds 给 getExpData接口得到的数据
@@ -873,7 +873,7 @@ const TableList: React.FC = (props: any) => {
                             <Badge
                               style={{ marginTop: 5 }}
                               size="small"
-                              count={prepareData?.overviewMap[item.id]?.length}
+                              count={1}
                               offset={[-5, 0]}
                               key={item.id}
                             >

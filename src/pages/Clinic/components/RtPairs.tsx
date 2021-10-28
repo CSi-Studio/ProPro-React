@@ -19,7 +19,6 @@ const Width: number = 99;
 
 const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
-  // const [pairsData, setRatioData] = useState<any>();
 
   const Height =
     Math.ceil(props.values.expData.length / gridNumInRow) * (gridHeight + gridPaddingHeight);
@@ -147,7 +146,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           itemIndex += 1;
         }
       });
-      ratio.push(itemIndex / item.value.length);
+      ratio.push((itemIndex / item.value.length) * 100);
       series.push({
         xAxisIndex: idx,
         yAxisIndex: idx,
@@ -206,9 +205,9 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
               top: '2',
               style: {
                 fill: '#333',
-                width: 220,
+                width: 200,
                 overflow: 'break',
-                text: `${item.toFixed(4)}%`,
+                text: `${item.toFixed(2)}%`,
                 font: '14px Times New Roman,STSong',
               },
             },
