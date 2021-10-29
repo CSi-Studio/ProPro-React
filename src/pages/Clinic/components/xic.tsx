@@ -67,7 +67,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         backgroundColor: `${statusFn(
           data[i].status,
           '#000',
-          'rgba(215,236,184)',
+          'rgba(215,236,184,0.5)',
           'rgba(241,158,156,0.3)',
           'rgba(251,229,154,0.5)',
           'rgba(251,229,154,0.5)',
