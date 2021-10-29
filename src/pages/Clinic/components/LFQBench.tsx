@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Col, Descriptions, Row, Tag } from 'antd';
+import { Col, Descriptions, Row, Tag, Typography } from 'antd';
 import ecStat from 'echarts-stat';
+
+const { Text } = Typography;
 
 export type QtChartsProps = {
   values: any;
@@ -582,6 +584,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   return (
     <Row>
       <Col span="6">
+        <Text strong>仅提供默认OverViews的展示</Text>
         <Descriptions title="蛋白鉴定数(Unique)" column={2}>
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyProteinNumA}</Tag>

@@ -174,14 +174,18 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           return (
             <>
               {index === 0 ? (
-                <Tag color="blue" key={entity.scoreList[entity.index]?.scores[index]?.toString()}>
+                <Tag
+                  color={
+                    entity.scoreList[entity.index]?.scores[index] > entity.minTotalScore
+                      ? 'green'
+                      : 'blue'
+                  }
+                  key={entity.scoreList[entity.index]?.scores[index]?.toString()}
+                >
                   {entity.scoreList[entity.index]?.scores[index]?.toFixed(3)}
                 </Tag>
               ) : (
-                <Tag
-                  color="success"
-                  key={entity.scoreList[entity.index]?.scores[index]?.toString()}
-                >
+                <Tag key={entity.scoreList[entity.index]?.scores[index]?.toString()}>
                   {`${prepareData.overviewMap[entity.expId][0]?.weights[type]?.toFixed(
                     3,
                   )}x${entity.scoreList[entity.index]?.scores[index]?.toFixed(2)}=${(
@@ -201,70 +205,79 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
   scoreColumns = [].concat(...scoreColumns); // 拍平数组
 
   return (
-    <Row>
-      <Col span={3.5}>
-        <ProTable
-          columns={[
-            {
-              title: 'Index',
-              dataIndex: 'index',
-              key: 'index',
-            },
-            {
-              title: '打分类别',
-              dataIndex: 'type',
-              key: 'type',
-            },
-          ]}
-          dataSource={prepareData?.method.score.scoreTypes.map((name: any, index: number) => {
-            return { index, type: name, key: name };
-          })}
-          rowKey={'key'}
-          size="small"
-          search={false}
-          // scroll={{ x: 'max-content' }}
-          toolBarRender={false}
-          tableAlertRender={false}
-          rowClassName={(record: any) => {
-            return record.key === ovRowKey ? 'clinicTableBgc' : '';
-          }}
-          onRow={(record: any) => {
-            return {
-              onClick: () => {
-                setOvRowKey(record.key);
+    <>
+      <>
+        <strong>Protein: </strong>
+        <span style={{ userSelect: 'all' }}>{expData[0].proteins[0]}</span>
+        &nbsp;&nbsp;
+        <strong>Peptide</strong>: <span style={{ userSelect: 'all' }}>{expData[0].peptideRef}</span>
+        &nbsp;&nbsp;
+      </>
+      <Row>
+        <Col span={3.5}>
+          <ProTable
+            columns={[
+              {
+                title: 'Index',
+                dataIndex: 'index',
+                key: 'index',
               },
-            };
-          }}
-          pagination={{
-            hideOnSinglePage: true,
-            size: 'small',
-            showSizeChanger: false,
-            showQuickJumper: false,
-            pageSize: 24,
-            showTotal: () => null,
-            position: ['bottomRight'],
-          }}
-        />
-      </Col>
-      <Col span={20}>
-        <ProTable
-          style={{ width: '69vw' }}
-          columns={scoreColumns}
-          dataSource={scoreResult}
-          rowKey={'key'}
-          size="small"
-          search={false}
-          scroll={{ x: 'max-content', y: 730 }}
-          toolBarRender={false}
-          tableAlertRender={false}
-          pagination={{
-            hideOnSinglePage: true,
-            pageSize,
-            size: 'small',
-          }}
-        />
-      </Col>
-    </Row>
+              {
+                title: '打分类别',
+                dataIndex: 'type',
+                key: 'type',
+              },
+            ]}
+            dataSource={prepareData?.method.score.scoreTypes.map((name: any, index: number) => {
+              return { index, type: name, key: name };
+            })}
+            rowKey={'key'}
+            size="small"
+            search={false}
+            // scroll={{ x: 'max-content' }}
+            toolBarRender={false}
+            tableAlertRender={false}
+            rowClassName={(record: any) => {
+              return record.key === ovRowKey ? 'clinicTableBgc' : '';
+            }}
+            onRow={(record: any) => {
+              return {
+                onClick: () => {
+                  setOvRowKey(record.key);
+                },
+              };
+            }}
+            pagination={{
+              hideOnSinglePage: true,
+              size: 'small',
+              showSizeChanger: false,
+              showQuickJumper: false,
+              pageSize: 24,
+              showTotal: () => null,
+              position: ['bottomRight'],
+            }}
+          />
+        </Col>
+        <Col span={20}>
+          <ProTable
+            style={{ width: '69vw' }}
+            columns={scoreColumns}
+            dataSource={scoreResult}
+            rowKey={'key'}
+            size="small"
+            search={false}
+            scroll={{ x: 'max-content', y: 730 }}
+            toolBarRender={false}
+            tableAlertRender={false}
+            pagination={{
+              hideOnSinglePage: true,
+              pageSize,
+              size: 'small',
+            }}
+          />
+        </Col>
+      </Row>
+    </>
   );
 };
 

@@ -659,6 +659,7 @@ const TableList: React.FC = (props: any) => {
 
   /* 根据肽段搜索蛋白 */
   const onSearch = async (value: any) => {
+    setPeptideName(value);
     if (prepareData) {
       const msg = await getPeptideList({ libraryId: prepareData.anaLib.id, peptideRef: value });
       const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
@@ -701,8 +702,8 @@ const TableList: React.FC = (props: any) => {
         ),
         extra: (
           <Space>
-            {/* <Search placeholder="请输入肽段" onSearch={onSearch} style={{ width: 400 }} /> */}
-            <Input
+            <Search placeholder="请输入要搜索的肽段" onSearch={onSearch} style={{ width: 300 }} />
+            {/* <Input
               prefix={
                 <>
                   <SearchOutlined />
@@ -717,8 +718,7 @@ const TableList: React.FC = (props: any) => {
               }}
               placeholder="请输入要搜索的肽段"
               style={{ width: 300 }}
-            />
-            {/* <Input prefix={<span>所属蛋白：</span>} value={proteinName} style={{ width: 300 }} /> */}
+            /> */}
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
               自身肽段预测
             </Button>
