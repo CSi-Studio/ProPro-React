@@ -16,6 +16,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       alias: item.alias,
       status: item.status,
       realRt: _item.rt,
+      nearestRt: _item.nearestRt,
       totalIons: _item.totalIons,
       sum: _item.intensitySum,
       minTotalScore: item.minTotalScore,
@@ -99,6 +100,16 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fixed: 'left',
       render: (dom: any, entity: any) => {
         return <Tag color="blue">{entity.realRt?.toFixed(1)}</Tag>;
+      },
+    },
+    {
+      title: 'NearRT',
+      dataIndex: 'nearestRt',
+      key: 'nearestRt',
+      width: 70,
+      fixed: 'left',
+      render: (dom: any, entity: any) => {
+        return <Tag color="blue">{entity.nearestRt?.toFixed(1)}</Tag>;
       },
     },
     {
