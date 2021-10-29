@@ -327,11 +327,11 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       markAreaOpt.data.push([
         {
           xAxis: rtRange[0],
-          itemStyle: { color: value.selectIndex === index ? '#AAE68A' : '#eee' },
+          itemStyle: { color: value.selectIndex === index ? '#AAE68A' : 'rgba(256,256,256,0.3)' },
         },
         {
           xAxis: rtRange[1],
-          itemStyle: { color: value.selectIndex === index ? '#AAE68A' : '#eee' },
+          itemStyle: { color: value.selectIndex === index ? '#AAE68A' : 'rgba(256,256,256,0.3)' },
         },
       ]);
     });
@@ -363,11 +363,11 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       data: [],
     };
 
-    value.scoreList.forEach((item: any, index: any) => {
-        markLineOpt.data.push({
-          xAxis: item.nearestRt,
-          lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
-        });
+    value.scoreList.forEach((item: any) => {
+      markLineOpt.data.push({
+        xAxis: item.nearestRt,
+        lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
+      });
     });
 
     return markLineOpt;
