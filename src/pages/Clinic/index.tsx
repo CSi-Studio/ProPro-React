@@ -702,7 +702,12 @@ const TableList: React.FC = (props: any) => {
         ),
         extra: (
           <Space>
-            <Search placeholder="请输入要搜索的肽段" onSearch={onSearch} style={{ width: 300 }} />
+            <Search
+              placeholder="请输入要搜索的肽段"
+              allowClear
+              onSearch={onSearch}
+              style={{ width: 300 }}
+            />
             {/* <Input
               prefix={
                 <>
