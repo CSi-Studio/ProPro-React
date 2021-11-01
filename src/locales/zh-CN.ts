@@ -6,6 +6,7 @@ import settingDrawer from './zh-CN/settingDrawer';
 import settings from './zh-CN/settings';
 import pages from './zh-CN/pages';
 import messages_zh_CN from './zh-CN/messages';
+import table from './zh-CN/table';
 
 export default {
   'navBar.lang': '语言',
@@ -24,4 +25,5 @@ export default {
   ...pwa,
   ...component,
   ...messages_zh_CN,
+  ...table,
 };

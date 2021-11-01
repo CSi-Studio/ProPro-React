@@ -24,6 +24,7 @@ import DeleteIrt from './components/DeleteIrt';
 import { Link } from 'umi';
 import DeleteRes from './components/DeleteRes';
 import { getDict } from '../Dict/service';
+import { useIntl } from 'umi';
 
 /**
  * 添加库
@@ -158,6 +159,7 @@ const handleExport = async (projectId: string) => {
 };
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
@@ -211,7 +213,10 @@ const TableList: React.FC = () => {
     },
     {
       key: 'group',
-      title: '分组',
+      title: intl.formatMessage({
+        id: 'table.group',
+        defaultMessage: '分组',
+      }),
       dataIndex: 'group',
       showSorterTooltip: false,
       sorter: (a, b) => {
@@ -226,7 +231,10 @@ const TableList: React.FC = () => {
     },
     {
       key: 'name',
-      title: '项目名',
+      title: intl.formatMessage({
+        id: 'table.project.name',
+        defaultMessage: '项目名称',
+      }),
       dataIndex: 'name',
       render: (dom, record) => {
         return (
@@ -245,7 +253,10 @@ const TableList: React.FC = () => {
     },
     {
       key: 'alias',
-      title: '别名',
+      title: intl.formatMessage({
+        id: 'table.alias',
+        defaultMessage: '别名',
+      }),
       dataIndex: 'alias',
       render: (dom, entity) => {
         if (entity.alias) {
@@ -256,7 +267,10 @@ const TableList: React.FC = () => {
     },
     {
       key: 'expCount',
-      title: '实验数',
+      title: intl.formatMessage({
+        id: 'table.experiment.number',
+        defaultMessage: '实验数',
+      }),
       dataIndex: 'expCount',
       hideInSearch: true,
       render: (dom, entity) => {
@@ -278,7 +292,12 @@ const TableList: React.FC = () => {
                   search: `?projectId=${entity.id}`,
                 }}
               >
-                <Tag color="green">查看</Tag>
+                <Tag color="green">
+                  {intl.formatMessage({
+                    id: 'table.check',
+                    defaultMessage: '查看',
+                  })}
+                </Tag>
               </Link>
             ) : null}
           </>
@@ -287,7 +306,10 @@ const TableList: React.FC = () => {
     },
     {
       key: 'overviewCount',
-      title: '分析数',
+      title: intl.formatMessage({
+        id: 'table.overview.number',
+        defaultMessage: '分析数',
+      }),
       dataIndex: 'overviewCount',
       hideInSearch: true,
       render: (dom, entity) => {
@@ -302,7 +324,12 @@ const TableList: React.FC = () => {
                   state: { projectName: entity.name },
                 }}
               >
-                <Tag color="green">查看</Tag>
+                <Tag color="green">
+                  {intl.formatMessage({
+                    id: 'table.check',
+                    defaultMessage: '查看',
+                  })}
+                </Tag>
               </Link>
             ) : null}
           </>
@@ -311,23 +338,39 @@ const TableList: React.FC = () => {
     },
     {
       key: 'type',
-      title: '类型',
+      title: intl.formatMessage({
+        id: 'table.type',
+        defaultMessage: '类型',
+      }),
       dataIndex: 'type',
       hideInSearch: true,
     },
     {
       key: 'owner',
-      title: '负责人',
+      title: intl.formatMessage({
+        id: 'table.director',
+        defaultMessage: '负责人',
+      }),
       dataIndex: 'owner',
     },
     {
       key: 'insLibName',
-      title: '内标库',
+      title: intl.formatMessage({
+        id: 'table.innerLibrary',
+        defaultMessage: '内标库',
+      }),
       dataIndex: 'insLibName',
       hideInSearch: true,
       render: (dom, entity) => {
         if (!entity.insLibName) {
-          return <Tag color="red">未设置</Tag>;
+          return (
+            <Tag color="red">
+              {intl.formatMessage({
+                id: 'table.notSet',
+                defaultMessage: '未设置',
+              })}
+            </Tag>
+          );
         }
         return (
           <Tooltip title={dom}>
@@ -340,12 +383,22 @@ const TableList: React.FC = () => {
     },
     {
       key: 'anaLibName',
-      title: '标准库',
+      title: intl.formatMessage({
+        id: 'table.standardLibrary',
+        defaultMessage: '标准库',
+      }),
       dataIndex: 'anaLibName',
       hideInSearch: true,
       render: (dom, entity) => {
         if (!entity.insLibName) {
-          return <Tag color="red">未设置</Tag>;
+          return (
+            <Tag color="red">
+              {intl.formatMessage({
+                id: 'table.notSet',
+                defaultMessage: '未设置',
+              })}
+            </Tag>
+          );
         }
         return (
           <Tooltip title={dom}>
@@ -358,12 +411,22 @@ const TableList: React.FC = () => {
     },
     {
       key: 'methodName',
-      title: '方法包',
+      title: intl.formatMessage({
+        id: 'table.methodPackage',
+        defaultMessage: '方法包',
+      }),
       dataIndex: 'methodName',
       hideInSearch: true,
       render: (dom, entity) => {
         if (!entity.methodName) {
-          return <Tag color="red">未设置</Tag>;
+          return (
+            <Tag color="red">
+              {intl.formatMessage({
+                id: 'table.notSet',
+                defaultMessage: '未设置',
+              })}
+            </Tag>
+          );
         }
         return (
           <Tooltip title={dom}>
@@ -382,7 +445,10 @@ const TableList: React.FC = () => {
     },
     {
       key: 'tags',
-      title: '标签',
+      title: intl.formatMessage({
+        id: 'table.tags',
+        defaultMessage: '标签',
+      }),
       dataIndex: 'tags',
       hideInSearch: true,
       render: (text, entity) => {
@@ -398,7 +464,10 @@ const TableList: React.FC = () => {
     },
     {
       key: 'createDate',
-      title: '创建时间',
+      title: intl.formatMessage({
+        id: 'table.creatTime',
+        defaultMessage: '创建时间',
+      }),
       dataIndex: 'createDate',
       valueType: 'dateTime',
       hideInSearch: true,
@@ -409,7 +478,10 @@ const TableList: React.FC = () => {
     },
     {
       key: 'option',
-      title: '操作',
+      title: intl.formatMessage({
+        id: 'table.option',
+        defaultMessage: '操作',
+      }),
       valueType: 'option',
       fixed: 'right',
       width: '210px',
@@ -425,7 +497,10 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:file-edit" />
-              编辑
+              {intl.formatMessage({
+                id: 'table.edit',
+                defaultMessage: '编辑',
+              })}
             </Tag>
           </a>
           <a
@@ -436,7 +511,10 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:file-document" />
-              详情
+              {intl.formatMessage({
+                id: 'table.detail',
+                defaultMessage: '详情',
+              })}
             </Tag>
           </a>
           <Link
@@ -448,7 +526,10 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:calculator" />
-              实验
+              {intl.formatMessage({
+                id: 'table.exp',
+                defaultMessage: '实验',
+              })}
             </Tag>
           </Link>
         </>
@@ -476,7 +557,10 @@ const TableList: React.FC = () => {
     <>
       <ProTable<TableListItem, TableListPagination>
         // scroll={{ x: 'max-content' }}
-        headerTitle="项目列表"
+        headerTitle={intl.formatMessage({
+          id: 'table.projectList',
+          defaultMessage: '项目列表',
+        })}
         actionRef={actionRef}
         rowKey="id"
         size="small"
@@ -493,7 +577,10 @@ const TableList: React.FC = () => {
                   style={{ verticalAlign: 'middle', fontSize: '20px' }}
                   icon="mdi:playlist-plus"
                 />
-                新增
+                {intl.formatMessage({
+                  id: 'table.add',
+                  defaultMessage: '新增',
+                })}
               </Tag>
             </a>
           </>,
@@ -515,7 +602,10 @@ const TableList: React.FC = () => {
             >
               <Tag color="blue">
                 <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-search" />
-                扫描并更新
+                {intl.formatMessage({
+                  id: 'table.scanUpdate',
+                  defaultMessage: '扫描并更新',
+                })}
               </Tag>
             </a>
           </>,
@@ -549,7 +639,10 @@ const TableList: React.FC = () => {
                     style={{ verticalAlign: '-4px', fontSize: '16px' }}
                     icon="mdi:stethoscope"
                   />
-                  蛋白诊所
+                  {intl.formatMessage({
+                    id: 'table.clinic',
+                    defaultMessage: '蛋白诊所',
+                  })}
                 </Tag>
               </a>
             )}
@@ -573,7 +666,10 @@ const TableList: React.FC = () => {
             >
               <Tag color="blue">
                 <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-export" />
-                导出
+                {intl.formatMessage({
+                  id: 'table.export',
+                  defaultMessage: '导出',
+                })}
               </Tag>
             </a>
           </>,
@@ -604,7 +700,10 @@ const TableList: React.FC = () => {
                         style={{ verticalAlign: '-5px', fontSize: '18px' }}
                         icon="mdi:delete-sweep"
                       />
-                      删除分析结果
+                      {intl.formatMessage({
+                        id: 'table.deleteAnaRes',
+                        defaultMessage: '删除分析结果',
+                      })}
                     </Tag>
                   </a>
                 </Menu.Item>
@@ -631,7 +730,10 @@ const TableList: React.FC = () => {
                         style={{ verticalAlign: '-5px', fontSize: '18px' }}
                         icon="mdi:delete-sweep-outline"
                       />
-                      删除IRT
+                      {intl.formatMessage({
+                        id: 'table.deleteIrt',
+                        defaultMessage: '删除IRT',
+                      })}
                     </Tag>
                   </a>
                 </Menu.Item>
@@ -655,7 +757,10 @@ const TableList: React.FC = () => {
                   >
                     <Tag color="error">
                       <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:delete" />
-                      删除项目
+                      {intl.formatMessage({
+                        id: 'table.deletePro',
+                        defaultMessage: '删除项目',
+                      })}
                     </Tag>
                   </a>
                 </Menu.Item>
@@ -664,7 +769,10 @@ const TableList: React.FC = () => {
           >
             <Tag color="error">
               <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:delete" />
-              删除
+              {intl.formatMessage({
+                id: 'table.delete',
+                defaultMessage: '删除',
+              })}
             </Tag>
           </Dropdown>,
         ]}
