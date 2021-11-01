@@ -45,7 +45,6 @@ import LFQBench from './components/LFQBench';
 import OverView from './components/OverView';
 import PeptideDis from './components/PeptideDis';
 import { overviewList } from '../Overview/service';
-import { YesOrNo } from '../../components/Enums/Selects';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -153,23 +152,6 @@ const TableList: React.FC = (props: any) => {
         });
     }
 
-    // console.log(
-    //   projectId,
-    //   prepareData?.anaLib?.id,
-    //   predict,
-    //   changeCharge,
-    //   peptideRef,
-    //   smooth,
-    //   denoise,
-    //   selectedOverviewIds,
-    //   selectedExpIds,
-    //   overviewIdsInt?.split(','),
-    // );
-
-    // if (selectedExpIds.length === 0) {
-    //   return false;
-    // }
-
     if (!peptideRef) {
       // message.warn('请选择一个PeptideRef');
       return false;
@@ -186,7 +168,6 @@ const TableList: React.FC = (props: any) => {
         denoise,
         overviewIds: overviewIdsInt ? overviewIdsInt?.split(',') : selectedOverviewIds,
       });
-      // console.log('result', result);
 
       // project对应的ov列表
       const expValues = await overviewList({
@@ -209,7 +190,6 @@ const TableList: React.FC = (props: any) => {
       result.data.sort((a: any, b: any) => a.alias.charCodeAt(0) - b.alias.charCodeAt(0));
 
       setExpData(result.data);
-
       setFeatureMap(result.featureMap.intensityMap);
       /* 碎片Mz echarts toolbox */
       const getCutInfo = () => {
@@ -307,20 +287,12 @@ const TableList: React.FC = (props: any) => {
       fetchEicDataList(false, false);
       if (overviewIdsInt) {
         setSelectedExpIds(overviewIdsInt?.split(','));
-        console.log('设置SelectedExpIds');
       }
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
         const { expList } = result.data;
         setExps(expList); // 放实验列表
-
-        // 将实验 overviewIds 给 getExpData接口得到的数据
-        // const overviewIdsData = expList?.map((item: any) => {
-        //   return overviewMap[item.id][0].id;
-        // });
-
-        // setOverviewIds(overviewIdsData); // 放实验列表
 
         if (!overviewIdsInt) {
           setSelectedExpIds(
@@ -329,14 +301,12 @@ const TableList: React.FC = (props: any) => {
             }),
           );
         }
-
         getIrtData({
           selectedExpIds: expList?.map((item: any) => {
             return item.id;
           }),
           exps: expList,
         });
-
         setLoading(false);
         if (result.data?.project?.name.substring(0, 3) === 'HYE') {
           const rationData = await getPeptideRatio({ projectId });
@@ -370,8 +340,8 @@ const TableList: React.FC = (props: any) => {
     if (!lfqStatus && !peptideName) {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
+      setHandleSubmit(!handleSubmit); // 触发设置option
     }
-    setHandleSubmit(!handleSubmit); // 触发设置option
   }, [peptideList]);
 
   useEffect(() => {
@@ -533,7 +503,6 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     setLfqStatus(false);
-
     const peptideArr = peptideList.map((item) => {
       return item.peptideRef;
     });
@@ -550,7 +519,6 @@ const TableList: React.FC = (props: any) => {
       setHandleSubmit(!handleSubmit);
       setPeptideRowKey(peptideArr[peptidesIndex]);
     }
-
     document.addEventListener('keydown', onPeptideKey);
     return () => {
       document.removeEventListener('keydown', onPeptideKey);
@@ -664,7 +632,7 @@ const TableList: React.FC = (props: any) => {
       const msg = await getPeptideList({ libraryId: prepareData.anaLib.id, peptideRef: value });
       const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
       if (msg?.data[0]?.proteins[0]) {
-        onProteinChange(msg?.data[0]?.proteins[0]); //table选择搜索蛋白
+        await onProteinChange(msg?.data[0]?.proteins[0]); //table选择搜索蛋白
         setProteinRowKey(msg?.data[0]?.proteins[0]); //table选中搜索蛋白行
         setProteinPage(
           Math.ceil(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]) / proteinPageSize),
@@ -774,8 +742,6 @@ const TableList: React.FC = (props: any) => {
                     };
                   }}
                   onChange={(page) => {
-                    console.log('page', page);
-
                     if (page.current) {
                       setProteinPage(page.current);
                     }

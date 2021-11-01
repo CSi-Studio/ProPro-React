@@ -89,6 +89,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fixed: 'left',
       width: 50,
       render: (dom: any, entity: any) => {
+        // console.log('entity', entity);
         return <Tag color="blue">{entity.totalIons}</Tag>;
       },
     },
