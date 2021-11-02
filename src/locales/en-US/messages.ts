@@ -26,3 +26,4 @@ export default {
   'message.deleteInput': 'I want to delete the analysis results',
   'message.deleteIRTInput': 'I want to delete the IRT results',
 };
+1

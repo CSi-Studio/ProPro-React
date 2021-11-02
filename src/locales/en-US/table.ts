@@ -11,7 +11,7 @@ export default {
   'table.tags': 'Tags',
   'table.methodPackage': 'MethodPackage',
   'table.innerLibrary': 'InnerLibrary',
-  'table.standardLibrary': 'StandardLibrary',
+  'table.standardLibrary': 'Library',
   'table.creatTime': 'CreatTime',
   'table.option': 'Option',
   'table.check': 'Check',
