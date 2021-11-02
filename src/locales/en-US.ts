@@ -5,7 +5,7 @@ import pages from './en-US/pages';
 import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
-import messages_en_US from './en-US/messages';
+import messages from './en-US/messages';
 import table from './en-US/table';
 
 export default {
@@ -24,6 +24,6 @@ export default {
   ...pwa,
   ...component,
   ...pages,
-  ...messages_en_US,
+  ...messages,
   ...table,
 };

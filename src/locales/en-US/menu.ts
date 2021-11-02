@@ -47,9 +47,6 @@ export default {
   'menu.account.trigger': 'Trigger Error',
   'menu.account.logout': 'Logout',
   'menu.editor': 'Graphic Editor',
-  'menu.editor.flow': 'Flow Editor',
-  'menu.editor.mind': 'Mind Editor',
-  'menu.editor.koni': 'Koni Editor',
 
   'menu.project': 'Project',
   'menu.method': 'Method',
@@ -61,5 +58,7 @@ export default {
   'menu.blockIndex': 'BlockIndex',
   'menu.task': 'Task',
   'menu.proteinClinic': 'Clinic',
+  'menu.overview': 'OverView',
+  'menu.IRT': 'IRT',
   'menu.data': 'Data',
 };

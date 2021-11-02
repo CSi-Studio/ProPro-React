@@ -25,6 +25,6 @@ export default {
   'table.export': 'Export',
   'table.delete': 'Delete',
   'table.deleteAnaRes': 'DeleteAnaRes',
-  'table.deleteIrt': 'DeleteIrt',
+  'table.deleteIrt': 'DeleteIRT',
   'table.deletePro': 'DeleteProject',
 };

@@ -26,140 +26,246 @@ import DeleteRes from './components/DeleteRes';
 import { getDict } from '../Dict/service';
 import { useIntl } from 'umi';
 
-/**
- * 添加库
- * @param values
- */
-const handleAdd = async (values: addFormValueType) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addList({ ...values });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 更新库
- * @param values
- */
-const handleUpdate = async (values: updateFormValueType) => {
-  const hide = message.loading('正在更新');
-  try {
-    await updateList({ ...values });
-    hide();
-    message.success('编辑成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('编辑失败，请重试!');
-    return false;
-  }
-};
-
-/**
- * 扫描库
- * @param values
- */
-const handleScan = async (values: { projectId: string }) => {
-  const hide = message.loading('正在扫描');
-  try {
-    await peptideScan({ ...values });
-    hide();
-    message.success('扫描更新成功');
-    return true;
-  } catch (error) {
-    hide();
-    return false;
-  }
-};
-
-/**
- * 删除库
- * @param currentRow
- */
-const handleRemove = async (currentRow: TableListItem | undefined) => {
-  if (!currentRow) return true;
-  const hide = message.loading('正在扫描');
-  try {
-    await removeList({
-      projectId: currentRow.id,
-    });
-    hide();
-
-    message.success('删除成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
-/**
- * 删除分析结果
- * @param projectId
- */
-const handleRmRes = async (row: TableListItem | undefined) => {
-  if (!row) return true;
-  const hide = message.loading('正在扫描');
-  try {
-    await removeRes({ projectId: row.id });
-    hide();
-    message.success('删除分析结果成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
-/**
- * 删除IRT
- * @param currentRow
- */
-const handleRmIrt = async (currentRow: TableListItem | undefined) => {
-  if (!currentRow) return true;
-  const hide = message.loading('正在扫描');
-  try {
-    await removeIrt({ projectId: currentRow.id });
-    hide();
-    message.success('删除IRT成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
-/**
- * 导出项目
- * @param currentRow
- */
-const handleExport = async (projectId: string) => {
-  if (!projectId) return true;
-  const hide = message.loading('正在导出');
-  try {
-    await report({ projectId });
-    hide();
-    message.success('导出项目成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('导出项目失败，请重试');
-    return false;
-  }
-};
-
 const TableList: React.FC = () => {
   const intl = useIntl();
+
+  /**
+   * 添加库
+   * @param values
+   */
+  const handleAdd = async (values: addFormValueType) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.adding',
+        defaultMessage: '正在添加...',
+      })}`,
+    );
+    try {
+      await addList({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.addSuccess',
+          defaultMessage: '添加成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.addFail',
+          defaultMessage: '添加失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 更新库
+   * @param values
+   */
+  const handleUpdate = async (values: updateFormValueType) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.updating',
+        defaultMessage: '正在更新...',
+      })}`,
+    );
+    try {
+      await updateList({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.editSuccess',
+          defaultMessage: '编辑成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.editFail',
+          defaultMessage: '编辑失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 扫描库
+   * @param values
+   */
+  const handleScan = async (values: { projectId: string }) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.scanning',
+        defaultMessage: '正在扫描...',
+      })}`,
+    );
+    try {
+      await peptideScan({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.scanSuccess',
+          defaultMessage: '扫描并更新成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.scanFail',
+          defaultMessage: '扫描失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 删除库
+   * @param currentRow
+   */
+  const handleRemove = async (currentRow: TableListItem | undefined) => {
+    if (!currentRow) return true;
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.deleting',
+        defaultMessage: '正在删除...',
+      })}`,
+    );
+    try {
+      await removeList({
+        projectId: currentRow.id,
+      });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteSuccess',
+          defaultMessage: '删除成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 删除分析结果
+   * @param projectId
+   */
+  const handleRmRes = async (row: TableListItem | undefined) => {
+    if (!row) return true;
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.deleting',
+        defaultMessage: '正在删除...',
+      })}`,
+    );
+    try {
+      await removeRes({ projectId: row.id });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteAnaSuccess',
+          defaultMessage: '删除分析结果成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 删除IRT
+   * @param currentRow
+   */
+  const handleRmIrt = async (currentRow: TableListItem | undefined) => {
+    if (!currentRow) return true;
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.deleting',
+        defaultMessage: '正在删除...',
+      })}`,
+    );
+    try {
+      await removeIrt({ projectId: currentRow.id });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteIRTSuccess',
+          defaultMessage: '删除IRT成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 导出项目
+   * @param currentRow
+   */
+  const handleExport = async (projectId: string) => {
+    if (!projectId) return true;
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.exporting',
+        defaultMessage: '正在导出...',
+      })}`,
+    );
+    try {
+      await report({ projectId });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.exportSuccess',
+          defaultMessage: '导出项目成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.exportFail',
+          defaultMessage: '导出项目失败，请重试',
+        })}`,
+      );
+      return false;
+    }
+  };
+
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
@@ -592,11 +698,21 @@ const TableList: React.FC = () => {
                   if (selectedRows.length === 1) {
                     handleScan({ projectId: selectedRows[0].id });
                   } else {
-                    message.warn('目前只支持单个项目的扫描');
+                    message.warn(
+                      `${intl.formatMessage({
+                        id: 'message.singleProjectScan',
+                        defaultMessage: '目前只支持单个项目的扫描',
+                      })}`,
+                    );
                     setSelectedRows([]);
                   }
                 } else {
-                  message.warn('请选择要扫描的项目');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.deleteProjectScan',
+                      defaultMessage: '请选择要扫描的项目',
+                    })}`,
+                  );
                 }
               }}
             >
@@ -624,14 +740,22 @@ const TableList: React.FC = () => {
                     style={{ verticalAlign: '-4px', fontSize: '16px' }}
                     icon="mdi:stethoscope"
                   />
-                  蛋白诊所
+                  {intl.formatMessage({
+                    id: 'menu.proteinClinic',
+                    defaultMessage: '蛋白诊所',
+                  })}
                 </Tag>
               </Link>
             ) : (
               <a
                 key="clinic"
                 onClick={() => {
-                  message.warn('请选且只选择一个项目');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.selectOneProject',
+                      defaultMessage: '请选择一个项目',
+                    })}`,
+                  );
                 }}
               >
                 <Tag color="blue">
@@ -653,14 +777,24 @@ const TableList: React.FC = () => {
               onClick={() => {
                 if (selectedRows?.length > 0) {
                   if (selectedRows.length === 1) {
-                    message.success('我是导出');
+                    console.log('selectedRows', selectedRows);
                     handleExport(selectedRows[0].id);
                   } else {
-                    message.warn('目前只支持单个项目的导出');
+                    message.warn(
+                      `${intl.formatMessage({
+                        id: 'message.selectOneProject',
+                        defaultMessage: '目前只支持单个项目的导出',
+                      })}`,
+                    );
                     setSelectedRows([]);
                   }
                 } else {
-                  message.warn('请选择要导出的项目');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.selectOneProject',
+                      defaultMessage: '请选择要导出的项目',
+                    })}`,
+                  );
                 }
               }}
             >
@@ -687,11 +821,21 @@ const TableList: React.FC = () => {
                           handleDelete1ModalVisible(true);
                         }
                         if (selectedRows.length > 1) {
-                          message.warn('目前只支持单个项目的删除');
+                          message.warn(
+                            `${intl.formatMessage({
+                              id: 'message.deleteOneProject',
+                              defaultMessage: '目前只支持单个项目的删除！',
+                            })}`,
+                          );
                           setSelectedRows([]);
                         }
                       } else {
-                        message.warn('请先选择一个项目');
+                        message.warn(
+                          `${intl.formatMessage({
+                            id: 'message.selectOneProject',
+                            defaultMessage: '请选择一个项目',
+                          })}`,
+                        );
                       }
                     }}
                   >
@@ -717,18 +861,28 @@ const TableList: React.FC = () => {
                           handleDelete2ModalVisible(true);
                         }
                         if (selectedRows.length > 1) {
-                          message.warn('目前只支持单个项目的删除');
+                          message.warn(
+                            `${intl.formatMessage({
+                              id: 'message.deleteOneProject',
+                              defaultMessage: '目前只支持单个项目的删除！',
+                            })}`,
+                          );
                           setSelectedRows([]);
                         }
                       } else {
-                        message.warn('请先选择一个项目');
+                        message.warn(
+                          `${intl.formatMessage({
+                            id: 'message.selectOneProject',
+                            defaultMessage: '请选择一个项目',
+                          })}`,
+                        );
                       }
                     }}
                   >
                     <Tag color="error">
                       <Icon
                         style={{ verticalAlign: '-5px', fontSize: '18px' }}
-                        icon="mdi:delete-sweep-outline"
+                        icon="mdi:delete-sweep"
                       />
                       {intl.formatMessage({
                         id: 'table.deleteIrt',
@@ -747,16 +901,29 @@ const TableList: React.FC = () => {
                           handleDeleteModalVisible(true);
                         }
                         if (selectedRows.length > 1) {
-                          message.warn('目前只支持单个项目的删除');
+                          message.warn(
+                            `${intl.formatMessage({
+                              id: 'message.deleteOneProject',
+                              defaultMessage: '目前只支持单个项目的删除！',
+                            })}`,
+                          );
                           setSelectedRows([]);
                         }
                       } else {
-                        message.warn('请先选择一个项目');
+                        message.warn(
+                          `${intl.formatMessage({
+                            id: 'message.selectOneProject',
+                            defaultMessage: '请选择一个项目',
+                          })}`,
+                        );
                       }
                     }}
                   >
                     <Tag color="error">
-                      <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:delete" />
+                      <Icon
+                        style={{ verticalAlign: '-5px', fontSize: '18px' }}
+                        icon="mdi:delete-sweep"
+                      />
                       {intl.formatMessage({
                         id: 'table.deletePro',
                         defaultMessage: '删除项目',
@@ -786,8 +953,6 @@ const TableList: React.FC = () => {
           pageSize?: number | undefined;
         }) => {
           const msg = await projectList({ ...params });
-          console.log(msg);
-
           setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
@@ -883,7 +1048,12 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心');
+            message.error(
+              `${intl.formatMessage({
+                id: 'message.deleteInputFail',
+                defaultMessage: '输入错误，请重新输入！',
+              })}`,
+            );
           }
         }}
         deleteModalVisible={deleteModalVisible}
@@ -899,7 +1069,7 @@ const TableList: React.FC = () => {
           formDeleteRes?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === '我要删除分析结果') {
+          if (value.name === 'ok fine') {
             const success = await handleRmRes(selectedRows[0]);
             if (success) {
               handleDelete1ModalVisible(false);
@@ -909,7 +1079,12 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心');
+            message.error(
+              `${intl.formatMessage({
+                id: 'message.deleteInputFail',
+                defaultMessage: '输入错误，请重新输入！',
+              })}`,
+            );
           }
         }}
         delete1ModalVisible={delete1ModalVisible}
@@ -925,7 +1100,7 @@ const TableList: React.FC = () => {
           formDeleteIrt?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === '我要删除IRT') {
+          if (value.name === 'ok fine') {
             const success = await handleRmIrt(selectedRows[0]);
             if (success) {
               handleDelete2ModalVisible(false);
@@ -935,7 +1110,12 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心');
+            message.error(
+              `${intl.formatMessage({
+                id: 'message.deleteInputFail',
+                defaultMessage: '输入错误，请重新输入！',
+              })}`,
+            );
           }
         }}
         delete2ModalVisible={delete2ModalVisible}
