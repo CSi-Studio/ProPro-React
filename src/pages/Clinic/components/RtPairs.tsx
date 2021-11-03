@@ -159,8 +159,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         markLine: getMarkLine(seriesData.length),
       });
     });
-    console.log(ratio);
-
     const getGraphic = () => {
       const graphic: any = [];
       ratio.forEach((item: any, index: number) => {
@@ -185,7 +183,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
               left: '0',
               top: '0',
               shape: {
-                width: 40,
+                width: 60,
                 height: 16,
               },
               style: {

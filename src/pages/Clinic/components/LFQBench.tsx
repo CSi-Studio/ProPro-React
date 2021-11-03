@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Col, Descriptions, Row, Tag, Typography } from 'antd';
 import ecStat from 'echarts-stat';
+import { FormattedMessage } from 'umi';
 
 const { Text } = Typography;
 
@@ -11,6 +12,8 @@ export type QtChartsProps = {
 // const { transform } = EChartsStat;
 
 const LFQBench: React.FC<QtChartsProps> = (props: any) => {
+  const intl = useIntl();
+
   const [handleOption, setHandleOption] = useState({});
   const [ratioData, setRatioData] = useState<any>();
   /* 获取echarts实例，使用其Api */
@@ -47,10 +50,6 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         return [data.x, data.y, data.peptide];
       });
       setRatioData(result.data);
-
-      const ecoliRegression = ecStat.regression('polynomial', ecoliData, 3);
-      const humanRegression = ecStat.regression('polynomial', humanData, 3);
-      const yeastRegression = ecStat.regression('polynomial', yeastData, 3);
 
       /* 四分位数 */
       const boxplotData = (arr: any) => {
@@ -117,7 +116,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
               },
               formatter: (params: { seriesName: any; data: any[]; marker: any }) => {
                 let res = params?.seriesName;
-                res += `<br />蛋白：${params?.data[2].split('-->')[0]}<br />肽段：${
+                res += `<br />Protein: ${params?.data[2].split('-->')[0]}<br />Peptide: ${
                   params?.data[2].split('-->')[1]
                 }<br />${params?.marker}${params?.data[0]?.toFixed(
                   4,
@@ -284,7 +283,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
                   fontFamily: 'Times New Roman,STSong',
                 },
                 formatter: (params: { value: number; name: string }) => {
-                  const res = `${params.name}</br>中位数：${params.value}`;
+                  const res = `${params.name}</br>Median: ${params.value}`;
                   return res;
                 },
               },
@@ -522,48 +521,6 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
               },
             },
           },
-          // {
-          //   name: 'ecoli',
-          //   type: 'line',
-          //   smooth: true,
-          //   data: ecoliRegression.points,
-          //   symbol: 'none',
-          //   lineStyle: {
-          //     // color: 'rgba(255,99,71)',
-          //     color: '#666',
-          //     width: 3,
-          //     type: 'dashed',
-          //     borderType: '[50, 100]',
-          //   },
-          // },
-          // {
-          //   name: 'human',
-          //   type: 'line',
-          //   smooth: true,
-          //   data: humanRegression.points,
-          //   symbol: 'none',
-          //   lineStyle: {
-          //     // color: 'rgba(64,144,247)',
-          //     color: '#666',
-          //     width: 3,
-          //     type: 'dashed',
-          //     borderType: '[50, 100]',
-          //   },
-          // },
-          // {
-          //   name: 'yeast',
-          //   type: 'line',
-          //   smooth: true,
-          //   data: yeastRegression.points,
-          //   symbol: 'none',
-          //   lineStyle: {
-          //     // color: 'rgba(60,179,113)',
-          //     color: '#666',
-          //     width: 3,
-          //     type: 'dashed',
-          //     borderType: '[50, 100]',
-          //   },
-          // },
         ],
       };
       setHandleOption(option);
@@ -584,8 +541,16 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   return (
     <Row>
       <Col span="6">
-        <Text strong>仅提供默认OverViews的展示</Text>
-        <Descriptions title="蛋白鉴定数(Unique)" column={2}>
+        <Text strong>
+          <FormattedMessage id="component.showDefaultOv" />
+        </Text>
+        <Descriptions
+          title={intl.formatMessage({
+            id: 'component.proteinIdentifyNumber',
+            defaultMessage: '蛋白鉴定数(Unique)',
+          })}
+          column={2}
+        >
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyProteinNumA}</Tag>
           </Descriptions.Item>
@@ -593,21 +558,37 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="blue">{ratioData?.identifyProteinNumB}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="肽段鉴定数(Unique)" column={2}>
+        <Descriptions
+          title={intl.formatMessage({
+            id: 'component.peptideIdentifyNumber',
+            defaultMessage: '肽段鉴定数(Unique)',
+          })}
+          column={2}
+        >
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyNumA}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="缺失率">
+          <Descriptions.Item
+            label={intl.formatMessage({
+              id: 'component.missingRate',
+              defaultMessage: '缺失率',
+            })}
+          >
             <Tag color="red">{`${(ratioData?.missingRatioA * 100).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="B">
             <Tag color="blue">{ratioData?.identifyNumB}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="缺失率">
+          <Descriptions.Item
+            label={intl.formatMessage({
+              id: 'component.missingRate',
+              defaultMessage: '缺失率',
+            })}
+          >
             <Tag color="red">{`${(ratioData?.missingRatioB * 100).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
         </Descriptions>
-        <Descriptions title="Hit比例(1:2:3)" column={1}>
+        <Descriptions title="HitRatio(1:2:3)" column={1}>
           <Descriptions.Item label="A">
             <Tag color="red">{ratioData?.hit1A}</Tag>
             <Tag color="blue">{ratioData?.hit2A}</Tag>

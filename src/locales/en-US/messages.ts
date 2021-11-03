@@ -25,5 +25,9 @@ export default {
   'message.deleteInputFail': 'Input error, please re-enter!',
   'message.deleteInput': 'I want to delete the analysis results',
   'message.deleteIRTInput': 'I want to delete the IRT results',
+  // 诊所
+  'message.getSpectra': '正在获取光谱图',
+  'message.getEICFail': '获取EIC Matrix失败，请重试！',
+  'message.noCorrespondProtein':
+    'No corresponding protein is found, please check if the input is correct!',
 };
-1

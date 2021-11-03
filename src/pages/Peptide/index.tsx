@@ -329,16 +329,14 @@ const TableList: React.FC = (props: any) => {
         pagination={{
           total: total,
         }}
-        request={async (params) => {
-          console.log(params);
-
-          const msg = await peptideList({ libraryId, ...params });
+        request={async () => {
+          const msg = await peptideList({ libraryId });
           setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}
         tableAlertRender={false}
         columns={columns}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);

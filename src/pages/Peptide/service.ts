@@ -10,7 +10,7 @@ export async function peptideList(params: {
   pageSize?: number;
   /** 选择的标准库ID */
   libraryId: string;
-  peptideRef: string;
+  peptideRef?: string;
 }) {
   return request(`${url}/peptide/list`, {
     method: 'GET',

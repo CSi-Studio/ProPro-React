@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Col, Row, Tag } from 'antd';
 import ProTable from '@ant-design/pro-table';
+import { FormattedMessage } from 'umi';
 
 export type OverViewProps = {
   values: any;
 };
 
 const OverView: React.FC<OverViewProps> = (props: any) => {
+
   const [ovRowKey, setOvRowKey] = useState<any>();
   const { prepareData, expData } = props.values;
 
@@ -32,7 +34,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
   /* 打分结果Columns */
   let scoreColumns: any = [
     {
-      title: '别名',
+      title: <FormattedMessage id="table.alias" />,
       dataIndex: 'alias',
       key: 'alias',
       fixed: 'left',
@@ -45,7 +47,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
     },
     {
-      title: '鉴定态',
+      title: <FormattedMessage id="component.identStatus" />,
       dataIndex: 'status',
       key: 'status',
       fixed: 'left',
@@ -54,32 +56,68 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         if (entity.index === entity.selectIndex) {
           switch (entity.status) {
             case 0:
-              return <Tag color="blue">尚未鉴定</Tag>;
+              return (
+                <Tag color="blue">
+                  <FormattedMessage id="component.noIdentify" />
+                </Tag>
+              );
               break;
             case 1:
-              return <Tag color="success">鉴定成功</Tag>;
+              return (
+                <Tag color="success">
+                  <FormattedMessage id="component.successIdentify" />
+                </Tag>
+              );
               break;
             case 2:
-              return <Tag color="error">鉴定失败</Tag>;
+              return (
+                <Tag color="error">
+                  <FormattedMessage id="component.failIdentify" />
+                </Tag>
+              );
               break;
             case 3:
-              return <Tag color="warning">碎片不足</Tag>;
+              return (
+                <Tag color="warning">
+                  <FormattedMessage id="component.notEnoughIdentify" />
+                </Tag>
+              );
               break;
             case 4:
-              return <Tag color="warning">没有峰组</Tag>;
+              return (
+                <Tag color="warning">
+                  <FormattedMessage id="component.lackOfPeakGroup" />
+                </Tag>
+              );
               break;
             case 5:
-              return <Tag color="warning">EIC为空</Tag>;
+              return (
+                <Tag color="warning">
+                  <FormattedMessage id="component.noEIC" />
+                </Tag>
+              );
               break;
             default:
-              return <Tag color="warning">没有峰组</Tag>;
+              return (
+                <Tag color="warning">
+                  <FormattedMessage id="component.unknownError" />
+                </Tag>
+              );
               break;
           }
         }
         if (entity.scoreList[entity.index]?.scores[0] >= entity.minTotalScore) {
-          return <Tag color="success">鉴定成功</Tag>;
+          return (
+            <Tag color="success">
+              <FormattedMessage id="component.successIdentify" />
+            </Tag>
+          );
         }
-        return <Tag color="error">鉴定失败</Tag>;
+        return (
+          <Tag color="error">
+            <FormattedMessage id="component.failIdentify" />
+          </Tag>
+        );
       },
     },
     {
@@ -124,7 +162,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
     },
     {
-      title: '最低总分',
+      title: <FormattedMessage id="component.minTotalScore" />,
       dataIndex: 'minTotalScore',
       key: 'minTotalScore',
       width: 70,
@@ -145,7 +183,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
               setOvRowKey(value.tooltip);
             }}
           >
-            0(总分)
+            0(
+            <FormattedMessage id="component.totalScore" />)
           </a>
         ) : (
           <a
@@ -224,7 +263,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                 key: 'index',
               },
               {
-                title: '打分类别',
+                title: <FormattedMessage id="component.scoreType" />,
                 dataIndex: 'type',
                 key: 'type',
               },

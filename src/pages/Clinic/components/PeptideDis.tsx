@@ -70,15 +70,15 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
             values.expData.forEach((_item: { expId: string; alias: string }) => {
               if (_item.expId === key) {
                 dataInit.alias = _item.alias;
-                Object.keys(item.statistic.DECOY_DIST).forEach((inKey: any) => {
-                  decoyData.push(item.statistic.DECOY_DIST[inKey]);
+                Object.keys(item?.statistic?.DECOY_DIST).forEach((inKey: any) => {
+                  decoyData.push(item?.statistic?.DECOY_DIST[inKey]);
                   dataInit.decoy.push({
                     value: inKey.replace(/_/g, '.').split('-'),
                     data: decoyData,
                   });
                 });
-                Object.keys(item.statistic.TARGET_DIST).forEach((inKey: any) => {
-                  targetData.push(item.statistic.TARGET_DIST[inKey]);
+                Object.keys(item?.statistic?.TARGET_DIST).forEach((inKey: any) => {
+                  targetData.push(item?.statistic?.TARGET_DIST[inKey]);
                   dataInit.target.push({
                     value: inKey.replace(/_/g, '.').split('-'),
                     data: targetData,

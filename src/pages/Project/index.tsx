@@ -777,7 +777,6 @@ const TableList: React.FC = () => {
               onClick={() => {
                 if (selectedRows?.length > 0) {
                   if (selectedRows.length === 1) {
-                    console.log('selectedRows', selectedRows);
                     handleExport(selectedRows[0].id);
                   } else {
                     message.warn(

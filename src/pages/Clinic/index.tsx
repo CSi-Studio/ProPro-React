@@ -45,6 +45,7 @@ import LFQBench from './components/LFQBench';
 import OverView from './components/OverView';
 import PeptideDis from './components/PeptideDis';
 import { overviewList } from '../Overview/service';
+import { useIntl, FormattedMessage } from 'umi';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -62,6 +63,8 @@ const proteinPageSize = 13;
 const peptidePageSize = 9;
 
 const TableList: React.FC = (props: any) => {
+  const intl = useIntl();
+
   const projectId = props?.location?.query?.projectId;
   const overviewIdsInt = props?.location?.query?.overviewIds;
   const [exps, setExps] = useState<IdNameAlias[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
@@ -123,7 +126,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: '肽段',
+      title: <FormattedMessage id="menu.peptide" />,
       dataIndex: 'peptide',
       key: 'peptide',
     },
@@ -198,7 +201,11 @@ const TableList: React.FC = (props: any) => {
 
       /* 展示碎片光谱图 */
       const spectraFn = async (item: any) => {
-        const hide = message.loading('正在获取光谱图');
+        const messageSpec = intl.formatMessage({
+          id: 'message.getSpectra',
+          defaultMessage: '正在获取光谱图',
+        });
+        const hide = message.loading(messageSpec);
         try {
           const data = await getSpectra({
             expId: selectedExpIds[Math.floor(item[0].seriesIndex / selectedExpIds.length)],
@@ -223,6 +230,8 @@ const TableList: React.FC = (props: any) => {
         getCutInfo,
         spectraFn,
       });
+      console.log(option);
+
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
       Height =
         Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
@@ -232,7 +241,11 @@ const TableList: React.FC = (props: any) => {
       setPeptideLoading(false);
       return true;
     } catch (error) {
-      message.error('获取EIC Matrix失败，请重试!');
+      const messageFailSpec = intl.formatMessage({
+        id: 'message.getEICFail',
+        defaultMessage: '获取EIC Matrix失败，请重试！',
+      });
+      message.error(messageFailSpec);
       setLoading(false);
       setPeptideLoading(false);
       setChartsLoading(false);
@@ -533,7 +546,10 @@ const TableList: React.FC = (props: any) => {
           ref={(node) => {
             searchInput = node;
           }}
-          placeholder={`搜索肽段`}
+          placeholder={intl.formatMessage({
+            id: 'table.searchPeptides',
+            defaultMessage: '搜索肽段',
+          })}
           value={selectedKeys[0]}
           onChange={(e) => {
             setSelectedKeys(e.target.value ? [e.target.value] : []);
@@ -552,10 +568,10 @@ const TableList: React.FC = (props: any) => {
             size="small"
             style={{ width: 90 }}
           >
-            搜索
+            <FormattedMessage id="table.searchBtn" />
           </Button>
           <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
-            重置
+            <FormattedMessage id="table.resetBtn" />
           </Button>
         </Space>
       </div>
@@ -579,7 +595,7 @@ const TableList: React.FC = (props: any) => {
           textToHighlight={text ? text.props.children : ''}
         />
       ) : (
-        '暂无数据'
+        <FormattedMessage id="table.noData" />
       ),
   });
 
@@ -629,25 +645,34 @@ const TableList: React.FC = (props: any) => {
   const onSearch = async (value: any) => {
     setPeptideName(value);
     if (prepareData) {
+      const messageFail = intl.formatMessage({
+        id: 'message.noCorrespondProtein',
+        defaultMessage: '未找到相应蛋白，请检查输入是否正确！',
+      });
       const msg = await getPeptideList({ libraryId: prepareData.anaLib.id, peptideRef: value });
-      const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
-      if (msg?.data[0]?.proteins[0]) {
-        await onProteinChange(msg?.data[0]?.proteins[0]); //table选择搜索蛋白
-        setProteinRowKey(msg?.data[0]?.proteins[0]); //table选中搜索蛋白行
-        setProteinPage(
-          Math.ceil(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]) / proteinPageSize),
-        ); //跳转到搜索蛋白所在的页
-        const peptideArr = peptideRes.map((item: { peptideRef: any }) => {
-          return item.peptideRef;
-        }); //当前蛋白的所有肽段
-        setPeptideRowKey(value); //table选择搜索肽段
-        selectPeptideRow(value); //table选中搜索肽段行
-        setPeptidePage(Math.ceil(peptideArr.indexOf(value) / peptidePageSize)); //跳转到搜索肽段所在的页
-        setPeptidesIndex(peptideArr.indexOf(value));
-        setProteinsIndex(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]));
-        return true;
+      if (msg.data.length > 0) {
+        const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
+        if (msg?.data[0]?.proteins[0]) {
+          await onProteinChange(msg?.data[0]?.proteins[0]); //table选择搜索蛋白
+          setProteinRowKey(msg?.data[0]?.proteins[0]); //table选中搜索蛋白行
+          setProteinPage(
+            Math.ceil(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]) / proteinPageSize),
+          ); //跳转到搜索蛋白所在的页
+          const peptideArr = peptideRes.map((item: { peptideRef: any }) => {
+            return item.peptideRef;
+          }); //当前蛋白的所有肽段
+          setPeptideRowKey(value); //table选择搜索肽段
+          selectPeptideRow(value); //table选中搜索肽段行
+          setPeptidePage(Math.ceil(peptideArr.indexOf(value) / peptidePageSize)); //跳转到搜索肽段所在的页
+          setPeptidesIndex(peptideArr.indexOf(value));
+          setProteinsIndex(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]));
+          return true;
+        } else {
+          message.warn(messageFail);
+          return false;
+        }
       } else {
-        message.warn('未找到相应蛋白，请检查输入是否正确');
+        message.warn(messageFail);
         return false;
       }
     }
@@ -657,7 +682,7 @@ const TableList: React.FC = (props: any) => {
   return (
     <PageContainer
       header={{
-        title: '蛋白诊所',
+        title: <FormattedMessage id="menu.proteinClinic" />,
         tags: (
           <Link
             target="_blank"
@@ -671,7 +696,10 @@ const TableList: React.FC = (props: any) => {
         extra: (
           <Space>
             <Search
-              placeholder="请输入要搜索的肽段"
+              placeholder={intl.formatMessage({
+                id: 'table.inputSearchPeptides',
+                defaultMessage: '请输入要搜索的肽段',
+              })}
               allowClear
               onSearch={onSearch}
               style={{ width: 300 }}
@@ -693,10 +721,10 @@ const TableList: React.FC = (props: any) => {
               style={{ width: 300 }}
             /> */}
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
-              自身肽段预测
+              <FormattedMessage id="table.selfPeptidePredict" />
             </Button>
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, true)}>
-              异电肽段预测
+              <FormattedMessage id="table.diffPeptidePredict" />
             </Button>
           </Space>
         ),
@@ -710,7 +738,7 @@ const TableList: React.FC = (props: any) => {
                 <ProTable
                   columns={[
                     {
-                      title: '蛋白',
+                      title: <FormattedMessage id="menu.protein" />,
                       dataIndex: 'protein',
                       key: 'protein',
                       ellipsis: true,
@@ -823,7 +851,13 @@ const TableList: React.FC = (props: any) => {
                 setTabActiveKey(key);
               }}
             >
-              <TabPane tab="EIC列表" key="1">
+              <TabPane
+                tab={intl.formatMessage({
+                  id: 'table.EICList',
+                  defaultMessage: 'EIC列表',
+                })}
+                key="1"
+              >
                 <Row>
                   <Col span={24}>
                     <span>
@@ -853,14 +887,19 @@ const TableList: React.FC = (props: any) => {
                     </>
                   </Col>
                   <Col span={24}>
-                    <Tooltip title="仅选择实验默认的overview">
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: 'table.defaultOverview',
+                        defaultMessage: '仅选择实验默认的overview',
+                      })}
+                    >
                       <Checkbox
                         checked={onlyDefault}
                         onChange={(e) => {
                           setOnlyDefault(e.target.checked);
                         }}
                       >
-                        仅默认
+                        <FormattedMessage id="table.justDefault" />
                       </Checkbox>
                     </Tooltip>
                     <Checkbox
@@ -869,7 +908,7 @@ const TableList: React.FC = (props: any) => {
                         setSmooth(e.target.checked);
                       }}
                     >
-                      数据平滑
+                      <FormattedMessage id="table.dataSmooth" />
                     </Checkbox>
                     <Checkbox
                       checked={denoise}
@@ -877,15 +916,15 @@ const TableList: React.FC = (props: any) => {
                         setDenoise(e.target.checked);
                       }}
                     >
-                      数据降噪
+                      <FormattedMessage id="table.dataNR" />
                     </Checkbox>
                   </Col>
                   <Col span={24}>
                     <Button style={{ marginRight: 5 }} size="small" onClick={() => selectAll()}>
-                      全选
+                      <FormattedMessage id="table.allBtn" />
                     </Button>
                     <Button style={{ marginRight: 5 }} size="small" onClick={selectReverse}>
-                      反选
+                      <FormattedMessage id="table.invBtn" />
                     </Button>
                     {overviewIdsInt
                       ? expData
@@ -985,7 +1024,13 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                 </Row>
               </TabPane>
-              <TabPane tab="打分结果" key="2">
+              <TabPane
+                tab={intl.formatMessage({
+                  id: 'table.scoreRes',
+                  defaultMessage: '打分结果',
+                })}
+                key="2"
+              >
                 <Spin spinning={!expData}>
                   {expData.length > 0 ? (
                     <OverView values={{ prepareData, expData }} />
@@ -1004,7 +1049,7 @@ const TableList: React.FC = (props: any) => {
                       <LFQBench values={{ peptideRatioData, LFQClick }} />
                     ) : (
                       <Empty
-                        description="正在加载中"
+                        description="Loading..."
                         style={{ padding: '10px', color: '#B0B8C1' }}
                         imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
                       />
@@ -1012,20 +1057,33 @@ const TableList: React.FC = (props: any) => {
                   </Spin>
                 </TabPane>
               ) : null}
-              <TabPane tab="方法参数" key="4">
+              <TabPane
+                tab={intl.formatMessage({
+                  id: 'table.methodPara',
+                  defaultMessage: '方法参数',
+                })}
+                key="4"
+              >
                 <Row>
                   <Col span={24}>
                     <Space>
-                      <Tag color="blue">内标库: {prepareData?.insLib?.name}</Tag>
                       <Tag color="blue">
-                        标准库: {prepareData?.anaLib?.name}(肽段数:{prepareData?.peptideCount}
-                        ,蛋白数:{prepareData?.proteinCount})
+                        <FormattedMessage id="table.innerLibrary" />: {prepareData?.insLib?.name}
+                      </Tag>
+                      <Tag color="blue">
+                        <FormattedMessage id="table.standardLibrary" />: {prepareData?.anaLib?.name}
+                        (<FormattedMessage id="table.peptideNum" />:{prepareData?.peptideCount}
+                        &nbsp;&nbsp;
+                        <FormattedMessage id="table.proteinNum" />:{prepareData?.proteinCount})
                       </Tag>
                       <Tag color="blue">{prepareData?.method?.name}</Tag>
                     </Space>
                   </Col>
                   <Col span={24}>
-                    <>分数类型({prepareData?.method?.score?.scoreTypes?.length}种): </>
+                    <>
+                      <FormattedMessage id="table.scoreType" />(
+                      {prepareData?.method?.score?.scoreTypes?.length}):{' '}
+                    </>
                     {prepareData?.method?.score?.scoreTypes?.map((type: any) => {
                       return (
                         <Tag style={{ marginTop: 5 }} key={type} color="blue">
@@ -1036,23 +1094,44 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                 </Row>
               </TabPane>
-              <TabPane tab="iRT结果" key="5">
+              <TabPane
+                tab={intl.formatMessage({
+                  id: 'table.IrtRes',
+                  defaultMessage: 'iRT结果',
+                })}
+                key="5"
+              >
                 <IrtCharts values={irtData} />
               </TabPane>
-              <TabPane tab="RT结果" key="6">
+              <TabPane
+                tab={intl.formatMessage({
+                  id: 'table.RtRes',
+                  defaultMessage: 'RT结果',
+                })}
+                key="6"
+              >
                 <Spin spinning={!rtPairs}>
                   {rtPairs ? (
                     <RtPairsCharts values={{ rtPairs, expData }} />
                   ) : (
                     <Empty
-                      description="正在加载中,pairsData数据较大，请耐心等待"
+                      description={intl.formatMessage({
+                        id: 'table.loadRtRes',
+                        defaultMessage: '正在加载中，数据较大，请耐心等待',
+                      })}
                       style={{ padding: '10px', color: '#B0B8C1' }}
                       imageStyle={{ padding: '20px 0 0 0', height: '140px' }}
                     />
                   )}
                 </Spin>
               </TabPane>
-              <TabPane tab="肽段分布" key="7">
+              <TabPane
+                tab={intl.formatMessage({
+                  id: 'table.peptideDis',
+                  defaultMessage: '肽段分布',
+                })}
+                key="7"
+              >
                 <Spin spinning={!expData}>
                   {expData !== undefined ? (
                     <PeptideDis values={{ prepareData, expData }} />
