@@ -643,25 +643,25 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         </Descriptions>
         <Descriptions title="Yeast(Avg:SD:CV:Percentile49)" column={1}>
           <Descriptions.Item label="Stat">
-            <Tag color="blue">{ratioData?.yeastAvg.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.yeastCV.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.yeastSD.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.yeastAvg?.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.yeastCV?.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.yeastSD?.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.yeastPercentile[49].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="Human(Avg:SD:CV:Percentile49)" column={1}>
           <Descriptions.Item label="Stat">
-            <Tag color="blue">{ratioData?.humanAvg.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.humanCV.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.humanSD.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.humanAvg?.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.humanCV?.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.humanSD?.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.humanPercentile[49].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>
         <Descriptions title="EColi(Avg:SD:CV:Percentile49)" column={1}>
           <Descriptions.Item label="Stat">
-            <Tag color="blue">{ratioData?.ecoliAvg.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.ecoliCV.toFixed(4)}</Tag>
-            <Tag color="blue">{ratioData?.ecoliSD.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.ecoliAvg?.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.ecoliCV?.toFixed(4)}</Tag>
+            <Tag color="blue">{ratioData?.ecoliSD?.toFixed(4)}</Tag>
             <Tag color="blue">{ratioData?.ecoliPercentile[49].toFixed(4)}</Tag>
           </Descriptions.Item>
         </Descriptions>

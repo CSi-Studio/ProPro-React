@@ -554,6 +554,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
           params.forEach((item: any) => {
             html += `${item.marker}<span style="display:inline-block;margin-right:4px;width:30px">${item.seriesName}</span>&nbsp&nbsp&nbsp <span style="font-weight:bold">${item.data[1]}</span><br />`;
           });
+          
           return html;
         },
       },
