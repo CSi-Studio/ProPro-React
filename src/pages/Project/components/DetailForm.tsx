@@ -3,6 +3,7 @@ import { Col, Drawer, Row } from 'antd';
 import type { TableListItem } from '@/pages/Project/data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import { useIntl } from 'umi';
 
 export type UpdateFormProps = {
   showDetail: any;
@@ -12,6 +13,8 @@ export type UpdateFormProps = {
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <Drawer width={650} visible={props.showDetail} onClose={props.onClose} closable={false}>
       {props.currentRow?.name && (
@@ -28,7 +31,12 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
             columns={props.columns as ProDescriptionsItemProps<TableListItem>[]}
           />
           <Row>
-            <Col span={3}>项目描述：</Col>
+            <Col span={4}>
+              {intl.formatMessage({
+                id: 'component.projectDescription',
+                defaultMessage: '项目描述',
+              })}
+            </Col>
             <Col span={21}>{props.currentRow.description}</Col>
           </Row>
         </>

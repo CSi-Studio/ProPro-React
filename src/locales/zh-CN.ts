@@ -5,7 +5,7 @@ import pwa from './zh-CN/pwa';
 import settingDrawer from './zh-CN/settingDrawer';
 import settings from './zh-CN/settings';
 import pages from './zh-CN/pages';
-import messages_zh_CN from './zh-CN/messages';
+import messages_zh_CN from './zh-CN/old';
 import table from './zh-CN/table';
 
 export default {

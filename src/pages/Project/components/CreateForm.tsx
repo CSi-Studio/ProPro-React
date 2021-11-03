@@ -7,6 +7,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import { beforeAdd } from '../service';
 import PSelect from '@/components/PDictSelect/PDictSelect';
+import { useIntl } from 'umi';
 
 export type addFormValueType = {
   name?: string;
@@ -30,10 +31,15 @@ export type CreateFormProps = {
 
 const beforeAddData = await beforeAdd();
 const CreateForm: React.FC<CreateFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="创建一个项目"
+      title={intl.formatMessage({
+        id: 'component.createProject',
+        defaultMessage: '创建项目',
+      })}
       width={800}
       visible={props.createModalVisible}
       modalProps={{
@@ -49,13 +55,22 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '项目名称不能为空',
+              message: `${intl.formatMessage({
+                id: 'component.emptyProjectName',
+                defaultMessage: '项目名称不能为空',
+              })}`,
             },
           ]}
           width="sm"
           name="name"
-          label="项目名称"
-          tooltip="项目名称必须唯一"
+          label={intl.formatMessage({
+            id: 'component.projectName',
+            defaultMessage: '项目名称',
+          })}
+          tooltip={intl.formatMessage({
+            id: 'component.UniProjectName',
+            defaultMessage: '项目名称必须唯一',
+          })}
           request={async () => {
             const res: any[] = [];
             beforeAddData?.data.unloads.map((item: string) => {
@@ -68,12 +83,29 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             return res;
           }}
         />
-        <ProFormText width="sm" name="alias" label="项目别名" placeholder="请输入项目别名" />
+        <ProFormText
+          width="sm"
+          name="alias"
+          label={intl.formatMessage({
+            id: 'component.projectAlias',
+            defaultMessage: '项目别名',
+          })}
+          placeholder={intl.formatMessage({
+            id: 'component.inputProjectAlias',
+            defaultMessage: '请输入项目别名',
+          })}
+        />
         <PSelect
           name="type"
           dictName="ProjectType"
-          label="实验类型"
-          placeholder="请输入实验类型"
+          label={intl.formatMessage({
+            id: 'component.expType',
+            defaultMessage: '实验类型',
+          })}
+          placeholder={intl.formatMessage({
+            id: 'component.inputExpType',
+            defaultMessage: '请输入实验类型',
+          })}
           initialValue="DIA"
         />
       </ProForm.Group>
@@ -82,26 +114,41 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '负责人不能为空',
+              message: `${intl.formatMessage({
+                id: 'component.directorEmpty',
+                defaultMessage: '负责人不能为空',
+              })}`,
             },
             {
               pattern: /^.{1,20}$/,
-              message: '负责人名字过长',
+              message: `${intl.formatMessage({
+                id: 'component.directorNameLong',
+                defaultMessage: '负责人名字过长',
+              })}`,
             },
           ]}
           width="sm"
           name="owner"
-          label="负责人"
-          placeholder="请输入负责人"
+          label={intl.formatMessage({
+            id: 'component.director',
+            defaultMessage: '负责人',
+          })}
+          placeholder={intl.formatMessage({
+            id: 'component.directorInput',
+            defaultMessage: '请输入负责人',
+          })}
         />
-        <ProFormText width="sm" name="group" label="group" />
-        <ProFormSelect width="sm" name="tags" label="tags" mode="tags" />
+        <ProFormText width="sm" name="group" label="Group" />
+        <ProFormSelect width="sm" name="tags" label="Tags" mode="tags" />
       </ProForm.Group>
       <ProForm.Group>
         <ProFormSelect
           width="sm"
           name="anaLibId"
-          label="标准库"
+          label={intl.formatMessage({
+            id: 'table.standardLibrary',
+            defaultMessage: '标准库',
+          })}
           request={async () => {
             const res: any[] = [];
             beforeAddData?.data.anaLibs.map((item: { name: any; id: any }) => {
@@ -117,7 +164,10 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <ProFormSelect
           width="sm"
           name="insLibId"
-          label="内标库"
+          label={intl.formatMessage({
+            id: 'table.innerLibrary',
+            defaultMessage: '内标库',
+          })}
           request={async () => {
             const res: any[] = [];
             beforeAddData?.data.insLibs.map((item: { name: any; id: any }) => {
@@ -133,7 +183,10 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <ProFormSelect
           width="sm"
           name="methodId"
-          label="方法包"
+          label={intl.formatMessage({
+            id: 'table.methodPackage',
+            defaultMessage: '方法包',
+          })}
           request={async () => {
             const res: any[] = [];
             beforeAddData?.data.methods.map((item: { name: any; id: any }) => {
@@ -148,7 +201,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         />
       </ProForm.Group>
 
-      <ProFormTextArea name="description" label="项目描述" />
+      <ProFormTextArea
+        name="description"
+        label={intl.formatMessage({
+          id: 'component.projectDescription',
+          defaultMessage: '项目描述',
+        })}
+      />
     </ModalForm>
   );
 };

@@ -1,4 +1,6 @@
 /* eslint-disable no-nested-ternary */
+import { isEqual, uniqWith, compact } from 'lodash';
+
 export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn: any }) => {
   const data: any[] = values.result;
   const gridNumInRow: number = 3;
@@ -13,14 +15,15 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   const Width: number = 99;
 
   /* 碎片信息 */
-  const allCutInfo: any = [];
-  const allCutMz: any = {};
+  let allCutMz: any = [];
+
   data.forEach((item: any) => {
     Object.keys(item.cutInfoMap).forEach((key: any) => {
-      allCutMz[key] = item.cutInfoMap[key];
-      allCutInfo.push(key);
+      allCutMz.push({ name: key, value: item.cutInfoMap[key] });
     });
   });
+  allCutMz = uniqWith(allCutMz, isEqual).sort((a, b) => (a.value > b.value ? -1 : 1));
+
   const statusFn = (
     value: number,
     str1: any,
@@ -94,22 +97,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
 
   // 设置表头
   const getXicTitle = () => {
-    const titles = [
-      // {
-      //   text: `${data[0].peptideRef}（${[...new Set([].concat(...allCutInfo))].length}个碎片）`,
-      //   height: '200px',
-      //   textAlign: 'left',
-      //   textStyle: {
-      //     color: '#000',
-      //     fontSize: '15',
-      //     fontWeight: 'normal',
-      //     fontFamily: 'Times New Roman,STSong',
-      //   },
-      //   padding: 0,
-      //   top: `${11}px`,
-      //   left: '4%',
-      // },
-    ];
+    const titles = [];
     for (let i = 0; i < data.length; i += 1) {
       // rt赋值
       let rt: any[] = [];
@@ -122,6 +110,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
         });
         rt = rt.filter(Boolean);
       }
+      console.log(data);
 
       const item = {
         text: `${data[i].alias} (${data[i].expId.substring(data[i].expId.length - 5)} - ${data[
@@ -425,7 +414,9 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   const getXicLegend = () => {
     const legends: any = [
       {
-        data: [...new Set([].concat(...allCutInfo))],
+        data: allCutMz.map((item: { name: string }) => {
+          return item.name;
+        }),
         right: '6%',
         width: '100%',
         top: `${6}px`,
@@ -457,7 +448,13 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
           ],
         },
         formatter(name: any) {
-          return `${name}:${allCutMz[name].toFixed(4)}`;
+          let a = allCutMz.map((item: any) => {
+            if (item.name === name) {
+              return item.value;
+            }
+          });
+          a = compact(a);
+          return `${name}:${a[0] ? a[0] : 0}`;
         },
       },
     ];
@@ -516,7 +513,7 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
   };
 
   // 设置option
-  const getXicOption = (getCutInfo: Record<any, any>) => {
+  const getXicOption = () => {
     const gridNumber = data.length;
     function chartsFn(params: any) {
       values.spectraFn(params);
@@ -593,5 +590,5 @@ export default (values: { result: any[]; getCutInfo: Record<any, any>; spectraFn
       legend: getXicLegend(),
     };
   };
-  return getXicOption(values.getCutInfo);
+  return getXicOption();
 };

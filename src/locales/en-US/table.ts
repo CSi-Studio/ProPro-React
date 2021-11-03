@@ -11,7 +11,7 @@ export default {
   'table.tags': 'Tags',
   'table.methodPackage': 'MethodPackage',
   'table.innerLibrary': 'InnerLibrary',
-  'table.standardLibrary': 'StandardLibrary',
+  'table.standardLibrary': 'Library',
   'table.creatTime': 'CreatTime',
   'table.option': 'Option',
   'table.check': 'Check',
@@ -25,6 +25,6 @@ export default {
   'table.export': 'Export',
   'table.delete': 'Delete',
   'table.deleteAnaRes': 'DeleteAnaRes',
-  'table.deleteIrt': 'DeleteIrt',
+  'table.deleteIrt': 'DeleteIRT',
   'table.deletePro': 'DeleteProject',
 };

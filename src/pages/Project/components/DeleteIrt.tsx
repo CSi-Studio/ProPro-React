@@ -2,6 +2,7 @@ import React from 'react';
 import { ProFormText, ModalForm } from '@ant-design/pro-form';
 import { Space } from 'antd';
 import { Tag } from 'antd';
+import { useIntl } from 'umi';
 
 export type FormValueType = {
   name?: string;
@@ -17,10 +18,15 @@ export type DeleteFormProps = {
 };
 
 const DeleteForm: React.FC<DeleteFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="你确定要删除吗？"
+      title={intl.formatMessage({
+        id: 'component.confirmDeletion',
+        defaultMessage: '你确定要删除吗？',
+      })}
       width={530}
       visible={props.delete2ModalVisible}
       modalProps={{
@@ -33,7 +39,10 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
     >
       <Space direction="vertical" style={{ textAlign: 'center', width: '100%' }}>
         <div style={{ marginTop: '24px' }}>
-          请输入
+          {intl.formatMessage({
+            id: 'component.pleaseInput',
+            defaultMessage: '请输入',
+          })}
           <Tag
             style={{
               margin: ' 0 2px',
@@ -43,20 +52,23 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             }}
             color="red"
           >
-            我要删除IRT
+            ok fine
           </Tag>
-          以确认删除。
+          {intl.formatMessage({
+            id: 'component.used2delete',
+            defaultMessage: '以确认删除。',
+          })}
         </div>
         <ProFormText
           rules={[
             {
               required: true,
-              message: '请输入我要删除IRT',
+              message: 'ok fine',
             },
           ]}
           width="sm"
           name="name"
-          placeholder="请输入我要删除IRT"
+          placeholder="ok fine"
         />
       </Space>
     </ModalForm>

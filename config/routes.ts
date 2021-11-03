@@ -105,8 +105,8 @@ export default [
   },
   // 蛋白诊所界面
   {
-    key: 'ProteinClinic',
-    name: 'ProteinClinic',
+    key: 'proteinClinic',
+    name: 'proteinClinic',
     path: '/clinic',
     icon: 'UnorderedListOutlined',
     component: './Clinic',
