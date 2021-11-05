@@ -1109,12 +1109,11 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error(
-              `${intl.formatMessage({
-                id: 'message.deleteInputFail',
-                defaultMessage: '输入错误，请重新输入！',
-              })}`,
-            );
+            const inputFail = intl.formatMessage({
+              id: 'message.deleteInputFail',
+              defaultMessage: '输入错误，请重新输入！',
+            });
+            message.error(inputFail);
           }
         }}
         delete2ModalVisible={delete2ModalVisible}

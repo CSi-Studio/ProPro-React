@@ -51,4 +51,18 @@ export default {
   'table.RtRes': 'RTRes',
   'table.loadRtRes': 'Loading, the data is large, please wait patiently',
   'table.peptideDis': 'PeptideDis',
+  // 蛋白列表
+  'table.proteinList': 'ProteinList',
+  'table.proteinName': 'ProteinName',
+  'table.reviewOrNot': 'ReviewOrNot',
+  'table.identifier': 'Identifier',
+  'table.gene': 'Gene',
+  'table.organism': 'Organism',
+  'table.sequence': 'Sequence',
+  'table.importProteinLib': 'ImportProLib',
+  // 任务列表
+  'table.taskName': 'TaskList',
+  'table.taskTem': 'TaskTemplate',
+  'table.taskState': 'TaskStatu',
+  'table.takeTime': 'SpendTime',
 };

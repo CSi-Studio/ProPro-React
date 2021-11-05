@@ -51,4 +51,18 @@ export default {
   'table.RtRes': 'RT结果',
   'table.loadRtRes': '正在加载中，数据较大，请耐心等待',
   'table.peptideDis': '肽段分布',
+  // 蛋白列表
+  'table.proteinList': '蛋白列表',
+  'table.proteinName': '蛋白名称',
+  'table.reviewOrNot': '是否审核',
+  'table.identifier': '标识符',
+  'table.gene': '基因',
+  'table.organism': '有机生物',
+  'table.sequence': '序列号',
+  'table.importProteinLib': '导入蛋白库',
+  // 任务列表
+  'table.taskName': '任务列表',
+  'table.taskTem': '任务模板',
+  'table.taskState': '任务状态',
+  'table.takeTime': '花费时间',
 };

@@ -26,8 +26,23 @@ export default {
   'message.deleteInput': 'I want to delete the analysis results',
   'message.deleteIRTInput': 'I want to delete the IRT results',
   // 诊所
-  'message.getSpectra': '正在获取光谱图',
-  'message.getEICFail': '获取EIC Matrix失败，请重试！',
+  'message.getSpectra': 'Getting the spectrogram...',
+  'message.getEICFail': 'Failed to get EIC Matrix, please try again!',
   'message.noCorrespondProtein':
     'No corresponding protein is found, please check if the input is correct!',
+  // 蛋白列表
+  'message.selectRevType': 'Please select review type!',
+  'message.pleaseImportPro': 'Please upload the protein file!',
+  'message.uploadFileArea': 'Click or drag the file to this area',
+  'message.uploadFile': 'UploadFile',
+  'message.fileFormat': 'Supported file formats are:',
+  'message.whetherNewLib': 'Please select whether to create a new library',
+  'message.inputLibraryName': 'Please enter the name of the library',
+  'message.selectSpModel': 'Please select spModel',
+  'message.selectIsoTope': 'Please select isoTope',
+  'message.inputMinPepLen': 'Please enter minPepLen',
+  'message.inputMaxPepLen': 'Please enter maxPepLen',
+  // 任务列表
+  'message.deleteTask': 'Please select the library to delete. Multiple selection is supported.',
+  'message.deleteTaskNum': 'Number of tasks to be deleted: ',
 };

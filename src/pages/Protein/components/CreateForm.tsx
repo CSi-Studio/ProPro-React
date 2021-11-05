@@ -9,6 +9,7 @@ import ProForm, {
 import { message, Tag } from 'antd';
 import { Icon } from '@iconify/react';
 import { ProteinType, SpModelType, YesOrNo } from '@/components/Enums/Selects';
+import { useIntl, FormattedMessage } from 'umi';
 
 export type addFormValueType = {
   createTage?: string;
@@ -29,11 +30,16 @@ export type CreateFormProps = {
   form: any;
 };
 const CreateForm: React.FC<CreateFormProps> = (props) => {
+  const intl = useIntl();
+
   const [createVisible, setCreate] = useState<boolean>(true);
   return (
     <ModalForm
       form={props.form}
-      title="导入蛋白文件"
+      title={intl.formatMessage({
+        id: 'component.importProFile',
+        defaultMessage: '导入蛋白文件',
+      })}
       width={530}
       visible={props.createModalVisible}
       modalProps={{
@@ -55,13 +61,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           width="sm"
           name="createTag"
           label="Tag"
-          placeholder="请输入Tag"
+          placeholder="Input Tag"
         />
         <ProFormSelect
           rules={[
             {
               required: true,
-              message: '请选择review类型',
+              message: <FormattedMessage id="message.selectRevType" />,
             },
           ]}
           options={ProteinType.reviewed}
@@ -74,7 +80,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: '不传文件，你手写库内容吗？ 😅',
+            message: <FormattedMessage id="message.pleaseUploadPro" />,
           },
         ]}
         icon={
@@ -88,20 +94,27 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             icon="mdi:cloud-upload"
           />
         }
-        title="点击或者拖动文件到此区域"
+        title={intl.formatMessage({
+          id: 'message.uploadFileArea',
+          defaultMessage: '点击或者拖动文件到此区域',
+        })}
         description={
           <p className="ant-upload-hint">
-            支持的文件格式有：<Tag color="green">fasta</Tag>
+            <FormattedMessage id="message.fileFormat" />
+            <Tag color="green">fasta</Tag>
           </p>
         }
         max={1}
         accept=".fasta"
-        label="上传文件"
+        label={intl.formatMessage({
+          id: 'message.fileFormat',
+          defaultMessage: '上传文件',
+        })}
         name="filePath"
         fieldProps={{
           beforeUpload: (info) => {
             return new Promise((resolve, reject) => {
-              message.success(`您将要上传的是 ${info.name}`);
+              message.success(`Upload ${info.name}`);
               return reject(false);
             });
           },
@@ -112,7 +125,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '请选择是否新建库',
+              message: <FormattedMessage id="message.whetherNewLib" />,
             },
           ]}
           options={ProteinType.createLibrary}
@@ -139,7 +152,10 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           width="sm"
           name="libraryName"
           label="libraryName"
-          placeholder="请输入库名"
+          placeholder={intl.formatMessage({
+            id: 'message.inputLibraryName',
+            defaultMessage: '请输入库名',
+          })}
           hidden={createVisible}
         />
 
@@ -147,7 +163,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           rules={[
             {
               required: false,
-              message: '请选择spModel',
+              message: <FormattedMessage id="message.selectSpModel" />,
             },
           ]}
           options={SpModelType}
@@ -160,7 +176,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           rules={[
             {
               required: false,
-              message: '请选择isoTope',
+              message: <FormattedMessage id="message.selectIsoTope" />,
             },
           ]}
           options={YesOrNo}
@@ -178,7 +194,10 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           width="sm"
           name="minPepLen"
           label="minPepLen"
-          placeholder="请输入minPepLen"
+          placeholder={intl.formatMessage({
+            id: 'message.inputMinPepLen',
+            defaultMessage: '请输入minPepLen',
+          })}
           hidden={createVisible}
         />
         <ProFormDigit
@@ -190,7 +209,10 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           width="sm"
           name="maxPepLen"
           label="maxPepLen"
-          placeholder="请输入maxPepLen"
+          placeholder={intl.formatMessage({
+            id: 'message.inputMaxPepLen',
+            defaultMessage: '请输入maxPepLen',
+          })}
           hidden={createVisible}
         />
       </ProForm.Group>

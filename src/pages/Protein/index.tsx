@@ -13,24 +13,40 @@ import {
   LinkOutlined,
 } from '@ant-design/icons';
 import Sequence from './components/Sequence';
+import { useIntl, FormattedMessage } from 'umi';
 
-/**
- * 添加库
- */
-const handleAdd = async (values: any) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addList(values);
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
 const TableList: React.FC = (props: any) => {
+  const intl = useIntl();
+
+  /**
+   * 添加库
+   */
+  const handleAdd = async (values: any) => {
+    const messageAdd = intl.formatMessage({
+      id: 'message.adding',
+      defaultMessage: '正在添加...',
+    });
+    const messageSuccess = intl.formatMessage({
+      id: 'message.addSuccess',
+      defaultMessage: '添加成功！',
+    });
+    const messageFail = intl.formatMessage({
+      id: 'message.addFail',
+      defaultMessage: '添加失败，请重试！',
+    });
+    const hide = message.loading(messageAdd);
+    try {
+      await addList(values);
+      hide();
+      message.success(messageSuccess);
+      return true;
+    } catch (error) {
+      hide();
+      message.error(messageFail);
+      return false;
+    }
+  };
+
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const [total, setTotal] = useState<any>();
@@ -41,7 +57,7 @@ const TableList: React.FC = (props: any) => {
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '标识符',
+      title: <FormattedMessage id="table.identifier" />,
       dataIndex: 'identifier',
       render: (dom) => {
         return (
@@ -52,23 +68,23 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: '审核与否',
+      title: <FormattedMessage id="table.reviewOrNot" />,
       dataIndex: 'reviewed',
       hideInSearch: true,
       render: (dom, entity) => {
         return entity.reviewed ? (
           <Tag icon={<CheckCircleOutlined />} color="success">
-            已审核
+            Yes
           </Tag>
         ) : (
           <Tag icon={<CloseCircleOutlined />} color="error">
-            未审核
+            No
           </Tag>
         );
       },
     },
     {
-      title: '蛋白质名称',
+      title: <FormattedMessage id="table.proteinName" />,
       dataIndex: 'names',
       hideInSearch: true,
       render: (dom) => {
@@ -77,7 +93,7 @@ const TableList: React.FC = (props: any) => {
     },
 
     {
-      title: '基因',
+      title: <FormattedMessage id="table.gene" />,
       dataIndex: 'gene',
       hideInSearch: true,
       render: (dom) => {
@@ -90,7 +106,7 @@ const TableList: React.FC = (props: any) => {
     },
 
     {
-      title: '有机生物',
+      title: <FormattedMessage id="table.organism" />,
       dataIndex: 'organism',
       hideInSearch: true,
       render: (dom) => {
@@ -103,7 +119,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'option',
-      title: '更多',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
@@ -127,7 +143,7 @@ const TableList: React.FC = (props: any) => {
             }}
           >
             <Tag icon={<FieldNumberOutlined />} color="blue">
-              序列号
+              <FormattedMessage id="table.sequence" />
             </Tag>
           </a>
         </>
@@ -156,9 +172,11 @@ const TableList: React.FC = (props: any) => {
         scroll={{ x: 'max-content' }}
         size="small"
         headerTitle={
-          props?.location?.state?.libraryName === undefined
-            ? '蛋白列表'
-            : props?.location?.state?.libraryName
+          props?.location?.state?.libraryName === undefined ? (
+            <FormattedMessage id="table.proteinList" />
+          ) : (
+            props?.location?.state?.libraryName
+          )
         }
         actionRef={actionRef}
         rowKey="id"
@@ -185,7 +203,7 @@ const TableList: React.FC = (props: any) => {
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
                 icon="mdi:playlist-plus"
               />
-              导入蛋白库
+              <FormattedMessage id="table.importProteinLib" />
             </Tag>
           </a>,
         ]}

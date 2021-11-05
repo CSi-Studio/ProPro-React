@@ -9,28 +9,38 @@ import { list, removeList } from './service';
 import DeleteForm from './components/DeleteForm';
 import { CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
 import DetailForm from './components/DetailForm';
-
-/**
- * 删除库
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: any[]) => {
-  const idList = selectedRows.map((item) => {
-    return item.id;
-  });
-  try {
-    await removeList({
-      idList,
-    });
-    message.success('删除成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
+import { useIntl, FormattedMessage } from 'umi';
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
+
+  /**
+   * 删除库
+   * @param selectedRows
+   */
+  const handleRemove = async (selectedRows: any[]) => {
+    const idList = selectedRows.map((item) => {
+      return item.id;
+    });
+    try {
+      await removeList({
+        idList,
+      });
+      const messageSuccess = intl.formatMessage({
+        id: 'message.deleteSuccess',
+        defaultMessage: '删除成功！',
+      });
+      message.success(messageSuccess);
+      return true;
+    } catch (error) {
+      const messageFail = intl.formatMessage({
+        id: 'message.deleteFail',
+        defaultMessage: '删除失败，请重试！',
+      });
+      message.error(messageFail);
+      return false;
+    }
+  };
   const [formDelete] = Form.useForm();
   // /** 全选 */
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
@@ -44,7 +54,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TaskTableItem>();
   const columns: ProColumns<TaskTableItem>[] = [
     {
-      title: '任务名称',
+      title: <FormattedMessage id="table.taskName" />,
       dataIndex: 'name',
       render: (text, record) => {
         return (
@@ -70,12 +80,12 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '任务模板',
+      title: <FormattedMessage id="table.taskTem" />,
       dataIndex: 'taskTemplate',
       hideInSearch: true,
     },
     {
-      title: '任务状态',
+      title: <FormattedMessage id="table.taskState" />,
       dataIndex: 'status',
       hideInSearch: true,
       render: (text, record) => {
@@ -94,7 +104,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '花费时间',
+      title: <FormattedMessage id="table.takeTime" />,
       hideInSearch: true,
       dataIndex: 'totalCost',
       align: 'right',
@@ -108,17 +118,17 @@ const TableList: React.FC = () => {
         if (record.totalCost) {
           return <Tag>{text}ms</Tag>;
         }
-        return <Tag>未开始</Tag>;
+        return <Tag>Not started</Tag>;
       },
     },
     {
-      title: '创建时间',
+      title: <FormattedMessage id="table.creatTime" />,
       hideInSearch: true,
       dataIndex: 'createDate',
       valueType: 'dateTime',
     },
     {
-      title: '操作',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       fixed: 'right',
       width: '100',
@@ -134,7 +144,7 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
-              详情
+              <FormattedMessage id="table.detail" />
             </Tag>
           </a>
         </>
@@ -160,7 +170,10 @@ const TableList: React.FC = () => {
     <>
       <ProTable<TaskTableItem, Pagination>
         scroll={{ x: 'max-content' }}
-        headerTitle="任务列表"
+        headerTitle={intl.formatMessage({
+          id: 'table.taskName',
+          defaultMessage: '任务列表',
+        })}
         search={{ labelWidth: 'auto' }}
         actionRef={actionRef}
         rowKey="id"
@@ -174,13 +187,17 @@ const TableList: React.FC = () => {
               if (selectedRows?.length > 0) {
                 handleDeleteModalVisible(true);
               } else {
-                message.warn('请选择要删除的库，支持多选');
+                const deleteMes = intl.formatMessage({
+                  id: 'message.deleteTask',
+                  defaultMessage: '请选择要删除的库，支持多选',
+                });
+                message.warn(deleteMes);
               }
             }}
           >
             <Tag color="error">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-              删除
+              <FormattedMessage id="table.delete" />
             </Tag>
           </a>,
         ]}
@@ -229,7 +246,7 @@ const TableList: React.FC = () => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === '我确认删除') {
+          if (value.name === 'ok fine') {
             const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
@@ -239,7 +256,11 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+             const inputFail = intl.formatMessage({
+               id: 'message.deleteInputFail',
+               defaultMessage: '输入错误，请重新输入！',
+             });
+             message.error(inputFail);
           }
         }}
         deleteModalVisible={deleteModalVisible}

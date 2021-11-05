@@ -29,4 +29,19 @@ export default {
   'message.getSpectra': '正在获取光谱图',
   'message.getEICFail': '获取EIC Matrix失败，请重试！',
   'message.noCorrespondProtein': '未找到相应蛋白，请检查输入是否正确！',
+  // 蛋白列表
+  'message.selectRevType': '请选择review类型！',
+  'message.pleaseUploadPro': '请上传蛋白文件！',
+  'message.uploadFileArea': '点击或者拖动文件到此区域',
+  'message.uploadFile': '上传文件',
+  'message.fileFormat': '支持的文件格式有：',
+  'message.whetherNewLib': '请选择是否新建库',
+  'message.inputLibraryName': '请输入库名',
+  'message.selectSpModel': '请选择spModel',
+  'message.selectIsoTope': '请选择isoTope',
+  'message.inputMinPepLen': '请输入minPepLen',
+  'message.inputMaxPepLen': '请输入maxPepLen',
+  // 任务列表
+  'message.deleteTask': '请选择要删除的库，支持多选',
+  'message.deleteTaskNum': '将要删除的任务的个数：',
 };

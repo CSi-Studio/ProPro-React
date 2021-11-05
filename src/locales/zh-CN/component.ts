@@ -39,4 +39,6 @@ export default {
   'component.peptideIdentifyNumber': '肽段鉴定数(Unique)',
   'component.missingRate': '缺失率',
   'component.showDefaultOv': '仅提供默认OverViews的展示',
+  //蛋白列表
+  'component.importProFile': '导入蛋白文件',
 };
