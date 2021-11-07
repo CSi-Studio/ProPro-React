@@ -39,4 +39,13 @@ export default {
   'component.peptideIdentifyNumber': 'Peptide Identify Number(Unique)',
   'component.missingRate': 'Missing Rate',
   'component.showDefaultOv': 'Show default overViews',
+  //蛋白列表
+  'component.importProFile': 'Import protein file',
+  // blockIndex
+  'component.expId': 'expId',
+  'component.level': 'Level',
+  'component.rtTime': 'RtTime',
+  'component.rtRange': 'RTRange',
+  'component.gaussSmooth': 'gaussSmooth',
+  'component.projectId': 'ProjectId',
 };

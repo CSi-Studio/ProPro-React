@@ -44,4 +44,6 @@ export default {
   // 任务列表
   'message.deleteTask': '请选择要删除的库，支持多选',
   'message.deleteTaskNum': '将要删除的任务的个数：',
+  // blockIndex
+  
 };

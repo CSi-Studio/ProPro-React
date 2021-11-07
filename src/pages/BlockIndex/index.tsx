@@ -6,7 +6,7 @@ import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
-import { Link } from 'umi';
+import { Link, FormattedMessage } from 'umi';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
@@ -23,25 +23,25 @@ const TableList: React.FC = (props: any) => {
       title: 'level',
       dataIndex: 'level',
       search: false,
-      showSorterTooltip:false,
+      showSorterTooltip: false,
       sorter: (a, b) => (a.level < b.level ? -1 : 1),
     },
     {
-      title: '文件开始位置',
+      title: <FormattedMessage id="table.startPtr" />,
       dataIndex: 'startPtr',
       search: false,
-      showSorterTooltip:false,
+      showSorterTooltip: false,
       sorter: (a, b) => (a.startPtr < b.startPtr ? -1 : 1),
     },
     {
-      title: '文件结束位置',
+      title: <FormattedMessage id="table.endPtr" />,
       dataIndex: 'endPtr',
       search: false,
     },
     {
-      title: 'mz范围',
+      title: <FormattedMessage id="table.mzRange" />,
       dataIndex: 'range',
-      showSorterTooltip:false,
+      showSorterTooltip: false,
       sorter: (a, b) => {
         if (a.range?.start < b.range?.start) {
           return -1;
@@ -65,7 +65,7 @@ const TableList: React.FC = (props: any) => {
     },
 
     {
-      title: '操作',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       copyable: true,
       width: 100,
@@ -85,7 +85,7 @@ const TableList: React.FC = (props: any) => {
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
                 icon="mdi:file-document"
               />
-              详情
+              <FormattedMessage id="table.detail" />
             </Tag>
           </a>
         </>
@@ -99,11 +99,11 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'id',
     },
     {
-      title: '实验Id',
+      title: <FormattedMessage id="table.expId" />,
       dataIndex: 'expId',
     },
     {
-      title: '等级',
+      title: <FormattedMessage id="table.level" />,
       dataIndex: 'level',
     },
     {
@@ -137,7 +137,9 @@ const TableList: React.FC = (props: any) => {
         headerTitle={
           props?.location?.state?.expName === undefined ? (
             <>
-              <Text type="secondary">索引列表</Text>
+              <Text type="secondary">
+                <FormattedMessage id="table.BlockIndexList" />
+              </Text>
             </>
           ) : (
             <>
@@ -146,7 +148,9 @@ const TableList: React.FC = (props: any) => {
                   pathname: '/project/list',
                 }}
               >
-                <Text type="secondary">项目列表</Text>
+                <Text type="secondary">
+                  <FormattedMessage id="table.projectList" />
+                </Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <Link
@@ -156,11 +160,16 @@ const TableList: React.FC = (props: any) => {
                   state: { projectName },
                 }}
               >
-                <Text type="secondary">实验列表</Text>
+                <Text type="secondary">
+                  <FormattedMessage id="table.expList" />
+                </Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
-                <Text>索引列表 所属实验：{props?.location?.state.expName}</Text>
+                <Text>
+                  <FormattedMessage id="table.BlockIndexList" />{' '}
+                  <FormattedMessage id="table.belongExp" />：{props?.location?.state.expName}
+                </Text>
               </a>
             </>
           )

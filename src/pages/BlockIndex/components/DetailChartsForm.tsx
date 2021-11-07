@@ -3,6 +3,7 @@ import { Switch } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import { useEffect, useMemo, useState } from 'react';
 import { spectrumGauss } from '../service';
+import { FormattedMessage } from 'umi';
 
 export type ChartsFormProps = {
   showCharts: boolean;
@@ -52,7 +53,7 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
       },
     },
     title: {
-      text: `RT时间: ${rts}`,
+      text: `${(<FormattedMessage id="component.rtTime" />)}: ${rts}`,
     },
     dataZoom: {
       type: 'inside',
@@ -76,7 +77,7 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
       },
     },
     title: {
-      text: `RT时间: ${rts}`,
+      text: `${(<FormattedMessage id="component.rtTime" />)}: ${rts}`,
     },
     legend: {
       data: ['Original', 'Gaussion', 'GaussionLine'],
@@ -142,7 +143,8 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
     >
       <ReactECharts option={setOption()} key={gaussFit ? 0 : 1} style={{ height: 400 }} />
       <Switch onChange={onChange} />
-      显示高斯平滑
+      &nbsp;&nbsp;
+      <FormattedMessage id="component.gaussSmooth" />
     </ModalForm>
   );
 };

@@ -21,100 +21,102 @@ import DeleteForm from './components/DeleteForm';
 import BatchUpdateForm from './components/BatchUpdateForm';
 import ReselectForm from './components/ReselectForm';
 import SelectDef from './components/SelectDef';
-
-/**
- * 更新库
- * @param values
- */
-const handleUpdate = async (values: any) => {
-  const hide = message.loading('正在更新');
-  try {
-    await updateList({ ...values });
-    hide();
-    message.success('编辑成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('编辑失败，请重试!');
-    return false;
-  }
-};
-/**
- * 批量修改
- * @param values
- */
-const handleBatchUpdate = async (values: any) => {
-  const hide = message.loading('正在更新');
-  try {
-    await batchUpdate({ ...values });
-    hide();
-    message.success('批量修改成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('批量修改失败，请重试!');
-    return false;
-  }
-};
-
-/**
- * 批量统计
- * @param values
- */
-const handleStatistic = async (values: any) => {
-  const hide = message.loading('正在统计');
-  try {
-    await statistic({ ...values });
-    hide();
-    message.success('批量统计成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('批量统计失败!');
-    return false;
-  }
-};
-
-/**
- * 批量reselect
- * @param values
- */
-const handleReselect = async (values: any) => {
-  const hide = message.loading('Reselecting');
-  try {
-    await reselect({ ...values });
-    hide();
-    message.success('ReSelect成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('ReSelect失败!');
-    return false;
-  }
-};
-
-/**
- * 删除库
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: any[]) => {
-  const overviewIds = selectedRows.map((item) => {
-    return item.id;
-  });
-  try {
-    await removeList({
-      overviewIds,
-    });
-    message.success('删除成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
+import { useIntl, FormattedMessage } from 'umi';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
+  const intl = useIntl();
+
+  /**
+   * 更新库
+   * @param values
+   */
+  const handleUpdate = async (values: any) => {
+    const hide = message.loading('正在更新');
+    try {
+      await updateList({ ...values });
+      hide();
+      message.success('编辑成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('编辑失败，请重试!');
+      return false;
+    }
+  };
+  /**
+   * 批量修改
+   * @param values
+   */
+  const handleBatchUpdate = async (values: any) => {
+    const hide = message.loading('正在更新');
+    try {
+      await batchUpdate({ ...values });
+      hide();
+      message.success('批量修改成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('批量修改失败，请重试!');
+      return false;
+    }
+  };
+
+  /**
+   * 批量统计
+   * @param values
+   */
+  const handleStatistic = async (values: any) => {
+    const hide = message.loading('正在统计');
+    try {
+      await statistic({ ...values });
+      hide();
+      message.success('批量统计成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('批量统计失败!');
+      return false;
+    }
+  };
+
+  /**
+   * 批量reselect
+   * @param values
+   */
+  const handleReselect = async (values: any) => {
+    const hide = message.loading('Reselecting');
+    try {
+      await reselect({ ...values });
+      hide();
+      message.success('ReSelect成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('ReSelect失败!');
+      return false;
+    }
+  };
+
+  /**
+   * 删除库
+   * @param selectedRows
+   */
+  const handleRemove = async (selectedRows: any[]) => {
+    const overviewIds = selectedRows.map((item) => {
+      return item.id;
+    });
+    try {
+      await removeList({
+        overviewIds,
+      });
+      message.success('删除成功，希望你不要后悔 🥳');
+      return true;
+    } catch (error) {
+      message.error('删除失败，请重试');
+      return false;
+    }
+  };
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
   const [formBatch] = Form.useForm();
@@ -207,6 +209,7 @@ const TableList: React.FC = (props: any) => {
       key: 'defaultOne',
       title: '默认值',
       dataIndex: 'defaultOne',
+      width: '70px',
       hideInSearch: true,
       showSorterTooltip: false,
       sorter: (a, b) => {
@@ -219,6 +222,7 @@ const TableList: React.FC = (props: any) => {
     {
       key: 'reselect',
       title: '重选定',
+      width: '70px',
       dataIndex: 'reselect',
       hideInSearch: true,
       showSorterTooltip: false,
@@ -232,6 +236,7 @@ const TableList: React.FC = (props: any) => {
     {
       key: 'minTotalScore',
       title: '最低总分',
+      width: '70px',
       dataIndex: 'minTotalScore',
       hideInSearch: true,
       render: (text, entity) => {
@@ -312,6 +317,7 @@ const TableList: React.FC = (props: any) => {
       key: 'note',
       title: '备注',
       dataIndex: 'note',
+      width: '160px',
       hideInSearch: true,
       showSorterTooltip: false,
       sorter: (a, b) => {
@@ -323,6 +329,7 @@ const TableList: React.FC = (props: any) => {
       title: '创建时间',
       dataIndex: 'createDate',
       valueType: 'dateTime',
+      width: '160px',
       hideInSearch: true,
       showSorterTooltip: false,
       sorter: (a, b) => {
@@ -418,7 +425,7 @@ const TableList: React.FC = (props: any) => {
   return (
     <>
       <ProTable<TableListItem, TableListPagination>
-        // scroll={{ x: 'max-content' }}
+        scroll={{ x: 'max-content' }}
         headerTitle={
           projectName === undefined ? (
             <>

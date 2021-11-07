@@ -63,6 +63,15 @@ export default {
   // 任务列表
   'table.taskName': 'TaskList',
   'table.taskTem': 'TaskTemplate',
-  'table.taskState': 'TaskStatu',
+  'table.taskState': 'TaskStatus',
   'table.takeTime': 'SpendTime',
+  // blockIndex
+  'table.startPtr': 'StartPtr',
+  'table.endPtr': 'EndPtr',
+  'table.mzRange': 'mzRange',
+  'table.BlockIndexList': 'BlockIdxList',
+  'table.belongExp': 'Experiment',
+
+  // experiment
+  'table.expList': 'ExpList',
 };

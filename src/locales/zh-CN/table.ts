@@ -65,4 +65,14 @@ export default {
   'table.taskTem': '任务模板',
   'table.taskState': '任务状态',
   'table.takeTime': '花费时间',
+  // blockIndex
+  'table.startPtr': '文件开始位置',
+  'table.endPtr': '文件结束位置',
+  'table.mzRange': 'mz范围',
+  'table.BlockIndexList': '索引列表',
+  'table.belongExp': '所属实验',
+
+
+  // experiment
+  'table.expList': '实验列表',
 };

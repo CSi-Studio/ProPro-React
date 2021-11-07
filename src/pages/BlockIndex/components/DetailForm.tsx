@@ -5,6 +5,7 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { blockIndexDetail } from '../service';
 import ChartsForm from './DetailChartsForm';
+import { FormattedMessage } from 'umi';
 
 export type UpdateFormProps = {
   showDetail: any;
@@ -50,25 +51,25 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   }, [reqData]);
   const columns = [
     {
-      title: '项目ID',
+      title: <FormattedMessage id="component.projectId" />,
       dataIndex: 'id',
       render: (dom: any) => {
         return <Tag>{dom}</Tag>;
       },
     },
     {
-      title: '实验ID',
+      title: <FormattedMessage id="component.expId" />,
       dataIndex: 'expId',
       render: (dom: any) => {
         return <Tag>{dom}</Tag>;
       },
     },
     {
-      title: '等级',
+      title: <FormattedMessage id="component.level" />,
       dataIndex: 'level',
     },
     {
-      title: 'mz范围',
+      title: <FormattedMessage id="table.mzRange" />,
       dataIndex: 'range',
       render: (dom: any, entity: any) => {
         if (entity.range) {
@@ -82,11 +83,11 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       },
     },
     {
-      title: '开始位置',
+      title: <FormattedMessage id="table.startPtr" />,
       dataIndex: 'startPtr',
     },
     {
-      title: '结束位置',
+      title: <FormattedMessage id="table.endPtr" />,
       dataIndex: 'endPtr',
     },
   ];
@@ -96,19 +97,23 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       <ProDescriptions<TableListDetail>
         column={2}
         title={props.expNameRow}
-        // request={reqData}
         dataSource={reqData}
         params={{
           id: props.currentRow,
         }}
         columns={columns as ProDescriptionsItemProps<TableListDetail>[]}
       />
-      <Text>RT范围：</Text>
+      <Text>
+        <FormattedMessage id="component.rtRange" />：
+      </Text>
       {rtsClass.length > 0 && (
         <Tabs type="card" tabBarGutter={1} tabPosition="left" defaultActiveKey="0">
           {rtsClass.map((item: any, index: any) => {
             return (
-              <TabPane tab={`${parseInt(item[0], 10)}-${parseInt(item.slice(-1), 10)}`} key={index}>
+              <TabPane
+                tab={`${parseInt(item[0], 10)}-${parseInt(item.slice(-1), 10)}`}
+                key={index.toString()}
+              >
                 {item.map((_item: any) => {
                   return (
                     <Tag

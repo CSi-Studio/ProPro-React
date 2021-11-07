@@ -41,4 +41,11 @@ export default {
   'component.showDefaultOv': '仅提供默认OverViews的展示',
   //蛋白列表
   'component.importProFile': '导入蛋白文件',
+  // blockIndex
+  'component.expId': '实验Id',
+  'component.level': '等级',
+  'component.rtTime': 'RT时间',
+  'component.rtRange': 'RT范围',
+  'component.gaussSmooth': '显示高斯平滑',
+  'component.projectId': '项目ID',
 };
