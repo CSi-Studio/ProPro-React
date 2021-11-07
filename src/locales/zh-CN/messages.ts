@@ -44,6 +44,10 @@ export default {
   // 任务列表
   'message.deleteTask': '请选择要删除的库，支持多选',
   'message.deleteTaskNum': '将要删除的任务的个数：',
-  // blockIndex
-  
+  // 实验列表
+  'message.creating': '正在生成...',
+  'message.generateSuccess': '生成成功！',
+  'message.generateFail': '生成失败，请重试！',
+  'message.analysisExp': '请选择要分析的实验',
+  'message.least1Exp': '至少选择一个实验！',
 };

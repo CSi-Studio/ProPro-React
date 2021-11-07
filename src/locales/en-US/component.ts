@@ -48,4 +48,12 @@ export default {
   'component.rtRange': 'RTRange',
   'component.gaussSmooth': 'gaussSmooth',
   'component.projectId': 'ProjectId',
+  //实验列表
+  'component.setAlias': 'Set Alias',
+  'component.aliasPrefix': 'AliasPrefix',
+  'component.updateExpInf': 'Update Exp Information',
+  'component.selectProInt': 'Protein selection interface',
+  'component.selectProtein': 'Please select a protein name',
+  'component.proteinName': 'ProteinName',
+  'component.inputMzRange': 'Please enter mz range',
 };

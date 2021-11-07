@@ -48,4 +48,12 @@ export default {
   'component.rtRange': 'RT范围',
   'component.gaussSmooth': '显示高斯平滑',
   'component.projectId': '项目ID',
+  //实验列表
+  'component.setAlias': '设置别名',
+  'component.aliasPrefix': '别名前缀',
+  'component.updateExpInf': '更新实验信息',
+  'component.selectProInt': '蛋白质选择界面',
+  'component.selectProtein': '请选择蛋白质名称',
+  'component.proteinName': '蛋白质名称',
+  'component.inputMzRange': '请输入mz范围',
 };

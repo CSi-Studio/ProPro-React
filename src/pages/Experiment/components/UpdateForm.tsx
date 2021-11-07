@@ -1,5 +1,6 @@
 import React from 'react';
 import ProForm, { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
+import { useIntl } from 'umi';
 
 export type updateFormValueType = {
   alias?: string;
@@ -18,10 +19,15 @@ export type UpdateFormProps = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="更新实验信息"
+      title={intl.formatMessage({
+        id: 'component.updateExpInf',
+        defaultMessage: '更新实验信息',
+      })}
       width={530}
       visible={props.updateModalVisible}
       modalProps={{
@@ -37,15 +43,27 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           initialValue={props?.values?.alias}
           width="sm"
           name="alias"
-          label="别名"
-          placeholder="别名"
+          label={intl.formatMessage({
+            id: 'table.alias',
+            defaultMessage: '别名',
+          })}
+          placeholder={intl.formatMessage({
+            id: 'table.alias',
+            defaultMessage: '别名',
+          })}
         />
         <ProFormText
           initialValue={props?.values?.group}
           width="sm"
           name="group"
-          label="分组"
-          placeholder="分组"
+          label={intl.formatMessage({
+            id: 'table.group',
+            defaultMessage: '分组',
+          })}
+          placeholder={intl.formatMessage({
+            id: 'table.group',
+            defaultMessage: '分组',
+          })}
         />
       </ProForm.Group>
       <ProForm.Group>
@@ -53,17 +71,29 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           initialValue={props?.values?.fragMode}
           width="sm"
           name="fragMode"
-          label="碎片模式"
-          placeholder="碎片模式"
+          label={intl.formatMessage({
+            id: 'table.fragmentMode',
+            defaultMessage: '碎片模式',
+          })}
+          placeholder={intl.formatMessage({
+            id: 'table.fragmentMode',
+            defaultMessage: '碎片模式',
+          })}
         />
       </ProForm.Group>
       <ProFormSelect
         initialValue={props?.values?.tags !== null ? props?.values?.tags : []}
         width="md"
         name="tags"
-        label="标签"
+        label={intl.formatMessage({
+          id: 'table.tags',
+          defaultMessage: '标签',
+        })}
         mode="tags"
-        placeholder="Tags"
+        placeholder={intl.formatMessage({
+          id: 'table.tags',
+          defaultMessage: '标签',
+        })}
       />
     </ModalForm>
   );

@@ -21,27 +21,12 @@ import ProteinFixedChartsForm from './components/ProteinFixedChartsForm';
 import UpdateForm from './components/UpdateForm';
 import AliasForm from './components/AliasForm';
 import BatchEditForm from './components/BatchEdit';
-
-/**
- * 更新库
- * @param values
- */
-const handleUpdate = async (values: any) => {
-  const hide = message.loading('正在更新');
-  try {
-    await updateList({ ...values });
-    hide();
-    message.success('编辑成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('编辑失败，请重试!');
-    return false;
-  }
-};
+import { useIntl, FormattedMessage } from 'umi';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
+  const intl = useIntl();
+
   const actionRef = useRef<ActionType>();
   const [formAnalyze] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -72,28 +57,69 @@ const TableList: React.FC = (props: any) => {
   const projectName = props?.location?.state?.projectName;
 
   /**
+   * 更新库
+   * @param values
+   */
+  const handleUpdate = async (values: any) => {
+    const msgUpdate = intl.formatMessage({
+      id: 'message.updating',
+      defaultMessage: '正在更新...',
+    });
+    const hide = message.loading(msgUpdate);
+    try {
+      await updateList({ ...values });
+      hide();
+      const editSuccess = intl.formatMessage({
+        id: 'message.editSuccess',
+        defaultMessage: '编辑成功！',
+      });
+      message.success(editSuccess);
+      return true;
+    } catch (error) {
+      hide();
+      const editFail = intl.formatMessage({
+        id: 'message.editFail',
+        defaultMessage: '编辑失败，请重试！',
+      });
+      message.error(editFail);
+      return false;
+    }
+  };
+  /**
    * 生成别名
    * @param values
    */
   const handleAlias = async (value: any) => {
-    const hide = message.loading('正在生成');
+    const creating = intl.formatMessage({
+      id: 'message.creating',
+      defaultMessage: '正在生成...',
+    });
+    const hide = message.loading(creating);
     try {
       await generateAlias({ expIds: value.expIds, prefix: value.prefix, projectId });
       hide();
-      message.success('生成成功');
+      const success = intl.formatMessage({
+        id: 'message.generateSuccess',
+        defaultMessage: '生成成功！',
+      });
+      message.success(success);
       if (actionRef.current) {
         actionRef.current.reload();
       }
       return true;
     } catch (error) {
       hide();
-      message.error('生成失败，请重试!');
+      const fail = intl.formatMessage({
+        id: 'message.generateFail',
+        defaultMessage: '生成失败，请重试！',
+      });
+      message.error(fail);
       return false;
     }
   };
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '分组',
+      title: <FormattedMessage id="table.group" />,
       dataIndex: 'group',
       showSorterTooltip: false,
       sorter: (a, b) => {
@@ -107,7 +133,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: '实验名',
+      title: <FormattedMessage id="table.expName" />,
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
@@ -125,7 +151,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: '实验别名',
+      title: <FormattedMessage id="table.expAlias" />,
       dataIndex: 'alias',
       sorter: (a: any, b: any) => {
         return a.alias > b.alias ? -1 : 1;
@@ -142,7 +168,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: '标签',
+      title: <FormattedMessage id="table.tags" />,
       dataIndex: 'tags',
       render: (dom, entity) => {
         if (entity?.tags) {
@@ -170,7 +196,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: '类型',
+      title: <FormattedMessage id="table.type" />,
       dataIndex: 'type',
       hideInSearch: true,
       render: (dom) => {
@@ -196,7 +222,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'SWATH窗口',
+      title: <FormattedMessage id="table.windowRanges" />,
       dataIndex: 'windowRanges',
       hideInSearch: true,
       render: (dom, entity) => {
@@ -211,7 +237,9 @@ const TableList: React.FC = (props: any) => {
                   state: { projectId, projectName, expName: entity.name },
                 }}
               >
-                <Tag color="green">查看</Tag>
+                <Tag color="green">
+                  <FormattedMessage id="table.check" />
+                </Tag>
               </Link>
             </>
           );
@@ -220,18 +248,22 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: 'IRT校验结果',
+      title: <FormattedMessage id="table.irtVerRes" />,
       dataIndex: 'irt',
       hideInSearch: true,
       render: (dom, entity) => {
         if (entity.irt) {
           return <Tag color="green">{entity.irt.si.formula}</Tag>;
         }
-        return <Tag color="red">未分析</Tag>;
+        return (
+          <Tag color="red">
+            <FormattedMessage id="table.unAnalyzed" />
+          </Tag>
+        );
       },
     },
     {
-      title: '碎片模式',
+      title: <FormattedMessage id="table.fragmentMode" />,
       dataIndex: 'fragMode',
       hideInSearch: true,
       // render: (dom, entity) => {
@@ -242,10 +274,10 @@ const TableList: React.FC = (props: any) => {
       // },
     },
     {
-      title: '操作',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       fixed: 'right',
-      width: '200px',
+      width: '240px',
       hideInSearch: true,
       render: (dom, entity) => (
         <>
@@ -259,7 +291,7 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
-              编辑
+              <FormattedMessage id="table.edit" />
             </Tag>
           </a>
           <a
@@ -271,7 +303,7 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
-              详情
+              <FormattedMessage id="table.detail" />
             </Tag>
           </a>
           <Link
@@ -287,7 +319,7 @@ const TableList: React.FC = (props: any) => {
                 style={{ verticalAlign: '-4px', fontSize: '16px' }}
                 icon="mdi:format-list-bulleted-square"
               />
-              概览
+              <FormattedMessage id="table.overview" />
             </Tag>
           </Link>
         </>
@@ -316,7 +348,9 @@ const TableList: React.FC = (props: any) => {
         headerTitle={
           props?.location?.state?.projectName === undefined ? (
             <>
-              <Text>实验列表</Text>
+              <Text>
+                <FormattedMessage id="table.expList" />
+              </Text>
             </>
           ) : (
             <>
@@ -325,11 +359,16 @@ const TableList: React.FC = (props: any) => {
                   pathname: '/project/list',
                 }}
               >
-                <Text type="secondary">项目列表</Text>
+                <Text type="secondary">
+                  <FormattedMessage id="table.projectList" />
+                </Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
-                <Text>实验列表 所属项目：{projectName}</Text>
+                <Text>
+                  <FormattedMessage id="table.expList" /> <FormattedMessage id="table.belongPro" />
+                  ：{projectName}
+                </Text>
               </a>
               &nbsp;&nbsp;
               <Link
@@ -340,7 +379,7 @@ const TableList: React.FC = (props: any) => {
                 }}
               >
                 <Button type="primary" size="small">
-                  切换至概览列表
+                  <FormattedMessage id="table.switchOv" />
                 </Button>
               </Link>
             </>
@@ -369,37 +408,36 @@ const TableList: React.FC = (props: any) => {
           return Promise.resolve(msg);
         }}
         toolBarRender={() => [
-          <Tooltip title={'蛋白质干扰因素查看'} key="detail">
-            <a
-              onClick={async () => {
-                setProteinSelectVisible(true);
-                const msg = await getProteins({ projectId });
-                setProteinList(msg.data);
-              }}
-              key="edit"
-            >
-              <Tag color="blue">
-                <Icon
-                  style={{ verticalAlign: '-4px', fontSize: '16px' }}
-                  icon="mdi:file-document"
-                />
-                蛋白质干扰因素查看
-              </Tag>
-            </a>
-          </Tooltip>,
+          <a
+            onClick={async () => {
+              setProteinSelectVisible(true);
+              const msg = await getProteins({ projectId });
+              setProteinList(msg.data);
+            }}
+            key="edit"
+          >
+            <Tag color="blue">
+              <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
+              <FormattedMessage id="table.interfereFactor" />
+            </Tag>
+          </a>,
           <a
             onClick={() => {
               if (selectedRows?.length > 0) {
                 handleAnalyzeModalVisible(true);
               } else {
-                message.warn('请选择要分析的实验');
+                const msg = intl.formatMessage({
+                  id: 'message.analysisExp',
+                  defaultMessage: '请选择要分析的实验',
+                });
+                message.warn(msg);
               }
             }}
             key="scan"
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:calculator" />
-              开始分析
+              <FormattedMessage id="table.startAna" />
             </Tag>
           </a>,
           <>
@@ -414,19 +452,23 @@ const TableList: React.FC = (props: any) => {
               >
                 <Tag color="blue">
                   <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
-                  批量编辑
+                  <FormattedMessage id="table.batchEdit" />
                 </Tag>
               </a>
             ) : (
               <a
                 onClick={() => {
-                  message.warn('至少选择一个实验 🔬');
+                  const msg = intl.formatMessage({
+                    id: 'message.least1Exp',
+                    defaultMessage: '至少选择一个实验！',
+                  });
+                  message.warn(msg);
                 }}
                 key="alias"
               >
                 <Tag color="blue">
                   <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
-                  批量编辑
+                  <FormattedMessage id="table.batchEdit" />
                 </Tag>
               </a>
             )}
@@ -446,13 +488,17 @@ const TableList: React.FC = (props: any) => {
                     style={{ verticalAlign: '-4px', fontSize: '16px' }}
                     icon="mdi:drama-masks"
                   />
-                  生成别名
+                  <FormattedMessage id="table.generateAlias" />
                 </Tag>
               </a>
             ) : (
               <a
                 onClick={() => {
-                  message.warn('至少选择一个实验 🔬');
+                  const msg = intl.formatMessage({
+                    id: 'message.least1Exp',
+                    defaultMessage: '至少选择一个实验！',
+                  });
+                  message.warn(msg);
                 }}
                 key="alias"
               >
@@ -461,7 +507,7 @@ const TableList: React.FC = (props: any) => {
                     style={{ verticalAlign: '-4px', fontSize: '16px' }}
                     icon="mdi:drama-masks"
                   />
-                  生成别名
+                  <FormattedMessage id="table.generateAlias" />
                 </Tag>
               </a>
             )}
@@ -480,19 +526,23 @@ const TableList: React.FC = (props: any) => {
               >
                 <Tag color="blue">
                   <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:chart-line" />
-                  查看IRT
+                  <FormattedMessage id="table.checkIrt" />
                 </Tag>
               </Link>
             ) : (
               <a
                 onClick={() => {
-                  message.warn('至少选择一个实验 🔬');
+                  const msg = intl.formatMessage({
+                    id: 'message.least1Exp',
+                    defaultMessage: '至少选择一个实验！',
+                  });
+                  message.warn(msg);
                 }}
                 key="IRT"
               >
                 <Tag color="blue">
                   <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:chart-line" />
-                  查看IRT
+                  <FormattedMessage id="table.checkIrt" />
                 </Tag>
               </a>
             )}

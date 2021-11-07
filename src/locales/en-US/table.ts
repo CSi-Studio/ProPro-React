@@ -71,7 +71,22 @@ export default {
   'table.mzRange': 'mzRange',
   'table.BlockIndexList': 'BlockIdxList',
   'table.belongExp': 'Experiment',
-
-  // experiment
+  // 实验列表
   'table.expList': 'ExpList',
+  'table.expName': 'ExpName',
+  'table.expAlias': 'ExpAlias',
+  'table.windowRanges': 'SWATHWindow',
+  'table.irtVerRes': 'IRTVerRes',
+  'table.unAnalyzed': 'unAnalyzed',
+  'table.fragmentMode': 'FragmentMode',
+  'table.overview': 'Overview',
+  'table.belongPro': 'Project',
+  'table.switchOv': 'OverviewList',
+  'table.interfereFactor': 'InterfereFactor',
+  'table.startAna': 'StartAna',
+  'table.batchEdit': 'BatchEdit',
+  'table.generateAlias': 'NewAlias',
+  'table.checkIrt': 'ViewIRT',
+  'table.performIrtOnly': 'PerformIRTonly',
+  'table.remark': 'Remark',
 };

@@ -45,4 +45,10 @@ export default {
   // 任务列表
   'message.deleteTask': 'Please select the library to delete. Multiple selection is supported.',
   'message.deleteTaskNum': 'Number of tasks to be deleted: ',
+  // 实验列表
+  'message.creating': 'Creating..',
+  'message.generateSuccess': 'Generated successfully!',
+  'message.generateFail': 'Generate failed, please try again!',
+  'message.analysisExp': 'Please select the experiment to analyze',
+  'message.least1Exp': 'Please choose at least one experiment!',
 };

@@ -71,8 +71,22 @@ export default {
   'table.mzRange': 'mz范围',
   'table.BlockIndexList': '索引列表',
   'table.belongExp': '所属实验',
-
-
-  // experiment
+  // 实验列表
   'table.expList': '实验列表',
+  'table.expName': '实验名',
+  'table.expAlias': '实验别名',
+  'table.windowRanges': 'SWATH窗口',
+  'table.irtVerRes': 'IRT校验结果',
+  'table.unAnalyzed': '未分析',
+  'table.fragmentMode': '碎片模式',
+  'table.overview': '概览',
+  'table.belongPro': '所属项目',
+  'table.switchOv': '概览列表',
+  'table.interfereFactor': '蛋白质干扰因素查看',
+  'table.startAna': '开始分析',
+  'table.batchEdit': '批量编辑',
+  'table.generateAlias': '生成别名',
+  'table.checkIrt': '查看IRT',
+  'table.performIrtOnly': '仅执行Irt',
+  'table.remark': '备注',
 };

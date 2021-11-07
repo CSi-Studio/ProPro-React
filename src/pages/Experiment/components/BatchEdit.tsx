@@ -1,5 +1,6 @@
 import React from 'react';
 import ProForm, { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
+import { useIntl } from 'umi';
 
 export type BatchEditValueType = {
   ids: string[];
@@ -17,10 +18,15 @@ export type BatchEditProps = {
 };
 
 const BatchEditForm: React.FC<BatchEditProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="更新实验信息"
+      title={intl.formatMessage({
+        id: 'table.updateExpInf',
+        defaultMessage: '更新实验信息',
+      })}
       width={530}
       visible={props.batchEditVisible}
       modalProps={{
@@ -36,21 +42,33 @@ const BatchEditForm: React.FC<BatchEditProps> = (props) => {
           initialValue={props?.values?.fragMode}
           width="sm"
           name="fragMode"
-          label="碎片模式"
+          label={intl.formatMessage({
+            id: 'table.fragmentMode',
+            defaultMessage: '碎片模式',
+          })}
         />
         <ProFormText
           initialValue={props?.values?.group}
           width="sm"
           name="group"
-          label="分组"
-          placeholder="分组"
+          label={intl.formatMessage({
+            id: 'table.group',
+            defaultMessage: '分组',
+          })}
+          placeholder={intl.formatMessage({
+            id: 'table.group',
+            defaultMessage: '分组',
+          })}
         />
       </ProForm.Group>
       <ProFormSelect
         initialValue={props?.values?.tags !== null ? props?.values?.tags : []}
         width="md"
         name="tags"
-        label="标签"
+        label={intl.formatMessage({
+          id: 'table.tags',
+          defaultMessage: '标签',
+        })}
         mode="tags"
         placeholder="Tags"
       />
