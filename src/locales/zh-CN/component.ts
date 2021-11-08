@@ -56,4 +56,10 @@ export default {
   'component.selectProtein': '请选择蛋白质名称',
   'component.proteinName': '蛋白质名称',
   'component.inputMzRange': '请输入mz范围',
+  // overview界面
+  'component.editOvNum': '修改OverView的个数：',
+  'component.note': '标注',
+  'component.reSelectNum': 'ReSelect概览的个数：',
+  'component.switchDefNum': '切换默认的个数：',
+  'component.editOverview': '编辑概览',
 };

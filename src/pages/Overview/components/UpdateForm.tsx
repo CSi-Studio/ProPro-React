@@ -6,8 +6,8 @@ export type updateFormValueType = {
   name?: string;
   id: string;
   tags?: any;
-  note?: string;
-  defaultOne?:boolean;
+  note?: string; 
+  defaultOne?: boolean;
 };
 
 export type UpdateFormProps = {

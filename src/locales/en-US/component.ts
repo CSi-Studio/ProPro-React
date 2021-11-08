@@ -16,7 +16,7 @@ export default {
   'component.directorEmpty': 'The person in charge cannot be empty',
   'component.directorNameLong': 'The name of the person in charge is too long.',
   'component.projectDescription': 'Description:',
-  'component.confirmDeletion': 'Are you sure you want to delete it?',
+  'component.confirmDeletion': 'Are you sure you want to delete?',
   'component.inputLibraryName': 'Please enter the name of the library',
   'component.used2delete': 'to delete.',
   'component.inputDeleProName': 'Please enter the name of the project to delete',
@@ -56,4 +56,9 @@ export default {
   'component.selectProtein': 'Please select a protein name',
   'component.proteinName': 'ProteinName',
   'component.inputMzRange': 'Please enter mz range',
+  // overview界面
+  'component.editOvNum': 'Number of modified OverView:',
+  'component.note': 'Note',
+  'component.reSelectNum': 'ReSelect the number of overview:',
+  'component.switchDefNum': 'Switch the number of overview:',
 };

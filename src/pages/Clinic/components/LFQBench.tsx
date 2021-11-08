@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Col, Descriptions, Row, Tag, Typography } from 'antd';
-import ecStat from 'echarts-stat';
-import { FormattedMessage } from 'umi';
+import { FormattedMessage, useIntl } from 'umi';
 
 const { Text } = Typography;
 

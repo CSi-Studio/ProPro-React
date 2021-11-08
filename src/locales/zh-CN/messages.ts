@@ -50,4 +50,15 @@ export default {
   'message.generateFail': '生成失败，请重试！',
   'message.analysisExp': '请选择要分析的实验',
   'message.least1Exp': '至少选择一个实验！',
+  // overview界面
+  'message.batchEditSuc': '批量修改成功！',
+  'message.batchEditFail': '批量修改失败，请重试！',
+  'message.statistic': '正在统计...',
+  'message.batchStatSuc': '批量统计成功！',
+  'message.batchStatFail': '批量统计失败，请重试！',
+  'message.reSelecting': 'reSelecting...',
+  'message.reSelectSuc': 'ReSelect成功！',
+  'message.reSelectFail': 'ReSelect失败！',
+  'message.selectOv': '请选择要修改的概览，支持多选',
+  'message.selectDifExp': '请至少选择一个实验，多选请选择不同的实验名',
 };

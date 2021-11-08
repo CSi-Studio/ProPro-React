@@ -32,15 +32,30 @@ const TableList: React.FC = (props: any) => {
    * @param values
    */
   const handleUpdate = async (values: any) => {
-    const hide = message.loading('正在更新');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.updating',
+        defaultMessage: '正在更新...',
+      })}`,
+    );
     try {
       await updateList({ ...values });
       hide();
-      message.success('编辑成功');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.editSuccess',
+          defaultMessage: '编辑成功！',
+        })}`,
+      );
       return true;
     } catch (error) {
       hide();
-      message.error('编辑失败，请重试!');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.editFail',
+          defaultMessage: '编辑失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -49,15 +64,30 @@ const TableList: React.FC = (props: any) => {
    * @param values
    */
   const handleBatchUpdate = async (values: any) => {
-    const hide = message.loading('正在更新');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.updating',
+        defaultMessage: '正在更新...',
+      })}`,
+    );
     try {
       await batchUpdate({ ...values });
       hide();
-      message.success('批量修改成功');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.batchEditSuc',
+          defaultMessage: '批量修改成功！',
+        })}`,
+      );
       return true;
     } catch (error) {
       hide();
-      message.error('批量修改失败，请重试!');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.batchEditFail',
+          defaultMessage: '批量修改失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -67,15 +97,30 @@ const TableList: React.FC = (props: any) => {
    * @param values
    */
   const handleStatistic = async (values: any) => {
-    const hide = message.loading('正在统计');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.statistic',
+        defaultMessage: '正在统计...',
+      })}`,
+    );
     try {
       await statistic({ ...values });
       hide();
-      message.success('批量统计成功');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.batchStatSuc',
+          defaultMessage: '批量统计成功！',
+        })}`,
+      );
       return true;
     } catch (error) {
       hide();
-      message.error('批量统计失败!');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.batchStatFail',
+          defaultMessage: '批量统计失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -85,15 +130,30 @@ const TableList: React.FC = (props: any) => {
    * @param values
    */
   const handleReselect = async (values: any) => {
-    const hide = message.loading('Reselecting');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.reSelecting',
+        defaultMessage: 'reSelecting...',
+      })}`,
+    );
     try {
       await reselect({ ...values });
       hide();
-      message.success('ReSelect成功');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.reSelecting',
+          defaultMessage: 'ReSelect成功！',
+        })}`,
+      );
       return true;
     } catch (error) {
       hide();
-      message.error('ReSelect失败!');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.reSelecting',
+          defaultMessage: 'ReSelect失败！',
+        })}`,
+      );
       return false;
     }
   };
@@ -106,14 +166,33 @@ const TableList: React.FC = (props: any) => {
     const overviewIds = selectedRows.map((item) => {
       return item.id;
     });
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.deleting',
+        defaultMessage: '正在删除...',
+      })}`,
+    );
+
     try {
       await removeList({
         overviewIds,
       });
-      message.success('删除成功，希望你不要后悔 🥳');
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteSuccess',
+          defaultMessage: '删除成功！',
+        })}`,
+      );
       return true;
     } catch (error) {
-      message.error('删除失败，请重试');
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -167,7 +246,7 @@ const TableList: React.FC = (props: any) => {
   const columns: ProColumns<TableListItem>[] = [
     {
       key: 'expName',
-      title: '实验名',
+      title: <FormattedMessage id="table.expName" />,
       dataIndex: 'expName',
       hideInSearch: true,
       showSorterTooltip: false,
@@ -191,7 +270,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'expId',
-      title: '实验ID',
+      title: <FormattedMessage id="table.expId" />,
       dataIndex: 'expId',
       hideInTable: true,
       renderFormItem: (_, { defaultRender }) => {
@@ -207,7 +286,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'defaultOne',
-      title: '默认值',
+      title: <FormattedMessage id="table.justDefault" />,
       dataIndex: 'defaultOne',
       width: '70px',
       hideInSearch: true,
@@ -221,7 +300,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'reselect',
-      title: '重选定',
+      title: <FormattedMessage id="table.reSelect" />,
       width: '70px',
       dataIndex: 'reselect',
       hideInSearch: true,
@@ -235,7 +314,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'minTotalScore',
-      title: '最低总分',
+      title: <FormattedMessage id="component.minTotalScore" />,
       width: '70px',
       dataIndex: 'minTotalScore',
       hideInSearch: true,
@@ -245,7 +324,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'peakCount',
-      title: '峰统计',
+      title: <FormattedMessage id="table.peakCount" />,
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -254,7 +333,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'peptideCount',
-      title: '搜索肽段',
+      title: <FormattedMessage id="table.peptideNum" />,
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -263,7 +342,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'matchedTotalPeptideCount',
-      title: '鉴定肽段(唯一)',
+      title: <FormattedMessage id="table.identPeptideUni" />,
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -272,7 +351,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'matchedUniquePeptideCount',
-      title: '鉴定肽段(全部)',
+      title: <FormattedMessage id="table.identPeptideAll" />,
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -281,7 +360,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'matchedTotalProteinCount',
-      title: '鉴定蛋白(唯一)',
+      title: <FormattedMessage id="table.identProteinUni" />,
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -290,7 +369,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'matchedTotalProteinCount',
-      title: '鉴定蛋白(全部)',
+      title: <FormattedMessage id="table.identProteinAll" />,
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
@@ -299,7 +378,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'tags',
-      title: '标签',
+      title: <FormattedMessage id="table.tags" />,
       dataIndex: 'tags',
       hideInSearch: true,
       render: (text, entity) => {
@@ -315,7 +394,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'note',
-      title: '备注',
+      title: <FormattedMessage id="table.remark" />,
       dataIndex: 'note',
       width: '160px',
       hideInSearch: true,
@@ -326,7 +405,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'createDate',
-      title: '创建时间',
+      title: <FormattedMessage id="table.creatTime" />,
       dataIndex: 'createDate',
       valueType: 'dateTime',
       width: '160px',
@@ -338,7 +417,7 @@ const TableList: React.FC = (props: any) => {
     },
     {
       key: 'option',
-      title: '操作',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       fixed: 'right',
       width: '240px',
@@ -354,7 +433,7 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:file-edit" />
-              编辑
+              <FormattedMessage id="table.edit" />
             </Tag>
           </a>
           <a
@@ -368,7 +447,7 @@ const TableList: React.FC = (props: any) => {
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
                 icon="mdi:file-document"
               />
-              详情
+              <FormattedMessage id="table.detail" />
             </Tag>
           </a>
           <Link
@@ -380,7 +459,7 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: 'middle', fontSize: '20px' }} icon="mdi:read" />
-              结果
+              <FormattedMessage id="table.result" />
             </Tag>
           </Link>
         </>
@@ -429,7 +508,10 @@ const TableList: React.FC = (props: any) => {
         headerTitle={
           projectName === undefined ? (
             <>
-              <Text>概览列表</Text>
+              <Text>
+                {' '}
+                <FormattedMessage id="table.switchOv" />
+              </Text>
             </>
           ) : (
             <>
@@ -438,13 +520,19 @@ const TableList: React.FC = (props: any) => {
                   pathname: '/project/list',
                 }}
               >
-                <Text type="secondary">项目列表</Text>
+                <Text type="secondary">
+                  {' '}
+                  <FormattedMessage id="table.projectList" />
+                </Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               {expName === undefined ? (
                 <>
                   <a>
-                    <Text>概览列表 所属项目：{projectName}</Text>
+                    <Text>
+                      <FormattedMessage id="table.switchOv" />{' '}
+                      <FormattedMessage id="table.belongPro" />：{projectName}
+                    </Text>
                   </a>
                   &nbsp;&nbsp;
                   <Link
@@ -455,7 +543,7 @@ const TableList: React.FC = (props: any) => {
                     }}
                   >
                     <Button type="primary" size="small">
-                      切换至实验列表
+                      <FormattedMessage id="table.expList" />
                     </Button>
                   </Link>
                 </>
@@ -468,11 +556,17 @@ const TableList: React.FC = (props: any) => {
                       search: `?projectId=${projectId}`,
                     }}
                   >
-                    <Text type="secondary">实验列表</Text>
+                    <Text type="secondary">
+                      {' '}
+                      <FormattedMessage id="table.expList" />
+                    </Text>
                   </Link>
                   &nbsp;&nbsp;/&nbsp;&nbsp;
                   <a>
-                    <Text>概览列表 所属实验：{expName}</Text>
+                    <Text>
+                      <FormattedMessage id="table.switchOv" />{' '}
+                      <FormattedMessage id="table.belongExp" /> ：{expName}
+                    </Text>
                   </a>
                 </>
               )}
@@ -498,13 +592,18 @@ const TableList: React.FC = (props: any) => {
                   }
                 }
               } else {
-                message.warn('请选择要修改的概览，支持多选');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectOv',
+                    defaultMessage: '请选择要修改的概览，支持多选',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="green">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:scatter-plot" />
-              重新统计蛋白数
+              <FormattedMessage id="table.reCountProtein" />
             </Tag>
           </a>,
           <a
@@ -513,7 +612,12 @@ const TableList: React.FC = (props: any) => {
               if (selectedRows?.length > 0) {
                 handleReselectVisible(true);
               } else {
-                message.warn('请选择要Reselect的概览，支持多选');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectOv',
+                    defaultMessage: '请选择要修改的概览，支持多选',
+                  })}`,
+                );
               }
             }}
           >
@@ -528,13 +632,18 @@ const TableList: React.FC = (props: any) => {
               if (selectedRows?.length > 0) {
                 handleSelectDefVisible(true);
               } else {
-                message.warn('请至少选择一个概览，支持多选');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectOv',
+                    defaultMessage: '请选择要修改的概览，支持多选',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:gesture-tap" />
-              选择默认
+              <FormattedMessage id="table.switchDef" />
             </Tag>
           </a>,
           <>
@@ -562,14 +671,19 @@ const TableList: React.FC = (props: any) => {
                     style={{ verticalAlign: '-4px', fontSize: '16px' }}
                     icon="mdi:stethoscope"
                   />
-                  蛋白诊所
+                  <FormattedMessage id="table.clinic" />
                 </Tag>
               </Link>
             ) : (
               <a
                 key="clinic"
                 onClick={() => {
-                  message.warn('请至少选择一个实验，多选请选择不同的实验名');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.selectDifExp',
+                      defaultMessage: '请至少选择一个实验，多选请选择不同的实验名',
+                    })}`,
+                  );
                 }}
               >
                 <Tag color="blue">
@@ -577,7 +691,7 @@ const TableList: React.FC = (props: any) => {
                     style={{ verticalAlign: '-4px', fontSize: '16px' }}
                     icon="mdi:stethoscope"
                   />
-                  蛋白诊所
+                  <FormattedMessage id="table.clinic" />
                 </Tag>
               </a>
             )}
@@ -589,13 +703,18 @@ const TableList: React.FC = (props: any) => {
               if (selectedRows?.length > 0) {
                 handleBatchModalVisible(true);
               } else {
-                message.warn('请选择要修改的概览，支持多选');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectOv',
+                    defaultMessage: '请选择要修改的概览，支持多选',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:table-edit" />
-              批量修改
+              <FormattedMessage id="table.batchEdit" />
             </Tag>
           </a>,
           <a
@@ -605,13 +724,18 @@ const TableList: React.FC = (props: any) => {
               if (selectedRows?.length > 0) {
                 handleDeleteModalVisible(true);
               } else {
-                message.warn('请选择要删除的概览，支持多选');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectOv',
+                    defaultMessage: '请选择要修改的概览，支持多选',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="error">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-              删除
+              <FormattedMessage id="table.delete" />
             </Tag>
           </a>,
         ]}
@@ -699,7 +823,7 @@ const TableList: React.FC = (props: any) => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === '我确认删除') {
+          if (value.name === 'of fine') {
             const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
@@ -709,7 +833,12 @@ const TableList: React.FC = (props: any) => {
               }
             }
           } else {
-            message.error('你没有删除的决心');
+            message.error(
+              `${intl.formatMessage({
+                id: 'message.deleteInputFail',
+                defaultMessage: '输入错误，请重新输入！',
+              })}`,
+            );
           }
         }}
         deleteModalVisible={deleteModalVisible}

@@ -5,6 +5,7 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type { ProColumns } from '@ant-design/pro-table';
 import ReactJson from 'react-json-view';
+import { useIntl, FormattedMessage } from 'umi';
 
 export type UpdateFormProps = {
   showDetail: any;
@@ -14,16 +15,18 @@ export type UpdateFormProps = {
 };
 
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
+  const intl = useIntl();
+
   const columns: ProColumns<TableListItem>[] = [
     {
       key: 'name',
-      title: '概览名',
+      title: <FormattedMessage id="table.ovName" />,
       dataIndex: 'name',
     },
 
     {
       key: 'expName',
-      title: '实验名',
+      title: <FormattedMessage id="table.expName" />,
       dataIndex: 'expName',
     },
     {
@@ -52,7 +55,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
     {
       key: 'params',
-      title: '分析概览',
+      title: <FormattedMessage id="table.AnaOv" />,
       dataIndex: 'params',
       render: (dom: any, entity: any) => {
         if (entity) {

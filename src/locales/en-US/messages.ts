@@ -51,4 +51,16 @@ export default {
   'message.generateFail': 'Generate failed, please try again!',
   'message.analysisExp': 'Please select the experiment to analyze',
   'message.least1Exp': 'Please choose at least one experiment!',
+  // overview界面
+  'message.batchEditSuc': 'Batch modification success!',
+  'message.batchEditFail': 'Batch modification failed, please try again!',
+  'message.statistic': 'Counting...',
+  'message.batchStatSuc': 'Batch statistics are successful!',
+  'message.batchStatFail': 'Batch statistics failed, please try again!',
+  'message.reSelecting': 'ReSelecting...',
+  'message.reSelectSuc': 'ReSelect successful!',
+  'message.reSelectFail': 'ReSelect failed, please try again!',
+  'message.selectOv': 'Please select the overview to modify, support multiple elections',
+  'message.selectDifExp':
+    'Please select at least one experiment, multiple choices, please choose a different experiment name',
 };

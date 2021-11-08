@@ -1,5 +1,6 @@
 import React from 'react';
 import { ModalForm } from '@ant-design/pro-form';
+import { FormattedMessage } from 'umi';
 
 export type ReselectFormProps = {
   onSubmit: () => Promise<void>;
@@ -11,7 +12,7 @@ export type ReselectFormProps = {
 const ReselectForm: React.FC<ReselectFormProps> = (props) => {
   return (
     <ModalForm
-      title={`Reselect概览`}
+      title={`Reselect`}
       width={530}
       visible={props.reselectVisible}
       modalProps={{
@@ -22,7 +23,8 @@ const ReselectForm: React.FC<ReselectFormProps> = (props) => {
       }}
       onFinish={props.onSubmit}
     >
-      你确定要Reselect这{props.selectedRows.length}个概览吗？
+      <FormattedMessage id="component.reSelectNum" />
+      {props.selectedRows.length}
     </ModalForm>
   );
 };

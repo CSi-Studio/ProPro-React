@@ -1,5 +1,6 @@
 import React from 'react';
 import { ModalForm } from '@ant-design/pro-form';
+import { FormattedMessage, useIntl } from 'umi';
 
 export type SelectDefProps = {
   onSubmit: () => Promise<void>;
@@ -9,9 +10,14 @@ export type SelectDefProps = {
 };
 
 const SelectDefault: React.FC<SelectDefProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
-      title={`选择是否默认`}
+      title={intl.formatMessage({
+        id: 'table.switchDef',
+        defaultMessage: '默认切换',
+      })}
       width={530}
       visible={props.selectDefVisible}
       modalProps={{
@@ -22,7 +28,8 @@ const SelectDefault: React.FC<SelectDefProps> = (props) => {
       }}
       onFinish={props.onSubmit}
     >
-      你确定要将这{props.selectedRows.length}个概览的默认值转为 Yes 吗？
+      <FormattedMessage id="component.switchDefNum" />
+      {props.selectedRows.length}
     </ModalForm>
   );
 };
