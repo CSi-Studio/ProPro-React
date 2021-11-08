@@ -61,4 +61,7 @@ export default {
   'component.note': 'Note',
   'component.reSelectNum': 'ReSelect the number of overview:',
   'component.switchDefNum': 'Switch the number of overview:',
+  'component.editOverview': 'Edit Overview',
+  'component.ovNameUni': 'Overview name must be unique',
+  'component.defaultOne': 'DefaultOne',
 };
