@@ -102,4 +102,8 @@ export default {
   'table.switchDef': 'DefaultSwitch',
   'table.ovName': 'ovName',
   'table.AnaOv': 'AnaOv',
+  // Data界面
+  'table.decoyTrue': 'True',
+  'table.decoyFake': 'Fake',
+  'table.anaResList': 'Analysis results',
 };

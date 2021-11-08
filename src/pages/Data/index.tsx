@@ -1,11 +1,14 @@
-import { Form, message, Tag, Tooltip, Space } from 'antd';
+import { Tag, Space } from 'antd';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { dataList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
+import { useIntl, FormattedMessage } from 'umi';
 
 const TableList: React.FC = (props: any) => {
+  const intl = useIntl();
+
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const [total, setTotal] = useState<any>();
@@ -30,9 +33,17 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'decoy',
       render: (dom, entity) => {
         if (entity.decoy) {
-          return <Tag color="red">伪</Tag>;
+          return (
+            <Tag color="red">
+              <FormattedMessage id="table.decoyFake" />
+            </Tag>
+          );
         }
-        return <Tag color="green">真</Tag>;
+        return (
+          <Tag color="green">
+            <FormattedMessage id="table.decoyTrue" />
+          </Tag>
+        );
       },
     },
     {
@@ -58,22 +69,46 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: '鉴定状态',
+      title: <FormattedMessage id="component.identStatus" />,
       dataIndex: 'status',
       render: (dom, entity) => {
         switch (entity.status) {
           case 0:
-            return <Tag color="blue">等待鉴定</Tag>;
+            return (
+              <Tag color="blue">
+                <FormattedMessage id="component.noIdentify" />
+              </Tag>
+            );
           case 1:
-            return <Tag color="green">鉴定成功</Tag>;
+            return (
+              <Tag color="green">
+                <FormattedMessage id="component.successIdentify" />
+              </Tag>
+            );
           case 2:
-            return <Tag color="red">鉴定失败</Tag>;
+            return (
+              <Tag color="red">
+                <FormattedMessage id="component.failIdentify" />
+              </Tag>
+            );
           case 3:
-            return <Tag color="purple">条件不符</Tag>;
+            return (
+              <Tag color="purple">
+                <FormattedMessage id="component.notEnoughIdentify" />
+              </Tag>
+            );
           case 4:
-            return <Tag color="purple">峰组未知</Tag>;
+            return (
+              <Tag color="purple">
+                <FormattedMessage id="component.lackOfPeakGroup" />
+              </Tag>
+            );
         }
-        return <Tag color="yellow">未知状态</Tag>;
+        return (
+          <Tag color="yellow">
+            <FormattedMessage id="component.unknownError" />
+          </Tag>
+        );
       },
     },
     {
@@ -173,9 +208,11 @@ const TableList: React.FC = (props: any) => {
         scroll={{ x: 'max-content' }}
         size="small"
         headerTitle={
-          props?.location?.state?.overviewName === undefined
-            ? '分析结果列表'
-            : props?.location?.state?.overviewName
+          props?.location?.state?.overviewName === undefined ? (
+            <FormattedMessage id="component.anaResList" />
+          ) : (
+            props?.location?.state?.overviewName
+          )
         }
         actionRef={actionRef}
         rowKey="id"

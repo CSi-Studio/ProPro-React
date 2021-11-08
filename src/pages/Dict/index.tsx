@@ -27,103 +27,105 @@ import AddFormItem from './components/CreateItem';
 import DeleteFormItem from './components/DeleteForm';
 import DeleteDictForm from './components/DeleteDict';
 import UpdateTableForm from './components/UpdateDictTable';
-
-const handleAdd = async (values: { name: string }) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addList(values);
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-const handleAddItem = async (values: { id: string; key: string; value: string }) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addListItem(values);
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 更新库
- * @param values
- */
-const handleUpdate = async (values: any) => {
-  const hide = message.loading('正在更新');
-  try {
-    await updateList(values);
-    hide();
-    message.success('编辑成功');
-    sessionStorage.clear();
-    const data = await getDict();
-    data.data.forEach((item: any) => {
-      sessionStorage.setItem(item.name, JSON.stringify(item.item));
-    });
-
-    return true;
-  } catch (error) {
-    hide();
-    message.error('编辑失败，请重试!');
-    return false;
-  }
-};
-/**
- * 删除库
- * @param currentRow
- */
-const handleRemoveItem = async (values: any) => {
-  try {
-    await deleteItem(values);
-    message.success('删除成功，即将刷新');
-    sessionStorage.clear();
-    const data = await getDict();
-    data.data.forEach((item: any) => {
-      sessionStorage.setItem(item.name, JSON.stringify(item.item));
-    });
-    return true;
-  } catch (error) {
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
-const handleRemove = async (values: any) => {
-  try {
-    await deleteDict(values);
-    message.success('删除成功，即将刷新');
-    const data = await getDict();
-    data.data.forEach((item: any) => {
-      sessionStorage.setItem(item.name, JSON.stringify(item.item));
-    });
-    return true;
-  } catch (error) {
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
-const reFreshCache = async () => {
-  sessionStorage.clear();
-  const data = await getDict();
-
-  data.data.forEach((item: any) => {
-    sessionStorage.setItem(item.name, JSON.stringify(item.item));
-  });
-  message.info('刷新缓存成功');
-};
+import { useIntl, FormattedMessage } from 'umi';
 
 const TableList: React.FC = () => {
+    const intl = useIntl();
+
+  const handleAdd = async (values: { name: string }) => {
+    const hide = message.loading('正在添加');
+    try {
+      await addList(values);
+      hide();
+      message.success('添加成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('添加失败请重试！');
+      return false;
+    }
+  };
+  const handleAddItem = async (values: { id: string; key: string; value: string }) => {
+    const hide = message.loading('正在添加');
+    try {
+      await addListItem(values);
+      hide();
+      message.success('添加成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('添加失败请重试！');
+      return false;
+    }
+  };
+
+  /**
+   * 更新库
+   * @param values
+   */
+  const handleUpdate = async (values: any) => {
+    const hide = message.loading('正在更新');
+    try {
+      await updateList(values);
+      hide();
+      message.success('编辑成功');
+      sessionStorage.clear();
+      const data = await getDict();
+      data.data.forEach((item: any) => {
+        sessionStorage.setItem(item.name, JSON.stringify(item.item));
+      });
+
+      return true;
+    } catch (error) {
+      hide();
+      message.error('编辑失败，请重试!');
+      return false;
+    }
+  };
+  /**
+   * 删除库
+   * @param currentRow
+   */
+  const handleRemoveItem = async (values: any) => {
+    try {
+      await deleteItem(values);
+      message.success('删除成功，即将刷新');
+      sessionStorage.clear();
+      const data = await getDict();
+      data.data.forEach((item: any) => {
+        sessionStorage.setItem(item.name, JSON.stringify(item.item));
+      });
+      return true;
+    } catch (error) {
+      message.error('删除失败，请重试');
+      return false;
+    }
+  };
+
+  const handleRemove = async (values: any) => {
+    try {
+      await deleteDict(values);
+      message.success('删除成功，即将刷新');
+      const data = await getDict();
+      data.data.forEach((item: any) => {
+        sessionStorage.setItem(item.name, JSON.stringify(item.item));
+      });
+      return true;
+    } catch (error) {
+      message.error('删除失败，请重试');
+      return false;
+    }
+  };
+
+  const reFreshCache = async () => {
+    sessionStorage.clear();
+    const data = await getDict();
+
+    data.data.forEach((item: any) => {
+      sessionStorage.setItem(item.name, JSON.stringify(item.item));
+    });
+    message.info('刷新缓存成功');
+  };
   const [form] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formUpdateTable] = Form.useForm();
