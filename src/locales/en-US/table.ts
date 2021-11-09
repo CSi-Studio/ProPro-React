@@ -106,4 +106,11 @@ export default {
   'table.decoyTrue': 'True',
   'table.decoyFake': 'Fake',
   'table.anaResList': 'Analysis results',
+  'table.difName': 'DictName',
+  'table.description': 'Description',
+  'table.addKey': 'AddKey',
+  'table.addDict': 'AddDict',
+  'table.addDictValue': 'AddDictValue',
+  'table.updateDictValue': 'UpdateDictValue',
+  'table.refreshCache': 'Refresh',
 };

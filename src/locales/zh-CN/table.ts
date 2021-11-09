@@ -106,4 +106,11 @@ export default {
   'table.decoyTrue': '真',
   'table.decoyFake': '伪',
   'table.anaResList': '分析结果列表',
+  'table.difName': '字典名',
+  'table.description': '描述',
+  'table.addKey': '新增键',
+  'table.addDict': '新增字典',
+  'table.addDictValue': '增加字典值',
+  'table.updateDictValue': '更新字典值',
+  'table.refreshCache': '刷新缓存',
 };

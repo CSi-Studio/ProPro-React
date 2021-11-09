@@ -64,4 +64,5 @@ export default {
   'component.editOverview': '编辑概览',
   'component.ovNameUni': '概览名必须唯一',
   'component.defaultOne': '是否为默认结果',
+  
 };

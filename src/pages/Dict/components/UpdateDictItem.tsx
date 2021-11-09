@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ProFormTextArea, ModalForm, ProFormText } from '@ant-design/pro-form';
-import { getDict } from '../service';
+import { useIntl } from 'umi';
+
 export type updateFormValueType = {
   key?: string;
   value?: string;
@@ -30,17 +31,17 @@ export type updateFormValue = {
   key?: any;
   value?: any;
 };
- 
 
-
-const UpdateForm: React.FC<UpdateFormProps> =   (props) => {
-
-
+const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+    const intl = useIntl();
 
   return (
     <ModalForm
       form={props.form}
-      title="更新字典值"
+      title={intl.formatMessage({
+        id: 'table.updateDictValue',
+        defaultMessage: '更新字典值',
+      })}
       width={530}
       visible={props.updateModalVisible}
       modalProps={{
@@ -51,9 +52,17 @@ const UpdateForm: React.FC<UpdateFormProps> =   (props) => {
       }}
       onFinish={props.onSubmit}
     >
-      <ProFormText disabled label="字典名" name="id" initialValue={props.values?.name} />
-      <ProFormText disabled label="key值" name="key" initialValue={props.values.key} />
-      <ProFormTextArea label="value值" name="value" />
+      <ProFormText
+        disabled
+        label={intl.formatMessage({
+          id: 'table.difName',
+          defaultMessage: '字典名',
+        })}
+        name="id"
+        initialValue={props.values?.name}
+      />
+      <ProFormText disabled label="key" name="key" initialValue={props.values.key} />
+      <ProFormTextArea label="value" name="value" />
     </ModalForm>
   );
 };

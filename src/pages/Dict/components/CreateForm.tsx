@@ -1,5 +1,6 @@
 import React from 'react';
 import { ProFormText, ModalForm } from '@ant-design/pro-form';
+import { useIntl, FormattedMessage } from 'umi';
 
 export type addFormValueType = {
   name: string;
@@ -13,10 +14,15 @@ export type AddFormProps = {
 };
 
 const AddForm: React.FC<AddFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="增加字典"
+      title={intl.formatMessage({
+        id: 'table.addDict',
+        defaultMessage: '新增字典',
+      })}
       width={530}
       visible={props.createModalVisible}
       modalProps={{
@@ -27,7 +33,13 @@ const AddForm: React.FC<AddFormProps> = (props) => {
       }}
       onFinish={props.onSubmit}
     >
-      <ProFormText label="字典名" name="name" />
+      <ProFormText
+        label={intl.formatMessage({
+          id: 'table.difName',
+          defaultMessage: '字典名',
+        })}
+        name="name"
+      />
     </ModalForm>
   );
 };

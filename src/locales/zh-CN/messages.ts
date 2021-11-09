@@ -61,4 +61,7 @@ export default {
   'message.reSelectFail': 'ReSelect失败！',
   'message.selectOv': '请选择要修改的概览，支持多选',
   'message.selectDifExp': '请至少选择一个实验，多选请选择不同的实验名',
+  // 字典界面
+  'message.refreshCache': '刷新缓存成功',
+  
 };

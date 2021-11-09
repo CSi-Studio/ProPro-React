@@ -30,31 +30,61 @@ import UpdateTableForm from './components/UpdateDictTable';
 import { useIntl, FormattedMessage } from 'umi';
 
 const TableList: React.FC = () => {
-    const intl = useIntl();
+  const intl = useIntl();
 
   const handleAdd = async (values: { name: string }) => {
-    const hide = message.loading('正在添加');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.adding',
+        defaultMessage: '正在添加...',
+      })}`,
+    );
     try {
       await addList(values);
       hide();
-      message.success('添加成功');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.addSuccess',
+          defaultMessage: '添加成功！',
+        })}`,
+      );
       return true;
     } catch (error) {
       hide();
-      message.error('添加失败请重试！');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.addFail',
+          defaultMessage: '添加失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
   const handleAddItem = async (values: { id: string; key: string; value: string }) => {
-    const hide = message.loading('正在添加');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.adding',
+        defaultMessage: '正在添加...',
+      })}`,
+    );
     try {
       await addListItem(values);
       hide();
-      message.success('添加成功');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.addSuccess',
+          defaultMessage: '添加成功！',
+        })}`,
+      );
       return true;
     } catch (error) {
       hide();
-      message.error('添加失败请重试！');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.addFail',
+          defaultMessage: '添加失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -64,11 +94,21 @@ const TableList: React.FC = () => {
    * @param values
    */
   const handleUpdate = async (values: any) => {
-    const hide = message.loading('正在更新');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.updating',
+        defaultMessage: '正在更新...',
+      })}`,
+    );
     try {
       await updateList(values);
       hide();
-      message.success('编辑成功');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.editSuccess',
+          defaultMessage: '编辑成功！',
+        })}`,
+      );
       sessionStorage.clear();
       const data = await getDict();
       data.data.forEach((item: any) => {
@@ -78,7 +118,12 @@ const TableList: React.FC = () => {
       return true;
     } catch (error) {
       hide();
-      message.error('编辑失败，请重试!');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.editFail',
+          defaultMessage: '编辑失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -89,7 +134,12 @@ const TableList: React.FC = () => {
   const handleRemoveItem = async (values: any) => {
     try {
       await deleteItem(values);
-      message.success('删除成功，即将刷新');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteSuccess',
+          defaultMessage: '删除成功！',
+        })}`,
+      );
       sessionStorage.clear();
       const data = await getDict();
       data.data.forEach((item: any) => {
@@ -97,7 +147,12 @@ const TableList: React.FC = () => {
       });
       return true;
     } catch (error) {
-      message.error('删除失败，请重试');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -105,14 +160,24 @@ const TableList: React.FC = () => {
   const handleRemove = async (values: any) => {
     try {
       await deleteDict(values);
-      message.success('删除成功，即将刷新');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteSuccess',
+          defaultMessage: '删除成功！',
+        })}`,
+      );
       const data = await getDict();
       data.data.forEach((item: any) => {
         sessionStorage.setItem(item.name, JSON.stringify(item.item));
       });
       return true;
     } catch (error) {
-      message.error('删除失败，请重试');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -124,7 +189,12 @@ const TableList: React.FC = () => {
     data.data.forEach((item: any) => {
       sessionStorage.setItem(item.name, JSON.stringify(item.item));
     });
-    message.info('刷新缓存成功');
+    message.info(
+      `${intl.formatMessage({
+        id: 'message.refreshCache',
+        defaultMessage: '刷新缓存成功',
+      })}`,
+    );
   };
   const [form] = Form.useForm();
   const [formUpdate] = Form.useForm();
@@ -155,7 +225,7 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '字典名',
+      title: <FormattedMessage id="table.difName" />,
       dataIndex: 'name',
       showSorterTooltip: false,
       sorter: (a, b) => (a.name > b.name ? -1 : 1),
@@ -174,14 +244,14 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '描述',
+      title: <FormattedMessage id="table.description" />,
       dataIndex: 'desc',
     },
     {
-      title: '操作',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       fixed: 'right',
-      width: '220px',
+      width: '240px',
       render: (text, record) => (
         <>
           <a
@@ -194,7 +264,7 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
-              编辑
+              <FormattedMessage id="table.edit" />
             </Tag>
           </a>
           <a
@@ -213,7 +283,7 @@ const TableList: React.FC = () => {
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
                 icon="mdi:playlist-plus"
               />
-              新增键
+              <FormattedMessage id="table.addKey" />
             </Tag>
           </a>
           <a
@@ -229,7 +299,7 @@ const TableList: React.FC = () => {
           >
             <Tag color="error">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-              删除
+              <FormattedMessage id="table.delete" />
             </Tag>
           </a>
         </>
@@ -254,10 +324,10 @@ const TableList: React.FC = () => {
           expandedRowRender: (record) => (
             <ProTable
               columns={[
-                { title: '键', dataIndex: 'key', key: 'key' },
-                { title: '值', dataIndex: 'value', key: 'value' },
+                { title: 'key', dataIndex: 'key', key: 'key' },
+                { title: 'value', dataIndex: 'value', key: 'value' },
                 {
-                  title: '操作',
+                  title: <FormattedMessage id="table.option" />,
                   dataIndex: 'operation',
                   key: 'operation',
                   valueType: 'option',
@@ -281,7 +351,7 @@ const TableList: React.FC = () => {
                             style={{ verticalAlign: '-4px', fontSize: '16px' }}
                             icon="mdi:file-edit"
                           />
-                          编辑
+                          <FormattedMessage id="table.edit" />
                         </Tag>
                       </a>
                       <a
@@ -301,7 +371,7 @@ const TableList: React.FC = () => {
                             style={{ verticalAlign: '-4px', fontSize: '16px' }}
                             icon="mdi:delete"
                           />
-                          删除
+                          <FormattedMessage id="table.delete" />
                         </Tag>
                       </a>
                     </>
@@ -331,7 +401,7 @@ const TableList: React.FC = () => {
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
                 icon="mdi:playlist-plus"
               />
-              新增字典
+              <FormattedMessage id="table.addDict" />
             </Tag>
           </a>,
           <a
@@ -343,7 +413,7 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:refresh-circle" />
-              刷新缓存
+              <FormattedMessage id="table.refreshCache" />
             </Tag>
           </a>,
         ]}
@@ -483,7 +553,7 @@ const TableList: React.FC = () => {
         form={formUpdateTable}
         onCancel={() => {
           handleUpdateTableVisible(false);
-          formUpdateTable?.resetFields;
+          formUpdateTable?.resetFields();
         }}
         onSubmit={async (value) => {
           const success = await updateDictTable({ id: currentUpdateTable.id, desc: value?.desc });
