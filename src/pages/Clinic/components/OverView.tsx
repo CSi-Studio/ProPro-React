@@ -13,7 +13,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
   const { prepareData, expData } = props.values;
 
   let scoreResult: any[] = expData.map((item: any) => {
-    return item.scoreList.map((_item: any, index: any) => ({
+    return item?.scoreList?.map((_item: any, index: any) => ({
       expId: item.expId,
       alias: item.alias,
       status: item.status,
@@ -25,7 +25,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       index,
       key: _item.rt,
       selectIndex: item.selectIndex,
-      scoreList: item.scoreList,
+      scoreList: item?.scoreList,
     }));
   });
   scoreResult = [].concat(...scoreResult); // 拍平数组
@@ -40,7 +40,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fixed: 'left',
       width: 50,
       render: (dom: any, entity: any) => {
-        if (entity.index === entity.selectIndex) {
+        if (entity?.index === entity?.selectIndex) {
           return <Tag color="#87d068">{dom}</Tag>;
         }
         return <Tag color="blue">{dom}</Tag>;
@@ -53,8 +53,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fixed: 'left',
       width: 70,
       render: (dom: any, entity: any) => {
-        if (entity.index === entity.selectIndex) {
-          switch (entity.status) {
+        if (entity?.index === entity?.selectIndex) {
+          switch (entity?.status) {
             case 0:
               return (
                 <Tag color="blue">
@@ -106,7 +106,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
               break;
           }
         }
-        if (entity.scoreList[entity.index]?.scores[0] >= entity.minTotalScore) {
+        if (entity?.scoreList[entity?.index]?.scores[0] >= entity?.minTotalScore) {
           return (
             <Tag color="success">
               <FormattedMessage id="component.successIdentify" />
@@ -128,7 +128,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       width: 50,
       render: (dom: any, entity: any) => {
         // console.log('entity', entity);
-        return <Tag color="blue">{entity.totalIons}</Tag>;
+        return <Tag color="blue">{entity?.totalIons}</Tag>;
       },
     },
     {
@@ -138,7 +138,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity.realRt?.toFixed(1)}</Tag>;
+        return <Tag color="blue">{entity?.realRt?.toFixed(1)}</Tag>;
       },
     },
     {
@@ -148,7 +148,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity.nearestRt?.toFixed(1)}</Tag>;
+        return <Tag color="blue">{entity?.nearestRt?.toFixed(1)}</Tag>;
       },
     },
     {
@@ -158,7 +158,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fixed: 'left',
       width: 70,
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity.sum?.toFixed(0)}</Tag>;
+        return <Tag color="blue">{entity?.sum?.toFixed(0)}</Tag>;
       },
     },
     {
@@ -168,7 +168,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity.minTotalScore?.toFixed(3)}</Tag>;
+        return <Tag color="blue">{entity?.minTotalScore?.toFixed(3)}</Tag>;
       },
     },
   ];
@@ -204,33 +204,33 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       tooltip: type,
       render: (dom: any, entity: any) => {
         if (
-          entity.selectIndex !== null &&
-          entity.scoreList !== null &&
-          entity.scoreList[entity.selectIndex].scores[index] !== null &&
-          entity.scoreList[entity.selectIndex].scores[index] !== 'NaN' &&
-          prepareData.overviewMap[entity.expId] != null &&
-          prepareData.overviewMap[entity.expId].length > 0
+          entity?.selectIndex !== null &&
+          entity?.scoreList !== null &&
+          entity?.scoreList[entity?.selectIndex].scores[index] !== null &&
+          entity?.scoreList[entity?.selectIndex].scores[index] !== 'NaN' &&
+          prepareData.overviewMap[entity?.expId] != null &&
+          prepareData.overviewMap[entity?.expId].length > 0
         ) {
           return (
             <>
               {index === 0 ? (
                 <Tag
                   color={
-                    entity.scoreList[entity.index]?.scores[index] > entity.minTotalScore
+                    entity?.scoreList[entity?.index]?.scores[index] > entity?.minTotalScore
                       ? 'green'
                       : 'blue'
                   }
-                  key={entity.scoreList[entity.index]?.scores[index]?.toString()}
+                  key={entity?.scoreList[entity?.index]?.scores[index]?.toString()}
                 >
-                  {entity.scoreList[entity.index]?.scores[index]?.toFixed(3)}
+                  {entity?.scoreList[entity?.index]?.scores[index]?.toFixed(3)}
                 </Tag>
               ) : (
-                <Tag key={entity.scoreList[entity.index]?.scores[index]?.toString()}>
-                  {`${prepareData.overviewMap[entity.expId][0]?.weights[type]?.toFixed(
+                <Tag key={entity?.scoreList[entity?.index]?.scores[index]?.toString()}>
+                  {`${prepareData.overviewMap[entity?.expId][0]?.weights[type]?.toFixed(
                     3,
-                  )}x${entity.scoreList[entity.index]?.scores[index]?.toFixed(2)}=${(
-                    prepareData.overviewMap[entity.expId][0]?.weights[type] *
-                    entity.scoreList[entity.index]?.scores[index]
+                  )}x${entity?.scoreList[entity?.index]?.scores[index]?.toFixed(2)}=${(
+                    prepareData.overviewMap[entity?.expId][0]?.weights[type] *
+                    entity?.scoreList[entity?.index]?.scores[index]
                   )?.toFixed(4)}`}
                 </Tag>
               )}
