@@ -823,7 +823,7 @@ const TableList: React.FC = (props: any) => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === 'of fine') {
+          if (value.name === 'ok fine') {
             const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
