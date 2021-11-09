@@ -4,6 +4,7 @@ import { Button, Form, Input, Tooltip } from 'antd';
 import { Tag } from 'antd';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
+import { useIntl, FormattedMessage } from 'umi';
 
 export type ContrastListFormProps = {
   contrastModalVisible: boolean;
@@ -20,11 +21,13 @@ export type TableListItem = {
   intensity: string;
 };
 const ContrastList: React.FC<ContrastListFormProps> = (props) => {
+  const intl = useIntl();
+
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<{ mz: string; cutInfo: string }[]>();
   const columns: ProColumns[] = [
     {
-      title: '库中肽段碎片荷质比',
+      title: <FormattedMessage id="component.libraryMz" />,
       dataIndex: 'trueMz',
       render: (dom, entity) => {
         if (entity.trueMz && entity.trueMz !== entity.mz) {
@@ -54,7 +57,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       },
     },
     {
-      title: '预测肽段碎片荷质比',
+      title: <FormattedMessage id="component.predictMz" />,
       dataIndex: 'mz',
       render: (dom, entity) => {
         if (entity.predict) {
@@ -85,7 +88,10 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
   return (
     <ModalForm
       form={props.form}
-      title="🧩 肽段碎片比较"
+      title={intl.formatMessage({
+        id: 'component.fragmentCompare',
+        defaultMessage: '肽段碎片比较',
+      })}
       width={600}
       modalProps={{
         maskClosable: false,
@@ -97,7 +103,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
       visible={props.contrastModalVisible}
       submitter={{
         searchConfig: {
-          submitText: '提交',
+          submitText: <FormattedMessage id="component.submit" />,
         },
         render: (_props) => {
           return [
@@ -109,7 +115,7 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
                 _props.form?.submit?.();
               }}
             >
-              提交
+              <FormattedMessage id="component.submit" />
             </Button>,
           ];
         },
@@ -121,7 +127,6 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
           size="small"
           headerTitle={props.values?.peptideRef}
           request={() => {
-            // ----------------------------------------
             let trueData: any[] = [];
             let predictData: any[] = [];
             let data: any[] = [];
@@ -129,13 +134,11 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
             predictData = props?.predictList?.data;
 
             trueData?.forEach((item: any) => {
-              // eslint-disable-next-line no-param-reassign
               item.trueMz = item.mz;
             });
             predictData?.forEach((_item: any) => {
               trueData?.forEach((item: any, index: number) => {
                 if (_item.cutInfo === item.cutInfo) {
-                  // eslint-disable-next-line no-param-reassign
                   _item.trueMz = item.mz;
                   trueData.splice(index, 1);
                 }
@@ -148,7 +151,6 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
             if (data) {
               data?.forEach((item?: { key: any }, index?: any) => {
                 if (item) {
-                  // eslint-disable-next-line no-param-reassign
                   item.key = index;
                 }
               });
@@ -166,8 +168,8 @@ const ContrastList: React.FC<ContrastListFormProps> = (props) => {
           tableAlertRender={false}
           rowSelection={{
             ...rowSelection,
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows);
+            onChange: (_, item) => {
+              setSelectedRows(item);
             },
           }}
         />

@@ -64,5 +64,20 @@ export default {
   'component.editOverview': '编辑概览',
   'component.ovNameUni': '概览名必须唯一',
   'component.defaultOne': '是否为默认结果',
-  
+  // peptide界面
+  'component.fragmentCompare': '肽段碎片比较',
+  'component.submit': '提交',
+  'component.predictMz': '预测肽段碎片荷质比',
+  'component.libraryMz': '库中肽段碎片荷质比',
+  'component.inputDelPep': '请输入要删除的peptideRef',
+  'component.peptideFullName': '肽段完整名称',
+  'component.peptideSequence': '肽段序列',
+  'component.decoySequence': '伪肽段',
+  'component.pseudoIonFragment': '伪离子片段',
+  'component.nullSpModel': '碰撞方式不能为空',
+  'component.spModel': '碰撞方式',
+  'component.isotope': '是否考虑同位素',
+  'component.maxPredFra': '最大预测片段数',
+  'component.nullMaxPredFra': '最大片段数不能为空',
+  'component.editPeptideLib': '编辑肽段库',
 };

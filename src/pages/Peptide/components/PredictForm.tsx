@@ -1,6 +1,7 @@
 import React from 'react';
 import ProForm, { ProFormSelect, ModalForm, ProFormDigit } from '@ant-design/pro-form';
 import { SpModelType, YesOrNo } from '@/components/Enums/Selects';
+import { useIntl, FormattedMessage } from 'umi';
 
 export type predictFormValueType = {
   spModel: string;
@@ -18,10 +19,15 @@ export type PredictFormProps = {
 };
 
 const PredictForm: React.FC<PredictFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="预测肽段碎片"
+      title={intl.formatMessage({
+        id: 'table.predPepFra',
+        defaultMessage: '预测肽段碎片',
+      })}
       width={800}
       visible={props.predictModalVisible}
       modalProps={{
@@ -38,40 +44,48 @@ const PredictForm: React.FC<PredictFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '碰撞方式不能为空',
+              message: <FormattedMessage id="component.nullSpModel" />,
             },
           ]}
           options={SpModelType}
           width="sm"
           name="spModel"
-          label="碰撞方式"
+          label={intl.formatMessage({
+            id: 'component.spModel',
+            defaultMessage: '碰撞方式',
+          })}
         />
         <ProFormSelect
           initialValue="false"
           rules={[
             {
               required: true,
-              message: '是否考虑同位素',
+              message: <FormattedMessage id="component.isotope" />,
             },
           ]}
           options={YesOrNo}
           width="sm"
           name="isotope"
-          label="是否考虑同位素"
+          label={intl.formatMessage({
+            id: 'component.isotope',
+            defaultMessage: '是否考虑同位素',
+          })}
         />
         <ProFormDigit
           initialValue={10}
           width="sm"
           name="limit"
-          label="最大预测片段数"
+          label={intl.formatMessage({
+            id: 'component.maxPredFra',
+            defaultMessage: '最大预测片段数',
+          })}
           rules={[
             {
               required: true,
-              message: '最大片段数不能为空',
+              message: <FormattedMessage id="component.nullMaxPredFra" />,
             },
           ]}
-          placeholder="请输入最大片段数"
-        ></ProFormDigit>
+        />
       </ProForm.Group>
     </ModalForm>
   );

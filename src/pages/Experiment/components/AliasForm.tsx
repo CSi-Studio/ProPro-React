@@ -16,7 +16,7 @@ const AliasForm: React.FC<AliasFormProps> = (props) => {
     <ModalForm
       form={props.form}
       title={intl.formatMessage({
-        id: 'message.setAlias',
+        id: 'component.setAlias',
         defaultMessage: '设置别名',
       })}
       width={330}

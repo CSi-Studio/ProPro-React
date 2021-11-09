@@ -1,8 +1,9 @@
 import React from 'react';
-import { Drawer, Table, Tag, Tooltip } from 'antd';
+import { Drawer, Table, Tag } from 'antd';
 import type { TableListItem } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import { useIntl, FormattedMessage } from 'umi';
 
 export type UpdateFormProps = {
   showDetail: any;
@@ -11,6 +12,8 @@ export type UpdateFormProps = {
   onClose: () => void;
 };
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
+  const intl = useIntl();
+
   const columns = [
     {
       title: 'ID',
@@ -20,14 +23,14 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       },
     },
     {
-      title: '库ID',
+      title: 'LibraryId',
       dataIndex: 'libraryId',
       render: (dom: any) => {
         return <Tag>{dom}</Tag>;
       },
     },
     {
-      title: '蛋白质名称',
+      title: <FormattedMessage id="component.proteinName" />,
       dataIndex: 'proteins',
     },
     {
@@ -43,22 +46,22 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       dataIndex: 'rt',
     },
     {
-      title: '带电量',
+      title: 'Charge',
       dataIndex: 'charge',
     },
     {
-      title: '肽段完整名称',
+      title: <FormattedMessage id="component.peptideFullName" />,
       dataIndex: 'fullName',
     },
     {
-      title: '肽段序列',
+      title: <FormattedMessage id="component.peptideSequence" />,
       dataIndex: 'sequence',
     },
     {
-      title: '伪肽段',
+      title: <FormattedMessage id="component.decoySequence" />,
       dataIndex: 'decoySequence',
-    }
-   ]
+    },
+  ];
   columns.push(props.columns.pop());
 
   return (
@@ -77,26 +80,26 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
             columns={columns as ProDescriptionsItemProps<TableListItem>[]}
           />
           <Table
-            title={() => '离子片段：'}
+            title={() => <FormattedMessage id="table.fragments" />}
             bordered={false}
             pagination={false}
             size="small"
             dataSource={props.currentRow.fragments}
             columns={[
               {
-                title: 'cutInfo',
+                title: 'CutInfo',
                 dataIndex: 'cutInfo',
               },
               {
-                title: '碎片荷质比',
+                title: 'm/z',
                 dataIndex: 'mz',
               },
               {
-                title: '强度',
+                title: 'Intensity',
                 dataIndex: 'intensity',
               },
               {
-                title: '带电量',
+                title: 'Charge',
                 dataIndex: 'charge',
               },
               {
@@ -106,26 +109,26 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
             ]}
           />
           <Table
-            title={() => '伪离子片段：'}
+            title={() => <FormattedMessage id="component.pseudoIonFragment" />}
             bordered={false}
             pagination={false}
             size="small"
             dataSource={props.currentRow.decoyFragments}
             columns={[
               {
-                title: 'cutInfo',
+                title: 'CutInfo',
                 dataIndex: 'cutInfo',
               },
               {
-                title: '碎片荷质比',
+                title: 'm/z',
                 dataIndex: 'mz',
               },
               {
-                title: '强度',
+                title: 'Intensity',
                 dataIndex: 'intensity',
               },
               {
-                title: '带电量',
+                title: 'Charge',
                 dataIndex: 'charge',
               },
               {

@@ -24,7 +24,7 @@ const BatchEditForm: React.FC<BatchEditProps> = (props) => {
     <ModalForm
       form={props.form}
       title={intl.formatMessage({
-        id: 'table.updateExpInf',
+        id: 'component.updateExpInf',
         defaultMessage: '更新实验信息',
       })}
       width={530}

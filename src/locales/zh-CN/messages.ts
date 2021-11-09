@@ -63,5 +63,8 @@ export default {
   'message.selectDifExp': '请至少选择一个实验，多选请选择不同的实验名',
   // 字典界面
   'message.refreshCache': '刷新缓存成功',
-  
+  // peptide界面
+  'message.singlePred': '目前只支持单个肽段的预测',
+  'message.singleDelete': '目前只支持单个肽段的删除',
+  'message.selectOnePep': '请选择一个的肽段',
 };

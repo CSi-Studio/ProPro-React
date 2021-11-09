@@ -12,45 +12,72 @@ import DetailForm from './components/DetailForm';
 import type { predictFormValueType } from './components/PredictForm';
 import PredictForm from './components/PredictForm';
 import ContrastList from './components/ContrastList';
-import { Link } from 'umi';
+import { Link, useIntl, FormattedMessage } from 'umi';
 
-/**
- * 更新库
- * @param values
- */
-const handleUpdate = async (values: updateFormValueType) => {
-  const hide = message.loading('正在更新');
-  try {
-    await updateList({ ...values });
-    hide();
-    message.success('编辑成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('编辑失败，请重试!');
-    return false;
-  }
-};
-
-/**
- * 删除库
- * @param currentRow
- */
-const handleRemove = async (currentRow: TableListItem | undefined) => {
-  if (!currentRow) return true;
-  try {
-    await removeList({
-      peptideId: currentRow.id,
-    });
-    message.success('删除成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-const { Text } = Typography;
 const TableList: React.FC = (props: any) => {
+  const intl = useIntl();
+
+  /**
+   * 更新库
+   * @param values
+   */
+  const handleUpdate = async (values: updateFormValueType) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.updating',
+        defaultMessage: '正在更新...',
+      })}`,
+    );
+    try {
+      await updateList({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.editSuccess',
+          defaultMessage: '编辑成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.editFail',
+          defaultMessage: '编辑失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 删除库
+   * @param currentRow
+   */
+  const handleRemove = async (currentRow: TableListItem | undefined) => {
+    if (!currentRow) return true;
+    try {
+      await removeList({
+        peptideId: currentRow.id,
+      });
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteSuccess',
+          defaultMessage: '删除成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+  const { Text } = Typography;
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   /** 删除窗口的弹窗 */
@@ -81,17 +108,32 @@ const TableList: React.FC = (props: any) => {
    * @param values
    */
   const handlePredict = async (values: predictFormValueType) => {
-    const hide = message.loading('正在预测肽段碎片');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.predicting',
+        defaultMessage: '正在预测肽段碎片',
+      })}`,
+    );
     try {
       const predictData = await predictPeptide({ ...values });
       setPredictList(predictData);
       hide();
-      message.success('预测肽段碎片完成');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.predictCom',
+          defaultMessage: '预测肽段碎片完成',
+        })}`,
+      );
       handleContrastModalVisible(true);
       return true;
     } catch (error) {
       hide();
-      message.error('预测失败，请重试!');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.predictFail',
+          defaultMessage: '预测失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -100,7 +142,12 @@ const TableList: React.FC = (props: any) => {
    * @param values
    */
   const handleContrast = async (value: { fragments: any[] }) => {
-    const hide = message.loading('正在加载');
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.loading',
+        defaultMessage: '正在加载...',
+      })}`,
+    );
     value.fragments.map((item: any) => {
       item.predict = null;
       delete item.key;
@@ -110,11 +157,21 @@ const TableList: React.FC = (props: any) => {
     try {
       await updateFragment({ peptideId: currentRow?.id }, value.fragments);
       hide();
-      message.success('添加成功');
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.addSuccess',
+          defaultMessage: '添加成功！',
+        })}`,
+      );
       return true;
     } catch (error) {
       hide();
-      message.error('添加失败，请重试!');
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.addFail',
+          defaultMessage: '添加失败，请重试！',
+        })}`,
+      );
       return false;
     }
   };
@@ -129,7 +186,15 @@ const TableList: React.FC = (props: any) => {
         return a?.disable > b?.disable ? -1 : 1;
       },
       render: (dom, entity) => {
-        return entity.disable ? <Tag color="red">失效</Tag> : <Tag color="green">有效</Tag>;
+        return entity.disable ? (
+          <Tag color="red">
+            <FormattedMessage id="table.invalid" />
+          </Tag>
+        ) : (
+          <Tag color="green">
+            <FormattedMessage id="table.effective" />
+          </Tag>
+        );
       },
     },
     {
@@ -174,7 +239,7 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      title: '离子片段',
+      title: <FormattedMessage id="table.fragments" />,
       dataIndex: 'fragments',
       hideInSearch: true,
       children: [
@@ -192,7 +257,7 @@ const TableList: React.FC = (props: any) => {
             }),
         },
         {
-          title: '碎片荷质比',
+          title: <FormattedMessage id="table.mz" />,
           dataIndex: 'mz',
           hideInSearch: true,
           render: (dom, entity) =>
@@ -205,7 +270,7 @@ const TableList: React.FC = (props: any) => {
             }),
         },
         {
-          title: '强度',
+          title: <FormattedMessage id="table.intensity" />,
           dataIndex: 'intensity',
           hideInSearch: true,
           render: (dom, entity) =>
@@ -218,7 +283,7 @@ const TableList: React.FC = (props: any) => {
             }),
         },
         {
-          title: '带电量',
+          title: <FormattedMessage id="table.charge" />,
           dataIndex: 'charge',
           hideInSearch: true,
           render: (dom, entity) =>
@@ -246,7 +311,7 @@ const TableList: React.FC = (props: any) => {
       ],
     },
     {
-      title: '操作',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
@@ -262,7 +327,7 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
-              编辑
+              <FormattedMessage id="table.edit" />
             </Tag>
           </a>
           <a
@@ -274,7 +339,7 @@ const TableList: React.FC = (props: any) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
-              详情
+              <FormattedMessage id="table.detail" />
             </Tag>
           </a>
         </>
@@ -303,9 +368,9 @@ const TableList: React.FC = (props: any) => {
         scroll={{ x: 'max-content' }}
         headerTitle={
           props?.location?.state?.libraryName === undefined ? (
-            <>
-              <Text>肽段列表</Text>
-            </>
+            <Text>
+              <FormattedMessage id="table.peptideList" />
+            </Text>
           ) : (
             <>
               <Link
@@ -313,11 +378,17 @@ const TableList: React.FC = (props: any) => {
                   pathname: '/library/list',
                 }}
               >
-                <Text type="secondary">靶库</Text>
+                <Text type="secondary">
+                  <FormattedMessage id="menu.library" />
+                </Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
-                <Text>肽段列表 所属库：{props?.location?.state?.libraryName}</Text>
+                <Text>
+                  <FormattedMessage id="table.peptideList" />{' '}
+                  <FormattedMessage id="table.belongLib" />
+                  {props?.location?.state?.libraryName}
+                </Text>
               </a>
             </>
           )
@@ -352,17 +423,27 @@ const TableList: React.FC = (props: any) => {
                 if (selectedRows.length == 1) {
                   handlePredictModalVisible(true);
                 } else {
-                  message.warn('目前只支持单个肽段的预测');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.singlePred',
+                      defaultMessage: '目前只支持单个肽段的预测',
+                    })}`,
+                  );
                   setSelectedRows([]);
                 }
               } else {
-                message.warn('请选择一个的肽段');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectOnePep',
+                    defaultMessage: '请选择一个的肽段',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:robot-dead" />
-              预测肽段碎片
+              <FormattedMessage id="table.predPepFra" />
             </Tag>
           </a>,
           <a
@@ -374,17 +455,27 @@ const TableList: React.FC = (props: any) => {
                 if (selectedRows.length == 1) {
                   handleDeleteModalVisible(true);
                 } else {
-                  message.warn('目前只支持单个肽段的删除');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.singleDelete',
+                      defaultMessage: '目前只支持单个肽段的删除',
+                    })}`,
+                  );
                   setSelectedRows([]);
                 }
               } else {
-                message.warn('请选择一个的肽段');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectOnePep',
+                    defaultMessage: '请选择一个的肽段',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="error">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-              删除
+              <FormattedMessage id="table.delete" />
             </Tag>
           </a>,
         ]}
@@ -496,7 +587,12 @@ const TableList: React.FC = (props: any) => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error(
+              `${intl.formatMessage({
+                id: 'message.deleteFail',
+                defaultMessage: '删除失败，请重试！',
+              })}`,
+            );
           }
         }}
         deleteModalVisible={deleteModalVisible}

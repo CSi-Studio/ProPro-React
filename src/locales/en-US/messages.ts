@@ -63,4 +63,10 @@ export default {
   'message.selectOv': 'Please select the overview to modify, support multiple elections',
   'message.selectDifExp':
     'Please select at least one experiment, multiple choices, please choose a different experiment name',
+  // 字典界面
+  'message.refreshCache': 'Cache refreshed successfully',
+  // peptide界面
+  'message.singlePred': 'Currently only support for a single peptide',
+  'message.singleDelete': 'Currently supports deletion of a single peptide',
+  'message.selectOnePep': 'Please select a peptide',
 };
