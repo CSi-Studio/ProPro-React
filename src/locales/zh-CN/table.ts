@@ -60,7 +60,8 @@ export default {
   'table.organism': '有机生物',
   'table.sequence': '序列号',
   'table.importProteinLib': '导入蛋白库',
-  // 任务列表
+  // 任务列表import { LibraryType } from '@/components/Enums/Selects';
+
   'table.taskName': '任务列表',
   'table.taskTem': '任务模板',
   'table.taskState': '任务状态',
@@ -129,4 +130,20 @@ export default {
   'table.peptideList': '肽段列表',
   'table.belongLib': '所属库：',
   'table.predPepFra': '预测肽段碎片',
+  // irt界面
+  'table.irtNum': '个实验的IRT结果',
+  // Library界面
+  'table.libraryType': '库类型',
+  'table.decoyPeptideAlgorithm': '伪肽段算法',
+  'table.organicSpecies': '有机物种',
+  'table.proteinCount': '蛋白质数目',
+  'table.peptideCount': '肽段数目',
+  'table.fragmentCount': '碎片数目',
+  'table.empty': '无',
+  'table.clone': '克隆库',
+  'table.shuffle': 'Shuffle方法',
+  'table.nico': 'Nico方法',
+  'table.generateDecoy': '生成伪肽段',
+  'table.repeatCount': '统计肽段重复率',
+  'table.confirm': '确定',
 };

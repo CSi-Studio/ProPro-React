@@ -3,6 +3,7 @@ import { IrtOption } from './charts';
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
+import { FormattedMessage } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 
 // 每行grid的个数
@@ -43,7 +44,12 @@ const IrtCharts: React.FC = (props: any) => {
         onBack: () => {
           window.history.back();
         },
-        title: <>{props?.location?.state?.expNum}个实验的IRT结果</>,
+        title: (
+          <>
+            {props?.location?.state?.expNum}
+            <FormattedMessage id="table.irtNum" />
+          </>
+        ),
         ghost: true,
       }}
     >

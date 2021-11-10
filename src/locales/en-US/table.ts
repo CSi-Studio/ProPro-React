@@ -129,4 +129,20 @@ export default {
   'table.peptideList': 'PeptideList',
   'table.belongLib': 'BelongLib',
   'table.predPepFra': 'Predict',
+  // irt界面
+  'table.irtNum': 'experimental IRT results',
+  // Library界面
+  'table.libraryType': 'Type',
+  'table.decoyPeptideAlgorithm': 'Algorithm',
+  'table.organicSpecies': 'Organism',
+  'table.proteinCount': 'ProteinCount',
+  'table.peptideCount': 'PeptideCount',
+  'table.fragmentCount': 'fragmentCount',
+  'table.empty': 'null',
+  'table.clone': 'CloneLibrary',
+  'table.shuffle': 'Shuffle',
+  'table.nico': 'Nico',
+  'table.generateDecoy': 'GenerateDecoy',
+  'table.repeatCount': 'RepeatCount',
+  'table.confirm': 'Confirm',
 };

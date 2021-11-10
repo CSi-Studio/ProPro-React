@@ -6,10 +6,11 @@ import ProForm, {
   ProFormTextArea,
   ProFormUploadDragger,
 } from '@ant-design/pro-form';
-import { Button, Input, message, Space, Tabs, Tag } from 'antd';
+import { Button, Input, Space, Tabs, Tag } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import { LibraryType } from '@/components/Enums/Selects';
+import { useIntl, FormattedMessage } from 'umi';
 
 const { TabPane } = Tabs;
 export type addFormValueType = {
@@ -28,10 +29,15 @@ export type CreateFormProps = {
 };
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="创建一个库"
+      title={intl.formatMessage({
+        id: 'component.createLibrary',
+        defaultMessage: '创建库',
+      })}
       width={530}
       visible={props.createModalVisible}
       modalProps={{
@@ -43,39 +49,53 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       onFinish={props.onSubmit}
     >
       <Tabs defaultActiveKey="1">
-        <TabPane tab="手动上传" key="1">
+        <TabPane
+          tab={intl.formatMessage({
+            id: 'component.manualUpload',
+            defaultMessage: '手动上传',
+          })}
+          key="1"
+        >
           <ProForm.Group>
             <ProFormText
               rules={[
                 {
                   required: true,
-                  message: '库名字不能为空',
+                  message: <FormattedMessage id="component.libraryNameNull" />,
                 },
               ]}
               width="sm"
               name="name"
-              label="库名称"
-              tooltip="项目名称必须唯一"
-              placeholder="请输入项目名称"
+              label={intl.formatMessage({
+                id: 'component.libraryName',
+                defaultMessage: '库名称',
+              })}
+              tooltip={intl.formatMessage({
+                id: 'component.libraryNameUni',
+                defaultMessage: '库名称必须唯一',
+              })}
             />
             <ProFormSelect
               rules={[
                 {
                   required: true,
-                  message: '库类型不能为空',
+                  message: <FormattedMessage id="component.libraryTypeNull" />,
                 },
               ]}
               options={LibraryType}
               width="sm"
               name="type"
-              label="库类型"
+              label={intl.formatMessage({
+                id: 'table.libraryType',
+                defaultMessage: '库类型',
+              })}
             />
           </ProForm.Group>
           <ProFormUploadDragger
             rules={[
               {
                 required: true,
-                message: '需上传文件',
+                message: <FormattedMessage id="component.uploadFiles" />,
               },
             ]}
             icon={
@@ -89,10 +109,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                 icon="mdi:cloud-upload"
               />
             }
-            title="点击或者拖动文件到此区域"
+            title={intl.formatMessage({
+              id: 'message.uploadFileArea',
+              defaultMessage: '点击或者拖动文件到此区域',
+            })}
             description={
               <p className="ant-upload-hint">
-                支持的文件格式有：<Tag color="green">txt</Tag>
+                <FormattedMessage id="message.fileFormat" />：<Tag color="green">txt</Tag>
                 <Tag color="green">tsv</Tag>
                 <Tag color="green">tsv</Tag>
                 <Tag color="green">csv</Tag>
@@ -103,51 +126,74 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             }
             max={1}
             accept=".txt,.tsv,.csv,.xls,.xlsx,.TraML"
-            label="上传文件"
+            label={intl.formatMessage({
+              id: 'message.fileFormat',
+              defaultMessage: '上传文件',
+            })}
             name="filePath"
             fieldProps={{
-              beforeUpload: (info) => {
+              beforeUpload: () => {
                 return new Promise((resolve, reject) => {
-                  message.success(`您将要上传的是 ${info.name}`);
-                  // eslint-disable-next-line prefer-promise-reject-errors
                   return reject(false);
                 });
               },
             }}
           />
 
-          <ProFormTextArea label="详情描述" name="description" />
+          <ProFormTextArea
+            label={intl.formatMessage({
+              id: 'component.detailDescription',
+              defaultMessage: '详情描述',
+            })}
+            name="description"
+          />
         </TabPane>
-        <TabPane tab="自动导入" key="2">
+        <TabPane
+          tab={intl.formatMessage({
+            id: 'component.autoImport',
+            defaultMessage: '自动导入',
+          })}
+          key="2"
+        >
           <Space direction="vertical">
             <ProForm.Group>
               <ProFormText
                 rules={[
                   {
                     required: true,
-                    message: '库名字不能为空',
+                    message: <FormattedMessage id="component.libraryNameNull" />,
                   },
                 ]}
                 width="sm"
                 name="name"
-                label="库名称"
-                tooltip="项目名称必须唯一"
-                placeholder="请输入项目名称"
+                label={intl.formatMessage({
+                  id: 'component.libraryName',
+                  defaultMessage: '库名称',
+                })}
+                tooltip={intl.formatMessage({
+                  id: 'component.libraryNameUni',
+                  defaultMessage: '库名称必须唯一',
+                })}
               />
               <ProFormSelect
                 rules={[
                   {
                     required: true,
-                    message: '库类型不能为空',
+                    message: <FormattedMessage id="component.uploadFiles" />,
                   },
                 ]}
                 options={LibraryType}
                 width="sm"
                 name="type"
-                label="库类型"
+                label={intl.formatMessage({
+                  id: 'table.libraryType',
+                  defaultMessage: '库类型',
+                })}
               />
             </ProForm.Group>
-            <div>文件地址</div>
+            <div>
+              <FormattedMessage id="component.fileAddress" />
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               <Space>
                 <Input
@@ -159,11 +205,17 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                   style={{ backgroundColor: '#0D93F7', color: 'white', marginBottom: '18px' }}
                   icon={<UploadOutlined />}
                 >
-                  上传
+                  <FormattedMessage id="component.upload" />
                 </Button>
               </Space>
             </div>
-            <ProFormTextArea label="详情描述" name="description" />
+            <ProFormTextArea
+              label={intl.formatMessage({
+                id: 'component.detailDescription',
+                defaultMessage: '详情描述',
+              })}
+              name="description"
+            />
           </Space>
         </TabPane>
       </Tabs>

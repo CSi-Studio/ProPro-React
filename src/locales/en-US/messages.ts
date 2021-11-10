@@ -43,7 +43,7 @@ export default {
   'message.inputMinPepLen': 'Please enter minPepLen',
   'message.inputMaxPepLen': 'Please enter maxPepLen',
   // 任务列表
-  'message.deleteTask': 'Please select the library to delete. Multiple selection is supported.',
+  'message.deleteTask': 'Please select the task to delete. Multiple selection is supported.',
   'message.deleteTaskNum': 'Number of tasks to be deleted: ',
   // 实验列表
   'message.creating': 'Creating..',
@@ -69,4 +69,25 @@ export default {
   'message.singlePred': 'Currently only support for a single peptide',
   'message.singleDelete': 'Currently supports deletion of a single peptide',
   'message.selectOnePep': 'Please select a peptide',
+  // library界面
+  'message.cloning': 'Cloning...',
+  'message.cloneSuc': 'Cloning success!',
+  'message.cloneFail': 'Cloning failed, please try again!',
+  'message.generateDecoy': 'Generating decoy peptide...',
+  'message.generateDecoySuc': 'Decoy peptide was generated successfully!',
+  'message.generateDecoyFail': 'Failed to generate decoy peptide, please try again!',
+  'message.genStatistic': 'Generating basic statistics...',
+  'message.genStatisticSuc': 'Basic statistics generated successfully!',
+  'message.genStatisticFail': 'Failed to generate basic statistics, please try again!',
+  'message.repeatCount': 'Counting peptide repeat rate...',
+  'message.repeatCountSuc': 'Count the peptide repeat rate successfully!',
+  'message.repeatCountFail': 'Failed to count peptide repeat rate, please try again!',
+  'message.singleClone': 'Currently only support of single library clones',
+  'message.singleGenerate': 'Currently only supports a single library decoy peptide generation',
+  'message.selectLibrary': 'Please select a library to use',
+  'message.singleStatistic': 'Only statistics of a single library is supported',
+  'message.singleRepeatCount': 'Only statistics of peptide repetition rates for single libraries',
+  'message.selectDeleteLibrary': 'Please select the library to delete',
+  'message.singleDeleteLibrary': 'Only the deletion of a single library is supported.',
+  
 };

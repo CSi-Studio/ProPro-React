@@ -79,4 +79,18 @@ export default {
   'component.isotope': 'Isotope',
   'component.maxPredFra': 'maxPreFragment',
   'component.nullMaxPredFra': 'Maximum number of segments cannot be empty',
+  'component.editPeptideLib': 'EditPeptideLibrary',
+  // Library界面
+  'component.libraryNameNull': 'Library name cannot be empty',
+  'component.libraryNameUni': 'Library name must be unique',
+  'component.cloneIsDecoy': 'ContainDecoy',
+  'component.createLibrary': 'Create Library',
+  'component.manualUpload': 'ManualUpload',
+  'component.autoImport': 'AutoImport',
+  'component.libraryTypeNull': 'Library type cannot be empty',
+  'component.uploadFiles': 'Files need to be uploaded',
+  'component.detailDescription': 'Detail description',
+  'component.upload': 'Upload',
+  'component.fileAddress': 'FileAddress',
+  'component.inputLibNameDele': 'Please enter the name of the library to delete',
 };

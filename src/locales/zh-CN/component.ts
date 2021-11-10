@@ -80,4 +80,17 @@ export default {
   'component.maxPredFra': '最大预测片段数',
   'component.nullMaxPredFra': '最大片段数不能为空',
   'component.editPeptideLib': '编辑肽段库',
+  // Library界面
+  'component.libraryNameNull': '库名字不能为空',
+  'component.libraryNameUni': '库名称必须唯一',
+  'component.cloneIsDecoy': '克隆是否包含伪肽段',
+  'component.createLibrary': '创建库',
+  'component.manualUpload': '手动上传',
+  'component.autoImport': '自动导入',
+  'component.libraryTypeNull': '库类型不能为空',
+  'component.uploadFiles': '需上传文件',
+  'component.detailDescription': '详情描述',
+  'component.upload': '上传',
+  'component.fileAddress': '文件地址',
+  'component.inputLibNameDele': '请输入要删除的标准库名称',
 };

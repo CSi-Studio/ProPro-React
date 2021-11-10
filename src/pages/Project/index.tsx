@@ -1068,7 +1068,7 @@ const TableList: React.FC = () => {
           formDeleteRes?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === 'ok fine') {
+          if (value.name === 'ok') {
             const success = await handleRmRes(selectedRows[0]);
             if (success) {
               handleDelete1ModalVisible(false);
@@ -1099,7 +1099,7 @@ const TableList: React.FC = () => {
           formDeleteIrt?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === 'ok fine') {
+          if (value.name === 'ok') {
             const success = await handleRmIrt(selectedRows[0]);
             if (success) {
               handleDelete2ModalVisible(false);

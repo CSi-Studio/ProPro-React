@@ -3,6 +3,7 @@ import { ProFormText, ModalForm, ProFormSelect } from '@ant-design/pro-form';
 import { Button } from 'antd';
 import type { TableListItem } from '../data';
 import { YesOrNo } from '@/components/Enums/Selects';
+import { useIntl, FormattedMessage } from 'umi';
 
 export type cloneFormValueType = {
   id: any;
@@ -18,10 +19,15 @@ export type CloneFormProps = {
   form: any;
 };
 const CloneForm: React.FC<CloneFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="克隆一个库"
+      title={intl.formatMessage({
+        id: 'table.clone',
+        defaultMessage: '克隆库',
+      })}
       width={400}
       visible={props.cloneModalVisible}
       modalProps={{
@@ -33,7 +39,7 @@ const CloneForm: React.FC<CloneFormProps> = (props) => {
       onFinish={props.onSubmit}
       submitter={{
         searchConfig: {
-          submitText: '提交',
+          submitText: <FormattedMessage id="component.submit" />,
         },
         resetButtonProps: {
           style: {
@@ -44,7 +50,7 @@ const CloneForm: React.FC<CloneFormProps> = (props) => {
         render: (prop) => {
           return [
             <Button type="primary" key="submit" onClick={() => prop.form?.submit?.()}>
-              确定
+              <FormattedMessage id="table.confirm" />
             </Button>,
           ];
         },
@@ -54,21 +60,29 @@ const CloneForm: React.FC<CloneFormProps> = (props) => {
         rules={[
           {
             required: true,
-            message: '库名字不能为空',
+            message: <FormattedMessage id="component.libraryNameNull" />,
           },
         ]}
         width="sm"
         name="newLibName"
-        label="库名称"
-        tooltip="库名称必须唯一"
-        placeholder="请输入库名称"
+        label={intl.formatMessage({
+          id: 'component.libraryName',
+          defaultMessage: '库名称',
+        })}
+        tooltip={intl.formatMessage({
+          id: 'component.libraryNameUni',
+          defaultMessage: '库名称必须唯一',
+        })}
       />
       <ProFormSelect
         initialValue="false"
         options={YesOrNo}
         width="sm"
         name="includeDecoy"
-        label="克隆是否包含伪肽段"
+        label={intl.formatMessage({
+          id: 'component.cloneIsDecoy',
+          defaultMessage: '克隆是否包含伪肽段',
+        })}
       />
     </ModalForm>
   );

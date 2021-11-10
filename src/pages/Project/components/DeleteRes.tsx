@@ -52,7 +52,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             }}
             color="red"
           >
-            ok fine
+            ok
           </Tag>
           {intl.formatMessage({
             id: 'component.used2delete',
@@ -63,12 +63,12 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: 'ok fine',
+              message: 'ok',
             },
           ]}
           width="sm"
           name="name"
-          placeholder="ok fine"
+          placeholder="ok"
         />
       </Space>
     </ModalForm>

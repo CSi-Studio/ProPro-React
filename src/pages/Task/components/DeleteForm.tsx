@@ -24,7 +24,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
       form={props.form}
       title={
         intl.formatMessage({
-          id: 'component.deleteTaskNum',
+          id: 'message.deleteTaskNum',
           defaultMessage: '将要删除的任务的个数：',
         }) + props.selectedRows.length
       }
@@ -53,7 +53,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             }}
             color="red"
           >
-            ok fine
+            ok
           </Tag>
           {intl.formatMessage({
             id: 'component.used2delete',
@@ -64,12 +64,12 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: '请输入ok fine',
+              message: '请输入ok',
             },
           ]}
           width="sm"
           name="name"
-          placeholder="ok fine"
+          placeholder="ok"
         />
       </Space>
     </ModalForm>

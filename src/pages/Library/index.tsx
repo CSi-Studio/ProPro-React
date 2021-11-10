@@ -9,7 +9,6 @@ import {
   generateDecoys,
   repeatCount,
   statistic,
-  // getPeptide,
 } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import type { addFormValueType } from './components/CreateForm';
@@ -23,148 +22,231 @@ import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import DetailForm from './components/DetailForm';
-import { Link } from 'umi';
-
-/**
- *
- *
- */
-//  const getPeptide = async (values: selectFormValueType) => {
-//   const hide = message.loading('正在获取');
-//   try {
-//     await getPeptide(values)
-//     hide();
-//     message.success('获取成功');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('获取失败，请重试！');
-//     return false;
-//   }
-// };
-
-/**
- * 添加库
- * @param values
- */
-const handleAdd = async (values: addFormValueType) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addList({ ...values });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 克隆库
- * @param values
- */
-const handleClone = async (values: cloneFormValueType) => {
-  const hide = message.loading('正在克隆');
-  try {
-    await cloneList(values);
-    hide();
-    message.success('克隆成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('克隆失败，请重试！');
-    return false;
-  }
-};
-/**
- * 更新库
- * @param values
- */
-const handleUpdate = async (values: updateFormValueType) => {
-  const hide = message.loading('正在更新');
-  try {
-    await updateList({ ...values });
-    hide();
-    message.success('编辑成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('编辑失败，请重试!');
-    return false;
-  }
-};
-/**
- * 生成伪肽段
- * @param values
- */
-const handleGenerate = async (values: { libraryId: any; generator: string }) => {
-  const hide = message.loading('正在生成伪肽段');
-  try {
-    await generateDecoys({ ...values });
-    hide();
-    message.success('生成伪肽段成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('生成伪肽段失败，请重试!');
-    return false;
-  }
-};
-/**
- * 生成基本统计信息
- * @param values
- */
-const handleStatistic = async (libraryId: string) => {
-  const hide = message.loading('正在生成基本统计信息');
-  try {
-    await statistic(libraryId);
-    hide();
-    message.success('生成基本统计信息成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('生成基本统计信息失败，请重试!');
-    return false;
-  }
-};
-/**
- * 统计肽段重复率
- * @param values
- */
-const handleRepeatCount = async (libraryId: string) => {
-  const hide = message.loading('正在统计肽段重复率');
-  try {
-    await repeatCount(libraryId);
-    hide();
-    message.success('统计肽段重复率成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('统计肽段重复率失败，请重试!');
-    return false;
-  }
-};
-
-/**
- * 删除库
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: TableListItem[]) => {
-  try {
-    await removeList({
-      libraryIds: selectedRows[0].id,
-    });
-    message.success('删除成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
+import { Link, useIntl, FormattedMessage } from 'umi';
 
 const TableList: React.FC = () => {
+  const intl = useIntl();
+
+  /**
+   * 添加库
+   * @param values
+   */
+  const handleAdd = async (values: addFormValueType) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.adding',
+        defaultMessage: '正在添加...',
+      })}`,
+    );
+    try {
+      await addList({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.addSuccess',
+          defaultMessage: '添加成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.addFail',
+          defaultMessage: '添加失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 克隆库
+   * @param values
+   */
+  const handleClone = async (values: cloneFormValueType) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.cloning',
+        defaultMessage: '正在克隆...',
+      })}`,
+    );
+    try {
+      await cloneList(values);
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.cloneSuc',
+          defaultMessage: '克隆成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.cloneFail',
+          defaultMessage: '克隆失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+  /**
+   * 更新库
+   * @param values
+   */
+  const handleUpdate = async (values: updateFormValueType) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.updating',
+        defaultMessage: '正在更新...',
+      })}`,
+    );
+    try {
+      await updateList({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.editSuccess',
+          defaultMessage: '编辑成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.editFail',
+          defaultMessage: '编辑失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+  /**
+   * 生成伪肽段
+   * @param values
+   */
+  const handleGenerate = async (values: { libraryId: any; generator: string }) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.generatingDecoy',
+        defaultMessage: '正在生成伪肽段...',
+      })}`,
+    );
+    try {
+      await generateDecoys({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.generateDecoySuc',
+          defaultMessage: '生成伪肽段成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.generateDecoyFail',
+          defaultMessage: '生成伪肽段失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+  /**
+   * 生成基本统计信息
+   * @param values
+   */
+  const handleStatistic = async (libraryId: string) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.genStatistic',
+        defaultMessage: '正在生成基本统计信息...',
+      })}`,
+    );
+    try {
+      await statistic(libraryId);
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.genStatisticSuc',
+          defaultMessage: '生成基本统计信息成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.genStatisticFail',
+          defaultMessage: '生成基本统计信息失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+  /**
+   * 统计肽段重复率
+   * @param values
+   */
+  const handleRepeatCount = async (libraryId: string) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.repeatCount',
+        defaultMessage: '正在统计肽段重复率...',
+      })}`,
+    );
+    try {
+      await repeatCount(libraryId);
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.repeatCountSuc',
+          defaultMessage: '统计肽段重复率成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.repeatCountFail',
+          defaultMessage: '统计肽段重复率失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
+  /**
+   * 删除库
+   * @param selectedRows
+   */
+  const handleRemove = async (selectedRows: TableListItem[]) => {
+    try {
+      await removeList({
+        libraryIds: selectedRows[0].id,
+      });
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteSuccess',
+          defaultMessage: '删除成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
@@ -187,7 +269,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '库名称',
+      title: <FormattedMessage id="component.libraryName" />,
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
@@ -213,7 +295,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '库类型',
+      title: <FormattedMessage id="table.libraryType" />,
       dataIndex: 'type',
       showSorterTooltip: false,
       sorter: (a, b) => (a.type > b.type ? -1 : 1),
@@ -225,7 +307,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '伪肽段算法',
+      title: <FormattedMessage id="table.decoyPeptideAlgorithm" />,
       dataIndex: 'generator',
       hideInSearch: true,
       render: (dom, entity) => {
@@ -243,7 +325,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '有机物种',
+      title: <FormattedMessage id="table.organicSpecies" />,
       hideInSearch: true,
       dataIndex: 'organism',
       showSorterTooltip: false,
@@ -252,22 +334,29 @@ const TableList: React.FC = () => {
         if (entity.organism.length > 0) {
           return <Tag color="geekblue">{dom}</Tag>;
         }
-        return <Tag>未设置</Tag>;
+        return (
+          <Tag>
+            <FormattedMessage id="table.notSet" />
+          </Tag>
+        );
       },
     },
     {
-      title: '蛋白质数目',
+      title: <FormattedMessage id="table.proteinCount" />,
       dataIndex: 'Protein_Count',
       hideInSearch: true,
+      showSorterTooltip: false,
       sorter: (a, b) => (a.Protein_Count > b.Protein_Count ? -1 : 1),
       render: (dom, entity) => {
         return <Tag>{entity?.statistic?.Protein_Count}</Tag>;
       },
     },
     {
-      title: '肽段数目',
+      title: <FormattedMessage id="table.peptideCount" />,
       dataIndex: 'Peptide_Count',
       hideInSearch: true,
+      showSorterTooltip: false,
+
       sorter: (a, b) => (a.Peptide_Count > b.Peptide_Count ? -1 : 1),
       render: (dom, entity) => {
         return (
@@ -282,53 +371,59 @@ const TableList: React.FC = () => {
                 search: `?libraryId=${entity.id}`,
               }}
             >
-              <Tag color="green">查看</Tag>
+              <Tag color="green">
+                <FormattedMessage id="table.check" />
+              </Tag>
             </Link>
           </>
         );
       },
     },
     {
-      title: '碎片数目',
+      title: <FormattedMessage id="table.fragmentCount" />,
       dataIndex: 'Fragment_Count',
       hideInSearch: true,
+      showSorterTooltip: false,
+
       sorter: (a, b) => (a.Fragment_Count > b.Fragment_Count ? -1 : 1),
       render: (dom, entity) => {
         return <Tag>{entity?.statistic?.Fragment_Count}</Tag>;
       },
     },
     {
-      title: '描述信息',
+      title: <FormattedMessage id="table.description" />,
       dataIndex: 'description',
       hideInSearch: true,
       valueType: 'textarea',
       render: (dom, entity) => {
         if (
           entity.description === 'undefined' ||
-          entity.description == null ||
+          entity.description === null ||
           entity.description === ''
         ) {
-          return <Tag>未描述</Tag>;
+          return (
+            <Tag>
+              <FormattedMessage id="table.empty" />
+            </Tag>
+          );
         }
         return (
-          <Tooltip title={entity.description} color="#108ee9" placement="topLeft">
-            <p
-              style={{
-                margin: 0,
-                width: '200px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              <span>{entity.description}</span>
-            </p>
-          </Tooltip>
+          <p
+            style={{
+              margin: 0,
+              width: '200px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            <span>{entity.description}</span>
+          </p>
         );
       },
     },
     {
-      title: '操作',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       fixed: 'right',
       width: '160px',
@@ -345,7 +440,7 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
-              编辑
+              <FormattedMessage id="table.edit" />
             </Tag>
           </a>
           <a
@@ -357,7 +452,7 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-document" />
-              详情
+              <FormattedMessage id="table.detail" />
             </Tag>
           </a>
         </>
@@ -383,7 +478,10 @@ const TableList: React.FC = () => {
     <>
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
-        headerTitle={<>靶库</>}
+        headerTitle={intl.formatMessage({
+          id: 'menu.library',
+          defaultMessage: '靶库',
+        })}
         actionRef={actionRef}
         rowKey="id"
         size="small"
@@ -411,7 +509,7 @@ const TableList: React.FC = () => {
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
                 icon="mdi:playlist-plus"
               />
-              新增
+              <FormattedMessage id="table.add" />
             </Tag>
           </a>,
           <a
@@ -423,17 +521,27 @@ const TableList: React.FC = () => {
                   handleCloneModalVisible(true);
                   setSelectedRows([]);
                 } else {
-                  message.warn('目前只支持单个库的克隆');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.singleClone',
+                      defaultMessage: '目前只支持单个库的克隆',
+                    })}`,
+                  );
                   setSelectedRows([]);
                 }
               } else {
-                message.warn('请选择要克隆的库');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectLibrary',
+                    defaultMessage: '请选择一个库',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:content-copy" />
-              克隆
+              <FormattedMessage id="table.clone" />
             </Tag>
           </a>,
           <Dropdown
@@ -454,11 +562,21 @@ const TableList: React.FC = () => {
                           setSelectedRows([]);
                         }
                         if (selectedRows.length > 1) {
-                          message.warn('目前只支持单个库的伪肽段生成');
+                          message.warn(
+                            `${intl.formatMessage({
+                              id: 'message.singleGenerate',
+                              defaultMessage: '目前只支持单个库的伪肽段生成',
+                            })}`,
+                          );
                           setSelectedRows([]);
                         }
                       } else {
-                        message.warn('请先选择一个库');
+                        message.warn(
+                          `${intl.formatMessage({
+                            id: 'message.selectLibrary',
+                            defaultMessage: '请选择一个库',
+                          })}`,
+                        );
                       }
                     }}
                   >
@@ -467,7 +585,7 @@ const TableList: React.FC = () => {
                         style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
                         icon="mdi:alpha-s-circle"
                       />
-                      Shuffle方法
+                      <FormattedMessage id="table.shuffle" />
                     </Tag>
                   </a>
                 </Menu.Item>
@@ -485,11 +603,21 @@ const TableList: React.FC = () => {
                           setSelectedRows([]);
                         }
                         if (selectedRows.length > 1) {
-                          message.warn('目前只支持单个库的伪肽段生成');
+                          message.warn(
+                            `${intl.formatMessage({
+                              id: 'message.singleGenerate',
+                              defaultMessage: '目前只支持单个库的伪肽段生成',
+                            })}`,
+                          );
                           setSelectedRows([]);
                         }
                       } else {
-                        message.warn('请先选择一个库');
+                        message.warn(
+                          `${intl.formatMessage({
+                            id: 'message.selectLibrary',
+                            defaultMessage: '请选择一个库',
+                          })}`,
+                        );
                       }
                     }}
                   >
@@ -498,7 +626,7 @@ const TableList: React.FC = () => {
                         style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
                         icon="mdi:alpha-n-circle"
                       />
-                      Nico方法
+                      <FormattedMessage id="table.nico" />
                     </Tag>
                   </a>
                 </Menu.Item>
@@ -510,7 +638,7 @@ const TableList: React.FC = () => {
                 style={{ verticalAlign: '-5px', fontSize: '18px', color: '#0D93F7' }}
                 icon="mdi:alpha-p-box"
               />
-              生成伪肽段
+              <FormattedMessage id="table.generateDecoy" />
             </Tag>
           </Dropdown>,
           <a
@@ -521,17 +649,27 @@ const TableList: React.FC = () => {
                   handleStatistic(selectedRows[0].id);
                   setSelectedRows([]);
                 } else {
-                  message.warn('目前只支持单个库的基本信息的统计');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.singleStatistic',
+                      defaultMessage: '目前只支持单个库的基本信息的统计',
+                    })}`,
+                  );
                   setSelectedRows([]);
                 }
               } else {
-                message.warn('请选择要统计的库');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectLibrary',
+                    defaultMessage: '请选择一个库',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-chart" />
-              统计基本信息
+              <FormattedMessage id="table.generateDecoy" />
             </Tag>
           </a>,
           <a
@@ -542,17 +680,27 @@ const TableList: React.FC = () => {
                   handleRepeatCount(selectedRows[0].id);
                   setSelectedRows([]);
                 } else {
-                  message.warn('目前只支持单个库的肽段重复率的统计');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.singleRepeatCount',
+                      defaultMessage: '目前只支持单个库的肽段重复率的统计',
+                    })}`,
+                  );
                   setSelectedRows([]);
                 }
               } else {
-                message.warn('请选择要统计的库');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectLibrary',
+                    defaultMessage: '请选择一个库',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-percent" />
-              统计肽段重复率
+              <FormattedMessage id="table.repeatCount" />
             </Tag>
           </a>,
           <a
@@ -563,17 +711,27 @@ const TableList: React.FC = () => {
                 if (selectedRows.length === 1) {
                   handleDeleteModalVisible(true);
                 } else {
-                  message.warn('目前只支持单个库的删除');
+                  message.warn(
+                    `${intl.formatMessage({
+                      id: 'message.singleDeleteLibrary',
+                      defaultMessage: '目前只支持单个库的删除',
+                    })}`,
+                  );
                   setSelectedRows([]);
                 }
               } else {
-                message.warn('请选择要删除的库');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.selectDeleteLibrary',
+                    defaultMessage: '请选择要删除的库',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="error">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-              删除
+              <FormattedMessage id="table.delete" />
             </Tag>
           </a>,
         ]}
@@ -663,7 +821,12 @@ const TableList: React.FC = () => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error(
+              `${intl.formatMessage({
+                id: 'message.deleteFail',
+                defaultMessage: '删除失败，请重试！',
+              })}`,
+            );
           }
         }}
         deleteModalVisible={deleteModalVisible}

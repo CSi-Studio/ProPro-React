@@ -1,6 +1,7 @@
 import React from 'react';
 import { ProFormText, ModalForm } from '@ant-design/pro-form';
 import { Space } from 'antd';
+import { useIntl, FormattedMessage } from 'umi';
 import { Tag } from 'antd';
 
 export type FormValueType = {
@@ -16,10 +17,15 @@ export type DeleteFormProps = {
 };
 
 const DeleteForm: React.FC<DeleteFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="你确定要删除吗？"
+      title={intl.formatMessage({
+        id: 'component.confirmDeletion',
+        defaultMessage: '你确定要删除吗？',
+      })}
       width={530}
       visible={props.deleteModalVisible}
       modalProps={{
@@ -32,7 +38,11 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
     >
       <Space direction="vertical" style={{ textAlign: 'center', width: '100%' }}>
         <div style={{ marginTop: '24px' }}>
-          请输入标准库名称
+          {intl.formatMessage({
+            id: 'component.inputLibraryName',
+            defaultMessage: '请输入标准库名称',
+          })}
+          ：
           <Tag
             style={{
               margin: ' 0 2px',
@@ -44,18 +54,21 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
           >
             {props?.selectedRows[0]?.name}
           </Tag>
-          以确认删除。
+          {''}
+          {intl.formatMessage({
+            id: 'component.used2delete',
+            defaultMessage: '以确认删除。',
+          })}
         </div>
         <ProFormText
           rules={[
             {
               required: true,
-              message: '请输入要删除的标准库名称',
+              message: <FormattedMessage id="component.inputLibNameDele" />,
             },
           ]}
           width="sm"
           name="name"
-          placeholder="请输入要删除的标准库名称"
         />
       </Space>
     </ModalForm>

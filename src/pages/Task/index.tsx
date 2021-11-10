@@ -246,7 +246,7 @@ const TableList: React.FC = () => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === 'ok fine') {
+          if (value.name === 'ok') {
             const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);

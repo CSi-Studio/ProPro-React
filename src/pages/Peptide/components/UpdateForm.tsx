@@ -3,9 +3,8 @@ import ProForm, {
   ProFormSwitch,
   ProFormText,
   ModalForm,
-  ProFormCheckbox,
 } from '@ant-design/pro-form';
-import { useIntl, FormattedMessage } from 'umi';
+import { useIntl } from 'umi';
 
 export type updateFormValueType = {
   isUnique?: boolean;

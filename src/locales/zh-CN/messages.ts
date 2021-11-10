@@ -42,7 +42,7 @@ export default {
   'message.inputMinPepLen': '请输入minPepLen',
   'message.inputMaxPepLen': '请输入maxPepLen',
   // 任务列表
-  'message.deleteTask': '请选择要删除的库，支持多选',
+  'message.deleteTask': '请选择要删除的任务，支持多选',
   'message.deleteTaskNum': '将要删除的任务的个数：',
   // 实验列表
   'message.creating': '正在生成...',
@@ -67,4 +67,24 @@ export default {
   'message.singlePred': '目前只支持单个肽段的预测',
   'message.singleDelete': '目前只支持单个肽段的删除',
   'message.selectOnePep': '请选择一个的肽段',
+  // library界面
+  'message.cloning': '正在克隆...',
+  'message.cloneSuc': '克隆成功！',
+  'message.cloneFail': '克隆失败，请重试！',
+  'message.generatingDecoy': '正在生成伪肽段...',
+  'message.generateDecoySuc': '生成伪肽段成功！',
+  'message.generateDecoyFail': '生成伪肽段失败，请重试！',
+  'message.genStatistic': '正在生成基本统计信息...',
+  'message.genStatisticSuc': '生成基本统计信息成功！',
+  'message.genStatisticFail': '生成基本统计信息失败，请重试！',
+  'message.repeatCount': '正在统计肽段重复率...',
+  'message.repeatCountSuc': '统计肽段重复率成功！',
+  'message.repeatCountFail': '统计肽段重复率失败，请重试！',
+  'message.singleClone': '目前只支持单个库的克隆',
+  'message.singleGenerate': '目前只支持单个库的伪肽段生成',
+  'message.selectLibrary': '请选择一个库',
+  'message.singleStatistic': '目前只支持单个库的基本信息的统计',
+  'message.singleRepeatCount': '目前只支持单个库的肽段重复率的统计',
+  'message.selectDeleteLibrary': '请选择要删除的库',
+  'message.singleDeleteLibrary': '目前只支持单个库的删除',
 };
