@@ -560,12 +560,12 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
         <Descriptions
           title={intl.formatMessage({
             id: 'component.peptideIdentifyNumber',
-            defaultMessage: '肽段鉴定数(Unique)',
+            defaultMessage: '肽段鉴定数(Unique, Human:Yeast:Ecoli)',
           })}
           column={2}
         >
           <Descriptions.Item label="A">
-            <Tag color="blue">{ratioData?.identifyNumA}</Tag>
+            <Tag color="blue">{ratioData?.identifyNumA}</Tag><Tag color="green">H:{ratioData?.humanA}</Tag><Tag color="green">Y:{ratioData?.yeastA}</Tag><Tag color="green">E:{ratioData?.ecoliA}</Tag>
           </Descriptions.Item>
           <Descriptions.Item
             label={intl.formatMessage({
@@ -576,7 +576,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             <Tag color="red">{`${(ratioData?.missingRatioA * 100).toFixed(2)}%`}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="B">
-            <Tag color="blue">{ratioData?.identifyNumB}</Tag>
+            <Tag color="blue">{ratioData?.identifyNumB}</Tag><Tag color="green">H:{ratioData?.humanB}</Tag><Tag color="green">Y:{ratioData?.yeastB}</Tag><Tag color="green">E:{ratioData?.ecoliB}</Tag>
           </Descriptions.Item>
           <Descriptions.Item
             label={intl.formatMessage({

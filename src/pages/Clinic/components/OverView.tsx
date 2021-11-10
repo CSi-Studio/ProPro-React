@@ -19,7 +19,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       status: item.status,
       realRt: _item.rt,
       nearestRt: _item.nearestRt,
-      totalIons: _item.totalIons,
+      ions50: _item.ions50,
       sum: _item.intensitySum,
       minTotalScore: item.minTotalScore,
       index,
@@ -121,14 +121,14 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
     },
     {
-      title: 'Ions',
-      dataIndex: 'totalIons',
-      key: 'totalIons',
+      title: 'Ions50',
+      dataIndex: 'ions50',
+      key: 'ions50',
       fixed: 'left',
       width: 50,
       render: (dom: any, entity: any) => {
         // console.log('entity', entity);
-        return <Tag color="blue">{entity?.totalIons}</Tag>;
+        return <Tag color="blue">{entity?.ions50}</Tag>;
       },
     },
     {
