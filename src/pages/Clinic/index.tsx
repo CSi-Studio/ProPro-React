@@ -1012,7 +1012,7 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>
-                      {selectedExpIds ? (
+                      {xicChart ? (
                         <>
                           {/* <ReactECharts
                             ref={(e) => {
