@@ -1,9 +1,9 @@
 import component from './zh-CN/component';
 import menu from './zh-CN/menu';
 import pages from './zh-CN/pages';
-import messages_zh_CN from './zh-CN/old';
 import table from './zh-CN/table';
 import clinic from './zh-CN/clinic';
+import messages from './zh-CN/messages';
 
 export default {
   'navBar.lang': '语言',
@@ -17,7 +17,7 @@ export default {
   ...pages,
   ...menu,
   ...component,
-  ...messages_zh_CN,
+  ...messages,
   ...table,
   ...clinic,
 };

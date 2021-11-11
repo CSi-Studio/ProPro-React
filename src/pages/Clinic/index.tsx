@@ -386,7 +386,6 @@ const TableList: React.FC = (props: any) => {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
       setHandleSubmit(!handleSubmit); // 触发设置option
-      console.log('111');
     }
   }, [peptideList]);
 
@@ -669,12 +668,11 @@ const TableList: React.FC = (props: any) => {
   /* 根据肽段搜索蛋白 */
   const onSearch = async (value: any) => {
     setPeptideName(value);
-    setXicChart('');
+    const messageFail = intl.formatMessage({
+      id: 'message.noCorrespondProtein',
+      defaultMessage: '未找到相应蛋白，请检查输入是否正确！',
+    });
     if (prepareData) {
-      const messageFail = intl.formatMessage({
-        id: 'message.noCorrespondProtein',
-        defaultMessage: '未找到相应蛋白，请检查输入是否正确！',
-      });
       const msg = await getPeptideList({ libraryId: prepareData.anaLib.id, peptideRef: value });
       if (msg.data.length > 0) {
         const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
@@ -692,6 +690,7 @@ const TableList: React.FC = (props: any) => {
           setPeptidePage(Math.ceil(peptideArr.indexOf(value) / peptidePageSize)); //跳转到搜索肽段所在的页
           setPeptidesIndex(peptideArr.indexOf(value));
           setProteinsIndex(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]));
+          setHandleSubmit(!handleSubmit);
           return true;
         } else {
           message.warn(messageFail);
@@ -729,6 +728,7 @@ const TableList: React.FC = (props: any) => {
               allowClear
               onSearch={onSearch}
               style={{ width: 300 }}
+              enterButton
             />
 
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
