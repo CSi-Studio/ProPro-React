@@ -145,6 +145,7 @@ const TableList: React.FC = (props: any) => {
 
   /** **************  网络调用相关接口 start  ****************** */
   async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
+    setXicChart('');
     let selectedOverviewIds = [];
     if (!overviewIdsInt) {
       selectedOverviewIds = []
@@ -385,6 +386,7 @@ const TableList: React.FC = (props: any) => {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
       setHandleSubmit(!handleSubmit); // 触发设置option
+      console.log('111');
     }
   }, [peptideList]);
 
@@ -396,7 +398,7 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     fetchEicDataList(false, false);
-  }, [handleSubmit, gridNumberInRow]);
+  }, [handleSubmit]);
 
   useEffect(() => {
     fetchEicDataList(false, false);
@@ -771,10 +773,11 @@ const TableList: React.FC = (props: any) => {
                         setLoading(true);
                         setPeptideLoading(true);
                         setProteinRowKey(record.key);
-                        onProteinChange(record.protein);
+                        // onProteinChange(record.protein);
                         if (prepareData) {
                           setProteinsIndex(prepareData.proteins.indexOf(record.protein));
                         }
+                        setXicChart('');
                       },
                     };
                   }}
@@ -839,7 +842,7 @@ const TableList: React.FC = (props: any) => {
                         setChartsLoading(true);
                         setPeptideRowKey(record.peptide);
                         selectPeptideRow(record.peptide);
-                        setHandleSubmit(!handleSubmit);
+                        // setHandleSubmit(!handleSubmit);
                         const peptideArr = peptideList.map((item) => {
                           return item.peptideRef;
                         });
@@ -963,9 +966,6 @@ const TableList: React.FC = (props: any) => {
                                   checked={selectedExpIds?.indexOf(item.id) > -1}
                                   onChange={(checked) => {
                                     handleExpTagChange(item.id, checked);
-                                    // if (handleOption) {
-                                    //   setHandleSubmit(!handleSubmit);
-                                    // }
                                   }}
                                 >
                                   {item.alias}
