@@ -56,9 +56,9 @@ const { Search } = Input;
 let gridNumberInRow = 3; // 每行grid的个数
 // const xName = `rt/s`; // 横坐标
 // const yName = `int/s`; // 纵坐标
-const gridHeight = 200; // 单张高度（单位px）
-const gridPaddingHeight = 105; // 行间间隔高度（单位px）
-let Height = 0;
+// const gridHeight = 200; // 单张高度（单位px）
+// const gridPaddingHeight = 105; // 行间间隔高度（单位px）
+// let Height = 0;
 /* 蛋白、肽段table 参数 */
 const proteinPageSize = 13;
 const peptidePageSize = 9;
@@ -252,8 +252,7 @@ const TableList: React.FC = (props: any) => {
       //   spectraFn,
       // });
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
-      Height =
-        Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
+
       const charts = (
         <XicCharts
           values={{
@@ -444,6 +443,11 @@ const TableList: React.FC = (props: any) => {
   const selectPeptideRow = (record: any) => {
     if (record !== undefined) {
       setPeptideRef(record);
+    }
+    if (record === peptideRef) {
+      setLoading(false);
+      setChartsLoading(false);
+      setPeptideLoading(false);
     }
   };
 
@@ -703,6 +707,7 @@ const TableList: React.FC = (props: any) => {
     }
     return false;
   };
+  
 
   return (
     <PageContainer
@@ -728,7 +733,7 @@ const TableList: React.FC = (props: any) => {
               allowClear
               onSearch={onSearch}
               style={{ width: 300 }}
-              enterButton
+              enterButton="搜索"
             />
 
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
@@ -769,15 +774,22 @@ const TableList: React.FC = (props: any) => {
                   onRow={(record) => {
                     return {
                       onClick: () => {
-                        setLfqStatus(false);
-                        setLoading(true);
-                        setPeptideLoading(true);
-                        setProteinRowKey(record.key);
-                        // onProteinChange(record.protein);
+                        console.log('record', record);
+                        console.log('proteinRowKey', proteinRowKey);
+                        // setProteinRowKey(record.key);
                         if (prepareData) {
+                          console.log(prepareData.proteins.indexOf(record.protein));
                           setProteinsIndex(prepareData.proteins.indexOf(record.protein));
+                          setLfqStatus(false);
+                          setLoading(true);
+                          setPeptideLoading(true);
+                          console.log('我进来了');
+                          if (record.key === proteinRowKey) {
+                            setLoading(false);
+                            setPeptideLoading(false);
+                          }
+                          // onProteinChange(record.protein);
                         }
-                        setXicChart('');
                       },
                     };
                   }}
@@ -840,7 +852,7 @@ const TableList: React.FC = (props: any) => {
                         setLfqStatus(false);
                         setPeptideLoading(true);
                         setChartsLoading(true);
-                        setPeptideRowKey(record.peptide);
+                        // setPeptideRowKey(record.peptide);
                         selectPeptideRow(record.peptide);
                         // setHandleSubmit(!handleSubmit);
                         const peptideArr = peptideList.map((item) => {
