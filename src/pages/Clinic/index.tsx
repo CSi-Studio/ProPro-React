@@ -56,9 +56,9 @@ const { Search } = Input;
 let gridNumberInRow = 3; // 每行grid的个数
 // const xName = `rt/s`; // 横坐标
 // const yName = `int/s`; // 纵坐标
-// const gridHeight = 200; // 单张高度（单位px）
-// const gridPaddingHeight = 105; // 行间间隔高度（单位px）
-// let Height = 0;
+const gridHeight = 200; // 单张高度（单位px）
+const gridPaddingHeight = 105; // 行间间隔高度（单位px）
+let Height = 0;
 /* 蛋白、肽段table 参数 */
 const proteinPageSize = 13;
 const peptidePageSize = 9;
@@ -251,7 +251,8 @@ const TableList: React.FC = (props: any) => {
       //   spectraFn,
       // });
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
-
+      Height =
+        Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
       const charts = (
         <XicCharts
           values={{
@@ -264,8 +265,6 @@ const TableList: React.FC = (props: any) => {
       );
       setXicChart(charts);
 
-      // Height =
-      //   Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
       // setHandleOption(option);
       setLoading(false);
       setChartsLoading(false);
@@ -668,6 +667,7 @@ const TableList: React.FC = (props: any) => {
   /* 根据肽段搜索蛋白 */
   const onSearch = async (value: any) => {
     setPeptideName(value);
+    setXicChart('');
     if (prepareData) {
       const messageFail = intl.formatMessage({
         id: 'message.noCorrespondProtein',
@@ -1012,7 +1012,7 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>
-                      {selectedExpIds !== undefined ? (
+                      {selectedExpIds ? (
                         <>
                           {/* <ReactECharts
                             ref={(e) => {
