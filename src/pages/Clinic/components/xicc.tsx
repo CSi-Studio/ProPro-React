@@ -1,52 +1,28 @@
-import React from 'react';
-import ReactECharts from 'echarts-for-react';
-import ProCard from '@ant-design/pro-card';
+/* eslint-disable no-nested-ternary */
 import { isEqual, uniqWith, compact } from 'lodash';
 
-const gridNumInRow: number = 3;
-const xName: string = '';
-const yName: string = '';
-const gridHeight: number = 200;
-const gridPaddingHeight: number = 105;
-const totalPaddingHeight: number = 120;
-const gridPaddingWight: number = 5;
-const totalPaddingWidth: number = 3;
-const titleHeight: number = 75;
-const Width: number = 99;
-
-export type IrtChartsProps = {
-  values: any;
-};
-
-const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
-  const intensityKey = props.values.intensityValue.map((value: any) => value.name);
-  const gridNumberInRow = props.values.gridNumberInRow;
-  const data: any[] = props.values.result;
-
-  // 使legend的每一个和intensity一一对应
-  let intMap = data.map((value) => {
-    return Object.keys(value.intMap).map((key) => {
-      return key;
-    });
-  });
-  intMap = [...new Set([].concat(...intMap))];
-  intMap.forEach((item: any) => {
-    if (!intensityKey.includes(item)) {
-      intensityKey.push(item);
-    }
-  });
-
-  const Height =
-    Math.ceil(props.values.result.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
+export default (values: { result: any[]; spectraFn: any }) => {
+  const data: any[] = values.result;
+  const gridNumInRow: number = 3;
+  const xName: string = '';
+  const yName: string = '';
+  const gridHeight: number = 200;
+  const gridPaddingHeight: number = 105;
+  const totalPaddingHeight: number = 120;
+  const gridPaddingWight: number = 5;
+  const totalPaddingWidth: number = 3;
+  const titleHeight: number = 75;
+  const Width: number = 99;
+  console.log('XICspectraFn', values.spectraFn);
 
   /* 碎片信息 */
   let allCutMz: any = [];
+
   data.forEach((item: any) => {
     Object.keys(item.cutInfoMap).forEach((key: any) => {
       allCutMz.push({ name: key, value: item.cutInfoMap[key] });
     });
   });
-  // 去重 排序 lodash的方法
   allCutMz = uniqWith(allCutMz, isEqual).sort((a, b) => (a.value > b.value ? -1 : 1));
 
   const statusFn = (
@@ -406,7 +382,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
       ) {
         return null;
       }
-      intensityKey.forEach((key: string) => {
+      Object.keys(data[i].intMap).forEach((key) => {
+        // console.log(data[i].intMap, key);
         const seriesItem = {
           type: 'line',
           showSymbol: false,
@@ -431,6 +408,12 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
     }
     return series;
   };
+  // console.log(
+  //   '213',
+  //   allCutMz.map((item: { name: string }) => {
+  //     return item.name;
+  //   }),
+  // );
 
   // 设置legend
   const getXicLegend = () => {
@@ -470,29 +453,24 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           ],
         },
         formatter(name: any) {
-          let mzValue = allCutMz.map((item: any) => {
+          let a = allCutMz.map((item: any) => {
             if (item.name === name) {
               return item.value;
             }
           });
-          // 取出 undefined 项
-          mzValue = compact(mzValue);
-          return `${name}:${mzValue[0] ? mzValue[0] : 0}`;
+          a = compact(a);
+          return `${name}:${a[0] ? a[0] : 0}`;
         },
       },
     ];
     for (let i = 0; i < data.length; i += 1) {
       // rt赋值
       const keyName: any = [];
-      let singleCutMz: any = [];
-      Object.keys(data[i].cutInfoMap).forEach((key: any) => {
-        singleCutMz.push({ name: key, value: data[i].cutInfoMap[key] });
+      Object.keys(data[i].intMap).forEach((key) => {
+        keyName.push(key);
       });
-      singleCutMz = uniqWith(singleCutMz, isEqual).sort((a, b) => (a.value > b.value ? -1 : 1));
-      singleCutMz.forEach((item: { name: string }) => {
-        keyName.push(item.name);
-      });
-
+      // console.log(data);
+      // console.log(keyName);
       const item = {
         data: keyName,
         right: '8%',
@@ -545,7 +523,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const getXicOption = () => {
     const gridNumber = data.length;
     function chartsFn(params: any) {
-      props.values.spectraFn(params);
+      values.spectraFn(params);
     }
     window.chartsFn = chartsFn;
     return {
@@ -573,11 +551,9 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
             return b.data[1] - a.data[1];
           });
           window.paramsTool = params;
-
-          let html = `<div  id="specialLook" style="pointer-events: all;"
-          onclick="
+          let html = `<div  id="specialLook" style="pointer-events: all;" onclick="
             chartsFn(paramsTool);
-          " 
+          "
           >查看光谱图</div>${params[0].axisValue}<br />`;
           params.forEach((item: any) => {
             html += `${item.marker}<span style="display:inline-block;margin-right:4px;width:30px">${item.seriesName}</span>&nbsp&nbsp&nbsp <span style="font-weight:bold">${item.data[1]}</span><br />`;
@@ -614,16 +590,5 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
       legend: getXicLegend(),
     };
   };
-
-  return (
-    <ProCard>
-      <ReactECharts
-        option={getXicOption()}
-        style={{ width: `100%`, height: Height }}
-        lazyUpdate={true}
-      />
-    </ProCard>
-  );
+  return getXicOption();
 };
-
-export default XicCharts;

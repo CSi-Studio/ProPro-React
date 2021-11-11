@@ -20,7 +20,7 @@ import {
 } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
-import ReactECharts from 'echarts-for-react';
+// import ReactECharts from 'echarts-for-react';
 import {
   getExpData,
   getPeptideRatio,
@@ -37,7 +37,7 @@ import IrtCharts from './components/Irt';
 import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
-import xic from './components/xic';
+// import xic from './components/xic';
 import RtPairsCharts from './components/RtPairs';
 import { peptideList as getPeptideList } from '../Peptide/service';
 import { Link } from 'umi';
@@ -46,6 +46,7 @@ import OverView from './components/OverView';
 import PeptideDis from './components/PeptideDis';
 import { overviewList } from '../Overview/service';
 import { useIntl, FormattedMessage } from 'umi';
+import XicCharts from './components/xic';
 
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
@@ -55,9 +56,9 @@ const { Search } = Input;
 let gridNumberInRow = 3; // 每行grid的个数
 // const xName = `rt/s`; // 横坐标
 // const yName = `int/s`; // 纵坐标
-const gridHeight = 200; // 单张高度（单位px）
-const gridPaddingHeight = 105; // 行间间隔高度（单位px）
-let Height = 0;
+// const gridHeight = 200; // 单张高度（单位px）
+// const gridPaddingHeight = 105; // 行间间隔高度（单位px）
+// let Height = 0;
 /* 蛋白、肽段table 参数 */
 const proteinPageSize = 13;
 const peptidePageSize = 9;
@@ -72,7 +73,7 @@ const TableList: React.FC = (props: any) => {
   const [featureMap, setFeatureMap] = useState<any>([]); // 存放featureMap
   const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
   const [peptideRatioData, setPeptideRatioData] = useState<any>(); // 存放分析结果的初始数据
-  const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
+  // const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 进入蛋白诊所的时候初始化的数据,包含实验列表,蛋白质列表
   const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段的Table行
@@ -106,10 +107,12 @@ const TableList: React.FC = (props: any) => {
   /* RtPairs */
   const [rtPairs, setRtPairs] = useState<any>();
   /* 获取echarts实例，使用其Api */
-  const [echarts, setEcharts] = useState<any>();
+  // const [echarts, setEcharts] = useState<any>();
   /* 控制tabs */
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [peptideName, setPeptideName] = useState<string>(); // 根据肽段查找蛋白
+  const [xicChart, setXicChart] = useState<any>(); // XIC图
+
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
   const peptideColumn: ProColumns<PeptideTableItem>[] = [
@@ -195,9 +198,9 @@ const TableList: React.FC = (props: any) => {
       setExpData(result.data);
       setFeatureMap(result.featureMap.intensityMap);
       /* 碎片Mz echarts toolbox */
-      const getCutInfo = () => {
-        setCutInfoVisible(true);
-      };
+      // const getCutInfo = () => {
+      //   setCutInfoVisible(true);
+      // };
 
       /* 展示碎片光谱图 */
       const spectraFn = async (item: any) => {
@@ -224,18 +227,46 @@ const TableList: React.FC = (props: any) => {
         }
       };
 
-      /* 获取option */
-      const option = xic({
-        result: result.data.sort((a: any, b: any) => b.alias - a.alias),
-        getCutInfo,
-        spectraFn,
+      /* 碎片信息 */
+      const allCutInfo: any = [];
+      const allCutMz: any = {};
+      result.data.forEach((item: any) => {
+        Object.keys(item.cutInfoMap).forEach((key: any) => {
+          allCutMz[key] = item.cutInfoMap[key];
+          allCutInfo.push(key);
+        });
       });
-      console.log(option);
+      const intensityValue: any = [];
+      Object.keys(result.featureMap.intensityMap).forEach((key: any) => {
+        intensityValue.push({ name: key, data: result.featureMap.intensityMap[key] });
+      });
 
+      intensityValue.sort((a: { data: number }, b: { data: number }) =>
+        b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
+      );
+
+      // /* 获取option */
+      // const option = xic({
+      //   result: result.data.sort((a: any, b: any) => b.alias - a.alias),
+      //   spectraFn,
+      // });
       gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
-      Height =
-        Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
-      setHandleOption(option);
+
+      const charts = (
+        <XicCharts
+          values={{
+            result: result.data.sort((a: any, b: any) => b.alias - a.alias),
+            spectraFn,
+            gridNumberInRow,
+            intensityValue,
+          }}
+        />
+      );
+      setXicChart(charts);
+
+      // Height =
+      //   Math.ceil(result.data.length / gridNumberInRow) * (gridHeight + gridPaddingHeight) + 50;
+      // setHandleOption(option);
       setLoading(false);
       setChartsLoading(false);
       setPeptideLoading(false);
@@ -298,6 +329,7 @@ const TableList: React.FC = (props: any) => {
     /* 准备数据 */
     const init = async () => {
       fetchEicDataList(false, false);
+
       if (overviewIdsInt) {
         setSelectedExpIds(overviewIdsInt?.split(','));
       }
@@ -370,13 +402,6 @@ const TableList: React.FC = (props: any) => {
   useEffect(() => {
     fetchEicDataList(false, false);
   }, [smooth, denoise]);
-
-  // const expDataObj = {};
-  // // exp对象数组去重
-  // const expDataSet = expData.reduce((preValue: any[], value: { alias: string | number }) => {
-  //   expDataObj[value.alias] ? '' : (expDataObj[value.alias] = true && preValue.push(value));
-  //   return preValue;
-  // }, []);
 
   // 点击选择 tags
   const handleExpTagChange = (item: string, checked: boolean) => {
@@ -628,16 +653,15 @@ const TableList: React.FC = (props: any) => {
   expData.forEach((item: any) => {
     Object.keys(item.cutInfoMap).forEach((key: any) => {
       allCutMz[key] = item.cutInfoMap[key];
-      // allCutMz.push(`${key}:${item.cutInfoMap[key]}`);
       allCutInfo.push(key);
     });
   });
-  const IntensityData: any = [];
+  const intensityData: any = [];
   Object.keys(featureMap).forEach((key: any) => {
-    IntensityData.push({ name: key, data: featureMap[key] });
+    intensityData.push({ name: key, data: featureMap[key] });
   });
 
-  IntensityData.sort((a: { data: number }, b: { data: number }) =>
+  intensityData.sort((a: { data: number }, b: { data: number }) =>
     b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
   );
 
@@ -704,22 +728,7 @@ const TableList: React.FC = (props: any) => {
               onSearch={onSearch}
               style={{ width: 300 }}
             />
-            {/* <Input
-              prefix={
-                <>
-                  <SearchOutlined />
-                  <span> 搜索肽段：</span>
-                </>
-              }
-              onChange={(event) => {
-                if (event.target.value !== '') {
-                  setPeptideName(event.target.value);
-                  onSearch(event.target.value);
-                }
-              }}
-              placeholder="请输入要搜索的肽段"
-              style={{ width: 300 }}
-            /> */}
+
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
               <FormattedMessage id="table.selfPeptidePredict" />
             </Button>
@@ -877,7 +886,7 @@ const TableList: React.FC = (props: any) => {
                       )}
                     </span>
                     <>
-                      {IntensityData.map((item: any) => {
+                      {intensityData.map((item: any) => {
                         return (
                           <Tag key={item.name.toString()}>
                             {item.name}:{item.data}
@@ -954,9 +963,9 @@ const TableList: React.FC = (props: any) => {
                                   checked={selectedExpIds?.indexOf(item.id) > -1}
                                   onChange={(checked) => {
                                     handleExpTagChange(item.id, checked);
-                                    if (handleOption) {
-                                      setHandleSubmit(!handleSubmit);
-                                    }
+                                    // if (handleOption) {
+                                    //   setHandleSubmit(!handleSubmit);
+                                    // }
                                   }}
                                 >
                                   {item.alias}
@@ -990,9 +999,9 @@ const TableList: React.FC = (props: any) => {
                                 checked={selectedExpIds?.indexOf(item.id) > -1}
                                 onChange={(checked) => {
                                   handleExpTagChange(item.id, checked);
-                                  if (handleOption) {
-                                    setHandleSubmit(!handleSubmit);
-                                  }
+                                  // if (handleOption) {
+                                  //   setHandleSubmit(!handleSubmit);
+                                  // }
                                 }}
                               >
                                 {item.alias}
@@ -1003,16 +1012,19 @@ const TableList: React.FC = (props: any) => {
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>
-                      {selectedExpIds && handleOption !== undefined ? (
-                        <ReactECharts
-                          ref={(e) => {
-                            setEcharts(e);
-                          }}
-                          option={handleOption}
-                          notMerge={true}
-                          lazyUpdate={false}
-                          style={{ width: '100%', height: Height }}
-                        />
+                      {selectedExpIds !== undefined ? (
+                        <>
+                          {/* <ReactECharts
+                            ref={(e) => {
+                              setEcharts(e);
+                            }}
+                            option={handleOption}
+                            notMerge={true}
+                            lazyUpdate={false}
+                            style={{ width: '100%', height: Height }}
+                          /> */}
+                          {xicChart}
+                        </>
                       ) : (
                         <Empty
                           description="Loading..."
