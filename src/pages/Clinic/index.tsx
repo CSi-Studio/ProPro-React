@@ -707,7 +707,6 @@ const TableList: React.FC = (props: any) => {
     }
     return false;
   };
-  
 
   return (
     <PageContainer
@@ -736,6 +735,9 @@ const TableList: React.FC = (props: any) => {
               enterButton="搜索"
             />
 
+            <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(false, false)}>
+              刷新
+            </Button>
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
               <FormattedMessage id="table.selfPeptidePredict" />
             </Button>
@@ -774,16 +776,12 @@ const TableList: React.FC = (props: any) => {
                   onRow={(record) => {
                     return {
                       onClick: () => {
-                        console.log('record', record);
-                        console.log('proteinRowKey', proteinRowKey);
                         // setProteinRowKey(record.key);
                         if (prepareData) {
-                          console.log(prepareData.proteins.indexOf(record.protein));
                           setProteinsIndex(prepareData.proteins.indexOf(record.protein));
                           setLfqStatus(false);
                           setLoading(true);
                           setPeptideLoading(true);
-                          console.log('我进来了');
                           if (record.key === proteinRowKey) {
                             setLoading(false);
                             setPeptideLoading(false);
