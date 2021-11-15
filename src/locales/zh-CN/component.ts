@@ -24,9 +24,9 @@ export default {
   'component.updateLibrary': '更新标准库',
   'component.libraryName': '库名称',
   // 诊所
-  'component.noIdentify': '尚未鉴定',
-  'component.successIdentify': '鉴定成功',
-  'component.failIdentify': '鉴定失败',
+  'component.noIdentify': '未鉴定',
+  'component.successIdentify': '成功',
+  'component.failIdentify': '失败',
   'component.notEnoughIdentify': '碎片不足',
   'component.lackOfPeakGroup': '缺少峰组',
   'component.noEIC': 'EIC为空',

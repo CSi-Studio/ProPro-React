@@ -8,7 +8,6 @@ export type OverViewProps = {
 };
 
 const OverView: React.FC<OverViewProps> = (props: any) => {
-
   const [ovRowKey, setOvRowKey] = useState<any>();
   const { prepareData, expData } = props.values;
 
@@ -139,12 +138,11 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        if(entity?.fine){
+        if (entity?.fine) {
           return <Tag color="green">{entity?.init?.toFixed(3)}</Tag>;
-        }else{
+        } else {
           return <Tag color="blue">{entity?.init?.toFixed(3)}</Tag>;
         }
-        
       },
     },
     {
@@ -237,7 +235,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                   )}x${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}=${(
                     prepareData.overviewMap[entity?.expId][0]?.weights[type] *
                     entity?.peakGroupList[entity?.index]?.scores[index]
-                  )?.toFixed(4)}`}
+                  )?.toFixed(2)}`}
                 </Tag>
               )}
             </>
