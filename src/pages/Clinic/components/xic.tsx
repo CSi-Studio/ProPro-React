@@ -125,15 +125,15 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
     const titles = [];
     for (let i = 0; i < data.length; i += 1) {
       // rt赋值
-      let rt: any[] = [];
-      if (data[i].scoreList) {
-        rt = data[i].scoreList.map((j: any, index: any) => {
+      let apexRt: any[] = [];
+      if (data[i].peakGroupList) {
+        apexRt = data[i].peakGroupList.map((j: any, index: any) => {
           if (index === data[i].selectIndex) {
-            return j.rt.toFixed(4);
+            return j.apexRt.toFixed(4);
           }
           return false;
         });
-        rt = rt.filter(Boolean);
+        apexRt = apexRt.filter(Boolean);
       }
       const item = {
         text: `${data[i].alias} (${data[i].expId.substring(data[i].expId.length - 5)} - ${data[
@@ -160,8 +160,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
             'Error',
           )}}`,
           `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr.toFixed(4)}` : `fdr: -`}}`,
-          `{sum|${data[i].sum ? `sum: ${data[i].sum}` : `sum: -`}}`,
-          `{rt|${data[i].scoreList !== null ? `rt: ${rt}` : `rt: -`}}`,
+          `{sum|${data[i].intensitySum ? `sum: ${data[i].intensitySum}` : `sum: -`}}`,
+          `{rt|${data[i].peakGroupList !== null ? `rt: ${data[i].apexRt}` : `rt: -`}}`,
         ].join(' '),
         subtextStyle: {
           rich: {
@@ -326,23 +326,23 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   };
 
   // 设置标注区域
-  const getMarkArea = (value: { scoreList: { rtRangeFeature: string }[]; selectIndex: number }) => {
-    if (!value.scoreList) {
+  const getMarkArea = (value: { peakGroupList: { leftRt: number, rightRt: number }[]; selectIndex: number }) => {
+    if (!value.peakGroupList) {
       return null;
     }
     const markAreaOpt: any = {
       animation: false,
       data: [],
     };
-    value.scoreList.forEach((item: { rtRangeFeature: string }, index) => {
-      const rtRange = item.rtRangeFeature.split(';');
+    value.peakGroupList.forEach((item: { leftRt: number, rightRt: number }, index) => {
+     
       markAreaOpt.data.push([
         {
-          xAxis: rtRange[0],
+          xAxis: item.leftRt,
           itemStyle: { color: value.selectIndex === index ? '#AAE68A' : 'rgba(256,256,256,0.3)' },
         },
         {
-          xAxis: rtRange[1],
+          xAxis: item.rightRt,
           itemStyle: { color: value.selectIndex === index ? '#AAE68A' : 'rgba(256,256,256,0.3)' },
         },
       ]);
@@ -352,8 +352,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   };
 
   // 设置标注线
-  const getMarkLine = (value: { scoreList: any[]; selectIndex: any }) => {
-    if (!value.scoreList) {
+  const getMarkLine = (value: { peakGroupList: any[]; selectIndex: any }) => {
+    if (!value.peakGroupList) {
       return null;
     }
     const markLineOpt: any = {
@@ -375,9 +375,9 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
       data: [],
     };
 
-    value.scoreList.forEach((item: any) => {
+    value.peakGroupList.forEach((item: any) => {
       markLineOpt.data.push({
-        xAxis: item.nearestRt,
+        xAxis: item.selectedRt,
         lineStyle: { color: '#316EC8', type: 'dotted', dashOffset: 2, width: 1 },
       });
     });

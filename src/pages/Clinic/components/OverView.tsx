@@ -13,19 +13,21 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
   const { prepareData, expData } = props.values;
 
   let scoreResult: any[] = expData.map((item: any) => {
-    return item?.scoreList?.map((_item: any, index: any) => ({
+    return item?.peakGroupList?.map((_item: any, index: any) => ({
       expId: item.expId,
       alias: item.alias,
       status: item.status,
-      realRt: _item.rt,
-      nearestRt: _item.nearestRt,
-      ions50: _item.ions50,
-      sum: _item.intensitySum,
+      apexRt: _item.apexRt,
+      selectedRt: _item.selectedRt,
+      ionsLow: _item.ionsLow,
+      fine: _item.fine,
+      init: _item.init,
+      intensitySum: _item.intensitySum,
       minTotalScore: item.minTotalScore,
       index,
-      key: _item.rt,
+      key: _item.apexRt,
       selectIndex: item.selectIndex,
-      scoreList: item?.scoreList,
+      peakGroupList: item?.peakGroupList,
     }));
   });
   scoreResult = [].concat(...scoreResult); // 拍平数组
@@ -106,7 +108,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
               break;
           }
         }
-        if (entity?.scoreList[entity?.index]?.scores[0] >= entity?.minTotalScore) {
+        if (entity?.peakGroupList[entity?.index]?.scores[0] >= entity?.minTotalScore) {
           return (
             <Tag color="success">
               <FormattedMessage id="component.successIdentify" />
@@ -121,44 +123,48 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
     },
     {
-      title: 'Ions50',
-      dataIndex: 'ions50',
-      key: 'ions50',
+      title: 'ILow',
+      dataIndex: 'ionsLow',
+      key: 'ionsLow',
       fixed: 'left',
       width: 50,
       render: (dom: any, entity: any) => {
-        // console.log('entity', entity);
-        return <Tag color="blue">{entity?.ions50}</Tag>;
+        return <Tag color="blue">{entity?.ionsLow}</Tag>;
       },
     },
     {
-      title: 'RealRT',
-      dataIndex: 'realRt',
-      key: 'realRt',
+      title: 'Init',
+      dataIndex: 'init',
+      key: 'init',
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity?.realRt?.toFixed(1)}</Tag>;
+        if(entity?.fine){
+          return <Tag color="green">{entity?.init?.toFixed(3)}</Tag>;
+        }else{
+          return <Tag color="blue">{entity?.init?.toFixed(3)}</Tag>;
+        }
+        
       },
     },
     {
       title: 'NearRT',
-      dataIndex: 'nearestRt',
-      key: 'nearestRt',
+      dataIndex: 'selectedRt',
+      key: 'selectedRt',
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity?.nearestRt?.toFixed(1)}</Tag>;
+        return <Tag color="blue">{entity?.selectedRt?.toFixed(1)}</Tag>;
       },
     },
     {
       title: 'Sum',
-      dataIndex: 'sum',
-      key: 'sum',
+      dataIndex: 'intensitySum',
+      key: 'intensitySum',
       fixed: 'left',
       width: 70,
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity?.sum?.toFixed(0)}</Tag>;
+        return <Tag color="blue">{entity?.intensitySum?.toFixed(0)}</Tag>;
       },
     },
     {
@@ -205,9 +211,9 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       render: (dom: any, entity: any) => {
         if (
           entity?.selectIndex !== null &&
-          entity?.scoreList !== null &&
-          entity?.scoreList[entity?.selectIndex].scores[index] !== null &&
-          entity?.scoreList[entity?.selectIndex].scores[index] !== 'NaN' &&
+          entity?.peakGroupList !== null &&
+          entity?.peakGroupList[entity?.selectIndex].scores[index] !== null &&
+          entity?.peakGroupList[entity?.selectIndex].scores[index] !== 'NaN' &&
           prepareData.overviewMap[entity?.expId] != null &&
           prepareData.overviewMap[entity?.expId].length > 0
         ) {
@@ -216,21 +222,21 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
               {index === 0 ? (
                 <Tag
                   color={
-                    entity?.scoreList[entity?.index]?.scores[index] > entity?.minTotalScore
+                    entity?.peakGroupList[entity?.index]?.scores[index] > entity?.minTotalScore
                       ? 'green'
                       : 'blue'
                   }
-                  key={entity?.scoreList[entity?.index]?.scores[index]?.toString()}
+                  key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
                 >
-                  {entity?.scoreList[entity?.index]?.scores[index]?.toFixed(3)}
+                  {entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(3)}
                 </Tag>
               ) : (
-                <Tag key={entity?.scoreList[entity?.index]?.scores[index]?.toString()}>
+                <Tag key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}>
                   {`${prepareData.overviewMap[entity?.expId][0]?.weights[type]?.toFixed(
                     3,
-                  )}x${entity?.scoreList[entity?.index]?.scores[index]?.toFixed(2)}=${(
+                  )}x${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}=${(
                     prepareData.overviewMap[entity?.expId][0]?.weights[type] *
-                    entity?.scoreList[entity?.index]?.scores[index]
+                    entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(4)}`}
                 </Tag>
               )}

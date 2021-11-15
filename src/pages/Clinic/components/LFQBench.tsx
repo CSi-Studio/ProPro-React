@@ -562,7 +562,7 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
             id: 'component.peptideIdentifyNumber',
             defaultMessage: '肽段鉴定数(Unique, Human:Yeast:Ecoli)',
           })}
-          column={2}
+          column={1}
         >
           <Descriptions.Item label="A">
             <Tag color="blue">{ratioData?.identifyNumA}</Tag><Tag color="green">H:{ratioData?.humanA}</Tag><Tag color="green">Y:{ratioData?.yeastA}</Tag><Tag color="green">E:{ratioData?.ecoliA}</Tag>
