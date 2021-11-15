@@ -20,7 +20,6 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       selectedRt: _item.selectedRt,
       ionsLow: _item.ionsLow,
       fine: _item.fine,
-      init: _item.init,
       intensitySum: _item.intensitySum,
       minTotalScore: item.minTotalScore,
       index,
@@ -122,7 +121,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
     },
     {
-      title: 'ILow',
+      title: 'Ions',
       dataIndex: 'ionsLow',
       key: 'ionsLow',
       fixed: 'left',
@@ -131,22 +130,9 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         return <Tag color="blue">{entity?.ionsLow}</Tag>;
       },
     },
+  
     {
-      title: 'Init',
-      dataIndex: 'init',
-      key: 'init',
-      width: 70,
-      fixed: 'left',
-      render: (dom: any, entity: any) => {
-        if (entity?.fine) {
-          return <Tag color="green">{entity?.init?.toFixed(3)}</Tag>;
-        } else {
-          return <Tag color="blue">{entity?.init?.toFixed(3)}</Tag>;
-        }
-      },
-    },
-    {
-      title: 'NearRT',
+      title: 'RT',
       dataIndex: 'selectedRt',
       key: 'selectedRt',
       width: 70,
