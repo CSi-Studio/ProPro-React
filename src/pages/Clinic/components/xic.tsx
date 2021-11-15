@@ -389,8 +389,11 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const getSeriesData = (xdata: [], ydata: []) => {
     const sData: any[][] = [];
     const length = Math.min(xdata.length);
+
     for (let i = 0; i < length; i += 1) {
-      sData.push([xdata[i], ydata[i]]);
+      if (ydata && xdata) {
+        sData.push([xdata[i], ydata[i]]);
+      }
     }
     return sData;
   };
