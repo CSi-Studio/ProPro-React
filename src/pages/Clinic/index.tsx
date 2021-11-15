@@ -17,6 +17,7 @@ import {
   Row,
   Col,
   Spin,
+  Typography,
 } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
@@ -51,6 +52,7 @@ import XicCharts from './components/xic';
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
 const { Search } = Input;
+const { Text } = Typography;
 
 /* echarts参数 */
 let gridNumberInRow = 3; // 每行grid的个数
@@ -408,6 +410,7 @@ const TableList: React.FC = (props: any) => {
       ? [...selectedExpIds, item]
       : selectedExpIds.filter((t: string) => t !== item);
     setSelectedExpIds(nextSelectedTags);
+    setHandleSubmit(!handleSubmit);
   };
 
   /* 全选所有实验Tag */
@@ -732,7 +735,6 @@ const TableList: React.FC = (props: any) => {
               allowClear
               onSearch={onSearch}
               style={{ width: 300 }}
-              enterButton="搜索"
             />
 
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(false, false)}>
@@ -885,14 +887,14 @@ const TableList: React.FC = (props: any) => {
                     <span>
                       {expData.length > 0 ? (
                         <>
-                          <strong>Protein: </strong>
-                          <span style={{ userSelect: 'all' }}>{expData[0].proteins[0]}</span>
+                          <Text strong>Protein: </Text>
+                          <Text style={{ userSelect: 'all' }}>{expData[0].proteins[0]}</Text>
                           &nbsp;&nbsp;
-                          <strong>Peptide</strong>:{' '}
-                          <span style={{ userSelect: 'all' }}>{expData[0].peptideRef}</span>
+                          <Text strong>Peptide</Text>:{' '}
+                          <Text style={{ userSelect: 'all' }}>{expData[0].peptideRef}</Text>
                           &nbsp;&nbsp;
                           <Tag>{[...new Set([].concat(...allCutInfo))].length}&nbsp; Ions</Tag>
-                          <strong>Intensity: </strong>&nbsp;&nbsp;
+                          <Text strong>Intensity: </Text>&nbsp;&nbsp;
                         </>
                       ) : (
                         ''
