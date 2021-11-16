@@ -214,7 +214,20 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                 >
                   {entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(3)}
                 </Tag>
-              ) : (
+              ) : (index===1?(
+                <Tag
+                color={
+                  entity?.peakGroupList[entity?.index]?.fine? 'green' : 'blue'
+                }
+                 key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}>
+                  {`${prepareData.overviewMap[entity?.expId][0]?.weights[type]?.toFixed(
+                    3,
+                  )}x${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}=${(
+                    prepareData.overviewMap[entity?.expId][0]?.weights[type] *
+                    entity?.peakGroupList[entity?.index]?.scores[index]
+                  )?.toFixed(2)}`}
+                </Tag>
+              ):(
                 <Tag key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}>
                   {`${prepareData.overviewMap[entity?.expId][0]?.weights[type]?.toFixed(
                     3,
@@ -223,7 +236,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
                 </Tag>
-              )}
+              ))
+              }
             </>
           );
         }

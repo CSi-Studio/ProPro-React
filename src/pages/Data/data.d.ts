@@ -6,9 +6,9 @@ export type TableListItem = {
   qValue: number;
   decoy: boolean;
   irt: number;
-  realRt: number;
+  apexRt: number;
   status: number;
-  sum: number;
+  intensitySum: number;
 };
 
 export type TableListPagination = {

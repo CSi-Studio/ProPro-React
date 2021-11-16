@@ -113,15 +113,15 @@ const TableList: React.FC = (props: any) => {
     },
     {
       title: 'RealRt/LibRt/ΔT',
-      dataIndex: 'realRt',
+      dataIndex: 'apexRt',
       hideInSearch: true,
       render: (dom, entity) => {
         const tags = [];
 
-        if (entity.realRt) {
+        if (entity.apexRt) {
           tags.push(
             <Tag key="1" color="green">
-              {entity.realRt.toFixed(0)}
+              {entity.apexRt.toFixed(0)}
             </Tag>,
           );
         } else {
@@ -145,10 +145,10 @@ const TableList: React.FC = (props: any) => {
             </Tag>,
           );
         }
-        if (entity.realRt && entity.irt) {
+        if (entity.apexRt && entity.irt) {
           tags.push(
             <Tag key="3" color="blue">
-              {Math.abs(entity.realRt - entity.irt).toFixed(1)}
+              {Math.abs(entity.apexRt - entity.irt).toFixed(1)}
             </Tag>,
           );
         }
@@ -157,10 +157,10 @@ const TableList: React.FC = (props: any) => {
     },
     {
       title: 'Sum',
-      dataIndex: 'sum',
+      dataIndex: 'intensitySum',
       hideInSearch: true,
       render: (dom, entity) => {
-        return <Tag color="purple">{entity.sum}</Tag>;
+        return <Tag color="purple">{entity.intensitySum}</Tag>;
       },
     },
     // {
