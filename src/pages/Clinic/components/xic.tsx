@@ -22,6 +22,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const intensityKey = props.values.intensityValue.map((value: any) => value.name);
   const gridNumberInRow = props.values.gridNumberInRow;
   const data: any[] = props.values.result;
+  console.log(data);
 
   // 使legend的每一个和intensity一一对应
   let intMap = data.map((value) => {
@@ -94,7 +95,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         show: 'true',
         backgroundColor: `${statusFn(
           data[i].status,
-          '#000',
+          '#eee',
           'rgba(215,236,184,0.5)',
           'rgba(241,158,156,0.3)',
           'rgba(251,229,154,0.5)',
@@ -159,9 +160,11 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
             'NoEIC',
             'Error',
           )}}`,
-          `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr.toFixed(4)}` : `fdr: -`}}`,
-          `{sum|${data[i].intensitySum ? `sum: ${data[i].intensitySum}` : `sum: -`}}`,
-          `{rt|${data[i].peakGroupList !== null ? `rt: ${data[i].apexRt.toFixed(3)}` : `rt: -`}}`,
+          `{fdr|${data[i]?.fdr ? `fdr: ${data[i]?.fdr?.toFixed(4)}` : `fdr: -`}}`,
+          `{sum|${data[i]?.intensitySum ? `sum: ${data[i]?.intensitySum}` : `sum: -`}}`,
+          `{rt|${
+            data[i]?.peakGroupList !== null ? `rt: ${data[i]?.apexRt?.toFixed(3)}` : `rt: -`
+          }}`,
         ].join(' '),
         subtextStyle: {
           rich: {
@@ -179,7 +182,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
             status: {
               color: `${statusFn(
                 data[i].status,
-                '#0000d9',
+                '#666',
                 '#389e0d',
                 '#ff4d4f',
                 '#fb8c00',
@@ -198,7 +201,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
               )}`,
               borderColor: `${statusFn(
                 data[i].status,
-                '#777',
+                '#fff',
                 '#b7eb8f',
                 '#ffccc7',
                 '#ffe58f',
