@@ -7,7 +7,7 @@ const Settings: LayoutSettings & {
   navTheme: 'realDark',
   logo: 'https://gitee.com/command-s/images/raw/master/uPic/Component 1.png',
   // 拂晓蓝
-  primaryColor: '#1890ff',
+  primaryColor: '#ffffff',
   layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: true,

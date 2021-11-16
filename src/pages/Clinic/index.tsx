@@ -256,13 +256,7 @@ const TableList: React.FC = (props: any) => {
         b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
       );
 
-      // /* 获取option */
-      // const option = xic({
-      //   result: result.data.sort((a: any, b: any) => b.alias - a.alias),
-      //   spectraFn,
-      // });
       gridNumberInRow = selectedRunIds.length > 2 ? 3 : 2;
-      console.log('我进来了');
 
       const charts = (
         <XicCharts
@@ -391,10 +385,10 @@ const TableList: React.FC = (props: any) => {
 
   // 每次蛋白发生变化，都取第一个肽段作为展示
   useEffect(() => {
-    if (!lfqStatus && !peptideName) {
+    if (!lfqStatus) {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
-      setHandleSubmit(!handleSubmit); // 触发设置option
+      setHandleSubmit(!handleSubmit);
     }
   }, [peptideList]);
 
@@ -406,7 +400,7 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     fetchEicDataList(false, false);
-  }, [handleSubmit, proteinsIndex]);
+  }, [handleSubmit]);
 
   useEffect(() => {
     fetchEicDataList(false, false);
@@ -687,12 +681,11 @@ const TableList: React.FC = (props: any) => {
       id: 'message.noCorrespondProtein',
       defaultMessage: '未找到相应蛋白，请检查输入是否正确！',
     });
-    if (prepareData) {
+    if (prepareData && value) {
       const msg = await getPeptideList({ libraryId: prepareData.anaLib.id, peptideRef: value });
       if (msg.data.length > 0) {
         const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
         if (msg?.data[0]?.proteins[0]) {
-          await onProteinChange(msg?.data[0]?.proteins[0]); //table选择搜索蛋白
           // setProteinRowKey(msg?.data[0]?.proteins[0]); //table选中搜索蛋白行
           setProteinPage(
             Math.ceil(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]) / proteinPageSize),
@@ -703,8 +696,8 @@ const TableList: React.FC = (props: any) => {
           setPeptideRowKey(value); //table选择搜索肽段
           selectPeptideRow(value); //table选中搜索肽段行
           setPeptidePage(Math.ceil(peptideArr.indexOf(value) / peptidePageSize)); //跳转到搜索肽段所在的页
-          setPeptidesIndex(peptideArr.indexOf(value));
           setProteinsIndex(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]));
+          setPeptidesIndex(peptideArr.indexOf(value));
           setHandleSubmit(!handleSubmit);
           return true;
         } else {
@@ -786,21 +779,16 @@ const TableList: React.FC = (props: any) => {
                   onRow={(record) => {
                     return {
                       onClick: () => {
-                        // setProteinRowKey(record.key);
+                        setProteinRowKey(record.key);
                         if (prepareData) {
                           setProteinsIndex(prepareData.proteins.indexOf(record.protein));
                           setLfqStatus(false);
                           setLoading(true);
                           setPeptideLoading(true);
-                          console.log('record.key, record.protein', record.key, record.protein);
-                          console.log('proteinRowKey', proteinRowKey);
-
                           if (record.key === proteinRowKey) {
                             setLoading(false);
                             setPeptideLoading(false);
                           }
-
-                          // onProteinChange(record.protein);
                         }
                       },
                     };

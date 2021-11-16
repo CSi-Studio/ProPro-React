@@ -12,7 +12,7 @@ export async function prepare(params: { projectId: string; overviewIds?: [] }) {
 }
 
 /** 根据蛋白获取对应库下的所有相关肽段 */
-export async function getPeptideRefs(params: { libraryId: string; protein: string }) {
+export async function getPeptideRefs(params: { libraryId: string | undefined; protein: string }) {
   return request(`${url}/peptide/getPeptideRefs`, {
     method: 'GET',
     params: {

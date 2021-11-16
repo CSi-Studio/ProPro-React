@@ -99,7 +99,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           name="type"
           dictName="ProjectType"
           label={intl.formatMessage({
-            id: 'componenrunType',
+            id: 'component.runType',
             defaultMessage: 'Run类型',
           })}
           placeholder={intl.formatMessage({

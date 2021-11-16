@@ -10,7 +10,7 @@ export default {
   'component.projectAlias': '项目别名',
   'component.inputProjectAlias': '请输入项目别名',
   'component.runType': 'Run类型',
-  'component.inputType': '请输入Run类型',
+  'component.inputRunType': '请输入Run类型',
   'component.director': '负责人',
   'component.directorInput': '请输入负责人',
   'component.directorEmpty': '负责人不能为空',
