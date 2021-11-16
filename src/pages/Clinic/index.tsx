@@ -262,6 +262,7 @@ const TableList: React.FC = (props: any) => {
       //   spectraFn,
       // });
       gridNumberInRow = selectedRunIds.length > 2 ? 3 : 2;
+      console.log('我进来了');
 
       const charts = (
         <XicCharts
@@ -274,7 +275,6 @@ const TableList: React.FC = (props: any) => {
         />
       );
       setXicChart(charts);
-
       // setHandleOption(option);
       setLoading(false);
       setChartsLoading(false);
@@ -391,7 +391,7 @@ const TableList: React.FC = (props: any) => {
 
   // 每次蛋白发生变化，都取第一个肽段作为展示
   useEffect(() => {
-    if (!lfqStatus) {
+    if (!lfqStatus && !peptideName) {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
       setHandleSubmit(!handleSubmit); // 触发设置option
@@ -406,7 +406,7 @@ const TableList: React.FC = (props: any) => {
 
   useEffect(() => {
     fetchEicDataList(false, false);
-  }, [handleSubmit]);
+  }, [handleSubmit, proteinsIndex]);
 
   useEffect(() => {
     fetchEicDataList(false, false);
@@ -693,7 +693,7 @@ const TableList: React.FC = (props: any) => {
         const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
         if (msg?.data[0]?.proteins[0]) {
           await onProteinChange(msg?.data[0]?.proteins[0]); //table选择搜索蛋白
-          setProteinRowKey(msg?.data[0]?.proteins[0]); //table选中搜索蛋白行
+          // setProteinRowKey(msg?.data[0]?.proteins[0]); //table选中搜索蛋白行
           setProteinPage(
             Math.ceil(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]) / proteinPageSize),
           ); //跳转到搜索蛋白所在的页
@@ -792,10 +792,14 @@ const TableList: React.FC = (props: any) => {
                           setLfqStatus(false);
                           setLoading(true);
                           setPeptideLoading(true);
+                          console.log('record.key, record.protein', record.key, record.protein);
+                          console.log('proteinRowKey', proteinRowKey);
+
                           if (record.key === proteinRowKey) {
                             setLoading(false);
                             setPeptideLoading(false);
                           }
+
                           // onProteinChange(record.protein);
                         }
                       },
@@ -828,7 +832,7 @@ const TableList: React.FC = (props: any) => {
                       peptide: item.peptideRef,
                       isUnique: item.isUnique,
                       mz: item.mz,
-                      rt: item.rt
+                      rt: item.rt,
                     };
                   })}
                   size="small"
