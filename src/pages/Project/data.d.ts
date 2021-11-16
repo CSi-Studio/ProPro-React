@@ -4,7 +4,7 @@ export type TableListItem = {
   alias: string;
   type: string;
   owner: string;
-  expCount: number;
+  runCount: number;
   overviewCount: number;
   insLibId: string;
   anaLibId: string;

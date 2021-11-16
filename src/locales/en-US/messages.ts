@@ -45,12 +45,12 @@ export default {
   // 任务列表
   'message.deleteTask': 'Please select the task to delete. Multiple selection is supported.',
   'message.deleteTaskNum': 'Number of tasks to be deleted: ',
-  // 实验列表
+  // Run列表
   'message.creating': 'Creating..',
   'message.generateSuccess': 'Generated successfully!',
   'message.generateFail': 'Generate failed, please try again!',
-  'message.analysisExp': 'Please select the experiment to analyze',
-  'message.least1Exp': 'Please choose at least one experiment!',
+  'message.analysisRun': 'Please select the run to analyze',
+  'message.least1Run': 'Please choose at least one run!',
   // overview界面
   'message.batchEditSuc': 'Batch modification success!',
   'message.batchEditFail': 'Batch modification failed, please try again!',
@@ -61,8 +61,8 @@ export default {
   'message.reSelectSuc': 'ReSelect successful!',
   'message.reSelectFail': 'ReSelect failed, please try again!',
   'message.selectOv': 'Please select the overview to modify, support multiple elections',
-  'message.selectDifExp':
-    'Please select at least one experiment, multiple choices, please choose a different experiment name',
+  'message.selectDifRun':
+    'Please select at least one run, multiple choices, please choose a different run name',
   // 字典界面
   'message.refreshCache': 'Cache refreshed successfully',
   // peptide界面

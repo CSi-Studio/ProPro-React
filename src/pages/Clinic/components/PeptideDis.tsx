@@ -22,10 +22,10 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
   const { values } = props;
 
   const Height =
-    Math.ceil(props.values.expData.length / gridNumInRow) * (gridHeight + gridPaddingHeight);
+    Math.ceil(props.values.runData.length / gridNumInRow) * (gridHeight + gridPaddingHeight);
 
   useEffect(() => {
-    if (values.expData.length > 0) {
+    if (values.runData.length > 0) {
       const getMarkLine = () => {
         const markLineOpt = {
           symbol: ['none', 'none'],
@@ -67,8 +67,8 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
             };
             const decoyData: any = [];
             const targetData: any = [];
-            values.expData.forEach((_item: { expId: string; alias: string }) => {
-              if (_item.expId === key) {
+            values.runData.forEach((_item: { runId: string; alias: string }) => {
+              if (_item.runId === key) {
                 dataInit.alias = _item.alias;
                 if (item?.statistic?.DECOY_DIST) {
                   Object.keys(item?.statistic?.DECOY_DIST)?.forEach((inKey: any) => {
@@ -195,7 +195,7 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
       // 设置缩放zoom
       const getDataZoom = () => {
         const grids: any = [];
-        for (let i = 0; i < props.values.expData.length; i += 1) {
+        for (let i = 0; i < props.values.runData.length; i += 1) {
           const item: any = {
             type: 'inside',
             xAxisIndex: i,
@@ -328,13 +328,13 @@ const PeptideDis: React.FC<PeptideDisProps> = (props: any) => {
       };
       setHandleOption(option);
     }
-  }, [props.values.expData.length, values]);
+  }, [props.values.runData.length, values]);
 
   return (
     <Row>
       <Col span="24">
-        <Spin spinning={!props.values.expData.length}>
-          {props.values.expData.length > 0 ? (
+        <Spin spinning={!props.values.runData.length}>
+          {props.values.runData.length > 0 ? (
             <ReactECharts
               option={handleOption}
               style={{ width: '100%', height: Height }}

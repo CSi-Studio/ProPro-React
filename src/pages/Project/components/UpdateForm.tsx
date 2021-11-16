@@ -87,8 +87,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           width="sm"
           name="type"
           label={intl.formatMessage({
-            id: 'component.expType',
-            defaultMessage: '实验类型',
+            id: 'component.runType',
+            defaultMessage: 'Run类型',
           })}
         />
       </ProForm.Group>

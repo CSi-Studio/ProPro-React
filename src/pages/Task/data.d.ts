@@ -1,6 +1,6 @@
 export type TaskTableItem = {
   id: string;
-  expIds: string[];
+  runIds: string[];
   status: string;
   name: string;
   taskTemplate: string;

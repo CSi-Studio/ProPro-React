@@ -45,7 +45,7 @@ const CutInfo: React.FC<CutInfoProps> = (props) => {
     },
   ];
   let fragments: any[] = [];
-  props.values.expData.forEach((value: any) => {
+  props.values.runData.forEach((value: any) => {
     Object.keys(value.cutInfoMap).forEach((key: any) => {
       fragments.push(key);
       // console.log(key);
@@ -77,7 +77,7 @@ const CutInfo: React.FC<CutInfoProps> = (props) => {
       <ProTable
         // style={{ width: '69vw' }}
         columns={fragmentsColumns}
-        dataSource={props.values.expData}
+        dataSource={props.values.runData}
         rowKey={'id'}
         size="small"
         search={false}

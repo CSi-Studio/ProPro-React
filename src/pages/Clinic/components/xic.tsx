@@ -136,7 +136,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         apexRt = apexRt.filter(Boolean);
       }
       const item = {
-        text: `${data[i].alias} (${data[i].expId.substring(data[i].expId.length - 5)} - ${data[
+        text: `${data[i].alias} (${data[i].runId.substring(data[i].runId.length - 5)} - ${data[
           i
         ].overviewId.substring(data[i].overviewId.length - 5)})`,
         height: '200px',

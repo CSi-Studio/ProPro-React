@@ -18,7 +18,7 @@ export async function blockIndexList(params: {
   pageNo?: number;
   /** 页面的容量 */
   pageSize?: number;
-  expId?: string;
+  runId?: string;
   mzStart?: any;
   mzEnd?: any;
 }) {

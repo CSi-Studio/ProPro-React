@@ -21,7 +21,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
 
   const Height =
-    Math.ceil(props.values.expData.length / gridNumInRow) * (gridHeight + gridPaddingHeight);
+    Math.ceil(props.values.runData.length / gridNumInRow) * (gridHeight + gridPaddingHeight);
 
   useEffect(() => {
     const getMarkLine = (length: number) => {
@@ -57,8 +57,8 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
     Object.keys(props.values.rtPairs.data).forEach((key) => {
       const pairsInit: any = { alias: '', value: [] };
       props.values.rtPairs.data[key].x.forEach((x: number, index: number) => {
-        props.values.expData.forEach((item: { expId: string; alias: string }) => {
-          if (item.expId === key) {
+        props.values.runData.forEach((item: { runId: string; alias: string }) => {
+          if (item.runId === key) {
             pairsInit.alias = item.alias;
             pairsInit.value.push([
               x,
@@ -126,7 +126,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
     // 设置缩放zoom
     const getDataZoom = () => {
       const grids: any = [];
-      for (let i = 0; i < props.values.expData.length; i += 1) {
+      for (let i = 0; i < props.values.runData.length; i += 1) {
         const item: any = {
           type: 'inside',
           xAxisIndex: i,

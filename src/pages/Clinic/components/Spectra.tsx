@@ -20,7 +20,7 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
 
   /* 存放碎片mz和碎片name */
   let cutInfoMap: any = [];
-  props?.values?.expData?.forEach((_item: { cutInfoMap: Record<string, number> }) => {
+  props?.values?.runData?.forEach((_item: { cutInfoMap: Record<string, number> }) => {
     Object.keys(_item.cutInfoMap).forEach((key: any) => {
       cutInfoMap.push({ data: _item.cutInfoMap[key], name: key });
     });

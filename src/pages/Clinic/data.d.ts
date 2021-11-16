@@ -8,14 +8,14 @@ export type PrepareData = {
   peptideCount: number;
   proteinCount: number;
   proteins: string[];
-  expList: array<IdNameAlias>;
-  overviewMap: Map<string, Overview>; // key为expId
+  runList: array<IdNameAlias>;
+  overviewMap: Map<string, Overview>; // key为runId
 };
 
 export type Overview = {
  id: string;
   name: string;
-  expId: string;
+  runId: string;
   defaultOne: boolean;
   weights: Map<string, number>;
   minTotalScore: number;

@@ -21,7 +21,7 @@ const IrtCharts: React.FC = (props: any) => {
   const [handleOption, setHandleOption] = useState({});
   useEffect(() => {
     const op = async () => {
-      const result = await irtList(props?.location?.query.expList);
+      const result = await irtList(props?.location?.query.runList);
 
       const irt = new IrtOption(
         result.data,
@@ -46,7 +46,7 @@ const IrtCharts: React.FC = (props: any) => {
         },
         title: (
           <>
-            {props?.location?.state?.expNum}
+            {props?.location?.state?.runNum}
             <FormattedMessage id="table.irtNum" />
           </>
         ),

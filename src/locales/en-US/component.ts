@@ -9,8 +9,8 @@ export default {
   'component.UniProjectName': 'The project name must be unique',
   'component.projectAlias': 'ProjectAlias',
   'component.inputProjectAlias': 'Please enter the project alias',
-  'component.expType': 'ExpType',
-  'component.inputExpType': 'Please enter the experiment type',
+  'component.runType': 'RunType',
+  'component.inputRunType': 'Please enter the run type',
   'component.director': 'Director',
   'component.directorInput': 'Please enter the person in charge',
   'component.directorEmpty': 'The person in charge cannot be empty',
@@ -42,16 +42,16 @@ export default {
   //蛋白列表
   'component.importProFile': 'Import protein file',
   // blockIndex
-  'component.expId': 'expId',
+  'component.runId': 'runId',
   'component.level': 'Level',
   'component.rtTime': 'RtTime',
   'component.rtRange': 'RTRange',
   'component.gaussSmooth': 'gaussSmooth',
   'component.projectId': 'ProjectId',
-  //实验列表
+  //Run列表
   'component.setAlias': 'Set Alias',
   'component.aliasPrefix': 'AliasPrefix',
-  'component.updateExpInf': 'Update Exp Information',
+  'component.updateRunInf': 'Update Run Information',
   'component.selectProInt': 'Protein selection interface',
   'component.selectProtein': 'Please select a protein name',
   'component.proteinName': 'ProteinName',

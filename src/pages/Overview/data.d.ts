@@ -1,9 +1,9 @@
 export type TableListItem = {
   id: string;
   projectId: string;
-  expId: string;
+  runId: string;
   name: string;
-  expName: string;
+  runName: string;
   tags: string[];
   insLibId: string;
   anaLibId: string;

@@ -9,11 +9,11 @@ export type OverViewProps = {
 
 const OverView: React.FC<OverViewProps> = (props: any) => {
   const [ovRowKey, setOvRowKey] = useState<any>();
-  const { prepareData, expData } = props.values;
+  const { prepareData, runData } = props.values;
 
-  let scoreResult: any[] = expData.map((item: any) => {
+  let scoreResult: any[] = runData.map((item: any) => {
     return item?.peakGroupList?.map((_item: any, index: any) => ({
-      expId: item.expId,
+      runId: item.runId,
       alias: item.alias,
       status: item.status,
       apexRt: _item.apexRt,
@@ -198,8 +198,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           entity?.peakGroupList !== null &&
           entity?.peakGroupList[entity?.selectIndex].scores[index] !== null &&
           entity?.peakGroupList[entity?.selectIndex].scores[index] !== 'NaN' &&
-          prepareData.overviewMap[entity?.expId] != null &&
-          prepareData.overviewMap[entity?.expId].length > 0
+          prepareData.overviewMap[entity?.runId] != null &&
+          prepareData.overviewMap[entity?.runId].length > 0
         ) {
           return (
             <>
@@ -220,19 +220,19 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                   entity?.peakGroupList[entity?.index]?.fine? 'green' : 'blue'
                 }
                  key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}>
-                  {`${prepareData.overviewMap[entity?.expId][0]?.weights[type]?.toFixed(
+                  {`${prepareData.overviewMap[entity?.runId][0]?.weights[type]?.toFixed(
                     3,
                   )}x${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}=${(
-                    prepareData.overviewMap[entity?.expId][0]?.weights[type] *
+                    prepareData.overviewMap[entity?.runId][0]?.weights[type] *
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
                 </Tag>
               ):(
                 <Tag key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}>
-                  {`${prepareData.overviewMap[entity?.expId][0]?.weights[type]?.toFixed(
+                  {`${prepareData.overviewMap[entity?.runId][0]?.weights[type]?.toFixed(
                     3,
                   )}x${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}=${(
-                    prepareData.overviewMap[entity?.expId][0]?.weights[type] *
+                    prepareData.overviewMap[entity?.runId][0]?.weights[type] *
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
                 </Tag>
@@ -252,9 +252,9 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
     <>
       <>
         <strong>Protein: </strong>
-        <span style={{ userSelect: 'all' }}>{expData[0].proteins[0]}</span>
+        <span style={{ userSelect: 'all' }}>{runData[0].proteins[0]}</span>
         &nbsp;&nbsp;
-        <strong>Peptide</strong>: <span style={{ userSelect: 'all' }}>{expData[0].peptideRef}</span>
+        <strong>Peptide</strong>: <span style={{ userSelect: 'all' }}>{runData[0].peptideRef}</span>
         &nbsp;&nbsp;
       </>
       <Row>

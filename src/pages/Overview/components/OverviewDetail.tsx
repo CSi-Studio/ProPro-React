@@ -25,9 +25,9 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     },
 
     {
-      key: 'expName',
-      title: <FormattedMessage id="table.expName" />,
-      dataIndex: 'expName',
+      key: 'runName',
+      title: <FormattedMessage id="table.runName" />,
+      dataIndex: 'runName',
     },
     {
       title: 'OverViewId',
@@ -46,8 +46,8 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       },
     },
     {
-      title: 'ExpId',
-      dataIndex: 'expId',
+      title: 'RunId',
+      dataIndex: 'runId',
       hideInTable: true,
       render: (dom) => {
         return <Tag>{dom}</Tag>;

@@ -12,7 +12,7 @@ export type UpdateFormProps = {
   currentRow: any;
   columns: any;
   onClose: () => void;
-  expNameRow: any;
+  runNameRow: any;
 };
 const { TabPane } = Tabs;
 const { Text } = Typography;
@@ -58,8 +58,8 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       },
     },
     {
-      title: <FormattedMessage id="component.expId" />,
-      dataIndex: 'expId',
+      title: <FormattedMessage id="component.runId" />,
+      dataIndex: 'runId',
       render: (dom: any) => {
         return <Tag>{dom}</Tag>;
       },
@@ -96,7 +96,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
     <Drawer width={900} visible={props.showDetail} onClose={props.onClose} closable={false}>
       <ProDescriptions<TableListDetail>
         column={2}
-        title={props.expNameRow}
+        title={props.runNameRow}
         dataSource={reqData}
         params={{
           id: props.currentRow,

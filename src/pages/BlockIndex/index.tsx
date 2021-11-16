@@ -99,8 +99,8 @@ const TableList: React.FC = (props: any) => {
       dataIndex: 'id',
     },
     {
-      title: <FormattedMessage id="table.expId" />,
-      dataIndex: 'expId',
+      title: <FormattedMessage id="table.runId" />,
+      dataIndex: 'runId',
     },
     {
       title: <FormattedMessage id="table.level" />,
@@ -135,7 +135,7 @@ const TableList: React.FC = (props: any) => {
       <ProTable<TableListItem, TableListPagination>
         scroll={{ x: 'max-content' }}
         headerTitle={
-          props?.location?.state?.expName === undefined ? (
+          props?.location?.state?.runName === undefined ? (
             <>
               <Text type="secondary">
                 <FormattedMessage id="table.BlockIndexList" />
@@ -155,20 +155,20 @@ const TableList: React.FC = (props: any) => {
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <Link
                 to={{
-                  pathname: '/experiment/list',
+                  pathname: '/run/list',
                   search: `?projectId=${props?.location?.state?.projectId}`,
                   state: { projectName },
                 }}
               >
                 <Text type="secondary">
-                  <FormattedMessage id="table.expList" />
+                  <FormattedMessage id="table.runList" />
                 </Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
                 <Text>
                   <FormattedMessage id="table.BlockIndexList" />{' '}
-                  <FormattedMessage id="table.belongExp" />：{props?.location?.state.expName}
+                  <FormattedMessage id="table.belongRun" />：{props?.location?.state.runName}
                 </Text>
               </a>
             </>
@@ -180,7 +180,7 @@ const TableList: React.FC = (props: any) => {
         search={false}
         tableAlertRender={false}
         request={async (params) => {
-          const msg = await blockIndexList({ expId: props?.location?.query?.expId, ...params });
+          const msg = await blockIndexList({ runId: props?.location?.query?.runId, ...params });
           return Promise.resolve(msg);
         }}
         columns={columns}
@@ -210,7 +210,7 @@ const TableList: React.FC = (props: any) => {
         onClose={() => {
           setShowDetail(false);
         }}
-        expNameRow={props?.location?.state?.expName}
+        runNameRow={props?.location?.state?.runName}
       />
     </>
   );

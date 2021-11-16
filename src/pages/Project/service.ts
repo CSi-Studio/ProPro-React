@@ -72,7 +72,7 @@ export async function removeIrt(params: { projectId: any }) {
   });
 }
 
-/** 重新扫描项目的实验 GET /project/scan */
+/** 重新扫描项目的Run GET /project/scan */
 export async function peptideScan(params: {
   /** 选择的项目ID */
   projectId?: string;

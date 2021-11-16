@@ -372,12 +372,12 @@ const TableList: React.FC = () => {
       },
     },
     {
-      key: 'expCount',
+      key: 'runCount',
       title: intl.formatMessage({
-        id: 'table.experiment.number',
-        defaultMessage: '实验数',
+        id: 'table.run.number',
+        defaultMessage: 'Run数',
       }),
-      dataIndex: 'expCount',
+      dataIndex: 'runCount',
       hideInSearch: true,
       render: (dom, entity) => {
         return (
@@ -393,7 +393,7 @@ const TableList: React.FC = () => {
                   textOverflow: 'ellipsis',
                 }}
                 to={{
-                  pathname: '/experiment/list',
+                  pathname: '/run/list',
                   state: { projectName: entity.name },
                   search: `?projectId=${entity.id}`,
                 }}
@@ -625,7 +625,7 @@ const TableList: React.FC = () => {
           </a>
           <Link
             to={{
-              pathname: '/experiment/list',
+              pathname: '/run/list',
               search: `?projectId=${record.id}`,
               state: { projectName: record.name },
             }}
@@ -633,8 +633,8 @@ const TableList: React.FC = () => {
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-5px', fontSize: '18px' }} icon="mdi:calculator" />
               {intl.formatMessage({
-                id: 'table.exp',
-                defaultMessage: '实验',
+                id: 'table.run',
+                defaultMessage: 'Run',
               })}
             </Tag>
           </Link>

@@ -33,13 +33,13 @@ export type PrepareAnalyzeVO = {
 
 export type AnalyzeParams = {
   projectId: string;
-  expIdList: string[];
+  runIdList: string[];
   methodId: string;
   anaLibId: string;
   insLibId: string;
 };
 
 export type AliasParams = {
-  expIds: any[];
+  runIds: any[];
   prefix: string;
 };

@@ -23,9 +23,9 @@ const AnalyzeForm: React.FC<AnalyzeFormProps> = (props) => {
         id: 'table.project.name',
         defaultMessage: '项目名称',
       })}：${values.prepareData?.projectName} ${intl.formatMessage({
-        id: 'table.experiment.number',
-        defaultMessage: '实验数',
-      })}：${values.expNum ? values.expNum : 0}`}
+        id: 'table.run.number',
+        defaultMessage: 'Run数',
+      })}：${values.runNum ? values.runNum : 0}`}
       width={800}
       visible={props.analyzeModalVisible}
       modalProps={{
