@@ -143,6 +143,14 @@ const TableList: React.FC = (props: any) => {
         return <Tag>{entity.mz.toFixed(3)}</Tag>;
       },
     },
+    {
+      title: 'rt',
+      dataIndex: 'rt',
+      key: 'rt',
+      render: (dom, entity) => {
+        return <Tag>{entity.rt?.toFixed(3)}</Tag>;
+      },
+    },
   ];
 
   /** **************  网络调用相关接口 start  ****************** */
@@ -820,6 +828,7 @@ const TableList: React.FC = (props: any) => {
                       peptide: item.peptideRef,
                       isUnique: item.isUnique,
                       mz: item.mz,
+                      rt: item.rt
                     };
                   })}
                   size="small"

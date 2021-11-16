@@ -25,6 +25,7 @@ export type Peptide = {
   peptideRef: string;
   isUnique: boolean;
   mz: number;
+  rt: number;
 };
 
 export type PeptideTableItem = {
@@ -32,5 +33,6 @@ export type PeptideTableItem = {
   key: string;
   isUnique: boolean;
   peptide: string;
+  rt: number;
   key: string;
 };
