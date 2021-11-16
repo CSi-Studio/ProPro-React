@@ -222,7 +222,7 @@ const TableList: React.FC = (props: any) => {
         const hide = message.loading(messageSpec);
         try {
           const data = await getSpectra({
-            runId: selectedRunIds[Math.floor(item[0].seriesIndex / selectedRunIds.length)],
+            runId: selectedRunIds[item[0].axisIndex],
             mz: peptideList.find((_item: any) => _item.peptideRef === peptideRef)?.mz,
             rt: item[0].axisValue,
           });
