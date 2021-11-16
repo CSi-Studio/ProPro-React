@@ -6,7 +6,7 @@ import ProForm, {
   ModalForm,
 } from '@ant-design/pro-form';
 import { LibraryType } from '@/components/Enums/Selects';
-import { useIntl, FormattedMessage } from 'umi';
+import { useIntl } from 'umi';
 
 export type updateFormValueType = {
   name?: string;

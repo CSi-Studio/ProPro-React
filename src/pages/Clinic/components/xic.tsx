@@ -161,7 +161,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           )}}`,
           `{fdr|${data[i].fdr ? `fdr: ${data[i].fdr.toFixed(4)}` : `fdr: -`}}`,
           `{sum|${data[i].intensitySum ? `sum: ${data[i].intensitySum}` : `sum: -`}}`,
-          `{rt|${data[i].peakGroupList !== null ? `rt: ${data[i].apexRt}` : `rt: -`}}`,
+          `{rt|${data[i].peakGroupList !== null ? `rt: ${data[i].apexRt.toFixed(3)}` : `rt: -`}}`,
         ].join(' '),
         subtextStyle: {
           rich: {
@@ -326,7 +326,10 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   };
 
   // 设置标注区域
-  const getMarkArea = (value: { peakGroupList: { leftRt: number, rightRt: number }[]; selectIndex: number }) => {
+  const getMarkArea = (value: {
+    peakGroupList: { leftRt: number; rightRt: number }[];
+    selectIndex: number;
+  }) => {
     if (!value.peakGroupList) {
       return null;
     }
@@ -334,8 +337,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
       animation: false,
       data: [],
     };
-    value.peakGroupList.forEach((item: { leftRt: number, rightRt: number }, index) => {
-     
+    value.peakGroupList.forEach((item: { leftRt: number; rightRt: number }, index) => {
       markAreaOpt.data.push([
         {
           xAxis: item.leftRt,

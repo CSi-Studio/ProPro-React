@@ -383,7 +383,7 @@ const TableList: React.FC = (props: any) => {
 
   // 每次蛋白发生变化，都取第一个肽段作为展示
   useEffect(() => {
-    if (!lfqStatus && !peptideName) {
+    if (!lfqStatus) {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
       setHandleSubmit(!handleSubmit); // 触发设置option
