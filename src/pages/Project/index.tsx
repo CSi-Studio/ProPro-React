@@ -590,7 +590,7 @@ const TableList: React.FC = () => {
       }),
       valueType: 'option',
       fixed: 'right',
-      width: '210px',
+      width: '220px',
       hideInSearch: true,
       render: (text, record) => (
         <>
