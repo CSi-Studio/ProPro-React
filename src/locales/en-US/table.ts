@@ -6,7 +6,7 @@ export default {
   'table.type': 'Type',
   'table.director': 'Director',
   'table.project.name': 'ProName',
-  'table.experiment.number': 'ExpNum',
+  'table.run.number': 'RunNum',
   'table.overview.number': 'OvNum',
   'table.tags': 'Tags',
   'table.methodPackage': 'MethodPackage',
@@ -18,7 +18,7 @@ export default {
   'table.notSet': 'NotSet',
   'table.edit': 'Edit',
   'table.detail': 'Detail',
-  'table.exp': 'Exp',
+  'table.run': 'Run',
   'table.add': 'Add',
   'table.scanUpdate': 'ScanUpdate',
   'table.clinic': 'Clinic',
@@ -70,11 +70,11 @@ export default {
   'table.endPtr': 'EndPtr',
   'table.mzRange': 'mzRange',
   'table.BlockIndexList': 'BlockIdxList',
-  'table.belongExp': 'Experiment',
-  // 实验列表
-  'table.expList': 'ExpList',
-  'table.expName': 'ExpName',
-  'table.expAlias': 'ExpAlias',
+  'table.belongRun': 'Run',
+  // Run列表
+  'table.runList': 'RunList',
+  'table.runName': 'RunName',
+  'table.runAlias': 'RunAlias',
   'table.windowRanges': 'SWATHWindow',
   'table.irtVerRes': 'IRTVerRes',
   'table.unAnalyzed': 'unAnalyzed',
@@ -90,7 +90,7 @@ export default {
   'table.performIrtOnly': 'PerformIRTonly',
   'table.remark': 'Remark',
   // overview界面
-  'table.expId': 'expId',
+  'table.runId': 'runId',
   'table.reSelect': 'reSelect',
   'table.peakCount': 'peakCount',
   'table.identPeptideUni': 'PeptideUni',
@@ -130,7 +130,7 @@ export default {
   'table.belongLib': 'BelongLib',
   'table.predPepFra': 'Predict',
   // irt界面
-  'table.irtNum': 'experimental IRT results',
+  'table.irtNum': 'run IRT results',
   // Library界面
   'table.libraryType': 'Type',
   'table.decoyPeptideAlgorithm': 'Algorithm',

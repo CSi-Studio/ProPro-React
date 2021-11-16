@@ -23,7 +23,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
 // import ReactECharts from 'echarts-for-react';
 import {
-  getExpData,
+  getRunData,
   getPeptideRatio,
   getPeptideRefs,
   getRtPairs,
@@ -70,14 +70,14 @@ const TableList: React.FC = (props: any) => {
 
   const projectId = props?.location?.query?.projectId;
   const overviewIdsInt = props?.location?.query?.overviewIds;
-  const [exps, setExps] = useState<IdNameAlias[]>([]); // 当前项目下所有的exp信息,包含id和name,其中name字段的规则为:当该exp.alias名称存在时使用alias,否则使用exp.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
-  const [expData, setExpData] = useState<any>([]); // 选中exp,存放的真实值为exp.id列表
+  const [runs, setRuns] = useState<IdNameAlias[]>([]); // 当前项目下所有的run信息,包含id和name,其中name字段的规则为:当该run.alias名称存在时使用alias,否则使用run.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
+  const [runData, setRunData] = useState<any>([]); // 选中run,存放的真实值为run.id列表
   const [featureMap, setFeatureMap] = useState<any>([]); // 存放featureMap
-  const [selectedExpIds, setSelectedExpIds] = useState<string[]>([]); // 选中exp,存放的真实值为exp.id列表
+  const [selectedRunIds, setSelectedRunIds] = useState<string[]>([]); // 选中run,存放的真实值为run.id列表
   const [peptideRatioData, setPeptideRatioData] = useState<any>(); // 存放分析结果的初始数据
   // const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
   const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
-  const [prepareData, setPrepareData] = useState<PrepareData>(); // 进入蛋白诊所的时候初始化的数据,包含实验列表,蛋白质列表
+  const [prepareData, setPrepareData] = useState<PrepareData>(); // 进入蛋白诊所的时候初始化的数据,包含Run列表,蛋白质列表
   const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段的Table行
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
@@ -152,8 +152,8 @@ const TableList: React.FC = (props: any) => {
     if (!overviewIdsInt) {
       selectedOverviewIds = []
         .concat(
-          ...selectedExpIds?.map((expId) => {
-            return prepareData?.overviewMap[expId];
+          ...selectedRunIds?.map((runId) => {
+            return prepareData?.overviewMap[runId];
           }),
         )
         .map((item: any) => {
@@ -167,7 +167,7 @@ const TableList: React.FC = (props: any) => {
     }
     setChartsLoading(true);
     try {
-      const result = await getExpData({
+      const result = await getRunData({
         projectId,
         libraryId: prepareData?.anaLib?.id,
         predict,
@@ -179,26 +179,26 @@ const TableList: React.FC = (props: any) => {
       });
 
       // project对应的ov列表
-      const expValues = await overviewList({
+      const runValues = await overviewList({
         projectId,
       });
 
-      // 将实验 别名 给 getExpData接口得到的数据
+      // 将Run 别名 给 getRunData接口得到的数据
       result.data.forEach((item: any) => {
-        exps?.forEach((_item: any) => {
-          if (item.expId === _item.id) {
+        runs?.forEach((_item: any) => {
+          if (item.runId === _item.id) {
             item.alias = _item.alias;
           }
         });
-        expValues?.data?.forEach((_item: any) => {
-          if (item.expId === _item.expId) {
-            item.name = _item.expName;
+        runValues?.data?.forEach((_item: any) => {
+          if (item.runId === _item.runId) {
+            item.name = _item.runName;
           }
         });
       });
       result.data.sort((a: any, b: any) => a.alias.charCodeAt(0) - b.alias.charCodeAt(0));
 
-      setExpData(result.data);
+      setRunData(result.data);
       setFeatureMap(result.featureMap.intensityMap);
       /* 碎片Mz echarts toolbox */
       // const getCutInfo = () => {
@@ -214,11 +214,11 @@ const TableList: React.FC = (props: any) => {
         const hide = message.loading(messageSpec);
         try {
           const data = await getSpectra({
-            expId: selectedExpIds[Math.floor(item[0].seriesIndex / selectedExpIds.length)],
+            runId: selectedRunIds[Math.floor(item[0].seriesIndex / selectedRunIds.length)],
             mz: peptideList.find((_item: any) => _item.peptideRef === peptideRef)?.mz,
             rt: item[0].axisValue,
           });
-          data.expData = result.data;
+          data.runData = result.data;
 
           setSpectra(data);
           setSpectrumVisible(true);
@@ -253,7 +253,7 @@ const TableList: React.FC = (props: any) => {
       //   result: result.data.sort((a: any, b: any) => b.alias - a.alias),
       //   spectraFn,
       // });
-      gridNumberInRow = selectedExpIds.length > 2 ? 3 : 2;
+      gridNumberInRow = selectedRunIds.length > 2 ? 3 : 2;
 
       const charts = (
         <XicCharts
@@ -288,9 +288,9 @@ const TableList: React.FC = (props: any) => {
   /* **************  Irt result  ****************** */
   const getIrtData = async (values: any) => {
     try {
-      const result = await irtList(values.selectedExpIds);
+      const result = await irtList(values.selectedRunIds);
       result.data.forEach((value: { id: any; alias: any }) => {
-        values.exps.forEach((item: { id: any; alias: any }) => {
+        values.runs.forEach((item: { id: any; alias: any }) => {
           if (item.id === value.id) {
             value.alias = item.alias;
           }
@@ -310,13 +310,13 @@ const TableList: React.FC = (props: any) => {
   const rtPairsData = async (values: {
     projectId: string;
     onlyDefault: boolean;
-    expIds: string[];
+    runIds: string[];
   }) => {
     try {
       const result = await getRtPairs({
         projectId: values.projectId,
         onlyDefault: values.onlyDefault,
-        expIds: values.expIds,
+        runIds: values.runIds,
       });
       setRtPairs(result);
       return true;
@@ -332,26 +332,26 @@ const TableList: React.FC = (props: any) => {
       fetchEicDataList(false, false);
 
       if (overviewIdsInt) {
-        setSelectedExpIds(overviewIdsInt?.split(','));
+        setSelectedRunIds(overviewIdsInt?.split(','));
       }
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
-        const { expList } = result.data;
-        setExps(expList); // 放实验列表
+        const { runList } = result.data;
+        setRuns(runList); // 放Run列表
 
         if (!overviewIdsInt) {
-          setSelectedExpIds(
-            expList?.map((item: any) => {
+          setSelectedRunIds(
+            runList?.map((item: any) => {
               return item.id;
             }),
           );
         }
         getIrtData({
-          selectedExpIds: expList?.map((item: any) => {
+          selectedRunIds: runList?.map((item: any) => {
             return item.id;
           }),
-          exps: expList,
+          runs: runList,
         });
         setLoading(false);
         if (result.data?.project?.name.substring(0, 3) === 'HYE') {
@@ -361,7 +361,7 @@ const TableList: React.FC = (props: any) => {
         rtPairsData({
           projectId,
           onlyDefault: true,
-          expIds: expList?.map((item: any) => {
+          runIds: runList?.map((item: any) => {
             return item.id;
           }),
         });
@@ -405,21 +405,21 @@ const TableList: React.FC = (props: any) => {
   }, [smooth, denoise]);
 
   // 点击选择 tags
-  const handleExpTagChange = (item: string, checked: boolean) => {
+  const handleRunTagChange = (item: string, checked: boolean) => {
     const nextSelectedTags = checked
-      ? [...selectedExpIds, item]
-      : selectedExpIds.filter((t: string) => t !== item);
-    setSelectedExpIds(nextSelectedTags);
+      ? [...selectedRunIds, item]
+      : selectedRunIds.filter((t: string) => t !== item);
+    setSelectedRunIds(nextSelectedTags);
     setHandleSubmit(!handleSubmit);
   };
 
-  /* 全选所有实验Tag */
+  /* 全选所有RunTag */
   const selectAll = () => {
     if (overviewIdsInt) {
-      setSelectedExpIds(overviewIdsInt?.split(','));
+      setSelectedRunIds(overviewIdsInt?.split(','));
     } else {
-      setSelectedExpIds(
-        exps?.map((item: any) => {
+      setSelectedRunIds(
+        runs?.map((item: any) => {
           return item.id;
         }),
       );
@@ -427,17 +427,17 @@ const TableList: React.FC = (props: any) => {
     setHandleSubmit(!handleSubmit);
   };
 
-  /* 反选当前选择的实验Tag */
+  /* 反选当前选择的RunTag */
   const selectReverse = () => {
     if (overviewIdsInt) {
       const reverse = overviewIdsInt
         ?.split(',')
         .map((item: string) => item)
-        .filter((_item: string) => !selectedExpIds.includes(_item));
-      setSelectedExpIds(reverse);
+        .filter((_item: string) => !selectedRunIds.includes(_item));
+      setSelectedRunIds(reverse);
     } else {
-      const reverse = exps.map((item) => item.id).filter((id) => !selectedExpIds.includes(id));
-      setSelectedExpIds(reverse);
+      const reverse = runs.map((item) => item.id).filter((id) => !selectedRunIds.includes(id));
+      setSelectedRunIds(reverse);
     }
     setHandleSubmit(!handleSubmit);
   };
@@ -657,7 +657,7 @@ const TableList: React.FC = (props: any) => {
   /* 碎片信息 */
   const allCutInfo: any = [];
   const allCutMz: any = {};
-  expData.forEach((item: any) => {
+  runData.forEach((item: any) => {
     Object.keys(item.cutInfoMap).forEach((key: any) => {
       allCutMz[key] = item.cutInfoMap[key];
       allCutInfo.push(key);
@@ -885,13 +885,13 @@ const TableList: React.FC = (props: any) => {
                 <Row>
                   <Col span={24}>
                     <span>
-                      {expData.length > 0 ? (
+                      {runData.length > 0 ? (
                         <>
                           <Text strong>Protein: </Text>
-                          <Text style={{ userSelect: 'all' }}>{expData[0].proteins[0]}</Text>
+                          <Text style={{ userSelect: 'all' }}>{runData[0].proteins[0]}</Text>
                           &nbsp;&nbsp;
                           <Text strong>Peptide</Text>:{' '}
-                          <Text style={{ userSelect: 'all' }}>{expData[0].peptideRef}</Text>
+                          <Text style={{ userSelect: 'all' }}>{runData[0].peptideRef}</Text>
                           &nbsp;&nbsp;
                           <Tag>{[...new Set([].concat(...allCutInfo))].length}&nbsp; Ions</Tag>
                           <Text strong>Intensity: </Text>&nbsp;&nbsp;
@@ -914,7 +914,7 @@ const TableList: React.FC = (props: any) => {
                     <Tooltip
                       title={intl.formatMessage({
                         id: 'table.defaultOverview',
-                        defaultMessage: '仅选择实验默认的overview',
+                        defaultMessage: '仅选择Run默认的overview',
                       })}
                     >
                       <Checkbox
@@ -951,7 +951,7 @@ const TableList: React.FC = (props: any) => {
                       <FormattedMessage id="table.invBtn" />
                     </Button>
                     {overviewIdsInt
-                      ? expData
+                      ? runData
                           .sort((a: any, b: any) => (a.alias > b.alias ? 1 : -1))
                           ?.map((item: any) => (
                             <Badge
@@ -967,7 +967,7 @@ const TableList: React.FC = (props: any) => {
                                     <>
                                       <span>{item.name}</span>
                                       <br />
-                                      <span>{item.expId}</span>
+                                      <span>{item.runId}</span>
                                     </>
                                   );
                                 }}
@@ -975,9 +975,9 @@ const TableList: React.FC = (props: any) => {
                               >
                                 <CheckableTag
                                   style={{ marginTop: 5, marginLeft: 5 }}
-                                  checked={selectedExpIds?.indexOf(item.id) > -1}
+                                  checked={selectedRunIds?.indexOf(item.id) > -1}
                                   onChange={(checked) => {
-                                    handleExpTagChange(item.id, checked);
+                                    handleRunTagChange(item.id, checked);
                                   }}
                                 >
                                   {item.alias}
@@ -985,8 +985,8 @@ const TableList: React.FC = (props: any) => {
                               </Tooltip>
                             </Badge>
                           ))
-                      : exps.length > 0 &&
-                        exps?.map((item: IdNameAlias) => (
+                      : runs.length > 0 &&
+                        runs?.map((item: IdNameAlias) => (
                           <Badge
                             style={{ marginTop: 5 }}
                             size="small"
@@ -1008,9 +1008,9 @@ const TableList: React.FC = (props: any) => {
                             >
                               <CheckableTag
                                 style={{ marginTop: 5, marginLeft: 5 }}
-                                checked={selectedExpIds?.indexOf(item.id) > -1}
+                                checked={selectedRunIds?.indexOf(item.id) > -1}
                                 onChange={(checked) => {
-                                  handleExpTagChange(item.id, checked);
+                                  handleRunTagChange(item.id, checked);
                                   // if (handleOption) {
                                   //   setHandleSubmit(!handleSubmit);
                                   // }
@@ -1055,9 +1055,9 @@ const TableList: React.FC = (props: any) => {
                 })}
                 key="2"
               >
-                <Spin spinning={!expData}>
-                  {expData.length > 0 ? (
-                    <OverView values={{ prepareData, expData }} />
+                <Spin spinning={!runData}>
+                  {runData.length > 0 ? (
+                    <OverView values={{ prepareData, runData }} />
                   ) : (
                     <Empty
                       style={{ padding: '10px', color: '#B0B8C1' }}
@@ -1136,7 +1136,7 @@ const TableList: React.FC = (props: any) => {
               >
                 <Spin spinning={!rtPairs}>
                   {rtPairs ? (
-                    <RtPairsCharts values={{ rtPairs, expData }} />
+                    <RtPairsCharts values={{ rtPairs, runData }} />
                   ) : (
                     <Empty
                       description={intl.formatMessage({
@@ -1156,9 +1156,9 @@ const TableList: React.FC = (props: any) => {
                 })}
                 key="7"
               >
-                <Spin spinning={!expData}>
-                  {expData !== undefined ? (
-                    <PeptideDis values={{ prepareData, expData }} />
+                <Spin spinning={!runData}>
+                  {runData !== undefined ? (
+                    <PeptideDis values={{ prepareData, runData }} />
                   ) : (
                     <Empty
                       style={{ padding: '10px', color: '#B0B8C1' }}
@@ -1173,7 +1173,7 @@ const TableList: React.FC = (props: any) => {
       </ProCard>
       <CutInfo
         cutInfoVisible={cutInfoVisible}
-        values={{ expData }}
+        values={{ runData }}
         handleCancel={() => {
           setCutInfoVisible(false);
         }}

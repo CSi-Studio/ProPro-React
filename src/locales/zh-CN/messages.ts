@@ -44,12 +44,12 @@ export default {
   // 任务列表
   'message.deleteTask': '请选择要删除的任务，支持多选',
   'message.deleteTaskNum': '将要删除的任务的个数：',
-  // 实验列表
+  // Run列表
   'message.creating': '正在生成...',
   'message.generateSuccess': '生成成功！',
   'message.generateFail': '生成失败，请重试！',
-  'message.analysisExp': '请选择要分析的实验',
-  'message.least1Exp': '至少选择一个实验！',
+  'message.analysisRun': '请选择要分析的Run',
+  'message.least1Run': '至少选择一个Run！',
   // overview界面
   'message.batchEditSuc': '批量修改成功！',
   'message.batchEditFail': '批量修改失败，请重试！',
@@ -60,7 +60,7 @@ export default {
   'message.reSelectSuc': 'ReSelect成功！',
   'message.reSelectFail': 'ReSelect失败！',
   'message.selectOv': '请选择要修改的概览，支持多选',
-  'message.selectDifExp': '请至少选择一个实验，多选请选择不同的实验名',
+  'message.selectDifRun': '请至少选择一个Run，多选请选择不同的Run名',
   // 字典界面
   'message.refreshCache': '刷新缓存成功',
   // peptide界面

@@ -52,7 +52,7 @@ export default {
   'menu.project': '项目',
   'menu.method': '方法',
   'menu.protein': '蛋白',
-  'menu.experiment': '实验',
+  'menu.run': 'Run',
   'menu.dict': '字典',
   'menu.library': '靶库',
   'menu.peptide': '肽段',

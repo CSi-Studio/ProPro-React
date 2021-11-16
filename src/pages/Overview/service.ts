@@ -10,7 +10,7 @@ export async function overviewList(params: {
   /** 页面的容量 */
   pageSize?: number;
   projectId?: string;
-  expId?: string;
+  runId?: string;
 }) {
   return request(`${url}/overview/list`, {
     method: 'GET',
@@ -19,11 +19,11 @@ export async function overviewList(params: {
     },
   });
 }
-/** 获取当前项目的实验列表 GET /experiment/listByProjectId */
-export async function expList(params: {
+/** 获取当前项目的Run列表 GET /run/listByProjectId */
+export async function runList(params: {
   projectId?: string;
 }) {
-  return request(`${url}/experiment/listByProjectId`, {
+  return request(`${url}/run/listByProjectId`, {
     method: 'GET',
     params: {
       ...params,

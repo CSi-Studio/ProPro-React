@@ -50,7 +50,7 @@ export default {
 
   'menu.project': 'Project',
   'menu.method': 'Method',
-  'menu.experiment': 'Experiment',
+  'menu.run': 'run',
   'menu.dict': 'Dictionary',
   'menu.protein': 'Protein',
   'menu.library': 'Library',

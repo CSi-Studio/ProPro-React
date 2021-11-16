@@ -6,7 +6,7 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import {
   batchUpdate,
-  expList,
+  runList,
   overviewList,
   removeList,
   updateList,
@@ -200,9 +200,9 @@ const TableList: React.FC = (props: any) => {
   const [formDelete] = Form.useForm();
   const [formBatch] = Form.useForm();
   const projectName = props?.location?.state?.projectName;
-  const expName = props?.location?.state?.expName;
+  const runName = props?.location?.state?.runName;
   const projectId = props?.location?.query?.projectId;
-  const expId = props?.location?.query?.expId;
+  const runId = props?.location?.query?.runId;
 
   const [data, setData] = useState<any>({});
 
@@ -210,7 +210,7 @@ const TableList: React.FC = (props: any) => {
     const init = async () => {
       const b: Record<any, any> = {};
       try {
-        const a = await expList({
+        const a = await runList({
           projectId,
         });
         a?.data?.forEach((item: { name: string | number; id: any }) => {
@@ -245,13 +245,13 @@ const TableList: React.FC = (props: any) => {
   const [batchModalVisible, handleBatchModalVisible] = useState<boolean>(false);
   const columns: ProColumns<TableListItem>[] = [
     {
-      key: 'expName',
-      title: <FormattedMessage id="table.expName" />,
-      dataIndex: 'expName',
+      key: 'runName',
+      title: <FormattedMessage id="table.runName" />,
+      dataIndex: 'runName',
       hideInSearch: true,
       showSorterTooltip: false,
       sorter: (a, b) => {
-        return a?.expName > b?.expName ? -1 : 1;
+        return a?.runName > b?.runName ? -1 : 1;
       },
       render: (dom, entity) => {
         return (
@@ -269,16 +269,16 @@ const TableList: React.FC = (props: any) => {
       },
     },
     {
-      key: 'expId',
-      title: <FormattedMessage id="table.expId" />,
-      dataIndex: 'expId',
+      key: 'runId',
+      title: <FormattedMessage id="table.runId" />,
+      dataIndex: 'runId',
       hideInTable: true,
       renderFormItem: (_, { defaultRender }) => {
         return defaultRender(_);
       },
       showSorterTooltip: false,
       sorter: (a, b) => {
-        return a?.expId > b?.expId ? -1 : 1;
+        return a?.runId > b?.runId ? -1 : 1;
       },
       valueEnum: {
         ...data,
@@ -481,7 +481,7 @@ const TableList: React.FC = (props: any) => {
       setSelectedRows(rowData);
     }
   };
-  /* 判断是否选中相同expId的行 */
+  /* 判断是否选中相同runId的行 */
   const isRepeat = (arr: any) => {
     const hash = {};
     for (let i = 0; i < arr.length; i++) {
@@ -495,7 +495,7 @@ const TableList: React.FC = (props: any) => {
   // console.log(
   //   isRepeat(
   //     selectedRows.map((row) => {
-  //       return row.expId;
+  //       return row.runId;
   //     }),
   //   ),
   // );
@@ -526,7 +526,7 @@ const TableList: React.FC = (props: any) => {
                 </Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
-              {expName === undefined ? (
+              {runName === undefined ? (
                 <>
                   <a>
                     <Text>
@@ -537,13 +537,13 @@ const TableList: React.FC = (props: any) => {
                   &nbsp;&nbsp;
                   <Link
                     to={{
-                      pathname: '/experiment/list',
+                      pathname: '/run/list',
                       state: { projectName, projectId },
                       search: `?projectId=${projectId}`,
                     }}
                   >
                     <Button type="primary" size="small">
-                      <FormattedMessage id="table.expList" />
+                      <FormattedMessage id="table.runList" />
                     </Button>
                   </Link>
                 </>
@@ -551,21 +551,21 @@ const TableList: React.FC = (props: any) => {
                 <>
                   <Link
                     to={{
-                      pathname: '/experiment/list',
+                      pathname: '/run/list',
                       state: { projectName, projectId },
                       search: `?projectId=${projectId}`,
                     }}
                   >
                     <Text type="secondary">
                       {' '}
-                      <FormattedMessage id="table.expList" />
+                      <FormattedMessage id="table.runList" />
                     </Text>
                   </Link>
                   &nbsp;&nbsp;/&nbsp;&nbsp;
                   <a>
                     <Text>
                       <FormattedMessage id="table.switchOv" />{' '}
-                      <FormattedMessage id="table.belongExp" /> ：{expName}
+                      <FormattedMessage id="table.belongRun" /> ：{runName}
                     </Text>
                   </a>
                 </>
@@ -651,7 +651,7 @@ const TableList: React.FC = (props: any) => {
             selectedRows.length > 0 &&
             !isRepeat(
               selectedRows.map((row) => {
-                return row.expId;
+                return row.runId;
               }),
             ) ? (
               <Link
@@ -680,8 +680,8 @@ const TableList: React.FC = (props: any) => {
                 onClick={() => {
                   message.warn(
                     `${intl.formatMessage({
-                      id: 'message.selectDifExp',
-                      defaultMessage: '请至少选择一个实验，多选请选择不同的实验名',
+                      id: 'message.selectDifRun',
+                      defaultMessage: '请至少选择一个Run，多选请选择不同的Run名',
                     })}`,
                   );
                 }}
@@ -752,7 +752,7 @@ const TableList: React.FC = (props: any) => {
         }}
         request={async (params) => {
           if (projectId) {
-            const msg = await overviewList({ projectId, expId, ...params });
+            const msg = await overviewList({ projectId, runId, ...params });
             setTotal(msg.totalNum);
             return Promise.resolve(msg);
           }

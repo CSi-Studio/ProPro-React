@@ -21,8 +21,8 @@ export async function getPeptideRefs(params: { libraryId: string; protein: strin
   });
 }
 
-/** 根据肽段信息直接获取某实验下的EIC图像 POST data/getExpData  */
-export async function getExpData(params: {
+/** 根据肽段信息直接获取某Run下的EIC图像 POST data/getRunData  */
+export async function getRunData(params: {
   projectId: string;
   libraryId: string | undefined;
   predict: boolean;
@@ -32,7 +32,7 @@ export async function getExpData(params: {
   denoise: boolean;
   overviewIds: any[];
 }) {
-  return request(`${url}/clinic/getExpData`, {
+  return request(`${url}/clinic/getRunData`, {
     method: 'POST',
     params: {
       ...params,
@@ -50,8 +50,8 @@ export async function getPeptideRatio(params: { projectId: string }) {
   });
 }
 
-/** 根据实验ID、肽段的mz、所选的rt 获取该实验的光谱图 POST /clinic/getSpectra  */
-export async function getSpectra(params: { expId: string; rt: number; mz?: number }) {
+/** 根据RunID、肽段的mz、所选的rt 获取该Run的光谱图 POST /clinic/getSpectra  */
+export async function getSpectra(params: { runId: string; rt: number; mz?: number }) {
   return request(`${url}/clinic/getSpectra`, {
     method: 'POST',
     params: {
@@ -60,11 +60,11 @@ export async function getSpectra(params: { expId: string; rt: number; mz?: numbe
   });
 }
 
-/** 根据项目ID、实验ID、是否默认获取rtPairs POST /clinic/getRtPairs  */
+/** 根据项目ID、RunID、是否默认获取rtPairs POST /clinic/getRtPairs  */
 export async function getRtPairs(params: {
   projectId: string;
   onlyDefault: boolean;
-  expIds: string[];
+  runIds: string[];
 }) {
   return request(`${url}/clinic/getRtPairs`, {
     method: 'POST',

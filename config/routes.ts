@@ -9,13 +9,13 @@ export default [
     path: '/project/list',
     component: './Project',
   },
-  // 实验列表界面
+  // Run列表界面
   {
-    key: 'experiment',
-    name: 'experiment',
+    key: 'run',
+    name: 'run',
     icon: 'profile',
-    path: '/experiment/list',
-    component: './Experiment',
+    path: '/run/list',
+    component: './Run',
     hideInMenu: true,
   },
   // IRT界面

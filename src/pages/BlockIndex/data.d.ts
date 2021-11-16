@@ -2,7 +2,7 @@ import { List } from "echarts";
 
 export type TableListItem = {
   id:string
-  expId:string
+  runId:string
   level:number
   startPtr:number
   endPtr:number
@@ -11,7 +11,7 @@ export type TableListItem = {
 
 export type TableListDetail = {
   id:string
-  expId:string
+  runId:string
   level:number
   startPtr:number
   endPtr:number

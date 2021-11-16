@@ -9,8 +9,8 @@ export default {
   'component.UniProjectName': '项目名称必须唯一',
   'component.projectAlias': '项目别名',
   'component.inputProjectAlias': '请输入项目别名',
-  'component.expType': '实验类型',
-  'component.inputExpType': '请输入实验类型',
+  'component.runType': 'Run类型',
+  'component.inputType': '请输入Run类型',
   'component.director': '负责人',
   'component.directorInput': '请输入负责人',
   'component.directorEmpty': '负责人不能为空',
@@ -42,16 +42,16 @@ export default {
   //蛋白列表
   'component.importProFile': '导入蛋白文件',
   // blockIndex
-  'component.expId': '实验Id',
+  'component.runId': 'RunId',
   'component.level': '等级',
   'component.rtTime': 'RT时间',
   'component.rtRange': 'RT范围',
   'component.gaussSmooth': '显示高斯平滑',
   'component.projectId': '项目ID',
-  //实验列表
+  //Run列表
   'component.setAlias': '设置别名',
   'component.aliasPrefix': '别名前缀',
-  'component.updateExpInf': '更新实验信息',
+  'component.updateRunInf': '更新Run信息',
   'component.selectProInt': '蛋白质选择界面',
   'component.selectProtein': '请选择蛋白质名称',
   'component.proteinName': '蛋白质名称',
