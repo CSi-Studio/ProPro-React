@@ -16,7 +16,6 @@ const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   const [ratioData, setRatioData] = useState<any>();
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
-  /* 回归曲线 */
 
   useEffect(() => {
     const op = async () => {

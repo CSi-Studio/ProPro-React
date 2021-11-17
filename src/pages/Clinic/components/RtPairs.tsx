@@ -345,7 +345,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         ],
         tooltip: {
           enterable: true,
-          trigger: 'item',
+          trigger: 'axis',
           backgroundColor: ['rgba(255,255,255,0.9)'],
           axisPointer: {
             type: 'cross',
@@ -357,19 +357,13 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
             fontWeight: 'normal',
             fontFamily: 'Times New Roman,STSong',
           },
-          formatter: (params: {
-            seriesName: any;
-            componentType: any;
-            data: number[];
-            marker: any;
-          }) => {
-            if (params.componentType === 'markLine') {
-              return 1;
-            }
-            let res = `${params.marker}${params.seriesName}`;
-            res += `<br />肽段：${params.data[2]}<br />ApexRt: ${
-              params.data[0]
-            } <br /> Delta: ${params.data[1]?.toFixed(4)}`;
+          formatter: (params: any) => {
+            let res = '';
+            params.forEach((item: any) => {
+              res += `${item.marker}${item.seriesName}<br />肽段：${item.data[2]}<br />ApexRt: ${
+                item.data[0]
+              } <br /> Delta: ${item.data[1]?.toFixed(4)}<br />`;
+            });
             return res;
           },
         },
@@ -394,16 +388,11 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
     getOption();
   }, [submit]);
 
-  /* 点击某个点跳到EIC图 */
+  /* 点击某个点复制其肽段名字*/
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
-    if (params.seriesType === 'scatter') {
-      console.log(params);
-
-      const protein = params?.data[2]?.split('-->')[0];
-      const peptide = params?.data[2]?.split('-->')[1];
-      props?.values.LFQClick(protein, peptide);
-    }
+    console.log(params);
+    message.success(`肽段：${params.data[2]}`);
   });
 
   return (

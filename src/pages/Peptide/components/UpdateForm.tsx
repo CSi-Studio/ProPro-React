@@ -29,7 +29,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     <ModalForm
       form={props.form}
       title={intl.formatMessage({
-        id: 'table.editPeptideLib',
+        id: 'component.editPeptideLib',
         defaultMessage: '编辑肽段库',
       })}
       width={750}

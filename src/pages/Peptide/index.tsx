@@ -398,10 +398,15 @@ const TableList: React.FC = (props: any) => {
         rowKey="id"
         size="small"
         pagination={{
-          total: total,
+          total,
         }}
-        request={async () => {
-          const msg = await peptideList({ libraryId });
+        request={async (params) => {
+
+          const msg = await peptideList({
+            libraryId,
+            current: params.current,
+            pageSize: params.pageSize,
+          });
           setTotal(msg.totalNum);
           return Promise.resolve(msg);
         }}

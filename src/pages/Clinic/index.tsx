@@ -652,6 +652,8 @@ const TableList: React.FC = (props: any) => {
         return item.peptideRef;
       });
       setPeptidePage(Math.ceil((peptideArr.indexOf(peptide) + 1) / peptidePageSize));
+    } else {
+
     }
   };
 
@@ -1139,7 +1141,6 @@ const TableList: React.FC = (props: any) => {
                   {rtPairs ? (
                     <RtPairsCharts
                       values={{
-                        LFQClick,
                         rtPairs,
                         runData,
                         projectId,
