@@ -8,7 +8,6 @@ const { Text } = Typography;
 export type QtChartsProps = {
   values: any;
 };
-// const { transform } = EChartsStat;
 
 const LFQBench: React.FC<QtChartsProps> = (props: any) => {
   const intl = useIntl();

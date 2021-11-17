@@ -21,7 +21,6 @@ import {
 } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem } from './data';
-// import ReactECharts from 'echarts-for-react';
 import {
   getRunData,
   getPeptideRatio,
@@ -1138,7 +1137,18 @@ const TableList: React.FC = (props: any) => {
               >
                 <Spin spinning={!rtPairs}>
                   {rtPairs ? (
-                    <RtPairsCharts values={{ rtPairs, runData }} />
+                    <RtPairsCharts
+                      values={{
+                        LFQClick,
+                        rtPairs,
+                        runData,
+                        projectId,
+                        onlyDefault: true,
+                        runIds: runs?.map((item: any) => {
+                          return item.id;
+                        }),
+                      }}
+                    />
                   ) : (
                     <Empty
                       description={intl.formatMessage({
