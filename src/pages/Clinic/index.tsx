@@ -85,6 +85,7 @@ const TableList: React.FC = (props: any) => {
   const [peptideRef, setPeptideRef] = useState<any>(''); // 默认选中的peptideRef
   const [peptideSel, setPeptideSel] = useState<any>(); // 当前选中的peptideRef
   const [lfqStatus, setLfqStatus] = useState<any>(false); // 是否点击lfqStatus
+  const [serStatus, setSerStatus] = useState<any>(false); // 是否搜索肽段
   const [loading, setLoading] = useState<boolean>(false); // 蛋白table loading
   const [peptideLoading, setPeptideLoading] = useState<boolean>(false); // 肽段table loading
   const [chartsLoading, setChartsLoading] = useState<boolean>(false); // charts loading
@@ -112,7 +113,6 @@ const TableList: React.FC = (props: any) => {
   // const [echarts, setEcharts] = useState<any>();
   /* 控制tabs */
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
-  const [peptideName, setPeptideName] = useState<string>(); // 根据肽段查找蛋白
   const [xicChart, setXicChart] = useState<any>(); // XIC图
 
   /** ******** Table Columns Definition ************* */
@@ -385,7 +385,7 @@ const TableList: React.FC = (props: any) => {
 
   // 每次蛋白发生变化，都取第一个肽段作为展示
   useEffect(() => {
-    if (!lfqStatus) {
+    if (!lfqStatus && !serStatus) {
       setPeptideRef(peptideList[0]?.peptideRef); // 取第一个肽段
       setPeptideRowKey(peptideList[0]?.peptideRef);
       setHandleSubmit(!handleSubmit);
@@ -676,7 +676,7 @@ const TableList: React.FC = (props: any) => {
 
   /* 根据肽段搜索蛋白 */
   const onSearch = async (value: any) => {
-    setPeptideName(value);
+    setSerStatus(true);
     const messageFail = intl.formatMessage({
       id: 'message.noCorrespondProtein',
       defaultMessage: '未找到相应蛋白，请检查输入是否正确！',
@@ -783,6 +783,7 @@ const TableList: React.FC = (props: any) => {
                         if (prepareData) {
                           setProteinsIndex(prepareData.proteins.indexOf(record.protein));
                           setLfqStatus(false);
+                          setSerStatus(false);
                           setLoading(true);
                           setPeptideLoading(true);
                           if (record.key === proteinRowKey) {
