@@ -143,6 +143,7 @@ export default {
   'table.shuffle': 'Shuffle',
   'table.nico': 'Nico',
   'table.generateDecoy': 'GenerateDecoy',
+  'table.statisticsInfo': 'Statistics',
   'table.repeatCount': 'RepeatCount',
   'table.confirm': 'Confirm',
 };

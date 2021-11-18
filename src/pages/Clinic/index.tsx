@@ -359,13 +359,7 @@ const TableList: React.FC = (props: any) => {
           const rationData = await getPeptideRatio({ projectId });
           setPeptideRatioData(rationData);
         }
-        console.log(
-          'runList',
-          runList?.map((item: any) => {
-            return item.id;
-          }),
-        );
-        
+
         rtPairsData({
           projectId,
           onlyDefault: true,
@@ -413,13 +407,16 @@ const TableList: React.FC = (props: any) => {
   }, [smooth, denoise]);
 
   useEffect(() => {
-    rtPairsData({
-      projectId,
-      onlyDefault: true,
-      runIds: runs?.map((item: any) => {
-        return item.id;
-      }),
-    });
+    console.log(runs);
+    if (searchMz) {
+      rtPairsData({
+        projectId,
+        onlyDefault: true,
+        runIds: runs?.map((item: any) => {
+          return item.id;
+        }),
+      });
+    }
   }, [seaMzFlag]);
 
   // 点击选择 tags
@@ -1063,9 +1060,7 @@ const TableList: React.FC = (props: any) => {
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>
                       {xicChart ? (
-                        <>
-                          {xicChart}
-                        </>
+                        <>{xicChart}</>
                       ) : (
                         <Empty
                           description="Loading..."

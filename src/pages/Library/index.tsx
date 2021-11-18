@@ -669,7 +669,7 @@ const TableList: React.FC = () => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-chart" />
-              <FormattedMessage id="table.generateDecoy" />
+              <FormattedMessage id="table.statisticsInfo" />
             </Tag>
           </a>,
           <a
