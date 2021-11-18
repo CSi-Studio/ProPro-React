@@ -17,7 +17,7 @@ const titleHeight: number = 20;
 const Width: number = 99;
 
 const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
-  const { runData, rtPairs} = props.values;
+  const { runData, rtPairs } = props.values;
   const [handleOption, setHandleOption] = useState<any>({});
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
@@ -66,6 +66,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
                 x,
                 rtPairs.data[key].y[index],
                 rtPairs.data[key].peptideRefs[index],
+                rtPairs.data[key].libRts[index],
               ]);
             }
           });
@@ -327,11 +328,13 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
             fontFamily: 'Times New Roman,STSong',
           },
           formatter: (params: any) => {
+            console.log(params);
+
             let res = '';
             params.forEach((item: any) => {
               res += `${item.marker}${item.seriesName}<br />肽段：${item.data[2]}<br />ApexRt: ${
                 item.data[0]
-              } <br /> Delta: ${item.data[1]?.toFixed(4)}<br />`;
+              } <br /> Delta: ${item.data[1]?.toFixed(4)}<br /> LibRts: ${item.data[3]}<br />`;
             });
             return res;
           },
@@ -363,14 +366,14 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   return (
     <Row>
       <Col span="24">
-          <ReactECharts
-            ref={(e) => {
-              setEcharts(e);
-            }}
-            option={handleOption}
-            style={{ width: '100%', height: Height }}
-            lazyUpdate={true}
-          />
+        <ReactECharts
+          ref={(e) => {
+            setEcharts(e);
+          }}
+          option={handleOption}
+          style={{ width: '100%', height: Height }}
+          lazyUpdate={true}
+        />
       </Col>
     </Row>
   );
