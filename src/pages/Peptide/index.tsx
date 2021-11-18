@@ -401,11 +401,11 @@ const TableList: React.FC = (props: any) => {
           total,
         }}
         request={async (params) => {
-
           const msg = await peptideList({
             libraryId,
             current: params.current,
             pageSize: params.pageSize,
+            peptideRef: params.peptideRef,
           });
           setTotal(msg.totalNum);
           return Promise.resolve(msg);

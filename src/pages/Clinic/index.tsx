@@ -99,20 +99,19 @@ const TableList: React.FC = (props: any) => {
   const [proteinPage, setProteinPage] = useState<number>(1); // 蛋白table当前页数
   const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
-  /* Irt charts相关 */
-  const [irtData, setIrtData] = useState<any>();
-  /* CutInfo弹窗 */
-  const [cutInfoVisible, setCutInfoVisible] = useState<boolean>(false);
-  /* 光谱图弹窗 */
-  const [spectrumVisible, setSpectrumVisible] = useState<boolean>(false);
+  const [irtData, setIrtData] = useState<any>(); // Irt charts相关
+  const [cutInfoVisible, setCutInfoVisible] = useState<boolean>(false); // CutInfo弹窗
+  const [spectrumVisible, setSpectrumVisible] = useState<boolean>(false); // 光谱图弹窗
   const [spectra, setSpectra] = useState<any>();
   /* RtPairs */
   const [rtPairs, setRtPairs] = useState<any>();
   /* 获取echarts实例，使用其Api */
   // const [echarts, setEcharts] = useState<any>();
-  /* 控制tabs */
-  const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+  const [tabActiveKey, setTabActiveKey] = useState<string>('1'); // 控制tabs
   const [xicChart, setXicChart] = useState<any>(); // XIC图
+  const [searchMz, setSearchMz] = useState<any>(); // RT结果mz搜索
+  const [rtLoading, setRtLoading] = useState<boolean>(false); // RT结果loading
+  const [seaMzFlag, setSeaMzFlag] = useState<boolean>(false); // RT结果mz搜索flag
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -318,6 +317,7 @@ const TableList: React.FC = (props: any) => {
         projectId: values.projectId,
         onlyDefault: values.onlyDefault,
         runIds: values.runIds,
+        mz: searchMz || '',
       });
       setRtPairs(result);
       return true;
@@ -359,6 +359,13 @@ const TableList: React.FC = (props: any) => {
           const rationData = await getPeptideRatio({ projectId });
           setPeptideRatioData(rationData);
         }
+        console.log(
+          'runList',
+          runList?.map((item: any) => {
+            return item.id;
+          }),
+        );
+        
         rtPairsData({
           projectId,
           onlyDefault: true,
@@ -404,6 +411,16 @@ const TableList: React.FC = (props: any) => {
   useEffect(() => {
     fetchEicDataList(false, false);
   }, [smooth, denoise]);
+
+  useEffect(() => {
+    rtPairsData({
+      projectId,
+      onlyDefault: true,
+      runIds: runs?.map((item: any) => {
+        return item.id;
+      }),
+    });
+  }, [seaMzFlag]);
 
   // 点击选择 tags
   const handleRunTagChange = (item: string, checked: boolean) => {
@@ -653,7 +670,6 @@ const TableList: React.FC = (props: any) => {
       });
       setPeptidePage(Math.ceil((peptideArr.indexOf(peptide) + 1) / peptidePageSize));
     } else {
-
     }
   };
 
@@ -729,6 +745,25 @@ const TableList: React.FC = (props: any) => {
         ),
         extra: (
           <Space>
+            {tabActiveKey === '6' ? (
+              <Search
+                placeholder={'请输入要展示的m/z'}
+                allowClear
+                onSearch={(value: any) => {
+                  console.log(value);
+                  if (value !== '') {
+                    setRtLoading(true);
+                    setSearchMz(value);
+                  } else {
+                    setRtLoading(true);
+                    setSearchMz('');
+                    // message.warn('请输入正确的m/z');
+                  }
+                  setSeaMzFlag(!seaMzFlag);
+                }}
+                style={{ width: 240, marginLeft: 20 }}
+              />
+            ) : null}
             <Search
               placeholder={intl.formatMessage({
                 id: 'table.inputSearchPeptides',
@@ -1029,15 +1064,6 @@ const TableList: React.FC = (props: any) => {
                     <Spin spinning={chartsLoading}>
                       {xicChart ? (
                         <>
-                          {/* <ReactECharts
-                            ref={(e) => {
-                              setEcharts(e);
-                            }}
-                            option={handleOption}
-                            notMerge={true}
-                            lazyUpdate={false}
-                            style={{ width: '100%', height: Height }}
-                          /> */}
                           {xicChart}
                         </>
                       ) : (

@@ -84,8 +84,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           seriesData.push(pairsInit);
         });
       } else {
-        console.log('old');
-
         Object.keys(rtPairs.data).forEach((key) => {
           const pairsInit: any = { alias: '', value: [] };
           rtPairs.data[key].x.forEach((x: number, index: number) => {
@@ -185,7 +183,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           yAxisIndex: idx,
           type: 'scatter',
           name: item.alias,
-          symbolSize: searchMz ? 5 : 3,
+          symbolSize: 4,
           animation: false,
           data: item.value,
           large: true,

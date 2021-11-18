@@ -23,4 +23,5 @@ export type TableListPagination = {
   totalNum: number;
   totalPage: number;
   currentPageNo: number;
+  peptideRef?: string;
 };
