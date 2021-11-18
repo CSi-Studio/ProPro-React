@@ -630,6 +630,47 @@ const TableList: React.FC = () => {
                     </Tag>
                   </a>
                 </Menu.Item>
+                <Menu.Item key="2">
+                  <a
+                    key="Replace"
+                    onClick={() => {
+                      if (selectedRows?.length > 0) {
+                        if (selectedRows.length === 1) {
+                          const values = {
+                            libraryId: selectedRows[0].id,
+                            generator: 'replace',
+                          };
+                          handleGenerate(values);
+                          setSelectedRows([]);
+                        }
+                        if (selectedRows.length > 1) {
+                          message.warn(
+                            `${intl.formatMessage({
+                              id: 'message.singleGenerate',
+                              defaultMessage: '目前只支持单个库的伪肽段生成',
+                            })}`,
+                          );
+                          setSelectedRows([]);
+                        }
+                      } else {
+                        message.warn(
+                          `${intl.formatMessage({
+                            id: 'message.selectLibrary',
+                            defaultMessage: '请选择一个库',
+                          })}`,
+                        );
+                      }
+                    }}
+                  >
+                    <Tag>
+                      <Icon
+                        style={{ verticalAlign: '-5px', fontSize: '16px', color: '#0D93F7' }}
+                        icon="mdi:alpha-n-circle"
+                      />
+                      <FormattedMessage id="table.replace" />
+                    </Tag>
+                  </a>
+                </Menu.Item>
               </Menu>
             }
           >

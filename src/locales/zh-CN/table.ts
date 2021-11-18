@@ -143,6 +143,7 @@ export default {
   'table.clone': '克隆库',
   'table.shuffle': 'Shuffle方法',
   'table.nico': 'Nico方法',
+  'table.replace': 'Replace方法',
   'table.generateDecoy': '生成伪肽段',
   'table.statisticsInfo': '统计基本信息',
   'table.repeatCount': '统计肽段重复率',

@@ -142,6 +142,7 @@ export default {
   'table.clone': 'CloneLibrary',
   'table.shuffle': 'Shuffle',
   'table.nico': 'Nico',
+  'table.replace': 'Replace',
   'table.generateDecoy': 'GenerateDecoy',
   'table.statisticsInfo': 'Statistics',
   'table.repeatCount': 'RepeatCount',
