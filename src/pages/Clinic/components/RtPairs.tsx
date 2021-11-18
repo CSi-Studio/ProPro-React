@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { Col, Row, Input, message, Spin } from 'antd';
-import { getRtPairs } from '.././service';
+import { Col, Row, message } from 'antd';
 
 export type QtChartsProps = {
   values: any;
 };
-const { Search } = Input;
 const gridNumInRow: number = 3;
 const gridHeight: number = 240;
 const xName: string = '';
@@ -19,11 +17,8 @@ const titleHeight: number = 20;
 const Width: number = 99;
 
 const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
-  const { runData, rtPairs, projectId, onlyDefault, runIds } = props.values;
+  const { runData, rtPairs} = props.values;
   const [handleOption, setHandleOption] = useState<any>({});
-  const [searchMz, setSearchMz] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [submit, setSubmit] = useState<boolean>(false);
   /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
 
@@ -60,47 +55,23 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
       /* 设置series */
       const series: any[] = [];
       const seriesData: any[] = [];
-      if (searchMz) {
-        const result = await getRtPairs({
-          projectId,
-          onlyDefault,
-          runIds,
-          mz: searchMz,
-        });
-        Object.keys(result.data).forEach((key) => {
-          const pairsInit: any = { alias: '', value: [] };
-          result.data[key].x.forEach((x: number, index: number) => {
-            runData.forEach((item: { runId: string; alias: string }) => {
-              if (item.runId === key) {
-                pairsInit.alias = item.alias;
-                pairsInit.value.push([
-                  x,
-                  result.data[key].y[index],
-                  result.data[key].peptideRefs[index],
-                ]);
-              }
-            });
+
+      Object.keys(rtPairs.data).forEach((key) => {
+        const pairsInit: any = { alias: '', value: [] };
+        rtPairs.data[key].x.forEach((x: number, index: number) => {
+          runData.forEach((item: { runId: string; alias: string }) => {
+            if (item.runId === key) {
+              pairsInit.alias = item.alias;
+              pairsInit.value.push([
+                x,
+                rtPairs.data[key].y[index],
+                rtPairs.data[key].peptideRefs[index],
+              ]);
+            }
           });
-          seriesData.push(pairsInit);
         });
-      } else {
-        Object.keys(rtPairs.data).forEach((key) => {
-          const pairsInit: any = { alias: '', value: [] };
-          rtPairs.data[key].x.forEach((x: number, index: number) => {
-            runData.forEach((item: { runId: string; alias: string }) => {
-              if (item.runId === key) {
-                pairsInit.alias = item.alias;
-                pairsInit.value.push([
-                  x,
-                  rtPairs.data[key].y[index],
-                  rtPairs.data[key].peptideRefs[index],
-                ]);
-              }
-            });
-          });
-          seriesData.push(pairsInit);
-        });
-      }
+        seriesData.push(pairsInit);
+      });
       seriesData.sort((a: { alias: string }, b: { alias: string }) => (a.alias > b.alias ? 1 : -1));
 
       // 设置Grids布局
@@ -329,9 +300,9 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           },
         },
         color: [
-          'rgba(255,99,71,0.5)',
-          'rgba(64,144,247,0.5)',
-          'rgba(60,179,113,0.5)',
+          'rgba(255,99,71)',
+          'rgba(64,144,247)',
+          'rgba(60,179,113)',
           'orange',
           '#9370D8',
           '#71d8d2',
@@ -370,11 +341,8 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
         series,
       };
       setHandleOption(option);
-      setLoading(false);
       return true;
     } catch (err) {
-      setLoading(false);
-      message.error('请输入正确的m/z');
       return false;
     }
   };
@@ -384,36 +352,17 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
 
   useEffect(() => {
     getOption();
-  }, [submit]);
+  }, [rtPairs]);
 
   /* 点击某个点复制其肽段名字*/
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
-    console.log(params);
     message.success(`肽段：${params.data[2]}`);
   });
 
   return (
     <Row>
       <Col span="24">
-        <Spin tip="Loading..." spinning={loading}>
-          <Search
-            placeholder={'请输入要展示的m/z'}
-            allowClear
-            onSearch={(value: any) => {
-              console.log(value);
-              if (value !== '') {
-                setLoading(true);
-                setSearchMz(value);
-              } else {
-                setLoading(true);
-                setSearchMz('');
-                // message.warn('请输入正确的m/z');
-              }
-              setSubmit(!submit);
-            }}
-            style={{ width: 240, marginLeft: 20 }}
-          />
           <ReactECharts
             ref={(e) => {
               setEcharts(e);
@@ -422,7 +371,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
             style={{ width: '100%', height: Height }}
             lazyUpdate={true}
           />
-        </Spin>
       </Col>
     </Row>
   );

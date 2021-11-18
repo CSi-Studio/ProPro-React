@@ -320,8 +320,10 @@ const TableList: React.FC = (props: any) => {
         mz: searchMz || '',
       });
       setRtPairs(result);
+      setRtLoading(false);
       return true;
     } catch (error) {
+      setRtLoading(false);
       return false;
     }
   };
@@ -359,7 +361,7 @@ const TableList: React.FC = (props: any) => {
           const rationData = await getPeptideRatio({ projectId });
           setPeptideRatioData(rationData);
         }
-
+        setRtLoading(true);
         rtPairsData({
           projectId,
           onlyDefault: true,
@@ -407,8 +409,7 @@ const TableList: React.FC = (props: any) => {
   }, [smooth, denoise]);
 
   useEffect(() => {
-    console.log(runs);
-    if (searchMz) {
+    if (runs.length > 0) {
       rtPairsData({
         projectId,
         onlyDefault: true,
@@ -746,8 +747,8 @@ const TableList: React.FC = (props: any) => {
               <Search
                 placeholder={'请输入要展示的m/z'}
                 allowClear
+                disabled={rtLoading}
                 onSearch={(value: any) => {
-                  console.log(value);
                   if (value !== '') {
                     setRtLoading(true);
                     setSearchMz(value);
@@ -767,6 +768,7 @@ const TableList: React.FC = (props: any) => {
                 defaultMessage: '请输入要搜索的肽段',
               })}
               allowClear
+              disabled={peptideLoading}
               onSearch={onSearch}
               style={{ width: 300 }}
             />
@@ -1158,17 +1160,12 @@ const TableList: React.FC = (props: any) => {
                 })}
                 key="6"
               >
-                <Spin spinning={!rtPairs}>
+                <Spin spinning={rtLoading}>
                   {rtPairs ? (
                     <RtPairsCharts
                       values={{
                         rtPairs,
                         runData,
-                        projectId,
-                        onlyDefault: true,
-                        runIds: runs?.map((item: any) => {
-                          return item.id;
-                        }),
                       }}
                     />
                   ) : (

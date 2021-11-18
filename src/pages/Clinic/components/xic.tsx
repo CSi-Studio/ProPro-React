@@ -22,7 +22,6 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const intensityKey = props.values.intensityValue.map((value: any) => value.name);
   const gridNumberInRow = props.values.gridNumberInRow;
   const data: any[] = props.values.result;
-  console.log(data);
 
   // 使legend的每一个和intensity一一对应
   let intMap = data.map((value) => {
