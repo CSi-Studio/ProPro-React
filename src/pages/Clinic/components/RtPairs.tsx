@@ -193,10 +193,11 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
                   fill: '#fff',
                   stroke: '#555',
                   lineWidth: 1,
-                  shadowBlur: 8,
-                  shadowOffsetX: 3,
-                  shadowOffsetY: 3,
-                  shadowColor: 'rgba(0,0,0,0.2)',
+                  borderRadius: 4,
+                  // shadowBlur: 8,
+                  // shadowOffsetX: 3,
+                  // shadowOffsetY: 3,
+                  // shadowColor: 'rgba(0,0,0,0.2)',
                 },
               },
               {
@@ -360,7 +361,9 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   /* 点击某个点复制其肽段名字*/
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
-    message.success(`肽段：${params.data[2]}`);
+    if (params.componentType === 'series') {
+      message.success(`肽段：${params.data[2]}`);
+    }
   });
 
   return (
