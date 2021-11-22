@@ -22,6 +22,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fine: _item.fine,
       intensitySum: _item.intensitySum,
       minTotalScore: item.minTotalScore,
+      totalScore: _item.totalScore,
       index,
       key: _item.apexRt,
       selectIndex: item.selectIndex,
@@ -161,31 +162,29 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         return <Tag color="blue">{entity?.minTotalScore?.toFixed(3)}</Tag>;
       },
     },
+    {
+      title: <FormattedMessage id="component.totalScore" />,
+      dataIndex: 'totalScore',
+      key: 'totalScore',
+      width: 70,
+      fixed: 'left',
+      render: (dom: any, entity: any) => {
+        return <Tag color={entity?.totalScore>entity?.minTotalScore? (entity?.index === entity?.selectIndex?"green":"blue"):"red"}>{entity?.totalScore?.toFixed(3)}</Tag>;
+      },
+    },
   ];
 
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
       title: (value: { tooltip: any }) => {
-        return index === 0 ? (
-          <a
-            style={{ width: '60px', display: 'inline-block' }}
-            onClick={() => {
-              setOvRowKey(value.tooltip);
-            }}
-          >
-            0(
-            <FormattedMessage id="component.totalScore" />)
-          </a>
-        ) : (
-          <a
+        return <a
             style={{ width: '60px', display: 'inline-block' }}
             onClick={() => {
               setOvRowKey(value.tooltip);
             }}
           >
             {index}
-          </a>
-        );
+          </a>;
       },
       dataIndex: index,
       key: index,
@@ -203,18 +202,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         ) {
           return (
             <>
-              {index === 0 ? (
-                <Tag
-                  color={
-                    entity?.peakGroupList[entity?.index]?.scores[index] > entity?.minTotalScore
-                      ? 'green'
-                      : 'blue'
-                  }
-                  key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
-                >
-                  {entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(3)}
-                </Tag>
-              ) : (index===1?(
+              {(index===0?(
                 <Tag
                 color={
                   entity?.peakGroupList[entity?.index]?.fine? 'green' : 'blue'
