@@ -48,7 +48,6 @@ const CutInfo: React.FC<CutInfoProps> = (props) => {
   props.values.runData.forEach((value: any) => {
     Object.keys(value.cutInfoMap).forEach((key: any) => {
       fragments.push(key);
-      // console.log(key);
     });
   });
   fragments = [...new Set(fragments)];

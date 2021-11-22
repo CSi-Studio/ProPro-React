@@ -9,11 +9,11 @@ import DetailForm from './components/DetailForm';
 import { Link, FormattedMessage } from 'umi';
 
 const { Text } = Typography;
-const TableList: React.FC = (props: any) => {
+const TableList: React.FC = (props: Record<string, any>) => {
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
   const projectName = props?.location?.state.projectName;
-  const [idRow, setRowId] = useState<any>();
+  const [idRow, setRowId] = useState<string>();
 
   const actionRef = useRef<ActionType>();
   const [showDetail, setShowDetail] = useState<boolean>(false);

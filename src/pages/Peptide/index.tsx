@@ -14,7 +14,7 @@ import PredictForm from './components/PredictForm';
 import ContrastList from './components/ContrastList';
 import { Link, useIntl, FormattedMessage } from 'umi';
 
-const TableList: React.FC = (props: any) => {
+const TableList: React.FC = (props: Record<string, any>) => {
   const intl = useIntl();
 
   /**

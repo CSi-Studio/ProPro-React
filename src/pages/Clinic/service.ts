@@ -65,7 +65,7 @@ export async function getRtPairs(params: {
   projectId: string;
   onlyDefault: boolean;
   runIds: string[];
-  mz?: number;
+  mz?: string;
 }) {
   return request(`${url}/clinic/getRtPairs`, {
     method: 'POST',

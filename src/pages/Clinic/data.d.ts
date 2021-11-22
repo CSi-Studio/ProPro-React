@@ -13,7 +13,7 @@ export type PrepareData = {
 };
 
 export type Overview = {
- id: string;
+  id: string;
   name: string;
   runId: string;
   defaultOne: boolean;
@@ -36,3 +36,29 @@ export type PeptideTableItem = {
   rt: number;
   key: string;
 };
+
+export interface RunData {
+  id: string;
+  runId: string;
+  group?: any;
+  alias?: any;
+  decoy: boolean;
+  overviewId: string;
+  proteins: string[];
+  peptideRef: string;
+  peakGroupList?: any;
+  selectIndex: number;
+  rtArray: number[];
+  intMap: Map<string, number[]>;
+  cutInfoMap: Map<string, number>;
+  status: number;
+  fdr?: any;
+  irt: number;
+  apexRt?: any;
+  selectedRt?: any;
+  intensitySum?: any;
+  ionsLow?: any;
+  minTotalScore: number;
+  qvalue?: any;
+}
+

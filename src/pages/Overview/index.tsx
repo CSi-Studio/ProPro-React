@@ -24,7 +24,7 @@ import SelectDef from './components/SelectDef';
 import { useIntl, FormattedMessage } from 'umi';
 
 const { Text } = Typography;
-const TableList: React.FC = (props: any) => {
+const TableList: React.FC = (props: Record<string, any>) => {
   const intl = useIntl();
 
   /**
@@ -492,14 +492,6 @@ const TableList: React.FC = (props: any) => {
     }
     return false;
   };
-  // console.log(
-  //   isRepeat(
-  //     selectedRows.map((row) => {
-  //       return row.runId;
-  //     }),
-  //   ),
-  // );
-  console.log('selectedRows', selectedRows);
 
   return (
     <>

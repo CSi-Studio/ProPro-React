@@ -15,7 +15,7 @@ import {
 import Sequence from './components/Sequence';
 import { useIntl, FormattedMessage } from 'umi';
 
-const TableList: React.FC = (props: any) => {
+const TableList: React.FC = (props: Record<string, any>) => {
   const intl = useIntl();
 
   /**

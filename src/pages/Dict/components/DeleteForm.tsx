@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import { ModalForm } from '@ant-design/pro-form';
 import { useIntl } from 'umi';

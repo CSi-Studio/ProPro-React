@@ -41,10 +41,14 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fixed: 'left',
       width: 50,
       render: (dom: any, entity: any) => {
-        if (entity?.index === entity?.selectIndex) {
-          return <Tag color="#87d068">{dom}</Tag>;
+        if (dom !== '-') {
+          if (entity?.index === entity?.selectIndex) {
+            return <Tag color="#87d068">{dom}</Tag>;
+          }
+          return <Tag color="blue">{dom}</Tag>;
+        } else {
+          return <Tag>NaN</Tag>;
         }
-        return <Tag color="blue">{dom}</Tag>;
       },
     },
     {
@@ -128,10 +132,14 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fixed: 'left',
       width: 50,
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity?.ionsLow}</Tag>;
+        if (dom !== '-') {
+          return <Tag color="blue">{entity?.ionsLow}</Tag>;
+        } else {
+          return <Tag>NaN</Tag>;
+        }
       },
     },
-  
+
     {
       title: 'RT',
       dataIndex: 'selectedRt',
@@ -139,7 +147,11 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity?.selectedRt?.toFixed(1)}</Tag>;
+        if (dom !== '-') {
+          return <Tag color="blue">{entity?.selectedRt?.toFixed(1)}</Tag>;
+        } else {
+          return <Tag>NaN</Tag>;
+        }
       },
     },
     {
@@ -149,7 +161,11 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fixed: 'left',
       width: 70,
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity?.intensitySum?.toFixed(0)}</Tag>;
+        if (dom !== '-') {
+          return <Tag color="blue">{entity?.intensitySum?.toFixed(0)}</Tag>;
+        } else {
+          return <Tag>NaN</Tag>;
+        }
       },
     },
     {
@@ -159,7 +175,11 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        return <Tag color="blue">{entity?.minTotalScore?.toFixed(3)}</Tag>;
+        if (dom !== '-') {
+          return <Tag color="blue">{entity?.minTotalScore?.toFixed(3)}</Tag>;
+        } else {
+          return <Tag>NaN</Tag>;
+        }
       },
     },
     {
@@ -187,7 +207,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           </a>;
       },
       dataIndex: index,
-      key: index,
+      key: index.toString(),
       width: 80,
       fixed: `${index === 0 ? 'left' : 'false'}`,
       tooltip: type,
@@ -200,14 +220,12 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           prepareData.overviewMap[entity?.runId] != null &&
           prepareData.overviewMap[entity?.runId].length > 0
         ) {
-          return (
-            <>
-              {(index===0?(
+          return <>
+              {index===0?(
                 <Tag
-                color={
-                  entity?.peakGroupList[entity?.index]?.fine? 'green' : 'blue'
-                }
-                 key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}>
+                  color={entity?.peakGroupList[entity?.index]?.fine ? 'green' : 'blue'}
+                  key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
+                >
                   {`${prepareData.overviewMap[entity?.runId][0]?.weights[type]?.toFixed(
                     3,
                   )}x${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}=${(
@@ -215,7 +233,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
                 </Tag>
-              ):(
+              ) : (
                 <Tag key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}>
                   {`${prepareData.overviewMap[entity?.runId][0]?.weights[type]?.toFixed(
                     3,
@@ -224,14 +242,11 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
                 </Tag>
-              ))
-              }
+              )}
             </>
-          );
-        }
-        return <Tag color="red">NaN</Tag>;
-      },
-    }));
+      }
+      return <Tag color="red">NaN</Tag>;
+    }}));
     scoreColumns.push(scoreColumn);
   }
   scoreColumns = [].concat(...scoreColumns); // 拍平数组
@@ -295,7 +310,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
             style={{ width: '69vw' }}
             columns={scoreColumns}
             dataSource={scoreResult}
-            rowKey={'key'}
+            // rowKey={'key'}
             size="small"
             search={false}
             scroll={{ x: 'max-content', y: 730 }}
