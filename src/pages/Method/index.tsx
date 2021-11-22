@@ -60,7 +60,7 @@ const handleRemove = async (selectedRows: any[]) => {
   }
 };
 const { Text } = Typography;
-const TableList: React.FC = (props: any) => {
+const TableList: React.FC = (props: Record<string, any>) => {
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();

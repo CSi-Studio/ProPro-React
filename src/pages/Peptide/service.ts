@@ -28,7 +28,6 @@ export async function updateList(params: {
   rt?: number;
   id: string;
 }) {
-  // eslint-disable-next-line no-console
   return request(`${url}/peptide/update`, {
     method: 'POST',
     params: {
@@ -43,7 +42,6 @@ export async function predictPeptide(params: {
   limit: number;
   peptideId: string;
 }) {
-  // eslint-disable-next-line no-console
   return request(`${url}/peptide/predict`, {
     method: 'GET',
     params: {
@@ -53,7 +51,6 @@ export async function predictPeptide(params: {
 }
 /** 预测肽段碎片 POST /api/peptide/predict */
 export async function updateFragment(params: { peptideId?: string }, fragments: any) {
-  // eslint-disable-next-line no-console
   return request(`${url}/peptide/updateFragment`, {
     method: 'POST',
     params: {

@@ -24,7 +24,7 @@ import BatchEditForm from './components/BatchEdit';
 import { useIntl, FormattedMessage } from 'umi';
 
 const { Text } = Typography;
-const TableList: React.FC = (props: any) => {
+const TableList: React.FC = (props: Record<string, any>) => {
   const intl = useIntl();
 
   const actionRef = useRef<ActionType>();

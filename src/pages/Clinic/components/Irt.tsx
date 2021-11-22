@@ -31,8 +31,6 @@ const IrtCharts: React.FC<IrtChartsProps> = (props: any) => {
         gridHeight,
         gridPaddingHeight,
       );
-      // console.log('irt', irt);
-
       const option = irt.getIrtOption();
       Height = Math.ceil(props.values.length / gridNumberInRow) * (gridHeight + gridPaddingHeight);
       setHandleOption(option);

@@ -20,7 +20,7 @@ import {
   Typography,
 } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
-import type { PrepareData, Peptide, PeptideTableItem } from './data';
+import type { PrepareData, Peptide, PeptideTableItem, RunData } from './data';
 import {
   getRunData,
   getPeptideRatio,
@@ -37,7 +37,6 @@ import IrtCharts from './components/Irt';
 import CutInfo from './components/CutInfo';
 import Spectrum from './components/Spectra';
 import { irtList } from '../Irt/service';
-// import xic from './components/xic';
 import RtPairsCharts from './components/RtPairs';
 import { peptideList as getPeptideList } from '../Peptide/service';
 import { Link } from 'umi';
@@ -55,11 +54,7 @@ const { Text } = Typography;
 
 /* echarts参数 */
 let gridNumberInRow = 3; // 每行grid的个数
-// const xName = `rt/s`; // 横坐标
-// const yName = `int/s`; // 纵坐标
-// const gridHeight = 200; // 单张高度（单位px）
-// const gridPaddingHeight = 105; // 行间间隔高度（单位px）
-// let Height = 0;
+
 /* 蛋白、肽段table 参数 */
 const proteinPageSize = 13;
 const peptidePageSize = 9;
@@ -70,48 +65,52 @@ const TableList: React.FC = (props: any) => {
   const projectId = props?.location?.query?.projectId;
   const overviewIdsInt = props?.location?.query?.overviewIds;
   const [runs, setRuns] = useState<IdNameAlias[]>([]); // 当前项目下所有的run信息,包含id和name,其中name字段的规则为:当该run.alias名称存在时使用alias,否则使用run.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
-  const [runData, setRunData] = useState<any>([]); // 选中run,存放的真实值为run.id列表
-  const [featureMap, setFeatureMap] = useState<any>([]); // 存放featureMap
+  const [runData, setRunData] = useState<RunData[]>([]); // 选中run,存放的真实值为run.id列表
+  const [featureMap, setFeatureMap] = useState<Record<string, string>[]>([]); // 存放featureMap
   const [selectedRunIds, setSelectedRunIds] = useState<string[]>([]); // 选中run,存放的真实值为run.id列表
-  const [peptideRatioData, setPeptideRatioData] = useState<any>(); // 存放分析结果的初始数据
-  // const [handleOption, setHandleOption] = useState<any>(); // 存放 Echarts的option
-  const [handleSubmit, setHandleSubmit] = useState<any>(false); // 点击 诊断的状态变量
+  const [peptideRatioData, setPeptideRatioData] = useState<Record<string, string>>(); // 存放分析结果的初始数据
+  const [handleSubmit, setHandleSubmit] = useState<boolean>(false); // 点击请求数据按钮后,设置为true,等待数据返回后再设置为false
   const [prepareData, setPrepareData] = useState<PrepareData>(); // 进入蛋白诊所的时候初始化的数据,包含Run列表,蛋白质列表
   const [peptideList, setPeptideList] = useState<Peptide[]>([]); // 肽段的Table行
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
-  const [peptideRef, setPeptideRef] = useState<any>(''); // 默认选中的peptideRef
+  const [peptideRef, setPeptideRef] = useState<string>(''); // 默认选中的peptideRef
   const [peptideSel, setPeptideSel] = useState<any>(); // 当前选中的peptideRef
-  const [lfqStatus, setLfqStatus] = useState<any>(false); // 是否点击lfqStatus
-  const [serStatus, setSerStatus] = useState<any>(false); // 是否搜索肽段
+  const [spectra, setSpectra] = useState<Record<string, string>>(); // 光谱图数据
+  const [rtPairs, setRtPairs] = useState<Record<string, string>>(); // RtPairs
+  const [xicChart, setXicChart] = useState<any>(); // XIC图
+  const [lfqStatus, setLfqStatus] = useState<boolean>(false); // 是否点击lfqStatus
+  const [irtData, setIrtData] = useState<Record<string, any>[]>(); // Irt charts相关
+
+  /* loading... */
   const [loading, setLoading] = useState<boolean>(false); // 蛋白table loading
   const [peptideLoading, setPeptideLoading] = useState<boolean>(false); // 肽段table loading
+  const [rtLoading, setRtLoading] = useState<boolean>(false); // RT结果loading
   const [chartsLoading, setChartsLoading] = useState<boolean>(false); // charts loading
-  // 选中行的ID
-  const [proteinRowKey, setProteinRowKey] = useState<any>();
-  const [peptideRowKey, setPeptideRowKey] = useState<any>();
-  /* table 搜索 */
+
+  /* table 选中行 */
+  const [proteinRowKey, setProteinRowKey] = useState<string>();
+  const [peptideRowKey, setPeptideRowKey] = useState<string>();
+
+  /* 搜索 */
   const [searchText, setSearchText] = useState<any>();
   const [searchedCol, setSearchedCol] = useState<any>('protein');
+  const [searchMz, setSearchMz] = useState<string>(); // RT结果mz搜索
+  const [serStatus, setSerStatus] = useState<boolean>(false); // 是否搜索肽段
+  const [seaMzFlag, setSeaMzFlag] = useState<boolean>(false); // RT结果mz搜索flag
+
   /* 键盘事件 */
-  const [proteinsIndex, setProteinsIndex] = useState<number>(0); // 蛋白table当前选中
+  const [proteinsIndex, setProteinsIndex] = useState<number>(0); // 蛋白table当前选中第几个
   const [proteinPage, setProteinPage] = useState<number>(1); // 蛋白table当前页数
-  const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中
+  const [peptidesIndex, setPeptidesIndex] = useState<number>(0); // 肽段table当前选中第几个
   const [peptidePage, setPeptidePage] = useState<number>(1); // 肽段table当前页数
-  const [irtData, setIrtData] = useState<any>(); // Irt charts相关
+
   const [cutInfoVisible, setCutInfoVisible] = useState<boolean>(false); // CutInfo弹窗
   const [spectrumVisible, setSpectrumVisible] = useState<boolean>(false); // 光谱图弹窗
-  const [spectra, setSpectra] = useState<any>();
-  /* RtPairs */
-  const [rtPairs, setRtPairs] = useState<any>();
-  /* 获取echarts实例，使用其Api */
-  // const [echarts, setEcharts] = useState<any>();
+
+  /* 存放当前tab的key */
   const [tabActiveKey, setTabActiveKey] = useState<string>('1'); // 控制tabs
-  const [xicChart, setXicChart] = useState<any>(); // XIC图
-  const [searchMz, setSearchMz] = useState<any>(); // RT结果mz搜索
-  const [rtLoading, setRtLoading] = useState<boolean>(false); // RT结果loading
-  const [seaMzFlag, setSeaMzFlag] = useState<boolean>(false); // RT结果mz搜索flag
 
   /** ******** Table Columns Definition ************* */
   // 肽段列表 Column
@@ -153,8 +152,9 @@ const TableList: React.FC = (props: any) => {
 
   /** **************  网络调用相关接口 start  ****************** */
   async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
-    setXicChart('');
+    setXicChart(''); // 将XicChart置空
     let selectedOverviewIds = [];
+    /* 如果不是从分析页面跳过来 */
     if (!overviewIdsInt) {
       selectedOverviewIds = []
         .concat(
@@ -166,9 +166,8 @@ const TableList: React.FC = (props: any) => {
           return item?.id;
         });
     }
-
+    /* 如果没有获取到肽段 */
     if (!peptideRef) {
-      // message.warn('请选择一个PeptideRef');
       return false;
     }
     setChartsLoading(true);
@@ -190,26 +189,25 @@ const TableList: React.FC = (props: any) => {
       });
 
       // 将Run 别名 给 getRunData接口得到的数据
-      result.data.forEach((item: any) => {
-        runs?.forEach((_item: any) => {
+      result.data.forEach((item: { runId: string; alias: string; name: string }) => {
+        runs?.forEach((_item: { id: string; alias: string }) => {
           if (item.runId === _item.id) {
             item.alias = _item.alias;
           }
         });
-        runValues?.data?.forEach((_item: any) => {
+        runValues?.data?.forEach((_item: { runId: string; runName: string }) => {
           if (item.runId === _item.runId) {
             item.name = _item.runName;
           }
         });
       });
-      result.data.sort((a: any, b: any) => a.alias.charCodeAt(0) - b.alias.charCodeAt(0));
+      result.data.sort(
+        (a: { alias: string }, b: { alias: string }) =>
+          a.alias.charCodeAt(0) - b.alias.charCodeAt(0),
+      );
 
       setRunData(result.data);
       setFeatureMap(result.featureMap.intensityMap);
-      /* 碎片Mz echarts toolbox */
-      // const getCutInfo = () => {
-      //   setCutInfoVisible(true);
-      // };
 
       /* 展示碎片光谱图 */
       const spectraFn = async (item: any) => {
@@ -240,7 +238,7 @@ const TableList: React.FC = (props: any) => {
       const allCutInfo: any = [];
       const allCutMz: any = {};
       result.data.forEach((item: any) => {
-        Object.keys(item.cutInfoMap).forEach((key: any) => {
+        Object.keys(item.cutInfoMap).forEach((key: string) => {
           allCutMz[key] = item.cutInfoMap[key];
           allCutInfo.push(key);
         });
@@ -254,8 +252,9 @@ const TableList: React.FC = (props: any) => {
         b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
       );
 
-      gridNumberInRow = selectedRunIds.length > 2 ? 3 : 2;
+      gridNumberInRow = selectedRunIds.length > 2 ? 3 : 2; // 图表排布
 
+      /* XIC图 */
       const charts = (
         <XicCharts
           values={{
@@ -267,10 +266,9 @@ const TableList: React.FC = (props: any) => {
         />
       );
       setXicChart(charts);
-      // setHandleOption(option);
-      setLoading(false);
-      setChartsLoading(false);
-      setPeptideLoading(false);
+      setLoading(false); // protein loading
+      setChartsLoading(false); // charts loading
+      setPeptideLoading(false); // peptide loading
       return true;
     } catch (error) {
       const messageFailSpec = intl.formatMessage({
@@ -319,6 +317,7 @@ const TableList: React.FC = (props: any) => {
         runIds: values.runIds,
         mz: searchMz || '',
       });
+
       setRtPairs(result);
       setRtLoading(false);
       return true;
@@ -345,13 +344,13 @@ const TableList: React.FC = (props: any) => {
 
         if (!overviewIdsInt) {
           setSelectedRunIds(
-            runList?.map((item: any) => {
+            runList?.map((item: { id: string }) => {
               return item.id;
             }),
           );
         }
         getIrtData({
-          selectedRunIds: runList?.map((item: any) => {
+          selectedRunIds: runList?.map((item: { id: string }) => {
             return item.id;
           }),
           runs: runList,
@@ -365,7 +364,7 @@ const TableList: React.FC = (props: any) => {
         rtPairsData({
           projectId,
           onlyDefault: true,
-          runIds: runList?.map((item: any) => {
+          runIds: runList?.map((item: { id: string }) => {
             return item.id;
           }),
         });
@@ -394,26 +393,30 @@ const TableList: React.FC = (props: any) => {
     }
   }, [peptideList]);
 
+  /* 当肽段发生变化时，重新获取请求接口，刷新数据 */
   useEffect(() => {
     setPeptideRef(peptideSel);
     setPeptideRowKey(peptideSel);
     setHandleSubmit(!handleSubmit);
   }, [peptideSel]);
 
+  /* handleSubmit，重新请求接口 */
   useEffect(() => {
     fetchEicDataList(false, false);
   }, [handleSubmit]);
 
+  /* 平滑波峰，优化噪声干扰 */
   useEffect(() => {
     fetchEicDataList(false, false);
   }, [smooth, denoise]);
 
+  /* 点击搜索m/z刷新Rt数据 */
   useEffect(() => {
     if (runs.length > 0) {
       rtPairsData({
         projectId,
         onlyDefault: true,
-        runIds: runs?.map((item: any) => {
+        runIds: runs?.map((item: { id: string }) => {
           return item.id;
         }),
       });
@@ -435,7 +438,7 @@ const TableList: React.FC = (props: any) => {
       setSelectedRunIds(overviewIdsInt?.split(','));
     } else {
       setSelectedRunIds(
-        runs?.map((item: any) => {
+        runs?.map((item: { id: string }) => {
           return item.id;
         }),
       );
@@ -452,14 +455,16 @@ const TableList: React.FC = (props: any) => {
         .filter((_item: string) => !selectedRunIds.includes(_item));
       setSelectedRunIds(reverse);
     } else {
-      const reverse = runs.map((item) => item.id).filter((id) => !selectedRunIds.includes(id));
+      const reverse = runs
+        .map((item: { id: string }) => item.id)
+        .filter((id) => !selectedRunIds.includes(id));
       setSelectedRunIds(reverse);
     }
     setHandleSubmit(!handleSubmit);
   };
 
   /* 肽段点击行选中 */
-  const selectPeptideRow = (record: any) => {
+  const selectPeptideRow = (record: string) => {
     if (record !== undefined) {
       setPeptideRef(record);
     }
@@ -484,7 +489,7 @@ const TableList: React.FC = (props: any) => {
   };
 
   // Proteins Table切换所选项时触发的事件
-  async function onProteinChange(value: any) {
+  async function onProteinChange(value: string) {
     if (prepareData && prepareData.anaLib) {
       const result = await getPeptideRefs({
         libraryId: prepareData?.anaLib?.id,
@@ -675,13 +680,13 @@ const TableList: React.FC = (props: any) => {
   const allCutInfo: any = [];
   const allCutMz: any = {};
   runData.forEach((item: any) => {
-    Object.keys(item.cutInfoMap).forEach((key: any) => {
+    Object.keys(item.cutInfoMap).forEach((key: string) => {
       allCutMz[key] = item.cutInfoMap[key];
       allCutInfo.push(key);
     });
   });
   const intensityData: any = [];
-  Object.keys(featureMap).forEach((key: any) => {
+  Object.keys(featureMap).forEach((key: string) => {
     intensityData.push({ name: key, data: featureMap[key] });
   });
 
@@ -690,7 +695,7 @@ const TableList: React.FC = (props: any) => {
   );
 
   /* 根据肽段搜索蛋白 */
-  const onSearch = async (value: any) => {
+  const onSearch = async (value: string) => {
     setSerStatus(true);
     const messageFail = intl.formatMessage({
       id: 'message.noCorrespondProtein',
@@ -701,7 +706,6 @@ const TableList: React.FC = (props: any) => {
       if (msg.data.length > 0) {
         const peptideRes = await onProteinChange(msg?.data[0]?.proteins[0]);
         if (msg?.data[0]?.proteins[0]) {
-          // setProteinRowKey(msg?.data[0]?.proteins[0]); //table选中搜索蛋白行
           setProteinPage(
             Math.ceil(prepareData.proteins.indexOf(msg?.data[0]?.proteins[0]) / proteinPageSize),
           ); //跳转到搜索蛋白所在的页

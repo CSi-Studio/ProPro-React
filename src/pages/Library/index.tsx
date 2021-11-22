@@ -271,6 +271,7 @@ const TableList: React.FC = () => {
     {
       title: <FormattedMessage id="component.libraryName" />,
       dataIndex: 'name',
+      sorter: (a, b) => (a.name > b.name ? -1 : 1),
       render: (dom, entity) => {
         return (
           <Tooltip title={`Id:${entity.id}`} placement="topLeft">

@@ -329,8 +329,6 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
             fontFamily: 'Times New Roman,STSong',
           },
           formatter: (params: any) => {
-            console.log(params);
-
             let res = '';
             params.forEach((item: any) => {
               res += `${item.marker}${item.seriesName}<br />肽段：${item.data[2]}<br />ApexRt: ${

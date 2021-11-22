@@ -1,7 +1,4 @@
 import { ProFormSelect } from '@ant-design/pro-form';
-import { getDict } from '@/pages/Dict/service';
-import { useState } from 'react';
-import { indexOf } from 'lodash';
 export type dictProps = {
   dictName: string;
   initialValue?: string;
@@ -16,7 +13,6 @@ const PSelect: React.FC<dictProps> = (props) => {
   const data = JSON.parse(sessionStorage.getItem(props.dictName));
   newData = [];
   data.forEach((item: any) => {
-    // console.log('index',newData.indexOf({value:item.key,label:item.value}))
     newData.push({ value: item.key, label: item.value });
   });
   return (

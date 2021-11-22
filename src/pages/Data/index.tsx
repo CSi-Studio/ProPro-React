@@ -4,14 +4,12 @@ import { dataList } from './service';
 import type { TableListItem, TableListPagination } from './data';
 import React, { useState, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
-import { useIntl, FormattedMessage } from 'umi';
+import { FormattedMessage } from 'umi';
 
-const TableList: React.FC = (props: any) => {
-  const intl = useIntl();
-
+const TableList: React.FC = (props: Record<string, any>) => {
   /** 全选 */
   const [selectedRows, setSelectedRows] = useState<TableListItem[]>([]);
-  const [total, setTotal] = useState<any>();
+  const [total, setTotal] = useState<number>();
   const [currentRow, handleCurrentRow] = useState<any>();
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [

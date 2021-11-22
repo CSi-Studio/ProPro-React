@@ -17,7 +17,7 @@ const gridHeight = 160;
 // 行间间隔高度（单位px）
 const gridPaddingHeight = 80;
 let Height = 0;
-const IrtCharts: React.FC = (props: any) => {
+const IrtCharts: React.FC = (props: Record<string, any>) => {
   const [handleOption, setHandleOption] = useState({});
   useEffect(() => {
     const op = async () => {
