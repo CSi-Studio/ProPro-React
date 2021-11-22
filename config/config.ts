@@ -1,5 +1,4 @@
 import { defineConfig } from 'umi';
-
 import defaultSettings from './defaultSettings';
 import routes from './routes';
 
@@ -48,4 +47,6 @@ export default defineConfig({
   mfsu: {},
   webpack5: {},
   exportStatic: {},
+  // base: '/admin/',
+  // publicPath: '/admin/',
 });
