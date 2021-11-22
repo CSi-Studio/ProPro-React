@@ -22,6 +22,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       fine: _item.fine,
       intensitySum: _item.intensitySum,
       minTotalScore: item.minTotalScore,
+      totalScore: _item.totalScore,
       index,
       key: _item.apexRt,
       selectIndex: item.selectIndex,
@@ -181,31 +182,29 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         }
       },
     },
+    {
+      title: <FormattedMessage id="component.totalScore" />,
+      dataIndex: 'totalScore',
+      key: 'totalScore',
+      width: 70,
+      fixed: 'left',
+      render: (dom: any, entity: any) => {
+        return <Tag color={entity?.totalScore>entity?.minTotalScore? (entity?.index === entity?.selectIndex?"green":"blue"):"red"}>{entity?.totalScore?.toFixed(3)}</Tag>;
+      },
+    },
   ];
 
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
       title: (value: { tooltip: any }) => {
-        return index === 0 ? (
-          <a
-            style={{ width: '60px', display: 'inline-block' }}
-            onClick={() => {
-              setOvRowKey(value.tooltip);
-            }}
-          >
-            0(
-            <FormattedMessage id="component.totalScore" />)
-          </a>
-        ) : (
-          <a
+        return <a
             style={{ width: '60px', display: 'inline-block' }}
             onClick={() => {
               setOvRowKey(value.tooltip);
             }}
           >
             {index}
-          </a>
-        );
+          </a>;
       },
       dataIndex: index,
       key: index.toString(),
@@ -221,20 +220,8 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           prepareData.overviewMap[entity?.runId] != null &&
           prepareData.overviewMap[entity?.runId].length > 0
         ) {
-          return (
-            <>
-              {index === 0 ? (
-                <Tag
-                  color={
-                    entity?.peakGroupList[entity?.index]?.scores[index] > entity?.minTotalScore
-                      ? 'green'
-                      : 'blue'
-                  }
-                  key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
-                >
-                  {entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(3)}
-                </Tag>
-              ) : index === 1 ? (
+          return <>
+              {index===0?(
                 <Tag
                   color={entity?.peakGroupList[entity?.index]?.fine ? 'green' : 'blue'}
                   key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
@@ -257,11 +244,9 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                 </Tag>
               )}
             </>
-          );
-        }
-        return <Tag color="red">NaN</Tag>;
-      },
-    }));
+      }
+      return <Tag color="red">NaN</Tag>;
+    }}));
     scoreColumns.push(scoreColumn);
   }
   scoreColumns = [].concat(...scoreColumns); // 拍平数组
