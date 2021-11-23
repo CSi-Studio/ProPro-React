@@ -224,7 +224,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
       dataIndex: index,
       key: type.toString(),
-      width: 130,
+      width: 110,
       fixed: `${index === 0 ? 'left' : 'false'}`,
       tooltip: type,
       render: (dom: any, entity: any) => {
