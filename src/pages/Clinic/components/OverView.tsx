@@ -132,7 +132,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       dataIndex: 'ionsLow',
       key: 'ionsLow',
       fixed: 'left',
-      width: 50,
+      width:45,
       render: (dom: any, entity: any) => {
         if (dom !== '-') {
           return <Tag color="blue">{entity?.ionsLow}</Tag>;
@@ -146,7 +146,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       title: 'RT',
       dataIndex: 'selectedRt',
       key: 'selectedRt',
-      width: 70,
+      width: 60,
       fixed: 'left',
       render: (dom: any, entity: any) => {
         if (dom !== '-') {
@@ -213,7 +213,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       title: (value: { tooltip: any }) => {
         return (
           <Text
-            style={{ display: 'inline-block', width: '100%' }}
+            style={{ display: 'inline-block' }}
             onClick={() => {
               setOvRowKey(value.tooltip);
             }}
@@ -224,7 +224,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
       dataIndex: index,
       key: type.toString(),
-      width: 110,
+      width: 1,
       fixed: `${index === 0 ? 'left' : 'false'}`,
       tooltip: type,
       render: (dom: any, entity: any) => {
@@ -288,7 +288,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         &nbsp;&nbsp;
       </>
       <Row>
-        <Col span={3.5}>
+        <Col span={3}>
           <ProTable
             columns={[
               {
@@ -332,15 +332,15 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
             }}
           />
         </Col>
-        <Col span={20}>
+        <Col span={21}>
           <ProTable
-            style={{ width: '74vw' }}
+            style={{ width: '100%' }}
             columns={scoreColumns}
             dataSource={scoreResult}
             // rowKey={'key'}
             size="small"
             search={false}
-            scroll={{ x: 'max-content', y: 730 }}
+            scroll={{ x: 'max-content' }}
             toolBarRender={false}
             tableAlertRender={false}
             pagination={{
