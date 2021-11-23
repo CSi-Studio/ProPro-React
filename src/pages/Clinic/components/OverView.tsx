@@ -258,7 +258,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                     type.charAt(0) === '↑' &&
                     prepareData.overviewMap[entity?.runId][0]?.weights[type] < 0
                       ? 'red'
-                      : ''
+                      : 'blue'
                   }
                   key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
                 >
@@ -334,7 +334,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         </Col>
         <Col span={20}>
           <ProTable
-            style={{ width: '69vw' }}
+            style={{ width: '74vw' }}
             columns={scoreColumns}
             dataSource={scoreResult}
             // rowKey={'key'}
