@@ -213,7 +213,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       title: (value: { tooltip: any }) => {
         return (
           <Text
-            style={{ display: 'inline-block', fontSize: '12px' }}
+            style={{ display: 'inline-block', width: '100%' }}
             onClick={() => {
               setOvRowKey(value.tooltip);
             }}
@@ -224,7 +224,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       },
       dataIndex: index,
       key: type.toString(),
-      width: 80,
+      width: 130,
       fixed: `${index === 0 ? 'left' : 'false'}`,
       tooltip: type,
       render: (dom: any, entity: any) => {
@@ -247,7 +247,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                   color={entity?.peakGroupList[entity?.index]?.fine ? 'green' : 'blue'}
                   key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
                 >
-                  {`${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)} → ${(
+                  {`${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}→${(
                     prepareData.overviewMap[entity?.runId][0]?.weights[type] *
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
@@ -262,7 +262,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
                   }
                   key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
                 >
-                  {`${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)} → ${(
+                  {`${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}→${(
                     prepareData.overviewMap[entity?.runId][0]?.weights[type] *
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
