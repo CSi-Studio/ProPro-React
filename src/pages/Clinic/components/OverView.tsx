@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Col, Row, Tag } from 'antd';
+import { Col, Row, Tag, Tooltip, Typography } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import { FormattedMessage } from 'umi';
+
+const { Text } = Typography;
 
 export type OverViewProps = {
   values: any;
@@ -189,7 +191,19 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       width: 70,
       fixed: 'left',
       render: (dom: any, entity: any) => {
-        return <Tag color={entity?.totalScore>entity?.minTotalScore? (entity?.index === entity?.selectIndex?"green":"blue"):"red"}>{entity?.totalScore?.toFixed(3)}</Tag>;
+        return (
+          <Tag
+            color={
+              entity?.totalScore > entity?.minTotalScore
+                ? entity?.index === entity?.selectIndex
+                  ? 'green'
+                  : 'blue'
+                : 'red'
+            }
+          >
+            {entity?.totalScore?.toFixed(3)}
+          </Tag>
+        );
       },
     },
   ];
@@ -197,17 +211,19 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
   if (prepareData) {
     const scoreColumn = prepareData.method.score.scoreTypes.map((type: string, index: number) => ({
       title: (value: { tooltip: any }) => {
-        return <a
-            style={{ width: '60px', display: 'inline-block' }}
+        return (
+          <Text
+            style={{ display: 'inline-block', fontSize: '12px' }}
             onClick={() => {
               setOvRowKey(value.tooltip);
             }}
           >
-            {index}
-          </a>;
+            {type}
+          </Text>
+        );
       },
       dataIndex: index,
-      key: index.toString(),
+      key: type.toString(),
       width: 80,
       fixed: `${index === 0 ? 'left' : 'false'}`,
       tooltip: type,
@@ -220,33 +236,44 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
           prepareData.overviewMap[entity?.runId] != null &&
           prepareData.overviewMap[entity?.runId].length > 0
         ) {
-          return <>
-              {index===0?(
+          return (
+            <Tooltip
+              title={`权重：${prepareData.overviewMap[entity?.runId][0]?.weights[type]?.toFixed(
+                3,
+              )}`}
+            >
+              {index === 0 ? (
                 <Tag
                   color={entity?.peakGroupList[entity?.index]?.fine ? 'green' : 'blue'}
                   key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
                 >
-                  {`${prepareData.overviewMap[entity?.runId][0]?.weights[type]?.toFixed(
-                    3,
-                  )}x${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}=${(
+                  {`${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)} → ${(
                     prepareData.overviewMap[entity?.runId][0]?.weights[type] *
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
                 </Tag>
               ) : (
-                <Tag key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}>
-                  {`${prepareData.overviewMap[entity?.runId][0]?.weights[type]?.toFixed(
-                    3,
-                  )}x${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)}=${(
+                <Tag
+                  color={
+                    type.charAt(0) === '↑' &&
+                    prepareData.overviewMap[entity?.runId][0]?.weights[type] < 0
+                      ? 'red'
+                      : ''
+                  }
+                  key={entity?.peakGroupList[entity?.index]?.scores[index]?.toString()}
+                >
+                  {`${entity?.peakGroupList[entity?.index]?.scores[index]?.toFixed(2)} → ${(
                     prepareData.overviewMap[entity?.runId][0]?.weights[type] *
                     entity?.peakGroupList[entity?.index]?.scores[index]
                   )?.toFixed(2)}`}
                 </Tag>
               )}
-            </>
-      }
-      return <Tag color="red">NaN</Tag>;
-    }}));
+            </Tooltip>
+          );
+        }
+        return <Tag>NaN</Tag>;
+      },
+    }));
     scoreColumns.push(scoreColumn);
   }
   scoreColumns = [].concat(...scoreColumns); // 拍平数组

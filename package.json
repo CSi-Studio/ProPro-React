@@ -30,7 +30,8 @@
     "test:all": "node ./tests/run-tests.js",
     "test:component": "umi test ./src/components",
     "serve": "umi-serve",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "doc": "cross-env REACT_APP_ENV=doc umi build --dumi"
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
