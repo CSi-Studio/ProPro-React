@@ -406,6 +406,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
             current: params.current,
             pageSize: params.pageSize,
             peptideRef: params.peptideRef,
+            protein: params.proteins,
           });
           setTotal(msg.totalNum);
           return Promise.resolve(msg);

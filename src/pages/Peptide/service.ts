@@ -11,6 +11,7 @@ export async function peptideList(params: {
   /** 选择的标准库ID */
   libraryId: string;
   peptideRef?: string;
+  protein?: string;
 }) {
   return request(`${url}/peptide/list`, {
     method: 'GET',
