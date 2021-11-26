@@ -112,19 +112,21 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
               );
               break;
           }
+        } else {
+          if (entity?.totalScore >= entity?.minTotalScore) {
+            return (
+              <Tag color="success">
+                <FormattedMessage id="component.successIdentify" />
+              </Tag>
+            );
+          } else {
+            return (
+              <Tag color="error">
+                <FormattedMessage id="component.failIdentify" />
+              </Tag>
+            );
+          }
         }
-        if (entity?.peakGroupList[entity?.index]?.scores[0] >= entity?.minTotalScore) {
-          return (
-            <Tag color="success">
-              <FormattedMessage id="component.successIdentify" />
-            </Tag>
-          );
-        }
-        return (
-          <Tag color="error">
-            <FormattedMessage id="component.failIdentify" />
-          </Tag>
-        );
       },
     },
     {
@@ -132,7 +134,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       dataIndex: 'ionsLow',
       key: 'ionsLow',
       fixed: 'left',
-      width:45,
+      width: 45,
       render: (dom: any, entity: any) => {
         if (dom !== '-') {
           return <Tag color="blue">{entity?.ionsLow}</Tag>;
