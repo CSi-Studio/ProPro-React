@@ -357,7 +357,6 @@ const TableList: React.FC = () => {
       dataIndex: 'Peptide_Count',
       hideInSearch: true,
       showSorterTooltip: false,
-
       sorter: (a, b) => (a.Peptide_Count > b.Peptide_Count ? -1 : 1),
       render: (dom, entity) => {
         return (
@@ -385,7 +384,6 @@ const TableList: React.FC = () => {
       dataIndex: 'Fragment_Count',
       hideInSearch: true,
       showSorterTooltip: false,
-
       sorter: (a, b) => (a.Fragment_Count > b.Fragment_Count ? -1 : 1),
       render: (dom, entity) => {
         return <Tag>{entity?.statistic?.Fragment_Count}</Tag>;

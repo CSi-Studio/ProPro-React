@@ -46,7 +46,7 @@ export default defineConfig({
   nodeModulesTransform: { type: 'none' },
   mfsu: {},
   webpack5: {},
-  exportStatic: {},
+  exportStatic: {}, // 只生成一个index.html文件
   // base: '/admin/',
   // publicPath: '/admin/',
 });

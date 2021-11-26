@@ -5,7 +5,7 @@ export default [
   {
     key: 'project',
     name: 'project',
-    icon: 'profile',
+    icon: 'FolderOpenOutlined',
     path: '/project/list',
     component: './Project',
   },
@@ -83,7 +83,7 @@ export default [
   {
     key: 'method',
     name: 'method',
-    icon: 'profile',
+    icon: 'ToolOutlined',
     path: '/method/list',
     component: './Method',
   },
