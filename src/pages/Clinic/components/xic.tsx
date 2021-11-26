@@ -160,7 +160,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
             'Error',
           )}}`,
           `{fdr|${data[i]?.fdr ? `fdr: ${data[i]?.fdr?.toFixed(4)}` : `fdr: -`}}`,
-          `{sum|${data[i]?.intensitySum ? `sum: ${data[i]?.intensitySum}` : `sum: -`}}`,
+          `{sum|${data[i]?.intensitySum ? `sum: ${data[i]?.intensitySum?.toFixed(0)}` : `sum: -`}}`,
+          `{fit|${data[i]?.fitIntSum ? `fit: ${data[i]?.fitIntSum?.toFixed(0)}` : `fit: -`}}`,
           `{rt|${
             data[i]?.peakGroupList !== null ? `rt: ${data[i]?.apexRt?.toFixed(3)}` : `rt: -`
           }}`,
@@ -216,6 +217,17 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
               fontWeight: 'normal',
               fontFamily: 'Times New Roman,STSong',
               backgroundColor: '#e6f7ff',
+              borderColor: '#91d5ff',
+              borderWidth: 1,
+              borderRadius: 2,
+              padding: [3, 3],
+            },
+            fit: {
+              color: 'white',
+              fontSize: '12',
+              fontWeight: 'normal',
+              fontFamily: 'Times New Roman,STSong',
+              backgroundColor: 'orange',
               borderColor: '#91d5ff',
               borderWidth: 1,
               borderRadius: 2,
