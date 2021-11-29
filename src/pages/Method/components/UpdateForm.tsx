@@ -130,6 +130,18 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             label="平滑点数"
             placeholder="smoothPoints"
           />
+           <ProFormDigit
+            initialValue={50}
+            name="ionsLow"
+            label="离子碎片低信号阈值"
+            placeholder="ionsLow"
+          />
+          <ProFormDigit
+            initialValue={300}
+            name="ionsHigh"
+            label="离子碎片高信号阈值"
+            placeholder="ionsHigh"
+          />
           <ProFormSelect
             initialValue={props.values.peakFinding?.peakFindingMethod}
             name="peakFindingMethod"
