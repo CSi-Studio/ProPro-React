@@ -22,6 +22,7 @@ import BatchUpdateForm from './components/BatchUpdateForm';
 import ReselectForm from './components/ReselectForm';
 import SelectDef from './components/SelectDef';
 import { useIntl, FormattedMessage } from 'umi';
+import { SettingOutlined, FullscreenOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: Record<string, any>) => {
