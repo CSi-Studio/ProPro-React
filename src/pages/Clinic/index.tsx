@@ -153,9 +153,8 @@ const TableList: React.FC = (props: any) => {
   /** **************  网络调用相关接口 start  ****************** */
   async function fetchEicDataList(predict: boolean, changeCharge: boolean) {
     setXicChart(''); // 将XicChart置空
-    let selectedOverviewIds = [];
-    /* 如果不是从分析页面跳过来 */
-    if (!overviewIdsInt) {
+    let selectedOverviewIds = []; // tag选中的overviewIds
+    if (prepareData) {
       selectedOverviewIds = []
         .concat(
           ...selectedRunIds?.map((runId) => {
@@ -166,6 +165,7 @@ const TableList: React.FC = (props: any) => {
           return item?.id;
         });
     }
+
     /* 如果没有获取到肽段 */
     if (!peptideRef) {
       return false;
@@ -180,7 +180,7 @@ const TableList: React.FC = (props: any) => {
         peptideRef,
         smooth,
         denoise,
-        overviewIds: overviewIdsInt ? overviewIdsInt?.split(',') : selectedOverviewIds,
+        overviewIds: selectedOverviewIds,
       });
 
       // project对应的ov列表
@@ -332,23 +332,29 @@ const TableList: React.FC = (props: any) => {
     /* 准备数据 */
     const init = async () => {
       fetchEicDataList(false, false);
-
-      if (overviewIdsInt) {
-        setSelectedRunIds(overviewIdsInt?.split(','));
-      }
       try {
         const result = await prepare({ projectId });
         setPrepareData(result.data); // 放蛋白列表
         const { runList } = result.data;
         setRuns(runList); // 放Run列表
-
-        if (!overviewIdsInt) {
+        if (overviewIdsInt !== undefined) {
+          const ovRunIds: any[] = [];
+          Object.keys(result.data?.overviewMap).forEach((key: string) => {
+            overviewIdsInt?.split(',').forEach((item: string) => {
+              if (result.data?.overviewMap[key][0].id === item) {
+                ovRunIds.push(result.data?.overviewMap[key][0].runId);
+              }
+            });
+          });
+          setSelectedRunIds(ovRunIds);
+        } else {
           setSelectedRunIds(
             runList?.map((item: { id: string }) => {
               return item.id;
             }),
           );
         }
+
         getIrtData({
           selectedRunIds: runList?.map((item: { id: string }) => {
             return item.id;
@@ -435,7 +441,15 @@ const TableList: React.FC = (props: any) => {
   /* 全选所有RunTag */
   const selectAll = () => {
     if (overviewIdsInt) {
-      setSelectedRunIds(overviewIdsInt?.split(','));
+      const ovRunIds: any[] = [];
+      Object.keys(prepareData?.overviewMap).forEach((key: string) => {
+        overviewIdsInt?.split(',').forEach((item: string) => {
+          if (prepareData?.overviewMap[key][0].id === item) {
+            ovRunIds.push(prepareData?.overviewMap[key][0].runId);
+          }
+        });
+      });
+      setSelectedRunIds(ovRunIds);
     } else {
       setSelectedRunIds(
         runs?.map((item: { id: string }) => {
@@ -449,10 +463,7 @@ const TableList: React.FC = (props: any) => {
   /* 反选当前选择的RunTag */
   const selectReverse = () => {
     if (overviewIdsInt) {
-      const reverse = overviewIdsInt
-        ?.split(',')
-        .map((item: string) => item)
-        .filter((_item: string) => !selectedRunIds.includes(_item));
+      const reverse = selectedRunIds.filter((_item: string) => !selectedRunIds.includes(_item));
       setSelectedRunIds(reverse);
     } else {
       const reverse = runs
@@ -991,14 +1002,15 @@ const TableList: React.FC = (props: any) => {
                     <Button style={{ marginRight: 5 }} size="small" onClick={selectReverse}>
                       <FormattedMessage id="table.invBtn" />
                     </Button>
-                    {overviewIdsInt
-                      ? runData
-                          .sort((a: any, b: any) => (a.alias > b.alias ? 1 : -1))
-                          ?.map((item: any) => (
+                    {overviewIdsInt !== undefined
+                      ? runs.length > 0 &&
+                        runs
+                          ?.sort((a: any, b: any) => (a.alias > b.alias ? 1 : -1))
+                          .map((item: IdNameAlias) => (
                             <Badge
                               style={{ marginTop: 5 }}
                               size="small"
-                              count={1}
+                              count={prepareData?.overviewMap[item.id]?.length}
                               offset={[-5, 0]}
                               key={item.id}
                             >
@@ -1008,7 +1020,7 @@ const TableList: React.FC = (props: any) => {
                                     <>
                                       <span>{item.name}</span>
                                       <br />
-                                      <span>{item.runId}</span>
+                                      <span>{item.id}</span>
                                     </>
                                   );
                                 }}
@@ -1052,9 +1064,6 @@ const TableList: React.FC = (props: any) => {
                                 checked={selectedRunIds?.indexOf(item.id) > -1}
                                 onChange={(checked) => {
                                   handleRunTagChange(item.id, checked);
-                                  // if (handleOption) {
-                                  //   setHandleSubmit(!handleSubmit);
-                                  // }
                                 }}
                               >
                                 {item.alias}
