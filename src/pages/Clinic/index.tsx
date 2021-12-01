@@ -63,7 +63,7 @@ const TableList: React.FC = (props: any) => {
   const intl = useIntl();
 
   const projectId: string = props?.location?.query?.projectId;
-  const overviewIdsInt: [] | undefined = props?.location?.query?.overviewIds.split(',');
+  const overviewIdsInt: [] | undefined = props?.location?.query?.overviewIds?.split(',');
   const [runs, setRuns] = useState<IdNameAlias[]>([]); // 当前项目下所有的run信息,包含id和name,其中name字段的规则为:当该run.alias名称存在时使用alias,否则使用run.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
   const [runData, setRunData] = useState<RunData[]>([]); // 选中run,存放的真实值为run.id列表
   const [featureMap, setFeatureMap] = useState<Record<string, string>[]>([]); // 存放featureMap

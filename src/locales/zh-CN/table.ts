@@ -81,6 +81,8 @@ export default {
   'table.irtVerRes': 'IRT校验结果',
   'table.unAnalyzed': '未分析',
   'table.fragmentMode': '碎片模式',
+  'table.manufacturer': '制造商',
+  'table.insModel': '型号',
   'table.overview': '概览',
   'table.belongPro': '所属项目',
   'table.switchOv': '概览列表',

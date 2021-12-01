@@ -80,6 +80,8 @@ export default {
   'table.irtVerRes': 'IRTVerRes',
   'table.unAnalyzed': 'unAnalyzed',
   'table.fragmentMode': 'FragmentMode',
+  'table.manufacturer': 'Manufacturer',
+  'table.insModel': 'FragmentMode',
   'table.overview': 'Overview',
   'table.belongPro': 'Project',
   'table.switchOv': 'OverviewList',

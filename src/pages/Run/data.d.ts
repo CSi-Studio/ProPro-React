@@ -12,6 +12,7 @@ export type TableListItem = {
   alias?: string;
   createDate: string;
   windowRanges: any[];
+  instruments: any[];
 };
 
 export type TableListPagination = {

@@ -269,12 +269,25 @@ const TableList: React.FC = (props: Record<string, any>) => {
       title: <FormattedMessage id="table.fragmentMode" />,
       dataIndex: 'fragMode',
       hideInSearch: true,
-      // render: (dom, entity) => {
-      //   if (entity.irt) {
-      //     return <Tag color="green">{entity.irt.si.formula}</Tag>;
-      //   }
-      //   return <Tag color="red">未分析</Tag>;
-      // },
+      render: (dom) => {
+        return <Tag>{dom}</Tag>;
+      },
+    },
+    {
+      title: <FormattedMessage id="table.manufacturer" />,
+      dataIndex: 'manufacturer',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        return <Tag color="blue">{entity.instruments[0].manufacturer}</Tag>;
+      },
+    },
+    {
+      title: <FormattedMessage id="table.insModel" />,
+      dataIndex: 'insModel',
+      hideInSearch: true,
+      render: (dom, entity) => {
+        return <Tag>{entity.instruments[0].model}</Tag>;
+      },
     },
     {
       title: <FormattedMessage id="table.option" />,
