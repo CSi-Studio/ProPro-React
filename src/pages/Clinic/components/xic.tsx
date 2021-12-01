@@ -596,15 +596,14 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           });
           window.paramsTool = params;
 
-          let html = `<div  id="specialLook" style="pointer-events: all;"
+          let html = `<div id="specialLook" style="pointer-events: all;"
           onclick="
             chartsFn(paramsTool);
           " 
           >查看光谱图</div>${params[0].axisValue}<br />`;
           params.forEach((item: any) => {
-            html += `${item.marker}<span style="display:inline-block;margin-right:4px;width:30px">${item.seriesName}</span>&nbsp&nbsp&nbsp <span style="font-weight:bold">${item.data[1]}</span><br />`;
+            html += `${item.marker}<span style="display:inline-block;min-width:34px">${item.seriesName}</span>&nbsp&nbsp<span style="font-weight:bold;color:#3574E0;">${item.data[1]}</span><br />`;
           });
-
           return html;
         },
       },

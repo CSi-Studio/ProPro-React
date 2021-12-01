@@ -982,73 +982,39 @@ const TableList: React.FC = (props: any) => {
                     <Button style={{ marginRight: 5 }} size="small" onClick={selectReverse}>
                       <FormattedMessage id="table.invBtn" />
                     </Button>
-                    {overviewIdsInt !== undefined
-                      ? runs.length > 0 &&
-                        runs?.map((item: IdNameAlias) => (
-                          <Badge
-                            style={{ marginTop: 5 }}
-                            size="small"
-                            count={prepareData?.overviewMap[item.id]?.length}
-                            offset={[-5, 0]}
-                            key={item.id}
+                    {runs.length > 0 &&
+                      runs?.map((item: IdNameAlias) => (
+                        <Badge
+                          style={{ marginTop: 5 }}
+                          size="small"
+                          count={prepareData?.overviewMap[item.id]?.length}
+                          offset={[-5, 0]}
+                          key={item.id}
+                        >
+                          <Tooltip
+                            title={() => {
+                              return (
+                                <>
+                                  <span>{item.name}</span>
+                                  <br />
+                                  <span>{item.id}</span>
+                                </>
+                              );
+                            }}
+                            overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
                           >
-                            <Tooltip
-                              title={() => {
-                                return (
-                                  <>
-                                    <span>{item.name}</span>
-                                    <br />
-                                    <span>{item.id}</span>
-                                  </>
-                                );
+                            <CheckableTag
+                              style={{ marginTop: 5, marginLeft: 5 }}
+                              checked={selectedRunIds?.indexOf(item.id) > -1}
+                              onChange={(checked) => {
+                                handleRunTagChange(item.id, checked);
                               }}
-                              overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
                             >
-                              <CheckableTag
-                                style={{ marginTop: 5, marginLeft: 5 }}
-                                checked={selectedRunIds?.indexOf(item.id) > -1}
-                                onChange={(checked) => {
-                                  handleRunTagChange(item.id, checked);
-                                }}
-                              >
-                                {item.alias}
-                              </CheckableTag>
-                            </Tooltip>
-                          </Badge>
-                        ))
-                      : runs.length > 0 &&
-                        runs?.map((item: IdNameAlias) => (
-                          <Badge
-                            style={{ marginTop: 5 }}
-                            size="small"
-                            count={prepareData?.overviewMap[item.id]?.length}
-                            offset={[-5, 0]}
-                            key={item.id}
-                          >
-                            <Tooltip
-                              title={() => {
-                                return (
-                                  <>
-                                    <span>{item.name}</span>
-                                    <br />
-                                    <span>{item.id}</span>
-                                  </>
-                                );
-                              }}
-                              overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
-                            >
-                              <CheckableTag
-                                style={{ marginTop: 5, marginLeft: 5 }}
-                                checked={selectedRunIds?.indexOf(item.id) > -1}
-                                onChange={(checked) => {
-                                  handleRunTagChange(item.id, checked);
-                                }}
-                              >
-                                {item.alias}
-                              </CheckableTag>
-                            </Tooltip>
-                          </Badge>
-                        ))}
+                              {item.alias}
+                            </CheckableTag>
+                          </Tooltip>
+                        </Badge>
+                      ))}
                   </Col>
                   <Col span={24}>
                     <Spin spinning={chartsLoading}>
