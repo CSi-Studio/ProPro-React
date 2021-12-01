@@ -294,6 +294,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           show: true,
           fontFamily: 'Times New Roman,STSong',
           fontWeight: 'normal',
+          showMinLabel: true,
+          showMaxLabel: true,
         },
         nameTextStyle: {
           color: '#000',
