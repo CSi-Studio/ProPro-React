@@ -360,7 +360,11 @@ const TableList: React.FC = () => {
       showSorterTooltip: false,
       sorter: (a, b) => (a.Protein_Count > b.Protein_Count ? -1 : 1),
       render: (dom, entity) => {
-        return <Tag>{entity?.statistic?.Protein_Count}</Tag>;
+        if (entity?.statistic?.Protein_Count) {
+          return <Tag>{entity?.statistic?.Protein_Count}</Tag>;
+        } else {
+          return false;
+        }
       },
     },
     {
@@ -370,24 +374,28 @@ const TableList: React.FC = () => {
       showSorterTooltip: false,
       sorter: (a, b) => (a.Peptide_Count > b.Peptide_Count ? -1 : 1),
       render: (dom, entity) => {
-        return (
-          <>
-            <Tag color={entity?.statistic?.Peptide_Count === 0 ? 'error' : 'blue'}>
-              {entity?.statistic?.Peptide_Count}
-            </Tag>
-            <Link
-              to={{
-                pathname: `/peptide/list`,
-                state: { libraryName: entity.name },
-                search: `?libraryId=${entity.id}`,
-              }}
-            >
-              <Tag color="green">
-                <FormattedMessage id="table.check" />
+        if (!entity?.statistic?.Peptide_Count) {
+          return false;
+        } else {
+          return (
+            <>
+              <Tag color={entity?.statistic?.Peptide_Count === 0 ? 'error' : 'blue'}>
+                {entity?.statistic?.Peptide_Count}
               </Tag>
-            </Link>
-          </>
-        );
+              <Link
+                to={{
+                  pathname: `/peptide/list`,
+                  state: { libraryName: entity.name },
+                  search: `?libraryId=${entity.id}`,
+                }}
+              >
+                <Tag color="green">
+                  <FormattedMessage id="table.check" />
+                </Tag>
+              </Link>
+            </>
+          );
+        }
       },
     },
     {
@@ -397,7 +405,11 @@ const TableList: React.FC = () => {
       showSorterTooltip: false,
       sorter: (a, b) => (a.Fragment_Count > b.Fragment_Count ? -1 : 1),
       render: (dom, entity) => {
-        return <Tag>{entity?.statistic?.Fragment_Count}</Tag>;
+        if (!entity?.statistic?.Fragment_Count) {
+          return false;
+        } else {
+          return <Tag>{entity?.statistic?.Fragment_Count}</Tag>;
+        }
       },
     },
     {
@@ -411,11 +423,7 @@ const TableList: React.FC = () => {
           entity.description === null ||
           entity.description === ''
         ) {
-          return (
-            <Tag>
-              <FormattedMessage id="table.empty" />
-            </Tag>
-          );
+          return false;
         }
         return (
           <p

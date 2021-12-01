@@ -161,11 +161,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       },
       render: (dom, entity) => {
         if (entity.alias) {
-          return (
-            <Tooltip title={dom} placement="topLeft">
-              {dom}
-            </Tooltip>
-          );
+          return <Tag>{dom}</Tag>;
         }
         return false;
       },
@@ -270,6 +266,9 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'fragMode',
       hideInSearch: true,
       render: (dom) => {
+        if (dom === '-') {
+          return false;
+        }
         return <Tag>{dom}</Tag>;
       },
     },
@@ -278,6 +277,9 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'manufacturer',
       hideInSearch: true,
       render: (dom, entity) => {
+        if (!entity.instruments[0].manufacturer) {
+          return false;
+        }
         return <Tag color="blue">{entity.instruments[0].manufacturer}</Tag>;
       },
     },
@@ -286,6 +288,9 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'insModel',
       hideInSearch: true,
       render: (dom, entity) => {
+        if (!entity.instruments[0].model) {
+          return false;
+        }
         return <Tag>{entity.instruments[0].model}</Tag>;
       },
     },

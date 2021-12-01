@@ -246,6 +246,13 @@ const TableList: React.FC = () => {
     {
       title: <FormattedMessage id="table.description" />,
       dataIndex: 'desc',
+      hideInSearch: true,
+      render: (dom) => {
+        if (dom === '-') {
+          return false;
+        }
+        return <span>{dom}</span>;
+      },
     },
     {
       title: <FormattedMessage id="table.option" />,

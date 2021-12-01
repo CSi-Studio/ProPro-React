@@ -22,7 +22,6 @@ import BatchUpdateForm from './components/BatchUpdateForm';
 import ReselectForm from './components/ReselectForm';
 import SelectDef from './components/SelectDef';
 import { useIntl, FormattedMessage } from 'umi';
-import { SettingOutlined, FullscreenOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: Record<string, any>) => {
@@ -320,7 +319,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'minTotalScore',
       hideInSearch: true,
       render: (text, entity) => {
-        return entity?.minTotalScore?.toFixed(3);
+        return <Tag color="blue">{entity?.minTotalScore?.toFixed(3)}</Tag>;
       },
     },
     {
@@ -329,7 +328,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
-        return entity?.statistic?.TOTAL_PEAK_COUNT;
+        return <Tag color="blue">{entity?.statistic?.TOTAL_PEAK_COUNT}</Tag>;
       },
     },
     {
@@ -338,7 +337,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
-        return entity?.statistic?.TOTAL_PEPTIDE_COUNT;
+        return <Tag color="blue">{entity?.statistic?.TOTAL_PEPTIDE_COUNT}</Tag>;
       },
     },
     {
@@ -347,7 +346,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
-        return entity?.statistic?.MATCHED_UNIQUE_PEPTIDE_COUNT;
+        return <Tag color="blue">{entity?.statistic?.MATCHED_UNIQUE_PEPTIDE_COUNT}</Tag>;
       },
     },
     {
@@ -356,7 +355,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
-        return entity?.statistic?.MATCHED_TOTAL_PEPTIDE_COUNT;
+        return <Tag color="blue">{entity?.statistic?.MATCHED_TOTAL_PEPTIDE_COUNT}</Tag>;
       },
     },
     {
@@ -365,7 +364,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
-        return entity?.statistic?.MATCHED_UNIQUE_PROTEIN_COUNT;
+        return <Tag color="blue">{entity?.statistic?.MATCHED_UNIQUE_PROTEIN_COUNT}</Tag>;
       },
     },
     {
@@ -374,7 +373,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'statstic',
       hideInSearch: true,
       render: (text, entity) => {
-        return entity?.statistic?.MATCHED_TOTAL_PROTEIN_COUNT;
+        return <Tag color="blue">{entity?.statistic?.MATCHED_TOTAL_PROTEIN_COUNT}</Tag>;
       },
     },
     {
@@ -403,6 +402,12 @@ const TableList: React.FC = (props: Record<string, any>) => {
       sorter: (a, b) => {
         return a?.note > b?.note ? -1 : 1;
       },
+      render: (dom) => {
+        if (dom === '-') {
+          return false;
+        }
+        return <p>{dom}</p>;
+      },
     },
     {
       key: 'createDate',
@@ -414,6 +419,12 @@ const TableList: React.FC = (props: Record<string, any>) => {
       showSorterTooltip: false,
       sorter: (a, b) => {
         return a?.createDate > b?.createDate ? -1 : 1;
+      },
+      render: (dom) => {
+        if (dom === '-') {
+          return false;
+        }
+        return <Tag>{dom}</Tag>;
       },
     },
     {

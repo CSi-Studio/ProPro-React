@@ -496,7 +496,7 @@ const TableList: React.FC = () => {
       dataIndex: 'anaLibName',
       hideInSearch: true,
       render: (dom, entity) => {
-        if (!entity.insLibName) {
+        if (!entity.anaLibName) {
           return (
             <Tag color="red">
               {intl.formatMessage({
