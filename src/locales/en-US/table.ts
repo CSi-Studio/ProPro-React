@@ -38,6 +38,7 @@ export default {
   'table.EICList': 'EIC',
   'table.defaultOverview': 'Only the overview is selected by default',
   'table.justDefault': 'OnlyDef',
+  'table.rtAlignment': 'RtAgm',
   'table.dataSmooth': 'Smooth',
   'table.dataNR': 'NR',
   'table.allBtn': 'All',

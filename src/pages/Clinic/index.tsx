@@ -75,6 +75,7 @@ const TableList: React.FC = (props: any) => {
   const [onlyDefault, setOnlyDefault] = useState<boolean>(true); // 默认overview
   const [smooth, setSmooth] = useState<boolean>(false); // 默认不进行smooth计算
   const [denoise, setDenoise] = useState<boolean>(false); // 默认不进行降噪计算
+  const [rtAlign, setRtAlign] = useState<boolean>(true); // 默认Rt时间对齐
   const [peptideRef, setPeptideRef] = useState<string>(''); // 默认选中的peptideRef
   const [peptideSel, setPeptideSel] = useState<any>(); // 当前选中的peptideRef
   const [spectra, setSpectra] = useState<Record<string, string>>(); // 光谱图数据
@@ -262,6 +263,7 @@ const TableList: React.FC = (props: any) => {
             spectraFn,
             gridNumberInRow,
             intensityValue,
+            rtAlign,
           }}
         />
       );
@@ -414,7 +416,7 @@ const TableList: React.FC = (props: any) => {
   /* 平滑波峰，优化噪声干扰 */
   useEffect(() => {
     fetchEicDataList(false, false);
-  }, [smooth, denoise]);
+  }, [smooth, denoise, rtAlign]);
 
   /* 点击搜索m/z刷新Rt数据 */
   useEffect(() => {
@@ -978,6 +980,14 @@ const TableList: React.FC = (props: any) => {
                         <FormattedMessage id="table.justDefault" />
                       </Checkbox>
                     </Tooltip>
+                    <Checkbox
+                      checked={rtAlign}
+                      onChange={(e) => {
+                        setRtAlign(e.target.checked);
+                      }}
+                    >
+                      <FormattedMessage id="table.rtAlignment" />
+                    </Checkbox>
                     <Checkbox
                       checked={smooth}
                       onChange={(e) => {

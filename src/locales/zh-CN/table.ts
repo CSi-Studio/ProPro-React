@@ -38,6 +38,7 @@ export default {
   'table.EICList': 'EIC列表',
   'table.defaultOverview': '仅选择Run默认的overview',
   'table.justDefault': '仅默认',
+  'table.rtAlignment': 'Rt对齐',
   'table.dataSmooth': '数据平滑',
   'table.dataNR': '数据降噪',
   'table.allBtn': '全选',

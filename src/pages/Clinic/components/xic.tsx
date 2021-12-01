@@ -22,6 +22,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const intensityKey = props.values.intensityValue.map((value: any) => value.name);
   const gridNumberInRow = props.values.gridNumberInRow;
   const data: any[] = props.values.result;
+  const rtAlign: boolean = props.values.rtAlign;
 
   // 使legend的每一个和intensity一一对应
   let intMap = data.map((value) => {
@@ -301,8 +302,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           fontFamily: 'Times New Roman,STSong',
           align: 'left',
         },
-        min,
-        max,
+        min: rtAlign ? min : Math.floor(Math.min(...data[i].rtArray)),
+        max: rtAlign ? max : Math.floor(Math.max(...data[i].rtArray)),
       });
     }
     return xAxis;
