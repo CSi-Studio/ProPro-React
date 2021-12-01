@@ -226,10 +226,20 @@ const TableList: React.FC = () => {
    * @param selectedRows
    */
   const handleRemove = async (selectedRows: TableListItem[]) => {
+    const libraryIds = selectedRows.map((item) => {
+      return item.id;
+    });
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.deleting',
+        defaultMessage: '正在删除...',
+      })}`,
+    );
     try {
       await removeList({
-        libraryIds: selectedRows[0].id,
+        libraryIds,
       });
+      hide();
       message.success(
         `${intl.formatMessage({
           id: 'message.deleteSuccess',
@@ -238,6 +248,7 @@ const TableList: React.FC = () => {
       );
       return true;
     } catch (error) {
+      hide();
       message.error(
         `${intl.formatMessage({
           id: 'message.deleteFail',
@@ -748,17 +759,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
               formDelete?.resetFields();
               if (selectedRows?.length > 0) {
-                if (selectedRows.length === 1) {
-                  handleDeleteModalVisible(true);
-                } else {
-                  message.warn(
-                    `${intl.formatMessage({
-                      id: 'message.singleDeleteLibrary',
-                      defaultMessage: '目前只支持单个库的删除',
-                    })}`,
-                  );
-                  setSelectedRows([]);
-                }
+                handleDeleteModalVisible(true);
               } else {
                 message.warn(
                   `${intl.formatMessage({
@@ -851,7 +852,7 @@ const TableList: React.FC = () => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === selectedRows[0]?.name) {
+          if (value.name === 'ok') {
             const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
@@ -863,8 +864,8 @@ const TableList: React.FC = () => {
           } else {
             message.error(
               `${intl.formatMessage({
-                id: 'message.deleteFail',
-                defaultMessage: '删除失败，请重试！',
+                id: 'message.deleteInputFail',
+                defaultMessage: '输入错误，请重新输入！',
               })}`,
             );
           }

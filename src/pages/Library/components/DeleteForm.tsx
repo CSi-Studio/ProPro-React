@@ -39,8 +39,8 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
       <Space direction="vertical" style={{ textAlign: 'center', width: '100%' }}>
         <div style={{ marginTop: '24px' }}>
           {intl.formatMessage({
-            id: 'component.inputLibraryName',
-            defaultMessage: '请输入标准库名称',
+            id: 'component.pleaseInput',
+            defaultMessage: '请输入',
           })}
           ：
           <Tag
@@ -52,9 +52,8 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             }}
             color="red"
           >
-            {props?.selectedRows[0]?.name}
+            ok
           </Tag>
-          {''}
           {intl.formatMessage({
             id: 'component.used2delete',
             defaultMessage: '以确认删除。',
@@ -64,11 +63,12 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: <FormattedMessage id="component.inputLibNameDele" />,
+              message: 'ok',
             },
           ]}
           width="sm"
           name="name"
+          placeholder="ok"
         />
       </Space>
     </ModalForm>

@@ -42,6 +42,7 @@ const DeleteForm: React.FC<DeleteFormProps> = (props) => {
             id: 'component.pleaseInput',
             defaultMessage: '请输入',
           })}
+          ：
           <Tag
             style={{
               margin: ' 0 2px',

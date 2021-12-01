@@ -11,9 +11,6 @@ export type spectrumProps = {
 const Spectrum: React.FC<spectrumProps> = (props) => {
   const [handleOption, setHandleOption] = useState({});
 
-  const xData = props?.values?.data?.x.map((value: number) => {
-    return { value };
-  });
   const yData = props?.values?.data?.y.map((value: number) => {
     return { value };
   });
@@ -188,7 +185,6 @@ const Spectrum: React.FC<spectrumProps> = (props) => {
       ],
       tooltip: {
         trigger: 'axis',
-        // backgroundColor: ['rgba(255,255,255,0.9)'],
         axisPointer: {
           type: 'cross',
           snap: true,

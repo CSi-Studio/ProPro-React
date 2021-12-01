@@ -62,8 +62,8 @@ const peptidePageSize = 9;
 const TableList: React.FC = (props: any) => {
   const intl = useIntl();
 
-  const projectId = props?.location?.query?.projectId;
-  const overviewIdsInt = props?.location?.query?.overviewIds;
+  const projectId: string = props?.location?.query?.projectId;
+  const overviewIdsInt: [] | undefined = props?.location?.query?.overviewIds.split(',');
   const [runs, setRuns] = useState<IdNameAlias[]>([]); // 当前项目下所有的run信息,包含id和name,其中name字段的规则为:当该run.alias名称存在时使用alias,否则使用run.name,这么设计的目的是因为alias名字比较简短,展示的时候信息密度可以更高
   const [runData, setRunData] = useState<RunData[]>([]); // 选中run,存放的真实值为run.id列表
   const [featureMap, setFeatureMap] = useState<Record<string, string>[]>([]); // 存放featureMap
@@ -171,6 +171,7 @@ const TableList: React.FC = (props: any) => {
     if (!peptideRef) {
       return false;
     }
+
     setChartsLoading(true);
     try {
       const result = await getRunData({
@@ -183,7 +184,6 @@ const TableList: React.FC = (props: any) => {
         denoise,
         overviewIds: selectedOverviewIds,
       });
-
       // project对应的ov列表
       const runValues = await overviewList({
         projectId,
@@ -206,7 +206,6 @@ const TableList: React.FC = (props: any) => {
         (a: { alias: string }, b: { alias: string }) =>
           a.alias.charCodeAt(0) - b.alias.charCodeAt(0),
       );
-
       setRunData(result.data);
       setFeatureMap(result.featureMap.intensityMap);
 
@@ -335,27 +334,15 @@ const TableList: React.FC = (props: any) => {
     const init = async () => {
       fetchEicDataList(false, false);
       try {
-        const result = await prepare({ projectId });
+        const result = await prepare({ projectId, overviewIds: overviewIdsInt });
         setPrepareData(result.data); // 放蛋白列表
         const { runList } = result.data;
         setRuns(runList); // 放Run列表
-        if (overviewIdsInt !== undefined) {
-          const ovRunIds: any[] = [];
-          Object.keys(result.data?.overviewMap).forEach((key: string) => {
-            overviewIdsInt?.split(',').forEach((item: string) => {
-              if (result.data?.overviewMap[key][0].id === item) {
-                ovRunIds.push(result.data?.overviewMap[key][0].runId);
-              }
-            });
-          });
-          setSelectedRunIds(ovRunIds);
-        } else {
-          setSelectedRunIds(
-            runList?.map((item: { id: string }) => {
-              return item.id;
-            }),
-          );
-        }
+        setSelectedRunIds(
+          runList?.map((item: { id: string }) => {
+            return item.id;
+          }),
+        );
 
         getIrtData({
           selectedRunIds: runList?.map((item: { id: string }) => {
@@ -442,37 +429,20 @@ const TableList: React.FC = (props: any) => {
 
   /* 全选所有RunTag */
   const selectAll = () => {
-    if (overviewIdsInt) {
-      const ovRunIds: any[] = [];
-      Object.keys(prepareData?.overviewMap).forEach((key: string) => {
-        overviewIdsInt?.split(',').forEach((item: string) => {
-          if (prepareData?.overviewMap[key][0].id === item) {
-            ovRunIds.push(prepareData?.overviewMap[key][0].runId);
-          }
-        });
-      });
-      setSelectedRunIds(ovRunIds);
-    } else {
-      setSelectedRunIds(
-        runs?.map((item: { id: string }) => {
-          return item.id;
-        }),
-      );
-    }
+    setSelectedRunIds(
+      runs?.map((item: { id: string }) => {
+        return item.id;
+      }),
+    );
     setHandleSubmit(!handleSubmit);
   };
 
   /* 反选当前选择的RunTag */
   const selectReverse = () => {
-    if (overviewIdsInt) {
-      const reverse = selectedRunIds.filter((_item: string) => !selectedRunIds.includes(_item));
-      setSelectedRunIds(reverse);
-    } else {
-      const reverse = runs
-        .map((item: { id: string }) => item.id)
-        .filter((id) => !selectedRunIds.includes(id));
-      setSelectedRunIds(reverse);
-    }
+    const reverse = runs
+      .map((item: { id: string }) => item.id)
+      .filter((id) => !selectedRunIds.includes(id));
+    setSelectedRunIds(reverse);
     setHandleSubmit(!handleSubmit);
   };
 
@@ -1014,40 +984,38 @@ const TableList: React.FC = (props: any) => {
                     </Button>
                     {overviewIdsInt !== undefined
                       ? runs.length > 0 &&
-                        runs
-                          ?.sort((a: any, b: any) => (a.alias > b.alias ? 1 : -1))
-                          .map((item: IdNameAlias) => (
-                            <Badge
-                              style={{ marginTop: 5 }}
-                              size="small"
-                              count={prepareData?.overviewMap[item.id]?.length}
-                              offset={[-5, 0]}
-                              key={item.id}
+                        runs?.map((item: IdNameAlias) => (
+                          <Badge
+                            style={{ marginTop: 5 }}
+                            size="small"
+                            count={prepareData?.overviewMap[item.id]?.length}
+                            offset={[-5, 0]}
+                            key={item.id}
+                          >
+                            <Tooltip
+                              title={() => {
+                                return (
+                                  <>
+                                    <span>{item.name}</span>
+                                    <br />
+                                    <span>{item.id}</span>
+                                  </>
+                                );
+                              }}
+                              overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
                             >
-                              <Tooltip
-                                title={() => {
-                                  return (
-                                    <>
-                                      <span>{item.name}</span>
-                                      <br />
-                                      <span>{item.id}</span>
-                                    </>
-                                  );
+                              <CheckableTag
+                                style={{ marginTop: 5, marginLeft: 5 }}
+                                checked={selectedRunIds?.indexOf(item.id) > -1}
+                                onChange={(checked) => {
+                                  handleRunTagChange(item.id, checked);
                                 }}
-                                overlayStyle={{ maxWidth: '100%', marginTop: 5 }}
                               >
-                                <CheckableTag
-                                  style={{ marginTop: 5, marginLeft: 5 }}
-                                  checked={selectedRunIds?.indexOf(item.id) > -1}
-                                  onChange={(checked) => {
-                                    handleRunTagChange(item.id, checked);
-                                  }}
-                                >
-                                  {item.alias}
-                                </CheckableTag>
-                              </Tooltip>
-                            </Badge>
-                          ))
+                                {item.alias}
+                              </CheckableTag>
+                            </Tooltip>
+                          </Badge>
+                        ))
                       : runs.length > 0 &&
                         runs?.map((item: IdNameAlias) => (
                           <Badge

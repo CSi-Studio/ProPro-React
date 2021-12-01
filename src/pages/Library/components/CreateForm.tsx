@@ -114,7 +114,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               defaultMessage: '点击或者拖动文件到此区域',
             })}
             description={
-              <p className="ant-upload-hint">
+              <span className="ant-upload-hint">
                 <FormattedMessage id="message.fileFormat" />：<Tag color="green">txt</Tag>
                 <Tag color="green">tsv</Tag>
                 <Tag color="green">tsv</Tag>
@@ -122,7 +122,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                 <Tag color="green">xls</Tag>
                 <Tag color="green">xlsx</Tag>
                 <Tag color="green">TraML</Tag>
-              </p>
+              </span>
             }
             max={1}
             accept=".txt,.tsv,.csv,.xls,.xlsx,.TraML"
