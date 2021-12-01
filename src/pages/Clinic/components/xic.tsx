@@ -229,7 +229,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
               fontWeight: 'normal',
               fontFamily: 'Times New Roman,STSong',
               backgroundColor: 'orange',
-              borderColor: '#91d5ff',
+              borderColor: '#F3A83C',
               borderWidth: 1,
               borderRadius: 2,
               padding: [3, 3],
