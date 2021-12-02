@@ -115,17 +115,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             })}
             description={
               <span className="ant-upload-hint">
-                <FormattedMessage id="message.fileFormat" />：<Tag color="green">txt</Tag>
-                <Tag color="green">tsv</Tag>
                 <Tag color="green">tsv</Tag>
                 <Tag color="green">csv</Tag>
-                <Tag color="green">xls</Tag>
-                <Tag color="green">xlsx</Tag>
                 <Tag color="green">TraML</Tag>
               </span>
             }
             max={1}
-            accept=".txt,.tsv,.csv,.xls,.xlsx,.TraML"
+            accept=".tsv,.csv,,.TraML"
             label={intl.formatMessage({
               id: 'message.fileFormat',
               defaultMessage: '上传文件',
