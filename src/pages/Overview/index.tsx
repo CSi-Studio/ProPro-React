@@ -406,7 +406,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
         if (dom === '-') {
           return false;
         }
-        return <p>{dom}</p>;
+        return <span>{dom}</span>;
       },
     },
     {
