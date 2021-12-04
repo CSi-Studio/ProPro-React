@@ -62,6 +62,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             tooltip="RT窗口，为300时表示的是±300"
             placeholder="rtWindow"
           />
+           <ProFormDigit
+            name="maxIons"
+            label="最大Framents数"
+            tooltip="使用的最大Fragments数目"
+            placeholder="maxIons"
+          />
           <ProFormSelect
             initialValue="No"
             options={YesOrNo}

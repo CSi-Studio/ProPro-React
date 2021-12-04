@@ -72,6 +72,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             label="RT窗口"
             tooltip="RT窗口，为300时表示的是±300"
             placeholder="rtWindow"
+            min={-1}
+          />
+            <ProFormDigit
+            initialValue={props.values.eic?.maxIons}
+            name="maxIons"
+            label="最大Framents数"
+            tooltip="使用的最大Fragments数目"
+            placeholder="maxIons"
           />
           <ProFormSelect
             initialValue={props.values.eic?.adaptiveMzWindow}
