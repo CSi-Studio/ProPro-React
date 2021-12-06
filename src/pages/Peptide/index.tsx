@@ -211,6 +211,17 @@ const TableList: React.FC = (props: Record<string, any>) => {
       },
     },
     {
+      title: 'length',
+      dataIndex: 'length',
+      render: (dom, entity) => {
+        return (
+          <Space direction="vertical">
+            <Tag color="green">{entity.sequence.length}</Tag>
+          </Space>
+        );
+      },
+    },
+    {
       title: 'PeptideRef',
       dataIndex: 'peptideRef',
       render: (dom, entity) => {
