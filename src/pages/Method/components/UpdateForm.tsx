@@ -81,13 +81,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             tooltip="使用的最大Fragments数目"
             placeholder="maxIons"
           />
-          <ProFormSelect
-            initialValue={props.values.eic?.adaptiveMzWindow}
-            options={YesOrNo}
-            tooltip="是否使用自适应mz窗口,自适应mz算"
-            name="adaptiveMzWindow"
-            label="自适应mz窗口"
-          />
           <h2>IRT参数</h2>
           <ProFormSelect
             initialValue={props.values.irt?.useAnaLibForIrt}
