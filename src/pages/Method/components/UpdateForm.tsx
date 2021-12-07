@@ -81,27 +81,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             tooltip="使用的最大Fragments数目"
             placeholder="maxIons"
           />
+           </Col>
+        <Col span={5}>
           <h2>IRT参数</h2>
-          <ProFormSelect
-            initialValue={props.values.irt?.useAnaLibForIrt}
-            options={YesOrNo}
-            tooltip="是否使用标准库进行Irt校准"
-            name="useAnaLibForIrt"
-            label="是否使用标准库进行Irt校准"
-          />
-          <ProFormText
-            initialValue={props.values.irt?.anaLibForIrt}
-            name="anaLibForIrt"
-            label="标准库"
-            placeholder="Library Id"
-          />
-          <ProFormDigit
-            initialValue={props.values.irt?.minShapeScoreForIrt}
-            name="minShapeScoreForIrt"
-            label="最小Shape Score"
-            tooltip="表示用于做irt时检测到的峰的shape分数的最小值"
-            placeholder="minShapeScoreForIrt"
-          />
           <ProFormDigit
             initialValue={props.values.irt?.pickedNumbers}
             name="pickedNumbers"
@@ -125,6 +107,18 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             label="选峰算法"
             options={PeakFindingMethod}
           />
+          <ProFormDigit
+            initialValue={50}
+            name="ionsLow"
+            label="离子碎片低信号阈值"
+            placeholder="ionsLow"
+          />
+          <ProFormDigit
+            initialValue={300}
+            name="ionsHigh"
+            label="离子碎片高信号阈值"
+            placeholder="ionsHigh"
+          />
           <ProFormSelect
             initialValue={props.values.peakFinding?.smoothMethod}
             name="smoothMethod"
@@ -137,19 +131,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             label="平滑点数"
             placeholder="smoothPoints"
           />
-           <ProFormDigit
-            initialValue={50}
-            name="ionsLow"
-            label="离子碎片低信号阈值"
-            placeholder="ionsLow"
-          />
-          <ProFormDigit
-            initialValue={300}
-            name="ionsHigh"
-            label="离子碎片高信号阈值"
-            placeholder="ionsHigh"
-          />
-         
           <ProFormSelect
             initialValue={props.values.peakFinding?.baselineMethod}
             name="baselineMethod"
@@ -162,7 +143,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             label="Baseline RT Window"
           />
         </Col>
-        <Col span={5}>
+        {/* <Col span={5}>
           <h2>降噪参数</h2>
           <ProFormSelect
             initialValue={props.values.peakFinding?.eicNoiseMethod}
@@ -221,31 +202,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             name="firstDerivativeCutoffFactor"
             label="峰边界一阶导数与最大一阶导数的比例系数"
           />
-        </Col>
+        </Col> */}
         <Col span={5}>
-          <h2>快筛参数</h2>
-          <ProFormDigit
-            initialValue={props.values.quickFilter?.minShapeScore}
-            name="minShapeScore"
-            label="minShapeScore"
-            placeholder="minShapeScore"
-            tooltip="shape的筛选阈值,一般建议在0.6左右"
-          />
-          <ProFormDigit
-            initialValue={props.values.quickFilter?.minShapeWeightScore}
-            name="minShapeWeightScore"
-            label="minShapeWeightScore"
-            placeholder="minShapeWeightScore"
-            tooltip="shape的筛选阈值,一般建议在0.8左右"
-          />
           <h2>打分参数</h2>
-          <ProFormSelect
-            initialValue={props.values.score?.diaScores}
-            options={YesOrNo}
-            tooltip="是否使用DIA打分,如果使用DIA打分的话,需要提前读取Aird文件中的谱图信息以提升系统运算速度"
-            name="diaScores"
-            label="是否使用DIA打分"
-          />
           <ProFormSelect options={[]} tooltip="打分类型" name="scoreTypes" label="打分类型" />
           <h2>回归参数</h2>
           <ProFormDigit

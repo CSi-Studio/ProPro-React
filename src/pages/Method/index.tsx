@@ -82,8 +82,8 @@ const TableList: React.FC = (props: Record<string, any>) => {
       dataIndex: 'name',
     },
     {
-      title: '算法',
-      dataIndex: 'lda',
+      title: '分类器',
+      dataIndex: 'algorithm',
       render: (dom, entity) => {
         return <Tag>{entity.classifier.algorithm}</Tag>;
       },
