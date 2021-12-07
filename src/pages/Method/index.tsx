@@ -9,58 +9,107 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import { update, add, list, removeList } from './service';
 import DeleteForm from './components/DeleteForm';
-import { Link } from 'umi';
+import { Link, useIntl } from 'umi';
 
-/**
- * 添加库
- * @param values
- */
-const handleAdd = async (values: Domain) => {
-  const hide = message.loading('正在添加');
-  try {
-    await add({ ...values });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    return false;
-  }
-};
-/**
- * 更新库
- * @param values
- */
-const handleUpdate = async (values: DomainUpdate) => {
-  const hide = message.loading('正在更新');
-  try {
-    await update({ ...values });
-    hide();
-    message.success('编辑成功');
-    return true;
-  } catch (error) {
-    hide();
-    return false;
-  }
-};
-/**
- * 删除库
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: any[]) => {
-  try {
-    await removeList({
-      methodIds: selectedRows[0].id,
-    });
-    message.success('删除成功，希望你不要后悔 🥳');
-    return true;
-  } catch (error) {
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
 const { Text } = Typography;
 const TableList: React.FC = (props: Record<string, any>) => {
+  const intl = useIntl();
+
+  /**
+   * 添加库
+   * @param values
+   */
+  const handleAdd = async (values: Domain) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.adding',
+        defaultMessage: '正在添加...',
+      })}`,
+    );
+    try {
+      await add({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.addSuccess',
+          defaultMessage: '添加成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.addFail',
+          defaultMessage: '添加失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+  /**
+   * 更新库
+   * @param values
+   */
+  const handleUpdate = async (values: DomainUpdate) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.updating',
+        defaultMessage: '正在更新...',
+      })}`,
+    );
+    try {
+      await update({ ...values });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.editSuccess',
+          defaultMessage: '编辑成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      return false;
+    }
+  };
+  /**
+   * 删除库
+   * @param selectedRows
+   */
+  const handleRemove = async (selectedRows: any[]) => {
+    const methodIds = selectedRows.map((item) => {
+      return item.id;
+    });
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.deleting',
+        defaultMessage: '正在删除...',
+      })}`,
+    );
+    try {
+      await removeList({
+        methodIds,
+      });
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.deleteSuccess',
+          defaultMessage: '删除成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.deleteFail',
+          defaultMessage: '删除失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
+
   const [formCreate] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [formDelete] = Form.useForm();
@@ -246,12 +295,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
             onClick={async () => {
               formDelete?.resetFields();
               if (selectedRows?.length > 0) {
-                if (selectedRows.length == 1) {
-                  handleDeleteModalVisible(true);
-                } else {
-                  message.warn('目前只支持单个方法的删除');
-                  setSelectedRows([]);
-                }
+                handleDeleteModalVisible(true);
               } else {
                 message.warn('请选择要删除的方法');
               }
@@ -272,7 +316,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
           total,
         }}
         columns={columns}
-        onRow={(record, index) => {
+        onRow={(record) => {
           return {
             onClick: () => {
               selectRow(record);
@@ -341,7 +385,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
           formDelete?.resetFields();
         }}
         onSubmit={async (value) => {
-          if (value.name === selectedRows[0]?.name) {
+          if (value.name === 'ok') {
             const success = await handleRemove(selectedRows);
             if (success) {
               handleDeleteModalVisible(false);
@@ -351,7 +395,12 @@ const TableList: React.FC = (props: Record<string, any>) => {
               }
             }
           } else {
-            message.error('你没有删除的决心，给👴🏻 爬');
+            message.error(
+              `${intl.formatMessage({
+                id: 'message.deleteInputFail',
+                defaultMessage: '输入错误，请重新输入！',
+              })}`,
+            );
           }
         }}
         deleteModalVisible={deleteModalVisible}

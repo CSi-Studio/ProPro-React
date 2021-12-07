@@ -30,7 +30,11 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
             pointNum: 5,
           });
           setX(() => {
-            return msg.data.x;
+            console.log(msg.data.x);
+
+            return msg.data.x.map((item: any) => {
+              return item.toFixed(4);
+            });
           });
           setY(() => {
             return msg.data.y;
@@ -53,7 +57,7 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
       },
     },
     title: {
-      text: `${(<FormattedMessage id="component.rtTime" />)}: ${rts}`,
+      text: `RT: ${rts}`,
     },
     dataZoom: {
       type: 'inside',
