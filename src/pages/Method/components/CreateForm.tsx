@@ -51,8 +51,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           <ProFormDigit
             name="mzWindow"
             label="mz窗口"
-            initialValue="0.015"
-            tooltip="MZ窗口，为0.015时表示的是±0.015"
+            initialValue="15"
+            tooltip="MZ窗口，单位为ppm,填20时表示的是±20"
             placeholder="mzWindow"
           />
           <ProFormDigit
@@ -62,29 +62,15 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             tooltip="RT窗口，为300时表示的是±300"
             placeholder="rtWindow"
           />
-          <ProFormSelect
-            initialValue="No"
-            options={YesOrNo}
-            tooltip="是否使用自适应mz窗口,自适应mz算"
-            name="adaptiveMzWindow"
-            label="自适应mz窗口"
+           <ProFormDigit
+            name="maxIons"
+            label="最大Framents数"
+            tooltip="使用的最大Fragments数目"
+            placeholder="maxIons"
           />
+           </Col>
+        <Col span={5}>
           <h2>IRT参数</h2>
-          <ProFormSelect
-            initialValue="No"
-            options={YesOrNo}
-            tooltip="是否使用标准库进行Irt校准"
-            name="useAnaLibForIrt"
-            label="是否使用标准库进行Irt校准"
-          />
-          <ProFormText name="anaLibForIrt" label="标准库" placeholder="Library Id" />
-          <ProFormDigit
-            name="minShapeScoreForIrt"
-            label="最小Shape Score"
-            initialValue="0.015"
-            tooltip="表示用于做irt时检测到的峰的shape分数的最小值"
-            placeholder="minShapeScoreForIrt"
-          />
           <ProFormDigit
             name="pickedNumbers"
             label="总体取样点数"
@@ -103,18 +89,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Col span={5}>
           <h2>选峰参数</h2>
           <ProFormSelect
-            initialValue="PROPRO_GAUSS"
-            name="smoothMethod"
-            label="平滑算法"
-            options={SmoothMethod}
+            initialValue="IONS_COUNT"
+            name="peakFindingMethod"
+            label="选峰算法"
+            options={PeakFindingMethod}
           />
-          <ProFormDigit
-            initialValue={5}
-            name="smoothPoints"
-            label="平滑点数"
-            placeholder="smoothPoints"
-          />
-          <ProFormDigit
+           <ProFormDigit
             initialValue={50}
             name="ionsLow"
             label="离子碎片低信号阈值"
@@ -127,10 +107,16 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             placeholder="ionsHigh"
           />
           <ProFormSelect
-            initialValue="PROPRO"
-            name="peakFindingMethod"
-            label="选峰算法"
-            options={PeakFindingMethod}
+            initialValue="PROPRO_GAUSS"
+            name="smoothMethod"
+            label="平滑算法"
+            options={SmoothMethod}
+          />
+          <ProFormDigit
+            initialValue={5}
+            name="smoothPoints"
+            label="平滑点数"
+            placeholder="smoothPoints"
           />
           <ProFormSelect
             initialValue="TOLERANCE"
@@ -140,7 +126,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           />
           <ProFormDigit initialValue={0.2} name="baselineRtWindow" label="Baseline RT Window" />
         </Col>
-        <Col span={5}>
+        {/* <Col span={5}>
           <h2>降噪参数</h2>
           <ProFormSelect
             initialValue="PROPRO_EIC"
@@ -167,31 +153,9 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             name="firstDerivativeCutoffFactor"
             label="峰边界一阶导数与最大一阶导数的比例系数"
           />
-        </Col>
+        </Col> */}
         <Col span={5}>
-          <h2>快筛参数</h2>
-          <ProFormDigit
-            initialValue={0.6}
-            name="minShapeScore"
-            label="minShapeScore"
-            placeholder="minShapeScore"
-            tooltip="shape的筛选阈值,一般建议在0.6左右"
-          />
-          <ProFormDigit
-            initialValue={0.8}
-            name="minShapeWeightScore"
-            label="minShapeWeightScore"
-            placeholder="minShapeWeightScore"
-            tooltip="shape的筛选阈值,一般建议在0.8左右"
-          />
           <h2>打分参数</h2>
-          <ProFormSelect
-            initialValue="Yes"
-            options={YesOrNo}
-            tooltip="是否使用DIA打分,如果使用DIA打分的话,需要提前读取Aird文件中的谱图信息以提升系统运算速度"
-            name="diaScores"
-            label="是否使用DIA打分"
-          />
           <ProFormSelect options={[]} tooltip="打分类型" name="scoreTypes" label="打分类型" />
           <h2>回归参数</h2>
           <ProFormDigit initialValue={0.01} name="fdr" label="fdr" placeholder="fdr" />
