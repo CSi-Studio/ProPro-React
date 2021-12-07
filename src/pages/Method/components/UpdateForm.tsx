@@ -63,14 +63,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             initialValue={props.values.eic?.mzWindow}
             name="mzWindow"
             label="mz窗口"
-            tooltip="MZ窗口，为0.015时表示的是±0.015"
+            tooltip="MZ窗口，单位为ppm,填20时表示的是±20"
             placeholder="mzWindow"
           />
           <ProFormDigit
             initialValue={props.values.eic?.rtWindow}
             name="rtWindow"
             label="RT窗口"
-            tooltip="RT窗口，为300时表示的是±300"
+            tooltip="RT窗口,单位为秒，为300时表示的是±300"
             placeholder="rtWindow"
             min={-1}
           />
@@ -120,6 +120,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <Col span={5}>
           <h2>选峰参数</h2>
           <ProFormSelect
+            initialValue={props.values.peakFinding?.peakFindingMethod}
+            name="peakFindingMethod"
+            label="选峰算法"
+            options={PeakFindingMethod}
+          />
+          <ProFormSelect
             initialValue={props.values.peakFinding?.smoothMethod}
             name="smoothMethod"
             label="平滑算法"
@@ -143,12 +149,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             label="离子碎片高信号阈值"
             placeholder="ionsHigh"
           />
-          <ProFormSelect
-            initialValue={props.values.peakFinding?.peakFindingMethod}
-            name="peakFindingMethod"
-            label="选峰算法"
-            options={PeakFindingMethod}
-          />
+         
           <ProFormSelect
             initialValue={props.values.peakFinding?.baselineMethod}
             name="baselineMethod"

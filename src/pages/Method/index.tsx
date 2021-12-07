@@ -92,17 +92,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       title: 'mzWindow',
       dataIndex: 'mzWindow',
       render: (dom, entity) => {
-        return <Tag>{entity.eic.mzWindow}</Tag>;
-      },
-    },
-    {
-      title: 'adaptiveMzWindow',
-      dataIndex: 'adaptiveMzWindow',
-      render: (dom, entity) => {
-        if (entity.eic.adaptiveMzWindow) {
-          return <Tag color="green">true</Tag>;
-        }
-        return <Tag color="orange">false</Tag>;
+        return <Tag>{entity.eic.mzWindow} ppm</Tag>;
       },
     },
     {

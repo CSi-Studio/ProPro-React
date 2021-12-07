@@ -52,7 +52,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             name="mzWindow"
             label="mz窗口"
             initialValue="0.015"
-            tooltip="MZ窗口，为0.015时表示的是±0.015"
+            tooltip="MZ窗口，单位为ppm,填20时表示的是±20"
             placeholder="mzWindow"
           />
           <ProFormDigit
@@ -67,13 +67,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             label="最大Framents数"
             tooltip="使用的最大Fragments数目"
             placeholder="maxIons"
-          />
-          <ProFormSelect
-            initialValue="No"
-            options={YesOrNo}
-            tooltip="是否使用自适应mz窗口,自适应mz算"
-            name="adaptiveMzWindow"
-            label="自适应mz窗口"
           />
           <h2>IRT参数</h2>
           <ProFormSelect
@@ -109,6 +102,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Col span={5}>
           <h2>选峰参数</h2>
           <ProFormSelect
+            initialValue="PROPRO"
+            name="peakFindingMethod"
+            label="选峰算法"
+            options={PeakFindingMethod}
+          />
+          <ProFormSelect
             initialValue="PROPRO_GAUSS"
             name="smoothMethod"
             label="平滑算法"
@@ -132,12 +131,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             label="离子碎片高信号阈值"
             placeholder="ionsHigh"
           />
-          <ProFormSelect
-            initialValue="PROPRO"
-            name="peakFindingMethod"
-            label="选峰算法"
-            options={PeakFindingMethod}
-          />
+         
           <ProFormSelect
             initialValue="TOLERANCE"
             name="baselineMethod"

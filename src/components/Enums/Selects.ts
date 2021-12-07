@@ -40,7 +40,8 @@ export const SmoothMethod = [
 ];
 
 export const PeakFindingMethod = [
-  { value: 'PROPRO', label: 'PROPRO' },
+  { value: 'IONS_COUNT', label: 'IONS_COUNT' },
+  { value: 'IONS_SHAPE', label: 'IONS_SHAPE' },
   { value: 'MZMINE', label: 'MZMINE' },
   { value: 'WAVELET', label: 'WAVELET' },
   { value: 'LOCAL_MINIMUM', label: 'LOCAL_MINIMUM' },
