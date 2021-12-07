@@ -30,6 +30,7 @@ export async function getRunData(params: {
   peptideRef: string;
   smooth: boolean;
   denoise: boolean;
+  peakFindMethod:string;
   overviewIds: any[];
 }) {
   return request(`${url}/clinic/getRunData`, {

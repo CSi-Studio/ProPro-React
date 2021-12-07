@@ -46,7 +46,8 @@ import PeptideDis from './components/PeptideDis';
 import { overviewList } from '../Overview/service';
 import { useIntl, FormattedMessage } from 'umi';
 import XicCharts from './components/xic';
-
+import {ProFormSelect} from '@ant-design/pro-form';
+import {PeakFindingMethod} from '@/components/Enums/Selects';
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
 const { Search } = Input;

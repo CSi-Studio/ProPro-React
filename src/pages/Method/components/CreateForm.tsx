@@ -89,7 +89,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Col span={5}>
           <h2>选峰参数</h2>
           <ProFormSelect
-            initialValue="PROPRO"
+            initialValue="IONS_COUNT"
             name="peakFindingMethod"
             label="选峰算法"
             options={PeakFindingMethod}
