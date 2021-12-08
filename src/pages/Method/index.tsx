@@ -152,6 +152,21 @@ const TableList: React.FC = (props: Record<string, any>) => {
       },
     },
     {
+      title: '选峰算法',
+      dataIndex: 'peakFindingMethod',
+      render: (dom, entity) => {
+        console.log(entity);
+        return <Tag>{entity.peakFinding.peakFindingMethod}</Tag>;
+      },
+    },
+    {
+      title: 'fdr',
+      dataIndex: 'fdr',
+      render: (dom, entity) => {
+        return <Tag>{entity.classifier.fdr}</Tag>;
+      },
+    },
+    {
       title: '描述信息',
       dataIndex: 'description',
       hideInSearch: true,

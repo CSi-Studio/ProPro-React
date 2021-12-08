@@ -19,7 +19,7 @@ import {
   Spin,
   Typography,
 } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState,useRef } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem, RunData } from './data';
 import {
   getRunData,
@@ -46,8 +46,8 @@ import PeptideDis from './components/PeptideDis';
 import { overviewList } from '../Overview/service';
 import { useIntl, FormattedMessage } from 'umi';
 import XicCharts from './components/xic';
-import {ProFormSelect} from '@ant-design/pro-form';
-import {PeakFindingMethod} from '@/components/Enums/Selects';
+// import { ProFormSelect } from '@ant-design/pro-form';
+// import { PeakFindingMethod } from '@/components/Enums/Selects';
 const { TabPane } = Tabs;
 const { CheckableTag } = Tag;
 const { Search } = Input;
@@ -61,7 +61,8 @@ const proteinPageSize = 13;
 const peptidePageSize = 9;
 
 const TableList: React.FC = (props: any) => {
-  const intl = useIntl();
+  const intl = useIntl(); // 国际化
+  // const xicRef = useRef(null)
 
   const projectId: string = props?.location?.query?.projectId;
   const overviewIdsInt: [] | undefined = props?.location?.query?.overviewIds?.split(',');
@@ -184,6 +185,7 @@ const TableList: React.FC = (props: any) => {
         smooth,
         denoise,
         overviewIds: selectedOverviewIds,
+        peakFindMethod: '',
       });
       // project对应的ov列表
       const runValues = await overviewList({
@@ -258,6 +260,7 @@ const TableList: React.FC = (props: any) => {
       /* XIC图 */
       const charts = (
         <XicCharts
+          // ref={xicRef}
           values={{
             result: result.data.sort((a: any, b: any) => b.alias - a.alias),
             spectraFn,

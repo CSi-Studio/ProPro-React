@@ -30,7 +30,7 @@ export async function getRunData(params: {
   peptideRef: string;
   smooth: boolean;
   denoise: boolean;
-  peakFindMethod:string;
+  peakFindMethod: string;
   overviewIds: any[];
 }) {
   return request(`${url}/clinic/getRunData`, {
@@ -69,6 +69,16 @@ export async function getRtPairs(params: {
   mz?: string;
 }) {
   return request(`${url}/clinic/getRtPairs`, {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+  });
+}
+
+/** 根据ovId、range、pre POST /clinic/manualCheck  */
+export async function manualCheck(params: { peptideRef: string; overViewIds: string[]; range: [] }) {
+  return request(`${url}/clinic/manualCheck`, {
     method: 'POST',
     params: {
       ...params,
