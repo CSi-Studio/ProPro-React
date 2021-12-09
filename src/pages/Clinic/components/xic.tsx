@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
 import { isEqual, uniqWith, compact } from 'lodash';
+import { Form, message, notification } from 'antd';
+import { useIntl } from 'umi';
+import UpdateRt from './UpdateRt';
+import { manualCheck } from '../service';
 
 const gridNumInRow: number = 3;
 const xName: string = '';
@@ -13,6 +17,7 @@ const gridPaddingWight: number = 5;
 const totalPaddingWidth: number = 3;
 const titleHeight: number = 75;
 const Width: number = 99;
+let rtTimeIn: { alias: string; range: any[]; overviewId: string }[] = [];
 
 export type IrtChartsProps = {
   values: any;
@@ -23,6 +28,61 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const gridNumberInRow = props.values.gridNumberInRow;
   const data: any[] = props.values.result;
   const rtAlign: boolean = props.values.rtAlign;
+  const intl = useIntl();
+  const [formUpdate] = Form.useForm();
+
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [rtTime, setRtTime] = useState<Record<string, any>[]>([]);
+  /* 获取echarts实例，使用其Api */
+  const [echarts, setEcharts] = useState<any>();
+  console.log(data);
+
+  const openNotification = () => {
+    notification.open({
+      message: '重选峰',
+      description: `${rtTimeIn.map((item: any) => {
+        return `${item.alias}：
+        ${item.range.join('-')}
+        `;
+      })}`,
+      className: 'custom-class',
+      style: {
+        width: 300,
+      },
+    });
+  };
+  /**
+   * 修改峰
+   * @param values
+   */
+  const updateRt = async (values: any) => {
+    const hide = message.loading(
+      `${intl.formatMessage({
+        id: 'message.adding',
+        defaultMessage: '正在添加...',
+      })}`,
+    );
+    try {
+      await manualCheck(values);
+      hide();
+      message.success(
+        `${intl.formatMessage({
+          id: 'message.addSuccess',
+          defaultMessage: '添加成功！',
+        })}`,
+      );
+      return true;
+    } catch (error) {
+      hide();
+      message.error(
+        `${intl.formatMessage({
+          id: 'message.addFail',
+          defaultMessage: '添加失败，请重试！',
+        })}`,
+      );
+      return false;
+    }
+  };
 
   // 使legend的每一个和intensity一一对应
   let intMap = data.map((value) => {
@@ -378,6 +438,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
       animation: false,
       data: [],
     };
+
     value.peakGroupList.forEach((item: { leftRt: number; rightRt: number }, index) => {
       markAreaOpt.data.push([
         {
@@ -485,22 +546,20 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         data: allCutMz.map((item: { name: string }) => {
           return item.name;
         }),
-        right: '6%',
+        left: '0%',
         width: '100%',
         top: `${6}px`,
         padding: 0,
         type: 'scroll',
-        icon: 'none',
-        itemGap: 0,
-        itemWidth: 5,
+        icon: 'circle',
+        // itemGap: 5,
+        // itemWidth: 5,
+        itemStyle: {},
         selector: true,
+        inactiveColor: '#bbb',
         textStyle: {
           fontSize: '14',
-          color: '#fff',
-          padding: 5,
-          borderRadius: 5,
-          fontFamily: 'Times New Roman,STSong',
-          backgroundColor: [
+          color: [
             '#1890ff',
             'hotpink',
             '#3CB371',
@@ -514,6 +573,22 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
             '#395165',
             '#F2DF5D',
           ],
+          // color: '#000',
+          fontFamily: 'Times New Roman,STSong',
+          // backgroundColor: [
+          //   '#1890ff',
+          //   'hotpink',
+          //   '#3CB371',
+          //   'orange',
+          //   '#9370D8',
+          //   'tomato',
+          //   '#71d8d2',
+          //   '#FFa246',
+          //   '#6C97D7',
+          //   '#F4B397',
+          //   '#395165',
+          //   '#F2DF5D',
+          // ],
         },
         formatter(name: any) {
           let mzValue = allCutMz.map((item: any) => {
@@ -527,9 +602,9 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         },
       },
     ];
+    const keyName: any = [];
     for (let i = 0; i < data.length; i += 1) {
       // rt赋值
-      const keyName: any = [];
       let singleCutMz: any = [];
       Object.keys(data[i].cutInfoMap).forEach((key: any) => {
         singleCutMz.push({ name: key, value: data[i].cutInfoMap[key] });
@@ -624,7 +699,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           onclick="
             chartsFn(paramsTool);
           " 
-          >查看光谱图</div>${params[0].axisValue}<br />`;
+          ><strong>Spectrum</strong></div>${params[0].axisValue}<br />`;
           params.forEach((item: any) => {
             html += `${item.marker}<span style="display:inline-block;min-width:34px">${item.seriesName}</span>&nbsp&nbsp<span style="font-weight:bold;color:#3574E0;">${item.data[1]}</span><br />`;
           });
@@ -649,10 +724,56 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         '#F2DF5D',
       ],
       toolbox: {
+        iconStyle: {
+          borderColor: '#666',
+          borderWidth: 1,
+        },
         feature: {
-          restore: {},
-          dataView: {},
-          saveAsImage: {},
+          myTool1: {
+            show: true,
+            title: '保存',
+            icon: 'path://M6 4h10.586L20 7.414V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zm0 1a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7.914L16.086 5H15v5H6V5zm1 0v4h7V5H7zm5 7a3 3 0 1 1 0 6a3 3 0 0 1 0-6zm0 1a2 2 0 1 0 0 4a2 2 0 0 0 0-4z',
+            onclick: function () {
+              updateRt({
+                peptideRef: data[0].peptideRef,
+                overViewIds: [rtTimeIn[0].overviewId],
+                range: rtTimeIn[0].range,
+              });
+              setRtTime(rtTimeIn);
+              // handleUpdateModalVisible(true);
+              openNotification();
+            },
+          },
+          brush: {
+            title: {
+              lineX: '重新选峰',
+              keep: '允许多选',
+              clear: '清除选择',
+            },
+            type: ['lineX', 'keep', 'clear'],
+          },
+          restore: {
+            title: '还原',
+          },
+          dataView: {
+            title: '数据视图',
+          },
+          saveAsImage: {
+            title: '保存图片',
+          },
+        },
+      },
+      brush: {
+        xAxisIndex: 'all',
+        brushLink: 'all',
+        outOfBrush: {
+          // colorAlpha: 0.1,
+          color: '#ddd',
+        },
+        brushStyle: {
+          borderWidth: 2,
+          color: 'rgba(120,140,180,0.3)',
+          borderColor: 'rgba(120,140,180,0.8)',
         },
       },
       animation: false,
@@ -660,15 +781,70 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
     };
   };
 
+  /* 获取brush数据 */
+  // echarts?.getEchartsInstance().off('click'); // 防止多次触发
+  // echarts?.getEchartsInstance().on('click', (params: any) => {
+  //   console.log(params);
+  // });
+  // echarts?.getEchartsInstance().on('contextmenu', (params: any) => {
+  //   message.success('右键菜单');
+  // });
+  echarts?.getEchartsInstance().off('brushEnd');
+  echarts?.getEchartsInstance().on('brushEnd', (params: any) => {
+    // setRtTime({
+    //   alias: data[params.areas[0]?.panelId.split('')[14]].alias,
+    //   range: params.areas[0]?.coordRange,
+    // });
+    if (params.type === 'brushend') {
+      rtTimeIn = params.areas.map((item: any) => {
+        return {
+          alias: data[item?.panelId?.split('')[14]]?.alias,
+          range: item?.coordRange,
+          overviewId: data[item?.panelId?.split('')[14]]?.overviewId,
+        };
+      });
+      console.log(rtTimeIn);
+      console.log(params);
+    }
+  });
+
+  // document.body.oncontextmenu = function () {
+  //   return false;
+  // };
+
   return (
     <ProCard>
       <ReactECharts
+        ref={(e) => {
+          setEcharts(e);
+        }}
         option={getXicOption()}
         style={{ width: `100%`, height: Height }}
         lazyUpdate={true}
       />
+      <UpdateRt
+        form={formUpdate}
+        onCancel={() => {
+          handleUpdateModalVisible(false);
+          formUpdate?.resetFields();
+        }}
+        onSubmit={async (value: any) => {
+          // const success = await updataRt(value);
+          // if (success) {
+          //   handleUpdateModalVisible(false);
+          //   setCurrentRow(undefined);
+          //   if (actionRef.current) {
+          //     actionRef.current.reload();
+          //   }
+          // }
+        }}
+        updateModalVisible={updateModalVisible}
+        values={rtTime}
+      />
     </ProCard>
   );
 };
+
+// XicCharts = forwardRef(XicCharts);
 
 export default XicCharts;
