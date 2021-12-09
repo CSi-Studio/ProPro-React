@@ -15,6 +15,7 @@ import {
   BaselineMethod,
   EicNoiseEstimateMethod,
   PeakNoiseEstimateMethod,
+  Classifier,
 } from '@/components/Enums/Selects';
 
 export type UpdateFormProps = {
@@ -73,6 +74,13 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             tooltip="RT窗口,单位为秒，为300时表示的是±300"
             placeholder="rtWindow"
             min={-1}
+          />
+            <ProFormDigit
+            name="extraRtWindow"
+            label="额外RT窗口"
+            initialValue="200"
+            tooltip="额外RT窗口，为200时表示的是±200"
+            placeholder="extraRtWindow"
           />
             <ProFormDigit
             initialValue={props.values.eic?.maxIons}
@@ -207,18 +215,17 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <h2>打分参数</h2>
           <ProFormSelect options={[]} tooltip="打分类型" name="scoreTypes" label="打分类型" />
           <h2>回归参数</h2>
+          <ProFormSelect
+            initialValue={props.values.classifier?.algorithm}
+            name="classifier"
+            label="分类器"
+            options={Classifier}
+          />
           <ProFormDigit
             initialValue={props.values.classifier?.fdr}
             name="fdr"
             label="fdr"
             placeholder="fdr"
-          />
-          <ProFormSelect
-            initialValue={props.values.classifier?.removeUnmatched}
-            options={YesOrNo}
-            tooltip="是否删除FDR不符合要求的结果"
-            name="removeUnmatched"
-            label="删除未鉴定结果"
           />
         </Col>
       </Row>

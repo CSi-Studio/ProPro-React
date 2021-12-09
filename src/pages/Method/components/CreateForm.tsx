@@ -15,6 +15,7 @@ import {
   BaselineMethod,
   EicNoiseEstimateMethod,
   PeakNoiseEstimateMethod,
+  Classifier,
 } from '@/components/Enums/Selects';
 export type CreateFormProps = {
   onSubmit: (values: Domain) => Promise<void>;
@@ -61,6 +62,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             initialValue="300"
             tooltip="RT窗口，为300时表示的是±300"
             placeholder="rtWindow"
+          />
+           <ProFormDigit
+            name="extraRtWindow"
+            label="额外RT窗口"
+            initialValue="200"
+            tooltip="额外RT窗口，为200时表示的是±200"
+            placeholder="extraRtWindow"
           />
            <ProFormDigit
             name="maxIons"
@@ -158,14 +166,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           <h2>打分参数</h2>
           <ProFormSelect options={[]} tooltip="打分类型" name="scoreTypes" label="打分类型" />
           <h2>回归参数</h2>
-          <ProFormDigit initialValue={0.01} name="fdr" label="fdr" placeholder="fdr" />
           <ProFormSelect
-            initialValue="No"
-            options={YesOrNo}
-            tooltip="是否删除FDR不符合要求的结果"
-            name="removeUnmatched"
-            label="删除未鉴定结果"
+            initialValue={"LDA"}
+            name="classifier"
+            label="分类器"
+            options={Classifier}
           />
+          <ProFormDigit initialValue={0.01} name="fdr" label="fdr" placeholder="fdr" />
         </Col>
       </Row>
     </ModalForm>

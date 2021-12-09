@@ -60,3 +60,8 @@ export const PeakNoiseEstimateMethod = [
   { value: 'SLIDING_WINDOW_PEAK', label: 'SLIDING_WINDOW_PEAK' },
   { value: 'WAVELET_COEFF_PEAK', label: 'WAVELET_COEFF_PEAK' },
 ];
+
+export const Classifier = [
+  { value: 'LDA', label: 'LDA' },
+  { value: 'XGBoost', label: 'XGBoost' },
+];

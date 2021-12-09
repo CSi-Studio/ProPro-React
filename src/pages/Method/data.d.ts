@@ -102,5 +102,6 @@ export type DomainUpdate = {
   diaScores:boolean
 
   fdr: number
+  classifier: string
   description: string
 }
