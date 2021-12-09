@@ -129,20 +129,20 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
         }
       },
     },
-    {
-      title: 'Ions',
-      dataIndex: 'ionsLow',
-      key: 'ionsLow',
-      fixed: 'left',
-      width: 45,
-      render: (dom: any, entity: any) => {
-        if (dom !== '-') {
-          return <Tag color="blue">{entity?.ionsLow}</Tag>;
-        } else {
-          return <Tag>NaN</Tag>;
-        }
-      },
-    },
+    // {
+    //   title: 'Ions',
+    //   dataIndex: 'ionsHigh',
+    //   key: 'ionsHigh',
+    //   fixed: 'left',
+    //   width: 45,
+    //   render: (dom: any, entity: any) => {
+    //     if (dom !== '-') {
+    //       return <Tag color="blue">{entity?.ionsHigh}</Tag>;
+    //     } else {
+    //       return <Tag>NaN</Tag>;
+    //     }
+    //   },
+    // },
 
     {
       title: 'RT',
@@ -227,7 +227,7 @@ const OverView: React.FC<OverViewProps> = (props: any) => {
       dataIndex: index,
       key: type.toString(),
       width: 1,
-      fixed: `${index === 0 ? 'left' : 'false'}`,
+      // fixed: `${index === 0 ? 'left' : 'false'}`,
       tooltip: type,
       render: (dom: any, entity: any) => {
         if (
