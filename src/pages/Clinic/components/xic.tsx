@@ -493,6 +493,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   // 设置图表样式
   const getXicSeries = () => {
     const series: Record<any, any>[] = [];
+    console.log(data);
+
     for (let i = 0; i < data.length; i += 1) {
       if (
         data[i].rtArray == null ||
@@ -540,10 +542,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         padding: 0,
         type: 'scroll',
         icon: 'circle',
-        // itemGap: 5,
-        // itemWidth: 5,
         itemStyle: {},
-        selector: true,
         inactiveColor: '#bbb',
         textStyle: {
           fontSize: '14',
@@ -561,23 +560,18 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
             '#395165',
             '#F2DF5D',
           ],
-          // color: '#000',
           fontFamily: 'Times New Roman,STSong',
-          // backgroundColor: [
-          //   '#1890ff',
-          //   'hotpink',
-          //   '#3CB371',
-          //   'orange',
-          //   '#9370D8',
-          //   'tomato',
-          //   '#71d8d2',
-          //   '#FFa246',
-          //   '#6C97D7',
-          //   '#F4B397',
-          //   '#395165',
-          //   '#F2DF5D',
-          // ],
         },
+        selector: [
+          {
+            type: 'all or inverse',
+            title: 'All',
+          },
+          {
+            type: 'inverse',
+            title: 'Inv',
+          },
+        ],
         formatter(name: any) {
           let mzValue = allCutMz.map((item: any) => {
             if (item.name === name) {
