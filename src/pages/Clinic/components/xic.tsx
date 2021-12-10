@@ -104,11 +104,23 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   let allCutMz: any = [];
   data.forEach((item: any) => {
     Object.keys(item.cutInfoMap).forEach((key: any) => {
-      allCutMz.push({ name: key, value: item.cutInfoMap[key] });
+      allCutMz.push({ name: key, value: item.cutInfoMap[key], selected: true });
     });
   });
   // 去重 排序 lodash的方法
   allCutMz = uniqWith(allCutMz, isEqual).sort((a, b) => (a.value > b.value ? -1 : 1));
+  const allCutMzRight = allCutMz?.slice(-5).map((item: any) => {
+    item.selected = false;
+    return item;
+  });
+  const selected = {};
+  allCutMzRight.forEach((item: any) => {
+    selected[item.name] = item.selected;
+  });
+
+  const allCutMzLeft = allCutMz?.splice(0, allCutMz.length - 5);
+  allCutMz = allCutMzLeft?.concat(allCutMzRight);
+  console.log('allCutMzR', allCutMz);
 
   const statusFn = (
     value: number,
@@ -556,8 +568,10 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         icon: 'circle',
         itemStyle: {},
         inactiveColor: '#bbb',
+        itemGap: 12,
         textStyle: {
           fontSize: '14',
+          padding: -8,
           color: [
             '#1890ff',
             'hotpink',
@@ -574,6 +588,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           ],
           fontFamily: 'Times New Roman,STSong',
         },
+        selected: selected,
         selector: [
           {
             type: 'all or inverse',
@@ -801,6 +816,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
       console.log(params);
     }
   });
+  console.log(getXicOption());
 
   // document.body.oncontextmenu = function () {
   //   return false;
