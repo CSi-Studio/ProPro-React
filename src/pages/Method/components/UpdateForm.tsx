@@ -75,21 +75,21 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
             placeholder="rtWindow"
             min={-1}
           />
-            <ProFormDigit
+          <ProFormDigit
             name="extraRtWindow"
             label="额外RT窗口"
             initialValue="200"
             tooltip="额外RT窗口，为200时表示的是±200"
             placeholder="extraRtWindow"
           />
-            <ProFormDigit
+          <ProFormDigit
             initialValue={props.values.eic?.maxIons}
             name="maxIons"
             label="最大Framents数"
             tooltip="使用的最大Fragments数目"
             placeholder="maxIons"
           />
-           </Col>
+        </Col>
         <Col span={5}>
           <h2>IRT参数</h2>
           <ProFormDigit
@@ -217,7 +217,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <h2>回归参数</h2>
           <ProFormSelect
             initialValue={props.values.classifier?.algorithm}
-            name="classifier"
+            name="algorithm"
             label="分类器"
             options={Classifier}
           />

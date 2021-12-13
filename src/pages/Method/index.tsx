@@ -365,7 +365,6 @@ const TableList: React.FC = (props: Record<string, any>) => {
           formUpdate?.resetFields();
         }}
         onSubmit={async (value) => {
-          // eslint-disable-next-line no-param-reassign
           value.id = currentRow?.id as string;
           const success = await handleUpdate(value);
           if (success) {
