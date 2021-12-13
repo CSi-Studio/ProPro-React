@@ -19,7 +19,7 @@ import {
   Spin,
   Typography,
 } from 'antd';
-import React, { useCallback, useEffect, useState,useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem, RunData } from './data';
 import {
   getRunData,
@@ -254,7 +254,6 @@ const TableList: React.FC = (props: any) => {
       intensityValue.sort((a: { data: number }, b: { data: number }) =>
         b.data === a.data ? 0 : a.data < b.data ? 1 : -1,
       );
-
       gridNumberInRow = selectedRunIds.length > 2 ? 3 : 2; // 图表排布
 
       /* XIC图 */
@@ -266,7 +265,9 @@ const TableList: React.FC = (props: any) => {
             spectraFn,
             gridNumberInRow,
             intensityValue,
+            projectId,
             rtAlign,
+            runId: result.data[0].runId,
           }}
         />
       );

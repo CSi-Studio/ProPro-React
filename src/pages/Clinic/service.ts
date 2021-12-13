@@ -77,7 +77,13 @@ export async function getRtPairs(params: {
 }
 
 /** 根据ovId、range、pre POST /clinic/manualCheck  */
-export async function manualCheck(params: { peptideRef: string; overViewIds: string[]; range: [] }) {
+export async function manualCheck(params: {
+  peptideRef: string;
+  overViewIds: string[];
+  range: [];
+  projectId: string;
+  runId: string;
+}) {
   return request(`${url}/clinic/manualCheck`, {
     method: 'POST',
     params: {

@@ -30,8 +30,6 @@ const ChartsForm: React.FC<ChartsFormProps> = (props) => {
             pointNum: 5,
           });
           setX(() => {
-            console.log(msg.data.x);
-
             return msg.data.x.map((item: any) => {
               return item.toFixed(4);
             });

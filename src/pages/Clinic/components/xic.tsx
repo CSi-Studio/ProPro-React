@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import ReactECharts from 'echarts-for-react';
 import ProCard from '@ant-design/pro-card';
 import { isEqual, uniqWith, compact } from 'lodash';
@@ -26,16 +26,19 @@ export type IrtChartsProps = {
 const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const intensityKey = props.values.intensityValue.map((value: any) => value.name);
   const gridNumberInRow = props.values.gridNumberInRow;
-  const data: any[] = props.values.result;
+  const xicData: any[] = props.values.result;
   const rtAlign: boolean = props.values.rtAlign;
+  const projectId: string = props.values.projectId;
+  const runId: string = props.values.runId;
   const intl = useIntl();
   const [formUpdate] = Form.useForm();
 
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [rtTime, setRtTime] = useState<Record<string, any>[]>([]);
-  /* 获取echarts实例，使用其Api */
   const [echarts, setEcharts] = useState<any>();
-  console.log(data);
+  const [option, setOption] = useState<any>({});
+  const [data, setData] = useState<any>(xicData);
+  const [handleOption, setHandleOption] = useState<boolean>(false);
 
   const openNotification = () => {
     notification.open({
@@ -85,7 +88,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   };
 
   // 使legend的每一个和intensity一一对应
-  let intMap = data.map((value) => {
+  let intMap = data.map((value: { intMap: {} }) => {
     return Object.keys(value.intMap).map((key) => {
       return key;
     });
@@ -120,7 +123,6 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
 
   const allCutMzLeft = allCutMz?.splice(0, allCutMz.length - 5);
   allCutMz = allCutMzLeft?.concat(allCutMzRight);
-  console.log('allCutMzR', allCutMz);
 
   const statusFn = (
     value: number,
@@ -517,7 +519,6 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   // 设置图表样式
   const getXicSeries = () => {
     const series: Record<any, any>[] = [];
-    console.log(data);
 
     for (let i = 0; i < data.length; i += 1) {
       if (
@@ -743,14 +744,20 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
             title: '保存',
             icon: 'path://M6 4h10.586L20 7.414V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zm0 1a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7.914L16.086 5H15v5H6V5zm1 0v4h7V5H7zm5 7a3 3 0 1 1 0 6a3 3 0 0 1 0-6zm0 1a2 2 0 1 0 0 4a2 2 0 0 0 0-4z',
             onclick: function () {
-              updateRt({
-                peptideRef: data[0].peptideRef,
-                overViewIds: [rtTimeIn[0].overviewId],
-                range: rtTimeIn[0].range,
-              });
-              setRtTime(rtTimeIn);
-              // handleUpdateModalVisible(true);
-              openNotification();
+              if (rtTimeIn[0]?.overviewId === undefined) {
+                message.error('请选择一个峰');
+              } else {
+                updateRt({
+                  peptideRef: data[0].peptideRef,
+                  overViewIds: [rtTimeIn[0]?.overviewId],
+                  range: rtTimeIn[0]?.range,
+                  projectId,
+                  runId,
+                });
+                setRtTime(rtTimeIn);
+                // handleUpdateModalVisible(true);
+                openNotification();
+              }
             },
           },
           brush: {
@@ -789,6 +796,16 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
       legend: getXicLegend(),
     };
   };
+  useEffect(() => {
+    if (data.length > 0) {
+      setOption(getXicOption());
+    }
+  }, []);
+  useEffect(() => {
+    setOption(getXicOption());
+  }, [handleOption]);
+
+  // setOption(getXicOption());
 
   /* 获取brush数据 */
   // echarts?.getEchartsInstance().off('click'); // 防止多次触发
@@ -798,25 +815,31 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   // echarts?.getEchartsInstance().on('contextmenu', (params: any) => {
   //   message.success('右键菜单');
   // });
+
   echarts?.getEchartsInstance().off('brushEnd');
   echarts?.getEchartsInstance().on('brushEnd', (params: any) => {
-    // setRtTime({
-    //   alias: data[params.areas[0]?.panelId.split('')[14]].alias,
-    //   range: params.areas[0]?.coordRange,
-    // });
     if (params.type === 'brushend') {
       rtTimeIn = params.areas.map((item: any) => {
+        // const newData = data[item?.panelId?.split('')[14]].peakGroupList;
+        const newData = data;
+        newData[item?.panelId?.split('')[14]].peakGroupList.push({
+          apexRt: (item?.coordRange[1] - item?.coordRange[0]) / 2 + item?.coordRange[0],
+          selectedRt: (item?.coordRange[1] - item?.coordRange[0]) / 2 + item?.coordRange[0],
+          fine: false,
+          leftRt: item?.coordRange[0],
+          rightRt: item?.coordRange[1],
+        });
+        setData(newData);
+        setHandleOption(!handleOption);
         return {
           alias: data[item?.panelId?.split('')[14]]?.alias,
           range: item?.coordRange,
           overviewId: data[item?.panelId?.split('')[14]]?.overviewId,
         };
       });
-      console.log(rtTimeIn);
-      console.log(params);
     }
   });
-  console.log(getXicOption());
+  // console.log(getXicOption());
 
   // document.body.oncontextmenu = function () {
   //   return false;
@@ -828,7 +851,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         ref={(e) => {
           setEcharts(e);
         }}
-        option={getXicOption()}
+        option={option}
         style={{ width: `100%`, height: Height }}
         lazyUpdate={true}
       />
