@@ -260,6 +260,8 @@ const TableList: React.FC = (props: any) => {
       const charts = (
         <XicCharts
           // ref={xicRef}
+          setHandleSubmit={setHandleSubmit}
+          handleSubmit={handleSubmit}
           values={{
             result: result.data.sort((a: any, b: any) => b.alias - a.alias),
             spectraFn,

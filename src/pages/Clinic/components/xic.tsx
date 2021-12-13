@@ -21,6 +21,8 @@ let rtTimeIn: { alias: string; range: any[]; overviewId: string }[] = [];
 
 export type IrtChartsProps = {
   values: any;
+  setHandleSubmit: (handleSubmit: any) => void;
+  handleSubmit: boolean;
 };
 
 const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
@@ -30,6 +32,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const rtAlign: boolean = props.values.rtAlign;
   const projectId: string = props.values.projectId;
   const runId: string = props.values.runId;
+  const setHandleSubmit: (handleSubmit: any) => void = props.setHandleSubmit;
+  const handleSubmit: boolean = props.handleSubmit;
   const intl = useIntl();
   const [formUpdate] = Form.useForm();
 
@@ -39,6 +43,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const [option, setOption] = useState<any>({});
   const [data, setData] = useState<any>(xicData);
   const [handleOption, setHandleOption] = useState<boolean>(false);
+
+  console.log('data', data);
 
   const openNotification = () => {
     notification.open({
@@ -67,6 +73,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
     );
     try {
       await manualCheck(values);
+      setHandleSubmit(!handleSubmit);
       hide();
       message.success(
         `${intl.formatMessage({
@@ -74,6 +81,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           defaultMessage: '添加成功！',
         })}`,
       );
+      rtTimeIn = [];
       return true;
     } catch (error) {
       hide();
@@ -749,14 +757,15 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
               } else {
                 updateRt({
                   peptideRef: data[0].peptideRef,
-                  overViewIds: [rtTimeIn[0]?.overviewId],
+                  overViewIds: rtTimeIn.map((item: any) => item.overviewId),
                   range: rtTimeIn[0]?.range,
                   projectId,
                   runId,
                 });
+
                 setRtTime(rtTimeIn);
                 // handleUpdateModalVisible(true);
-                openNotification();
+                // openNotification();
               }
             },
           },
