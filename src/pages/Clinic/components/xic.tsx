@@ -44,8 +44,6 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
   const [data, setData] = useState<any>(xicData);
   const [handleOption, setHandleOption] = useState<boolean>(false);
 
-  console.log('data', data);
-
   const openNotification = () => {
     notification.open({
       message: '重选峰',
@@ -72,8 +70,28 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
       })}`,
     );
     try {
-      await manualCheck(values);
-      setHandleSubmit(!handleSubmit);
+      const newData = await manualCheck(values);
+      const result = data;
+      data.forEach((item: any, index: string | number) => {
+        newData.data.forEach((_item: any) => {
+          if (_item.overviewId === item.overviewId) {
+            _item.alias = item.alias;
+            _item.minTotalScore = item.minTotalScore;
+            result[index] = _item;
+          }
+        });
+      });
+      console.log(result);
+
+      setData(result);
+      setHandleOption(!handleOption);
+
+      console.log('newData', newData.data);
+
+      console.log(
+        'data',
+        data.map((item: any) => item.overviewId),
+      );
       hide();
       message.success(
         `${intl.formatMessage({
@@ -81,7 +99,11 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           defaultMessage: '添加成功！',
         })}`,
       );
-      rtTimeIn = [];
+       echarts?.getEchartsInstance().off();
+      // rtTimeIn = [];
+      // setHandleSubmit(!handleSubmit);
+
+      // setData();
       return true;
     } catch (error) {
       hide();
@@ -811,6 +833,8 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
     }
   }, []);
   useEffect(() => {
+    console.log(data);
+
     setOption(getXicOption());
   }, [handleOption]);
 
