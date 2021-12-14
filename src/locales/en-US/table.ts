@@ -181,4 +181,6 @@ export default {
   'table.scoreParams': 'scoreParams',
   'table.scoreTypes': 'scoreTypes',
   'table.RegressionParams': 'RegressionParams',
+  'table.peakFindingParams': 'peakFindingParams',
+  'table.iRtParams': 'IRtParams',
 };

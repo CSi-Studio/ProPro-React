@@ -179,4 +179,6 @@ export default {
   'table.scoreParams': '打分参数',
   'table.scoreTypes': '打分类型',
   'table.RegressionParams': '回归参数',
+  'table.peakFindingParams': '选峰参数',
+  'table.IRtParams': 'IRT参数',
 };

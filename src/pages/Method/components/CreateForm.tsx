@@ -124,7 +124,9 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           />
         </Col>
         <Col span={5}>
-          <h2>IRT参数</h2>
+          <h2>
+            <FormattedMessage id="table.IRtParams" />
+          </h2>
           <ProFormDigit
             name="pickedNumbers"
             label={intl.formatMessage({
@@ -154,7 +156,9 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           />
         </Col>
         <Col span={5}>
-          <h2>选峰参数</h2>
+          <h2>
+            <FormattedMessage id="table.peakFindingParams" />
+          </h2>
           <ProFormSelect
             initialValue="IONS_COUNT"
             name="peakFindingMethod"
@@ -203,7 +207,10 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           <ProFormSelect
             initialValue="TOLERANCE"
             name="baselineMethod"
-            label="基线算法"
+            label={intl.formatMessage({
+              id: 'table.baselineMethod',
+              defaultMessage: '基线算法',
+            })}
             options={BaselineMethod}
           />
           <ProFormDigit initialValue={0.2} name="baselineRtWindow" label="Baseline RT Window" />
