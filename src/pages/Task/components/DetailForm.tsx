@@ -27,7 +27,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
           columns={props.columns as ProDescriptionsItemProps<TableListItem>[]}
         />
       )}
-      <Divider plain>时间轴</Divider>
+      <Divider plain>Timeline</Divider>
       <Timeline mode="left">
         {props.currentRow?.logs.map((item: any) => {
           return <Timeline.Item label={item.time}>{item.content}</Timeline.Item>;

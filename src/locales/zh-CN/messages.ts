@@ -87,4 +87,6 @@ export default {
   'message.singleRepeatCount': '目前只支持单个库的肽段重复率的统计',
   'message.selectDeleteLibrary': '请选择要删除的库',
   'message.singleDeleteLibrary': '目前只支持单个库的删除',
+  // Method 界面
+  'message.deleteMethod': '请选择要删除的方法',
 };

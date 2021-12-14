@@ -89,5 +89,6 @@ export default {
   'message.singleRepeatCount': 'Only statistics of peptide repetition rates for single libraries',
   'message.selectDeleteLibrary': 'Please select the library to delete',
   'message.singleDeleteLibrary': 'Only the deletion of a single library is supported.',
-  
+  // Method 界面
+  'message.deleteMethod': 'Please select a method to delete',
 };

@@ -768,7 +768,7 @@ const TableList: React.FC = (props: any) => {
             />
 
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(false, false)}>
-              刷新
+              <FormattedMessage id="table.refresh" />
             </Button>
             <Button type="primary" htmlType="submit" onClick={() => fetchEicDataList(true, false)}>
               <FormattedMessage id="table.selfPeptidePredict" />

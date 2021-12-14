@@ -22,7 +22,7 @@ export default {
   'component.inputDeleProName': 'Please enter the name of the project to delete',
   'component.pleaseInput': 'Please enter',
   'component.updateLibrary': 'Update library',
-  'component.libraryName': 'LibraryName',
+  'component.libraryName': 'LibName',
   // 诊所
   'component.noIdentify': 'NoIdentify',
   'component.successIdentify': 'Success',

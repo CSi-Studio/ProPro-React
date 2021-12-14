@@ -1,18 +1,18 @@
 /* 靶库 */
 export const LibraryType = [
-  { value: 'INS', label: '内标库' },
-  { value: 'ANA', label: '标准库' },
+  { value: 'INS', label: 'INS' },
+  { value: 'ANA', label: 'ANA' },
 ];
 
 /* 蛋白 */
 export const ProteinType = {
   createLibrary: [
-    { value: 'true', label: '新建库' },
-    { value: 'false', label: '不建库' },
+    { value: 'true', label: 'BuildLib' },
+    { value: 'false', label: 'NotBuild' },
   ],
   reviewed: [
-    { value: 'true', label: '已review' },
-    { value: 'false', label: '未review' },
+    { value: 'true', label: 'reviewed' },
+    { value: 'false', label: 'unrevised' },
   ],
 };
 

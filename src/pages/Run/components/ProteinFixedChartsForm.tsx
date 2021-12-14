@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { FormattedMessage } from 'umi';
 
 export type ChartsFormProps = {
   showCharts: any;
@@ -201,7 +202,7 @@ const ProteinFixedChartsForm: React.FC<ChartsFormProps> = (props) => {
             setKeyNumber(new Date());
           }}
         >
-          刷新
+          <FormattedMessage id="table.refresh" />
         </Button>
       </Space>
       <ReactECharts

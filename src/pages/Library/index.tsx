@@ -299,7 +299,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: 'LibraryId',
+      title: 'LibId',
       dataIndex: 'id',
       hideInTable: true,
       render: (dom) => {

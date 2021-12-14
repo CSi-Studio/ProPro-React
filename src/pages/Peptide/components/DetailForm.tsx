@@ -3,7 +3,7 @@ import { Drawer, Table, Tag } from 'antd';
 import type { TableListItem } from '../data';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { useIntl, FormattedMessage } from 'umi';
+import { FormattedMessage } from 'umi';
 
 export type UpdateFormProps = {
   showDetail: any;
@@ -12,8 +12,6 @@ export type UpdateFormProps = {
   onClose: () => void;
 };
 const DetailForm: React.FC<UpdateFormProps> = (props) => {
-  const intl = useIntl();
-
   const columns = [
     {
       title: 'ID',
@@ -23,7 +21,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
       },
     },
     {
-      title: 'LibraryId',
+      title: 'LibId',
       dataIndex: 'libraryId',
       render: (dom: any) => {
         return <Tag>{dom}</Tag>;

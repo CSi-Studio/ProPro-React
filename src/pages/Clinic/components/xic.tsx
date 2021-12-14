@@ -99,7 +99,7 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           defaultMessage: '添加成功！',
         })}`,
       );
-       echarts?.getEchartsInstance().off();
+      echarts?.getEchartsInstance().off();
       // rtTimeIn = [];
       // setHandleSubmit(!handleSubmit);
 
@@ -771,11 +771,11 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
         feature: {
           myTool1: {
             show: true,
-            title: '保存',
+            title: 'Save',
             icon: 'path://M6 4h10.586L20 7.414V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zm0 1a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7.914L16.086 5H15v5H6V5zm1 0v4h7V5H7zm5 7a3 3 0 1 1 0 6a3 3 0 0 1 0-6zm0 1a2 2 0 1 0 0 4a2 2 0 0 0 0-4z',
             onclick: function () {
               if (rtTimeIn[0]?.overviewId === undefined) {
-                message.error('请选择一个峰');
+                message.error('Please reselect the range of peaks.');
               } else {
                 updateRt({
                   peptideRef: data[0].peptideRef,
@@ -793,20 +793,20 @@ const XicCharts: React.FC<IrtChartsProps> = (props: any) => {
           },
           brush: {
             title: {
-              lineX: '重新选峰',
-              keep: '允许多选',
-              clear: '清除选择',
+              lineX: 'RePeak',
+              keep: 'Multiple selection',
+              clear: 'Clear selection',
             },
             type: ['lineX', 'keep', 'clear'],
           },
           restore: {
-            title: '还原',
+            title: 'Reduction',
           },
           dataView: {
-            title: '数据视图',
+            title: 'Data view',
           },
           saveAsImage: {
-            title: '保存图片',
+            title: 'Save img',
           },
         },
       },

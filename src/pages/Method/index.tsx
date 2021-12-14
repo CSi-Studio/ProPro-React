@@ -9,7 +9,7 @@ import ProTable from '@ant-design/pro-table';
 import { Icon } from '@iconify/react';
 import { update, add, list, removeList } from './service';
 import DeleteForm from './components/DeleteForm';
-import { Link, useIntl } from 'umi';
+import { Link, useIntl, FormattedMessage } from 'umi';
 
 const { Text } = Typography;
 const TableList: React.FC = (props: Record<string, any>) => {
@@ -127,11 +127,11 @@ const TableList: React.FC = (props: Record<string, any>) => {
   const [currentRow, setCurrentRow] = useState<DomainCell>();
   const columns: ProColumns<DomainCell>[] = [
     {
-      title: '方法包名称',
+      title: <FormattedMessage id="table.methodName" />,
       dataIndex: 'name',
     },
     {
-      title: '分类器',
+      title: <FormattedMessage id="table.algorithm" />,
       dataIndex: 'algorithm',
       render: (dom, entity) => {
         return <Tag>{entity.classifier.algorithm}</Tag>;
@@ -152,7 +152,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       },
     },
     {
-      title: '选峰算法',
+      title: <FormattedMessage id="table.peakFindingMethod" />,
       dataIndex: 'peakFindingMethod',
       render: (dom, entity) => {
         return <Tag>{entity.peakFinding.peakFindingMethod}</Tag>;
@@ -166,7 +166,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       },
     },
     {
-      title: '描述信息',
+      title: <FormattedMessage id="table.description" />,
       dataIndex: 'description',
       hideInSearch: true,
       valueType: 'textarea',
@@ -176,21 +176,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
           entity.description == null ||
           entity.description === ''
         ) {
-          return (
-            <Tooltip title="" color="#108ee9" placement="topLeft">
-              <p
-                style={{
-                  margin: 0,
-                  width: '300px',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                <span></span>
-              </p>
-            </Tooltip>
-          );
+          return;
         }
         return (
           <Tooltip title={entity.description} color="#108ee9" placement="topLeft">
@@ -210,7 +196,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
       },
     },
     {
-      title: '操作',
+      title: <FormattedMessage id="table.option" />,
       valueType: 'option',
       fixed: 'right',
       hideInSearch: true,
@@ -226,7 +212,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
           >
             <Tag color="blue">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:file-edit" />
-              编辑
+              <FormattedMessage id="table.edit" />
             </Tag>
           </a>
         </>
@@ -255,7 +241,9 @@ const TableList: React.FC = (props: Record<string, any>) => {
         headerTitle={
           props?.location?.state?.projectName === undefined ? (
             <>
-              <Text>方法列表</Text>
+              <Text>
+                <FormattedMessage id="table.MethodList" />
+              </Text>
             </>
           ) : (
             <>
@@ -264,11 +252,15 @@ const TableList: React.FC = (props: Record<string, any>) => {
                   pathname: '/project/list',
                 }}
               >
-                <Text type="secondary">方法列表</Text>
+                <Text type="secondary">
+                  <FormattedMessage id="table.MethodList" />
+                </Text>
               </Link>
               &nbsp;&nbsp;/&nbsp;&nbsp;
               <a>
-                <Text>方法列表 所属项目：{props?.location?.state?.projectName}</Text>
+                <Text>
+                  <FormattedMessage id="table.belongPro" />: {props?.location?.state?.projectName}
+                </Text>
               </a>
             </>
           )
@@ -291,7 +283,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
                 style={{ verticalAlign: 'middle', fontSize: '20px' }}
                 icon="mdi:playlist-plus"
               />
-              新增
+              <FormattedMessage id="table.add" />
             </Tag>
           </a>,
           <a
@@ -301,13 +293,18 @@ const TableList: React.FC = (props: Record<string, any>) => {
               if (selectedRows?.length > 0) {
                 handleDeleteModalVisible(true);
               } else {
-                message.warn('请选择要删除的方法');
+                message.warn(
+                  `${intl.formatMessage({
+                    id: 'message.deleteMethod',
+                    defaultMessage: '请选择要删除的方法',
+                  })}`,
+                );
               }
             }}
           >
             <Tag color="error">
               <Icon style={{ verticalAlign: '-4px', fontSize: '16px' }} icon="mdi:delete" />
-              删除
+              <FormattedMessage id="table.delete" />
             </Tag>
           </a>,
         ]}

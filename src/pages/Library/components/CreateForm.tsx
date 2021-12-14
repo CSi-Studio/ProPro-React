@@ -144,7 +144,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
             name="description"
           />
         </TabPane>
-        <TabPane
+        {/* <TabPane
           tab={intl.formatMessage({
             id: 'component.autoImport',
             defaultMessage: '自动导入',
@@ -213,7 +213,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               name="description"
             />
           </Space>
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </ModalForm>
   );

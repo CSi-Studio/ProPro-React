@@ -29,6 +29,7 @@ export default {
   'table.deletePro': '删除项目',
   // 诊所
   'table.searchPeptides': '搜索肽段',
+  'table.refresh': '刷新',
   'table.searchBtn': '搜索',
   'table.resetBtn': '重置',
   'table.noData': '暂无数据',
@@ -61,8 +62,6 @@ export default {
   'table.organism': '有机生物',
   'table.sequence': '序列号',
   'table.importProteinLib': '导入蛋白库',
-  // 任务列表import { LibraryType } from '@/components/Enums/Selects';
-
   'table.taskName': '任务列表',
   'table.taskTem': '任务模板',
   'table.taskState': '任务状态',
@@ -151,4 +150,58 @@ export default {
   'table.statisticsInfo': '统计基本信息',
   'table.repeatCount': '统计肽段重复率',
   'table.confirm': '确定',
+  // Method 界面
+  'table.methodName': '方法包名称',
+  'table.algorithm': '分类器',
+  'table.peakFindingMethod': '选峰算法',
+  'table.MethodList': '方法列表',
+  'table.creatMethod': '创建方法',
+  'table.basic': '基本参数',
+  'table.xicParams': 'XIC参数',
+  'table.mzWindow': 'mz窗口',
+  'table.mzTooltip': 'MZ窗口，单位为ppm,填20时表示的是±20',
+  'table.rtWindow': 'RT窗口',
+  'table.rtTooltip': 'RT窗口，为300时表示的是±300',
+  'table.extraRtWindow': '额外RT窗口',
+  'table.extraRtTooltip': '额外RT窗口，为200时表示的是±200',
+  'table.maxIons': '最大Fragments数',
+  'table.maxIonsTooltip': '使用的最大Fragments数目',
+  'table.pickedNumbers': '总体取样点数',
+  'table.pickedNumbersTooltip':
+    '从数据库中随机取出的点的数目,越少速度越快,但是容易出现没有命中的情况,当出现没有命中的情况是,最终的采样点数会少于设定的collectNumbers数目,为-1的时候表示全部取出不限制数目',
+  'table.wantedNumber': '最终展示点数',
+  'table.wantedNumberTooltip': '使用标准库进行查询时的采样点数目,默认为50个点位,不能为空',
+  'table.ionsLow': '离子碎片低信号阈值',
+  'table.ionsHigh': '离子碎片高信号阈值',
+  'table.smoothMethod': '平滑算法',
+  'table.smoothPoints': '平滑点数',
+  'table.baselineMethod': '基线算法',
 };
+
+//  <ProFormDigit
+//             name="mzWindow"
+//             label="mzWindow"
+//             initialValue="15"
+//             tooltip="mzWindow,the unit is ppm, when filling 20, is ±20"
+//             placeholder="mzWindow"
+//           />
+//           <ProFormDigit
+//             name="rtWindow"
+//             label="rtWindow"
+//             initialValue="300"
+//             tooltip="rtWindow,when filling 300, is ±300"
+//             placeholder="rtWindow"
+//           />
+//           <ProFormDigit
+//             name="extraRtWindow"
+//             label="extraRtWindow"
+//             initialValue="200"
+//             tooltip="extraRtWindow,when filling 200, is ±200"
+//             placeholder="extraRtWindow"
+//           />
+//           <ProFormDigit
+//             name="maxIons"
+//             label="maxIons"
+//             tooltip="Fragments maximum number used"
+//             placeholder="maxIons"
+//           />

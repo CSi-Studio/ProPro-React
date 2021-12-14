@@ -331,7 +331,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
           formatter: (params: any) => {
             let res = '';
             params.forEach((item: any) => {
-              res += `${item.marker}${item.seriesName}<br />肽段：${item.data[2]}<br />ApexRt: ${
+              res += `${item.marker}${item.seriesName}<br />Peptide: ${item.data[2]}<br />ApexRt: ${
                 item.data[0]
               } <br /> Delta: ${item.data[1]?.toFixed(4)}<br /> LibRts: ${item.data[3]}<br />`;
             });
@@ -360,7 +360,7 @@ const RtPairsCharts: React.FC<QtChartsProps> = (props: any) => {
   echarts?.getEchartsInstance().off('click'); // 防止多次触发
   echarts?.getEchartsInstance().on('click', (params: any) => {
     if (params.componentType === 'series') {
-      message.success(`肽段：${params.data[2]}`);
+      message.success(`Peptide: ${params.data[2]}`);
     }
   });
 

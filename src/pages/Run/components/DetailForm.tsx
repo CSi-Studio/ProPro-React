@@ -26,7 +26,7 @@ const DetailForm: React.FC<UpdateFormProps> = (props) => {
   });
   const option = {
     title: {
-      text: '窗口表',
+      text: '',
       subtext: 'Swath Chart',
     },
     tooltip: {

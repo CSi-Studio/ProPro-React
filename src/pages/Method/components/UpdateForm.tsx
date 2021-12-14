@@ -6,15 +6,12 @@ import {
   ModalForm,
   ProFormDigit,
 } from '@ant-design/pro-form';
-import { DomainUpdate } from '../data';
+import type { DomainUpdate } from '../data';
 import { Row, Col } from 'antd';
 import {
-  YesOrNo,
   SmoothMethod,
   PeakFindingMethod,
   BaselineMethod,
-  EicNoiseEstimateMethod,
-  PeakNoiseEstimateMethod,
   Classifier,
 } from '@/components/Enums/Selects';
 

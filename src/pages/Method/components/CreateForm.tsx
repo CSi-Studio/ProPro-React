@@ -7,16 +7,15 @@ import {
   ProFormDigit,
 } from '@ant-design/pro-form';
 import { Row, Col } from 'antd';
-import { Domain } from '../data';
+import type { Domain } from '../data';
 import {
-  YesOrNo,
   SmoothMethod,
   PeakFindingMethod,
   BaselineMethod,
-  EicNoiseEstimateMethod,
-  PeakNoiseEstimateMethod,
   Classifier,
 } from '@/components/Enums/Selects';
+import { useIntl, FormattedMessage } from 'umi';
+
 export type CreateFormProps = {
   onSubmit: (values: Domain) => Promise<void>;
   onCancel: () => void;
@@ -26,10 +25,15 @@ export type CreateFormProps = {
 };
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
+  const intl = useIntl();
+
   return (
     <ModalForm
       form={props.form}
-      title="创建一个方法参数组"
+      title={intl.formatMessage({
+        id: 'table.creatMethod',
+        defaultMessage: '创建方法',
+      })}
       width={1200}
       visible={props.createModalVisible}
       modalProps={{
@@ -42,55 +46,110 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     >
       <Row gutter={20}>
         <Col span={4}>
-          <h2 color="#beffc7">基本参数</h2>
-          <ProFormText name="name" label="方法包名" placeholder="name" />
-          <ProFormTextArea name="description" label="备注" placeholder="description" />
+          <h2 color="#beffc7">
+            <FormattedMessage id="table.basic" />
+          </h2>
+          <ProFormText
+            name="name"
+            label={intl.formatMessage({
+              id: 'table.methodName',
+              defaultMessage: '方法包名称',
+            })}
+            placeholder="name"
+          />
+          <ProFormTextArea
+            name="description"
+            label={intl.formatMessage({
+              id: 'table.description',
+              defaultMessage: '描述',
+            })}
+            placeholder="description"
+          />
         </Col>
 
         <Col span={5}>
-          <h2>XIC参数</h2>
+          <h2>
+            <FormattedMessage id="table.xicParams" />
+          </h2>
           <ProFormDigit
             name="mzWindow"
-            label="mz窗口"
+            label={intl.formatMessage({
+              id: 'table.mzWindow',
+              defaultMessage: 'mz窗口',
+            })}
             initialValue="15"
-            tooltip="MZ窗口，单位为ppm,填20时表示的是±20"
+            tooltip={intl.formatMessage({
+              id: 'table.mzTooltip',
+              defaultMessage: 'MZ窗口，单位为ppm,填20时表示的是±20',
+            })}
             placeholder="mzWindow"
           />
           <ProFormDigit
             name="rtWindow"
-            label="RT窗口"
+            label={intl.formatMessage({
+              id: 'table.rtWindow',
+              defaultMessage: 'RT窗口',
+            })}
             initialValue="300"
-            tooltip="RT窗口，为300时表示的是±300"
+            tooltip={intl.formatMessage({
+              id: 'table.mzTooltip',
+              defaultMessage: 'RT窗口，为300时表示的是±300',
+            })}
             placeholder="rtWindow"
           />
-           <ProFormDigit
+          <ProFormDigit
             name="extraRtWindow"
-            label="额外RT窗口"
+            label={intl.formatMessage({
+              id: 'table.extraRtWindow',
+              defaultMessage: '额外RT窗口',
+            })}
             initialValue="200"
-            tooltip="额外RT窗口，为200时表示的是±200"
+            tooltip={intl.formatMessage({
+              id: 'table.extraRtTooltip',
+              defaultMessage: '额外RT窗口，为200时表示的是±200',
+            })}
             placeholder="extraRtWindow"
           />
-           <ProFormDigit
+          <ProFormDigit
             name="maxIons"
-            label="最大Framents数"
-            tooltip="使用的最大Fragments数目"
+            label={intl.formatMessage({
+              id: 'table.maxIons',
+              defaultMessage: '最大Fragments数',
+            })}
+            tooltip={intl.formatMessage({
+              id: 'table.maxIonsTooltip',
+              defaultMessage: '使用的最大Fragments数目',
+            })}
             placeholder="maxIons"
           />
-           </Col>
+        </Col>
         <Col span={5}>
           <h2>IRT参数</h2>
           <ProFormDigit
             name="pickedNumbers"
-            label="总体取样点数"
+            label={intl.formatMessage({
+              id: 'table.pickedNumbers',
+              defaultMessage: '总体取样点数',
+            })}
             initialValue="500"
-            tooltip="从数据库中随机取出的点的数目,越少速度越快,但是容易出现没有命中的情况,当出现没有命中的情况是,最终的采样点数会少于设定的collectNumbers数目,为-1的时候表示全部取出不限制数目"
+            tooltip={intl.formatMessage({
+              id: 'table.pickedNumbersTooltip',
+              defaultMessage:
+                '从数据库中随机取出的点的数目,越少速度越快,但是容易出现没有命中的情况,当出现没有命中的情况是,最终的采样点数会少于设定的collectNumbers数目,为-1的时候表示全部取出不限制数目',
+            })}
             placeholder="pickedNumbers"
           />
           <ProFormDigit
             name="wantedNumber"
-            label="最终展示点数"
+            label={intl.formatMessage({
+              id: 'table.wantedNumber',
+              defaultMessage: '最终展示点数',
+            })}
             initialValue="50"
-            tooltip="使用标准库进行查询时的采样点数目,默认为50个点位,不能为空"
+            tooltip={intl.formatMessage({
+              id: 'table.wantedNumberTooltip',
+              defaultMessage: '使用标准库进行查询时的采样点数目,默认为50个点位,不能为空',
+            })}
             placeholder="wantedNumber"
           />
         </Col>
@@ -99,31 +158,46 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           <ProFormSelect
             initialValue="IONS_COUNT"
             name="peakFindingMethod"
-            label="选峰算法"
+            label={intl.formatMessage({
+              id: 'table.peakFindingMethod',
+              defaultMessage: '选峰算法',
+            })}
             options={PeakFindingMethod}
           />
-           <ProFormDigit
+          <ProFormDigit
             initialValue={50}
             name="ionsLow"
-            label="离子碎片低信号阈值"
+            label={intl.formatMessage({
+              id: 'table.ionsLow',
+              defaultMessage: '离子碎片低信号阈值',
+            })}
             placeholder="ionsLow"
           />
           <ProFormDigit
             initialValue={300}
             name="ionsHigh"
-            label="离子碎片高信号阈值"
+            label={intl.formatMessage({
+              id: 'table.ionsHigh',
+              defaultMessage: '离子碎片高信号阈值',
+            })}
             placeholder="ionsHigh"
           />
           <ProFormSelect
             initialValue="PROPRO_GAUSS"
             name="smoothMethod"
-            label="平滑算法"
+            label={intl.formatMessage({
+              id: 'table.smoothMethod',
+              defaultMessage: '平滑算法',
+            })}
             options={SmoothMethod}
           />
           <ProFormDigit
             initialValue={5}
             name="smoothPoints"
-            label="平滑点数"
+            label={intl.formatMessage({
+              id: 'table.smoothPoints',
+              defaultMessage: '平滑点数',
+            })}
             placeholder="smoothPoints"
           />
           <ProFormSelect
@@ -167,9 +241,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           <ProFormSelect options={[]} tooltip="打分类型" name="scoreTypes" label="打分类型" />
           <h2>回归参数</h2>
           <ProFormSelect
-            initialValue={"LDA"}
-            name="classifier"
-            label="分类器"
+            initialValue={'LDA'}
+            name="algorithm"
+            label={intl.formatMessage({
+              id: 'table.algorithm',
+              defaultMessage: '分类器',
+            })}
             options={Classifier}
           />
           <ProFormDigit initialValue={0.01} name="fdr" label="fdr" placeholder="fdr" />
