@@ -178,4 +178,7 @@ export default {
   'table.smoothMethod': 'smoothMethod',
   'table.smoothPoints': 'smoothPoints',
   'table.baselineMethod': 'baselineMethod',
+  'table.scoreParams': 'scoreParams',
+  'table.scoreTypes': 'scoreTypes',
+  'table.RegressionParams': 'RegressionParams',
 };

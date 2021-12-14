@@ -176,32 +176,7 @@ export default {
   'table.smoothMethod': '平滑算法',
   'table.smoothPoints': '平滑点数',
   'table.baselineMethod': '基线算法',
+  'table.scoreParams': '打分参数',
+  'table.scoreTypes': '打分类型',
+  'table.RegressionParams': '回归参数',
 };
-
-//  <ProFormDigit
-//             name="mzWindow"
-//             label="mzWindow"
-//             initialValue="15"
-//             tooltip="mzWindow,the unit is ppm, when filling 20, is ±20"
-//             placeholder="mzWindow"
-//           />
-//           <ProFormDigit
-//             name="rtWindow"
-//             label="rtWindow"
-//             initialValue="300"
-//             tooltip="rtWindow,when filling 300, is ±300"
-//             placeholder="rtWindow"
-//           />
-//           <ProFormDigit
-//             name="extraRtWindow"
-//             label="extraRtWindow"
-//             initialValue="200"
-//             tooltip="extraRtWindow,when filling 200, is ±200"
-//             placeholder="extraRtWindow"
-//           />
-//           <ProFormDigit
-//             name="maxIons"
-//             label="maxIons"
-//             tooltip="Fragments maximum number used"
-//             placeholder="maxIons"
-//           />

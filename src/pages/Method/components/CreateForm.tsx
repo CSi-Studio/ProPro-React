@@ -237,9 +237,24 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           />
         </Col> */}
         <Col span={5}>
-          <h2>打分参数</h2>
-          <ProFormSelect options={[]} tooltip="打分类型" name="scoreTypes" label="打分类型" />
-          <h2>回归参数</h2>
+          <h2>
+            <FormattedMessage id="table.scoreParams" />
+          </h2>
+          <ProFormSelect
+            options={[]}
+            tooltip={intl.formatMessage({
+              id: 'table.scoreTypes',
+              defaultMessage: '打分类型',
+            })}
+            name="scoreTypes"
+            label={intl.formatMessage({
+              id: 'table.scoreTypes',
+              defaultMessage: '打分类型',
+            })}
+          />
+          <h2>
+            <FormattedMessage id="table.RegressionParams" />
+          </h2>
           <ProFormSelect
             initialValue={'LDA'}
             name="algorithm"
