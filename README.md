@@ -1,6 +1,6 @@
 Language : 🇨🇳 | 🇺🇸
 
-ProPro
+<h1 align="center">ProPro</h1>
 
 A front-end display project of proteomic analysis based on React,Ant Design Pro and Echarts.
 
