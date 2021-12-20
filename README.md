@@ -1,6 +1,6 @@
 Language : 🇨🇳 | 🇺🇸
 
-<h1 align="center">ProPro</h1>
+ProPro
 
 A front-end display project of proteomic analysis based on React,Ant Design Pro and Echarts.
 
@@ -8,7 +8,7 @@ The data and algorithms come from [ProPro-server](https://github.com/CSi-Studio/
 
 [![Build With Umi](https://img.shields.io/badge/build%20with-umi-028fe4.svg?style=flat-square)](http://umijs.org/) ![](https://badgen.net/badge/icon/Ant%20Design?icon=https://gw.alipayobjects.com/zos/antfincdn/Pp4WPgVDB3/KDpgvguMpGfqaHPjicRK.svg&label) [![node](https://camo.githubusercontent.com/5e5b1cbb3d334242e102ee5f94fe7f9bf5cf8856b4e8caba43068c07d74809e8/68747470733a2f2f696d672e736869656c64732e696f2f6e6f64652f762f7765627061636b2e737667)](https://nodejs.org/)
 
-![image-20211220233353748](./image)
+![image-20211220233353748](https://github.com/CSi-Studio/ProPro-React/blob/main/image.png)
 
 - Demo：http://47.88.77.180:8080/
 
