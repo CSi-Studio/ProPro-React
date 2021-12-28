@@ -227,8 +227,8 @@ const TableList: React.FC = (props: Record<string, any>) => {
       render: (dom, entity) => {
         return (
           <Space direction="vertical">
-            <Tag color="green">真:{entity.peptideRef}</Tag>
-            <Tag color="red">伪:{entity.decoySequence}</Tag>
+            <Tag color="green">True:{entity.peptideRef}</Tag>
+            <Tag color="red">Decoy:{entity.decoySequence}</Tag>
           </Space>
         );
       },
