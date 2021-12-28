@@ -1,4 +1,9 @@
 export default {
+  //Common
+  'table.common.name': '项目名称',
+  'table.common.run': 'Run',
+  'table.common.overview': '分析概览',
+  
   // 项目
   'table.projectList': '项目列表',
   'table.alias': '别名',

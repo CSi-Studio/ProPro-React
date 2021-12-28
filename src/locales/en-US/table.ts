@@ -1,4 +1,8 @@
 export default {
+  //Common
+  'table.common.name': 'Name',
+  'table.common.run': 'Run',
+  'table.common.overview': 'Overview',
   // 项目
   'table.projectList': 'ProjectList',
   'table.alias': 'Alias',
@@ -49,10 +53,10 @@ export default {
   'table.peptideNum': 'PeptideNum',
   'table.proteinNum': 'ProteinNum',
   'table.scoreType': 'scoreType',
-  'table.IrtRes': 'iRTRes',
-  'table.RtRes': 'RTRes',
+  'table.IrtRes': 'iRT Result',
+  'table.RtRes': 'RT Result',
   'table.loadRtRes': 'Loading, the data is large, please wait patiently',
-  'table.peptideDis': 'PeptideDis',
+  'table.peptideDis': 'Peptide Dist',
   // 蛋白列表
   'table.proteinList': 'ProteinList',
   'table.proteinName': 'ProteinName',
@@ -61,7 +65,7 @@ export default {
   'table.gene': 'Gene',
   'table.organism': 'Organism',
   'table.sequence': 'Sequence',
-  'table.importProteinLib': 'ImportProLib',
+  'table.importProteinLib': 'Import Fasta',
   // 任务列表
   'table.taskName': 'TaskList',
   'table.taskTem': 'TaskTemplate',
@@ -79,7 +83,7 @@ export default {
   'table.runAlias': 'RunAlias',
   'table.windowRanges': 'SWATHWindow',
   'table.irtVerRes': 'IRTVerRes',
-  'table.unAnalyzed': 'unAnalyzed',
+  'table.unAnalyzed': 'Not Analyzed',
   'table.fragmentMode': 'FragmentMode',
   'table.manufacturer': 'Manufacturer',
   'table.insModel': 'FragmentMode',
@@ -87,11 +91,11 @@ export default {
   'table.belongPro': 'Project',
   'table.switchOv': 'OverviewList',
   'table.interfereFactor': 'InterfereFactor',
-  'table.startAna': 'StartAna',
+  'table.startAna': 'Start Ana',
   'table.batchEdit': 'BatchEdit',
-  'table.generateAlias': 'NewAlias',
+  'table.generateAlias': 'New Alias',
   'table.checkIrt': 'ViewIRT',
-  'table.performIrtOnly': 'PerformIRTonly',
+  'table.performIrtOnly': 'IRT only',
   'table.remark': 'Remark',
   // overview界面
   'table.runId': 'runId',

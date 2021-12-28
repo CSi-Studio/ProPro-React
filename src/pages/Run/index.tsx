@@ -481,7 +481,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
                 onClick={() => {
                   const msg = intl.formatMessage({
                     id: 'message.least1Run',
-                    defaultMessage: '至少选择一个Run！',
+                    defaultMessage: '至少选择一个Run!',
                   });
                   message.warn(msg);
                 }}
@@ -517,7 +517,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
                 onClick={() => {
                   const msg = intl.formatMessage({
                     id: 'message.least1Run',
-                    defaultMessage: '至少选择一个Run！',
+                    defaultMessage: '至少选择一个Run!',
                   });
                   message.warn(msg);
                 }}
@@ -555,7 +555,7 @@ const TableList: React.FC = (props: Record<string, any>) => {
                 onClick={() => {
                   const msg = intl.formatMessage({
                     id: 'message.least1Run',
-                    defaultMessage: '至少选择一个Run！',
+                    defaultMessage: '至少选择一个Run!',
                   });
                   message.warn(msg);
                 }}

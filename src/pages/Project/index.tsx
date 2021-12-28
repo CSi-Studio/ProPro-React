@@ -338,8 +338,8 @@ const TableList: React.FC = () => {
     {
       key: 'name',
       title: intl.formatMessage({
-        id: 'table.project.name',
-        defaultMessage: '项目名称',
+        id: 'table.common.name',
+        defaultMessage: '名称',
       }),
       dataIndex: 'name',
       render: (dom, record) => {
@@ -374,8 +374,8 @@ const TableList: React.FC = () => {
     {
       key: 'runCount',
       title: intl.formatMessage({
-        id: 'table.run.number',
-        defaultMessage: 'Run数',
+        id: 'table.common.run',
+        defaultMessage: 'Run',
       }),
       dataIndex: 'runCount',
       hideInSearch: true,
@@ -413,8 +413,8 @@ const TableList: React.FC = () => {
     {
       key: 'overviewCount',
       title: intl.formatMessage({
-        id: 'table.overview.number',
-        defaultMessage: '分析数',
+        id: 'table.common.overview',
+        defaultMessage: '分析概览',
       }),
       dataIndex: 'overviewCount',
       hideInSearch: true,
