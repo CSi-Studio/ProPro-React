@@ -1,5 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-param-reassign */
 import type { IdNameAlias } from '@/components/Commons/common';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -19,7 +17,7 @@ import {
   Spin,
   Typography,
 } from 'antd';
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { PrepareData, Peptide, PeptideTableItem, RunData } from './data';
 import {
   getRunData,
